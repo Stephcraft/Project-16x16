@@ -1,0 +1,14 @@
+[
+	{
+		"Name" : "METAL",
+		"Type" : "COLLISION",
+		"x" : 0,
+		"y" : 0
+	},
+	{
+		"Name" : "METAL_WALK_MIDDLE:0",
+		"Type" : "COLLISION",
+		"x" : 100,
+		"y" : 500
+	}
+]
