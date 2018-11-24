@@ -10,20 +10,6 @@ Art by 0x72, more [here](https://0x72.itch.io/16x16-industrial-tileset)
 
 ![image](https://img.itch.zone/aW1hZ2UvMTYyMzY0Lzc3MzkzMy5naWY=/794x1000/K7WB6P.gif) 
 
-## Programmers - Detail
-The game is made using the [Eclipse IDE](https://www.eclipse.org/downloads/). The source code of the project is located in `source`. But there are also prototype sketches located in `sketch`.
-The project is usign two libraries :
-
- * `source/libraries/processing.jar`
- * `source/libraries/dm.jar`
-
-To add libraries to your eclipse project, `right click on the SideScroller project folder > Build Path > Add external Archive` and to remove libraries `right click on the SideScroller project folder > Build Path > Configure Build Path`. If you have weird errors, clean your project in `Project > Clean...` or refresh your project by `right click on the SideScroller project folder > Refresh`
-
-#### Why Eclipse ? 
-because it is easier to organize a project with multiple files by using packages. The processing IDE does not support that feature *yet?*. 
-
-#### What is processing ?
-Processing is a simple java library mainly used to create visual art very easily. [Processing website](https://processing.org)
-
-## Story and Gameplay - Detail
+## Detail
+For programmers check the (Detail wiki)[https://github.com/Stephcraft/Project-16x16/wiki/Detail]
 Write your ideas in `idea`
