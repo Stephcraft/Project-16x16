@@ -14,3 +14,5 @@ Art by 0x72, more [here](https://0x72.itch.io/16x16-industrial-tileset)
 For programmers check the [Detail wiki](https://github.com/Stephcraft/Project-16x16/wiki/Detail)
 
 Write your ideas in `idea`
+
+If you need, contact me on Discord : `Stephcraft#9845`
