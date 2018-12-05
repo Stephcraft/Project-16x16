@@ -15,7 +15,7 @@ Wow!! This project seams **EPIC!** Right? And its made in processing, like *whhh
 
 ### Artist, Audio maker, Ideas
 * Join the [discord server](https://discord.gg/t4q99AP)
-* Write you ideas in the folder `idea` in a the text file format of your choice, for exemple: `.md`, `.txt` or `.docx`
+* Write you ideas in the folder `idea` in the text file format of your choice, for exemple: `.md`, `.txt` or `.docx`
 
 ## This is the final result we are aiming for
 Art by 0x72, more [here](https://0x72.itch.io/16x16-industrial-tileset)
