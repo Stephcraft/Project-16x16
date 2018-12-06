@@ -9,8 +9,8 @@ Wow!! This project seams **EPIC!** Right? And its made in processing, like *whhh
 1. Join the [discord server](https://discord.gg/t4q99AP)
 2. Dont know processing? [their official website](https://processing.org)
 3. Still dont know processing? [Epic processing tutorials by the CodingTrain on YouTube](https://www.youtube.com/watch?v=2VLaIr5Ckbs&list=PLRqwX-V7Uu6ZYJC7L-r6rX6utt6wwJCyi)
-4. Now you should know processing, but maybe you dont know the Eclipse IDE, [tutorial here](https://www.youtube.com/watch?v=2VLaIr5Ckbs&list=PLRqwX-V7Uu6ZYJC7L-r6rX6utt6wwJCyi)
-5. Okay, now you are ready to setup the project in eclipse, [read this wiki](https://www.youtube.com/watch?v=2VLaIr5Ckbs&list=PLRqwX-V7Uu6ZYJC7L-r6rX6utt6wwJCyi)
+4. Now you should know processing, but maybe you dont know the Eclipse IDE, [tutorial here](https://processing.org/tutorials/eclipse/)
+5. Okay, now you are ready to setup the project in eclipse, [read this wiki](https://github.com/Stephcraft/Project-16x16/wiki/Detail)
 7. Have fun coding and meeting other contributors on discord :D
 
 ### Artist, Audio maker, Ideas
