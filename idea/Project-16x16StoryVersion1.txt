@@ -1,0 +1,27 @@
+Spoiler Warning
+
+This document contains spoilers for the story of Project 16x16. Continue reading at your own risk.
+
+
+
+
+
+
+
+
+
+Project 16x16 Story
+
+Abstract
+
+The game will follow the main protagonist and player character in a battle to save his family from mysterious forces.
+
+After waking up from a long slumber, the player character is surrounded by an industrial facility, and has no memory of anything prior. The player character will not be led by any guide, leaving the player to solve mysteries on his own.
+
+The game will be mostly linear, but with an open world component. The player can explore the open world environment to practice the gameplay, and when ready, can enter the linear portions to continue the story.
+
+The player character will remain silent for the entire game.
+
+Boss Design
+
+The bosses will be designed to resemble the seasons Spring, Summer, Fall and Winter. The player will obtain new skills after defeating each boss.
