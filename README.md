@@ -6,7 +6,7 @@ Project 16x16 is a 2D Platformer game made using java/processing. **You** are ab
 Wow!! This project seems **EPIC!** Right? And its made in processing, like *whhhooaaahht* ! So how do I get in, how do I start? Simple! 
 
 ### Programmers
-1. Join the [discord server](https://discord.gg/t4q99AP)
+1. Join the [discord server](https://discord.gg/zDJSCqd)
 2. Dont know processing? [their official website](https://processing.org)
 3. Still dont know processing? [Epic processing tutorials by the CodingTrain on YouTube](https://www.youtube.com/watch?v=2VLaIr5Ckbs&list=PLRqwX-V7Uu6ZYJC7L-r6rX6utt6wwJCyi)
 4. Now you should know processing, but maybe you dont know the Eclipse IDE, [tutorial here](https://processing.org/tutorials/eclipse/)
@@ -14,7 +14,7 @@ Wow!! This project seems **EPIC!** Right? And its made in processing, like *whhh
 7. Have fun coding and meeting other contributors on discord :D
 
 ### Artist, Sound designer, Ideas
-* Join the [discord server](https://discord.gg/t4q99AP)
+* Join the [discord server](https://discord.gg/zDJSCqd)
 * Write you ideas in the folder `idea` in the text file format of your choice, for exemple: `.md`, `.txt` or `.docx`
 
 ## This is the final result we are aiming for
