@@ -164,7 +164,7 @@ Firing a projectile will fill the orb halfway, requiring two projectiles to acti
 
 Interacting with the door after it is unlocked will open it.
 
-The next room has a wall separating it in the middle. There is a window in the wall. The window is too small to jump through. On the other side, a badly damaged oil bot is holding a switch, keeping the wall in place. the oil bot is making a robotic laughing sound. Firing a single energy projectile through the window is enough to kill the oil bot. This releases the switch, raising the wall. There is a door on the other side.
+The next room has a wall separating it in the middle. There is a window in the wall. The window is too small to jump through. On the other side, a badly damaged oil bot is holding a switch, keeping the wall in place. The oil bot is making a robotic laughing sound. Firing a single energy projectile through the window is enough to kill the oil bot. This releases the switch, raising the wall. There is a door on the other side.
 
 The door leads to a room with another oil bot, protected by a shield. Firing an energy projectile is not enough to break the shield, and when approaching the oil bot, it fires a pulse that pushes the player character back.
 
