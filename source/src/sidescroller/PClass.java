@@ -14,6 +14,7 @@ public class PClass {
 	public final int DOWN = PApplet.DOWN;
 	public final int LEFT = PApplet.LEFT;
 	public final int RIGHT = PApplet.RIGHT;
+	public final int SHIFT = PApplet.SHIFT;
 	public final int TOP;
 	public final int KEY_W = 87;
 	public final int KEY_A = 65;
