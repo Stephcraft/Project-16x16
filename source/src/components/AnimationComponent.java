@@ -53,6 +53,11 @@ public class AnimationComponent {
 				frame += dt;
 			}
 		}
+		PApplet.println(frame);
 		return image;
+	}
+	
+	public void extendAnimation() {
+		frame=0;
 	}
 }
