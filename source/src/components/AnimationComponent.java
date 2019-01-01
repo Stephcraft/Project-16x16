@@ -57,7 +57,7 @@ public class AnimationComponent {
 		return image;
 	}
 	
-	public void extendAnimation() {
-		frame=0;
+	public void extendAnimation(int newLength) {
+		length=newLength;
 	}
 }

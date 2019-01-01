@@ -28,10 +28,15 @@ public class Player extends EditableObject {
 
 	public int prevKey;
 
-	public int speedX;
-	public int speedY;
-	public int pSpeedX;
-	public int pSpeedY;
+	public float speedX;
+	public float speedY;
+	public float pSpeedX;
+	public float pSpeedY;
+	
+	public int accX;
+	public int accY;
+	public int pAccX;
+	public int pAccY;
 
 	public int speedWalk;
 	public int speedJump;
@@ -124,7 +129,7 @@ public class Player extends EditableObject {
 	}
 
 	public void display() {
-
+		
 		// Display Swing Projectiles
 		for (int i = 0; i < swings.size(); i++) {
 			swings.get(i).display();
@@ -141,6 +146,15 @@ public class Player extends EditableObject {
 		}
 
 		if (applet.debug) {
+			//debug info
+			applet.fill(255, 0, 0);
+			applet.textSize(15);
+			applet.textAlign(RIGHT, CENTER);
+			applet.text("X: "+pos.x+"Y: "+pos.y, applet.width-10, 5);
+			applet.text("SX: "+speedX+" SY: "+speedY, applet.width-10, 15);
+			applet.text(animation.name, applet.width-10, 25);
+			applet.text("f: "+animation.frame+" ends: "+animation.length, applet.width-10,  35);
+			
 			applet.strokeWeight(1);
 			applet.stroke(0, 255, 200);
 			applet.noFill();
@@ -168,6 +182,7 @@ public class Player extends EditableObject {
 
 		px = pos.x;
 		py = pos.y;
+		
 
 		pflying = flying;
 		prevKey = applet.key;
@@ -179,9 +194,9 @@ public class Player extends EditableObject {
 				setAnimation("WALK");
 			}
 			if (!dashing) {
-				speedX = (int) (speedWalk * applet.deltaTime);
+				speedX = (speedWalk * applet.deltaTime);
 			} else {
-				speedX = (int) (speedWalk * applet.deltaTime) * 4;
+				speedX = (float) (speedWalk * applet.deltaTime * 1.5);
 			}
 			direction = RIGHT;
 		} else if (applet.keyPress(LEFT) || applet.keyPress(65)) {
@@ -189,9 +204,9 @@ public class Player extends EditableObject {
 				setAnimation("WALK");
 			}
 			if (!dashing) {
-				speedX = (int) (-speedWalk * applet.deltaTime);
+				speedX = (float) (-speedWalk * applet.deltaTime);
 			} else {
-				speedX = (int) (-speedWalk * applet.deltaTime) * 4;
+				speedX = (float) (-speedWalk * applet.deltaTime * 1.5);
 			}
 
 			direction = LEFT;
@@ -202,7 +217,7 @@ public class Player extends EditableObject {
 		// Dash
 		if (applet.keyPress(SHIFT)) {
 			if (applet.keyPressEvent && !dashing) {
-				PApplet.println(direction, direction == LEFT);
+//				PApplet.println(direction, direction == LEFT);
 				setAnimation("DASH");
 				dashing = true;
 			}
@@ -220,7 +235,7 @@ public class Player extends EditableObject {
 				if (!dashing) {
 					speedY -= (int) (speedJump * applet.deltaTime);
 				} else {
-					speedY -= (int) (speedJump * applet.deltaTime) * 2;
+					speedY -= (float) (speedJump * applet.deltaTime*1.5);
 				}
 				flying = true;
 			}
@@ -232,8 +247,8 @@ public class Player extends EditableObject {
 			if (!dashing) {
 				setAnimation("ATTACK");
 			} else {
+				setAnimation("DASH_ATTACK");
 				PApplet.println(animation.name);
-				animation.extendAnimation();
 			}
 
 			// Create Swing Projectile
@@ -242,11 +257,14 @@ public class Player extends EditableObject {
 
 		// End Dash
 		if (animation.name == "DASH" && animation.ended) {
-			PApplet.println("dash ended");
 			dashing = false;
-			setAnimation("IDLE");
+			setAnimation("WALK");
 		}
-
+		//End Dash Attack
+		if(animation.name== "DASH_ATTACK" && animation.ended) {
+			dashing=false;
+			setAnimation("WALK");
+		}
 		// End Attack
 		if (animation.name == "ATTACK" && animation.ended) {
 			attack = false;
@@ -336,6 +354,10 @@ public class Player extends EditableObject {
 //		applet.println(speedX, speedY);
 		pos.x += speedX;
 		pos.y += speedY;
+		if(pos.y>2000) {
+			pos.y=0;
+			pos.x=50;
+		}
 
 		// Apply World Transformation
 		if (pos.x - applet.originX - width / 2 < applet.width / 2 - applet.screenX / 2) {
@@ -456,11 +478,18 @@ public class Player extends EditableObject {
 //			applet.println("dashing");
 			animation.frames = getAnimation("PLAYER::SQUISH");
 			animation.loop = false;
-			animation.length = 1;
+			animation.length = 4;
 			animation.rate = 6;
 			animation.frame = 0;
 			animation.start = 0;
 			break;
+		case "DASH_ATTACK":
+			animation.frames= getAnimation("PLAYER::ATTACK");
+			animation.loop=false;
+			animation.length=2;
+			animation.rate=4;
+			animation.frame=0;
+			animation.start=0;
 		}
 		animation.ended = false;
 		animation.pName = animation.name;
