@@ -83,7 +83,7 @@ public class SideScroller extends PApplet {
 	
 	public void settings() {
 		//fullScreen();
-		size((int)(800*1.0),(int)(600*1.0)); // *1.5
+		size((int)(800*1.5),(int)(600*1.0)); // *1.5
 		noSmooth();
 	}
 	

@@ -32,7 +32,7 @@ public class Player extends EditableObject {
 	public float speedY;
 	public float pSpeedX;
 	public float pSpeedY;
-	
+
 	public int accX;
 	public int accY;
 	public int pAccX;
@@ -129,7 +129,7 @@ public class Player extends EditableObject {
 	}
 
 	public void display() {
-		
+
 		// Display Swing Projectiles
 		for (int i = 0; i < swings.size(); i++) {
 			swings.get(i).display();
@@ -146,15 +146,16 @@ public class Player extends EditableObject {
 		}
 
 		if (applet.debug) {
-			//debug info
+			// debug info
 			applet.fill(255, 0, 0);
 			applet.textSize(15);
 			applet.textAlign(RIGHT, CENTER);
-			applet.text("X: "+pos.x+"Y: "+pos.y, applet.width-10, 5);
-			applet.text("SX: "+speedX+" SY: "+speedY, applet.width-10, 15);
-			applet.text(animation.name, applet.width-10, 25);
-			applet.text("f: "+animation.frame+" ends: "+animation.length, applet.width-10,  35);
-			
+			applet.text("X: " + pos.x + "Y: " + pos.y, applet.width, 5);
+			applet.text("SX: " + speedX + " SY: " + speedY, applet.width, 15);
+			applet.text("anim: " + animation.name, applet.width, 25);
+			applet.text("f: " + animation.frame + " ends: " + animation.length, applet.width, 35);
+			applet.text("fly: " + flying + " att: " + attack + " dash: " + dashing, applet.width, 45);
+
 			applet.strokeWeight(1);
 			applet.stroke(0, 255, 200);
 			applet.noFill();
@@ -168,6 +169,8 @@ public class Player extends EditableObject {
 		// speedY *= DM.deltaTime;
 		if (!dashing) {
 			speedY += gravity * applet.deltaTime;
+		} else {
+			speedY += gravity * applet.deltaTime * .5;
 		}
 		// speedY += 100 * DM.deltaTimeRaw;
 
@@ -182,7 +185,6 @@ public class Player extends EditableObject {
 
 		px = pos.x;
 		py = pos.y;
-		
 
 		pflying = flying;
 		prevKey = applet.key;
@@ -223,32 +225,28 @@ public class Player extends EditableObject {
 			}
 		}
 
-		// Idle Animation
-		if (speedX == 0 && applet.keyReleaseEvent && !attack && !dashing) {
-			setAnimation("IDLE");
-		}
-
 		// Move on the y axis
-		if (applet.keyPress(UP) || applet.keyPress(87)) {
+		if (applet.keyPress(UP) || applet.keyPress(' ')) {
 			if (applet.keyPressEvent && !flying) { // && speedY == 0 && !flying
-
+				flying = true;
 				if (!dashing) {
 					speedY -= (int) (speedJump * applet.deltaTime);
 				} else {
-					speedY -= (float) (speedJump * applet.deltaTime*1.5);
+					speedY -= (float) (speedJump * applet.deltaTime * 1.2);
 				}
-				flying = true;
+
 			}
 		}
 
 		// Attack
-		if (((applet.key == ' ' && applet.keyPressEvent) || applet.mousePressed) && !attack){
-			attack = true;
-			if (!dashing) {
-				setAnimation("ATTACK");
-			} else {
-				setAnimation("DASH_ATTACK");
-				PApplet.println(animation.name);
+		if (applet.mousePressed && !attack) {
+			if (applet.mouseButton == LEFT) {
+				attack = true;
+				if (!dashing) {
+					setAnimation("ATTACK");
+				} else {
+					setAnimation("DASH_ATTACK");
+				}
 			}
 
 			// Create Swing Projectile
@@ -258,24 +256,27 @@ public class Player extends EditableObject {
 		// End Dash
 		if (animation.name == "DASH" && animation.ended) {
 			dashing = false;
+			if (flying) {
+				speedY = 0;
+			}
 			setAnimation("WALK");
 		}
-		//End Dash Attack
-		if(animation.name== "DASH_ATTACK" && animation.ended) {
-			dashing=false;
+		// End Dash Attack
+		if (animation.name == "DASH_ATTACK" && animation.ended) {
+			dashing = false;
+			attack = false;
+			if (flying) {
+				speedY = 0;
+			}
 			setAnimation("WALK");
 		}
 		// End Attack
 		if (animation.name == "ATTACK" && animation.ended) {
 			attack = false;
-			setAnimation("IDLE");
+			setAnimation("WALK");
 		}
 
-		// float fx = pos.x + speedX;
-		// float fy = pos.y + speedY;
-
 		// boolean collides = false;
-		PApplet.println(speedX, speedY, flying, dashing, animation.name);
 
 		if (applet.debug) {
 			applet.noFill();
@@ -341,6 +342,11 @@ public class Player extends EditableObject {
 		if (!flying && pflying && !attack && !dashing) {
 			setAnimation("SQUISH");
 		}
+		
+		// Idle Animation
+		if (speedX == 0 && !attack && !dashing && !flying && !pflying) {
+			setAnimation("IDLE");
+		}
 
 		if (animation.name == "SQUISH" && speedX != 0 && !attack) { // animation.ended (applet.keyPress(LEFT) ||
 																	// applet.keyPress(RIGHT)
@@ -352,11 +358,19 @@ public class Player extends EditableObject {
 
 		// Apply transformation
 //		applet.println(speedX, speedY);
+		//
+		if (dashing) {
+			if (speedY < -25) {
+				speedY = -25;
+			}
+		}
 		pos.x += speedX;
 		pos.y += speedY;
-		if(pos.y>2000) {
-			pos.y=0;
-			pos.x=50;
+
+		// out of bounds check
+		if (pos.y > 2000) {
+			pos.y = 0;
+			pos.x = 50;
 		}
 
 		// Apply World Transformation
@@ -484,12 +498,12 @@ public class Player extends EditableObject {
 			animation.start = 0;
 			break;
 		case "DASH_ATTACK":
-			animation.frames= getAnimation("PLAYER::ATTACK");
-			animation.loop=false;
-			animation.length=2;
-			animation.rate=4;
-			animation.frame=0;
-			animation.start=0;
+			animation.frames = getAnimation("PLAYER::ATTACK");
+			animation.loop = false;
+			animation.length = 2 + animation.remainingFrames();
+			animation.rate = 4;
+			animation.frame = 0;
+			animation.start = 0;
 		}
 		animation.ended = false;
 		animation.pName = animation.name;
