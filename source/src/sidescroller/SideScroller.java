@@ -66,7 +66,7 @@ public class SideScroller extends PApplet {
 	
 	//Player
 	public Player player;
-	
+
 	//World Objects
 	public ArrayList<Collision> collisions;
 	public ArrayList<BackgroundObject> backgroundObjects;
@@ -83,7 +83,7 @@ public class SideScroller extends PApplet {
 	
 	public void settings() {
 		//fullScreen();
-		size((int)(800*1.5),(int)(600*1.0)); // *1.5
+		size((int)(1280*1.0),(int)(720*1.0)); // *1.5 //Changed to 16:9
 		noSmooth();
 	}
 	
@@ -248,12 +248,12 @@ public class SideScroller extends PApplet {
 		//rect(width/2,height/2, screenX,screenY);
 		
 		
-		surface.setTitle("" + (int)frameRate);
+		surface.setTitle("Sardonyx Prealpha - Frame Rate " + (int)frameRate);
 		
 		//TODO to be moved
 		//Update World Origin
-		originX = (int)util.smoothMove(originX, originTargetX, (float)0.1);
-		originY = (int)util.smoothMove(originY, originTargetY, (float)0.1);
+		originX = (int)util.smoothMove(originX, originTargetX, (float) 0.1);
+		originY = (int)util.smoothMove(originY, originTargetY, (float) 0.1);
 		
 		//Reset Events
 		keyPressEvent = false;
