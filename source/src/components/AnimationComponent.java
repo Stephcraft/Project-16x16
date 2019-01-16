@@ -55,4 +55,12 @@ public class AnimationComponent {
 		}
 		return image;
 	}
+	
+	public void extendAnimation(int newLength) {
+		length=newLength;
+	}
+	
+	public int remainingFrames() {
+		return (int)(length-frame);
+	}
 }

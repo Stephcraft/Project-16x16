@@ -308,7 +308,7 @@ public class SceneMapEditor extends PScene {
 		
 		//Display Inventory
 		if(tool == "INVENTORY") {
-			displayInventory();
+			displayCreativeInventory();
 		}
 		
 		
@@ -388,11 +388,11 @@ public class SceneMapEditor extends PScene {
 		}
 	}
 	
-	public void displayInventory() {
+	public void displayCreativeInventory() {//complete creative inventory
 
 		
 		//Display Background
-		applet.noStroke();
+		applet.stroke(50);
 		applet.fill(0,100);
 		applet.rect(applet.width/2, applet.height/2, applet.width, applet.height);
 		
@@ -474,7 +474,7 @@ public class SceneMapEditor extends PScene {
 		editorItem.display();
 	}
 	
-	public void displayGrid() {
+	public void displayGrid() {//world grid
 		applet.strokeWeight(1);
 		applet.stroke(50);
 		int x = 0;
@@ -489,7 +489,6 @@ public class SceneMapEditor extends PScene {
 			y++;
 			x = 0;
 		}
-			
 				applet.line(x*(4*16)-(applet.originX%(16*4))-((4*16)/2), 0, x*(4*16)-(applet.originX%(16*4))-((4*16)/2), applet.height);
 				applet.line(0, y*(4*16)-(applet.originY%(16*4))-((4*16)/2), applet.width, y*(4*16)-(applet.originY%(16*4))-((4*16)/2));
 				//applet.line(x*(4*16)-applet.originX, 0-applet.originY, x*(4*16)-applet.originX, applet.height-applet.originY);
@@ -520,7 +519,7 @@ public class SceneMapEditor extends PScene {
 		}
 		else {
 			if(tool == "INVENTORY") {
-				scroll_inventory -= event.getCount() * 5;
+				scroll_inventory -= event.getCount() * 10;
 				scroll_inventory = (int)util.clamp(scroll_inventory, -getInventorySize()+applet.height-8,0);
 			}
 			//applet.originTargetY += event.getCount();

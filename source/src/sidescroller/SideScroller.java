@@ -83,7 +83,7 @@ public class SideScroller extends PApplet {
 	
 	public void settings() {
 		//fullScreen();
-		size((int)(800*1.0),(int)(600*1.0)); // *1.5
+		size((int)(800*1.5),(int)(600*1.0)); // *1.5
 		noSmooth();
 	}
 	
@@ -109,7 +109,7 @@ public class SideScroller extends PApplet {
 		//Create Option Class
 		options = new Options();
 		
-		//Default frameRate
+		//Default frameRates
 		frameRate(60);
 		
 		deltaTime = 1;
@@ -125,7 +125,7 @@ public class SideScroller extends PApplet {
 		gameGraphics = new GameGraphics(this);
 		
 		//Debug Option
-		debug = false;
+		debug = true;
 		
 		//Set Screen Size
 		screenX = width-400;
@@ -183,10 +183,10 @@ public class SideScroller extends PApplet {
 	public void draw() {
 		if(!LOADED) { return; }
 		
-		if(keyPressEvent && keyPress(82)) { frameRate(120); }
+//		if(keyPressEvent && keyPress(82)) { frameRate(120); }
 		if(keyPressEvent && keyPress(81)) { frameRate(60); }
-		if(keyPressEvent && keyPress(87)) { frameRate(30); }
-		if(keyPressEvent && keyPress(84)) { frameRate(10); }
+//		if(keyPressEvent && keyPress(87)) { frameRate(30); }
+		if(keyPressEvent && keyPress(84)) { frameRate(2); }
 		
 		//if(!(PApplet.parseInt(fc + DM.deltaTime) > PApplet.parseInt(fc))) {
 			//PApplet.println((fc + DM.deltaTime) - (fc)); //PApplet.parseInt
