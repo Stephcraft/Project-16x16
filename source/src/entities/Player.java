@@ -244,7 +244,7 @@ public class Player extends EditableObject {
 				attack = true;
 				if (!dashing) {
 					setAnimation("ATTACK");
-				} else {
+				} else if (dashing) {
 					setAnimation("DASH_ATTACK");
 				}
 			}
@@ -253,7 +253,9 @@ public class Player extends EditableObject {
 			swings.add(new Swing(applet, (int) pos.x, (int) pos.y, direction));
 		}
 
+		
 		// End Dash
+		
 		if (animation.name == "DASH" && animation.ended) {
 			dashing = false;
 			if (flying) {
@@ -273,9 +275,12 @@ public class Player extends EditableObject {
 		// End Attack
 		if (animation.name == "ATTACK" && animation.ended) {
 			attack = false;
+			if (speedX != 0) {
 			setAnimation("WALK");
+			} else if (speedX == 0) {
+			setAnimation("IDLE");
+			}
 		}
-
 		// boolean collides = false;
 
 		if (applet.debug) {
@@ -344,7 +349,7 @@ public class Player extends EditableObject {
 		}
 		
 		// Idle Animation
-		if (speedX == 0 && !attack && !dashing && !flying && !pflying) {
+		if (speedX == 0 && speedY == 0 && !attack && !dashing && !flying && !pflying) {
 			setAnimation("IDLE");
 		}
 
@@ -352,6 +357,21 @@ public class Player extends EditableObject {
 																	// applet.keyPress(RIGHT)
 			setAnimation("WALK");
 		}
+		
+		if (animation.name == "WALK" && speedX == 0 && !attack) { // animation.ended (applet.keyPress(LEFT) ||
+																	// applet.keyPress(RIGHT)
+			
+			setAnimation("IDLE");
+		}
+		
+		if (speedX == 0 && animation.name == "WALK" && attack) {
+			attack = false;
+		}
+		
+//		if (animation.name != "IDLE" && speedX == 0 && !flying && !attack && !dashing) {
+//			
+//			setAnimation("IDLE");
+//		}
 
 		// speedX *= DM.deltaTime;
 		// speedY *= DM.deltaTime;
