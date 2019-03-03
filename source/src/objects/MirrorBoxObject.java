@@ -17,10 +17,6 @@ public class MirrorBoxObject extends GameObject {
 		super(a);
 		
 		direction = 0;
-		//	0	:	RIGHT
-		//  1	:	DOWN
-		//  2	:	LEFT
-		//  3	:	UP
 		
 		type = "OBJECT";
 		id = "MIRROR_BOX";
@@ -90,7 +86,6 @@ public class MirrorBoxObject extends GameObject {
 					animation.start = 0;
 					animation.ended = false;
 					
-					//applet.projectileObjects.add( new MagicProjectile(applet, (int)pos.x, (int)pos.y, swing.direction) );
 					
 					swing.activated = true;
 				}
@@ -104,16 +99,13 @@ public class MirrorBoxObject extends GameObject {
 			activated = false;
 			if(projectile.id.equals("MAGIC")) {
 				if(collidesWithProjectile(projectile) && !projectile.hit) {
-					//if(!projectile.activated) {
 					activated = true;
 					
 					switch(projectile.direction) {
 						case RIGHT:
 							
 							if(direction == 0 || direction == 1) {
-								//if(projectile.pos.y != pos.y && projectile.pos.x > pos.x) {
 									((MagicProjectile) projectile).hit(collision);
-								//}
 							}
 							else if(direction == 2) {
 								projectile.direction = DOWN;
@@ -124,33 +116,9 @@ public class MirrorBoxObject extends GameObject {
 								projectile.pos.x = pos.x;
 							}
 							break;
-							/*
-						case UP:
-							if(direction == 0 || direction == 3) {
-								if(projectile.pos.x != pos.x && projectile.pos.y > pos.y) {
-									((MagicProjectile) projectile).hit(collision);
-								}
-							}
-							else if(direction == 1) {
-								projectile.direction = RIGHT;
-								projectile.pos.y = pos.y;
-							}
-							else if(direction == 2) {
-								projectile.direction = LEFT;
-								projectile.pos.y = pos.y;
-							}
-							break;
-							*/
 					}
 					
 					
-					//projectile.direction = LEFT;
-					//projectile.hit = false;
-					
-						//applet.projectileObjects.add( new MagicProjectile(applet, (int)pos.x, (int)pos.y, swing.direction) );
-						
-					//	swing.activated = true;
-					//}
 				}
 			}
 			if(!rotating) {

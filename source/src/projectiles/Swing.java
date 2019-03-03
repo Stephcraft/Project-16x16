@@ -8,13 +8,6 @@ public class Swing extends ProjectileObject { //PClass
 	
 	private AnimationComponent animation;
 	
-	//public PVector pos;
-	
-	//public PGraphics image;
-	//public int direction;
-	
-	//public int width;
-	//public int height;
 	
 	public boolean activated;
 	

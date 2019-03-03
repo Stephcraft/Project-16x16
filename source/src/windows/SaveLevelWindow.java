@@ -57,9 +57,6 @@ public class SaveLevelWindow extends PClass {
 		applet.textAlign(LEFT,TOP);
 		applet.text("Level Name :", applet.width/2-150, applet.height/2-40);
 		
-		//applet.textSize(20);
-		//applet.textAlign(LEFT,TOP);
-		//applet.text(path, applet.width/2-150, applet.height/2+30);
 		
 		//Display Save Input
 		input.display();

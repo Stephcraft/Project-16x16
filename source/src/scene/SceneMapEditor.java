@@ -83,8 +83,6 @@ public class SceneMapEditor extends PScene {
 		icon_playActive = util.pg(applet.graphicsSheet.get(298, 291, 9, 9), 4);
 		icon_saveActive = util.pg(applet.graphicsSheet.get(307, 291, 9, 9), 4);
 		
-		//Get Editor Grid
-		//editorGrid = Local.createEditorGrid(applet);
 		
 		//Init Window
 		window_saveLevel = new SaveLevelWindow(applet);
@@ -101,31 +99,18 @@ public class SceneMapEditor extends PScene {
 		//Default Tool
 		tool = "MODIFY";
 		
-		//edit = false;
-		
-		//Load Level
-		//util.loadLevel("Assets/Storage/Game/Maps/gg-2.dat");
 		
 		util.loadLevel("Assets/Storage/Game/Maps/level-1.dat");
-		
-		//util.saveLevel("Assets/Storage/Game/Maps/16x16.dat");
-		//util.loadLevel("Assets/Storage/Game/Maps/test-level.dat");
-		
-		//applet.backgroundObjects.add( new BackgroundObject(applet) );
-		//util.saveLevel("Assets/Storage/Game/Maps/test-4.dat");
 	}
 	
 	public void draw() {
 		background(29,33,45);
-		//background(24,28,41);
 		
 		
 		applet.noStroke();
 		applet.fill(29,33,45);
 		applet.rect(applet.worldPosition.x-applet.originX,applet.worldPosition.y-applet.originY,applet.worldWidth, applet.worldHeight);
 		
-		//Editor Option View Grid
-		//applet.image(editorGrid,0,0);
 		
 		displayGrid();
 		
@@ -481,8 +466,6 @@ public class SceneMapEditor extends PScene {
 		int y = 0;
 		int l = applet.width/(16*4) * applet.height/(16*4);
 		for(int i=0; i<l; i++) {
-		//for(int x=0; x<applet.width/(16*4); x++) {
-			//for(int y=0; y<applet.height/(16*4); y++) {
 		
 			x++;
 		if(i % applet.height/(16*4) == 0) {
@@ -491,23 +474,17 @@ public class SceneMapEditor extends PScene {
 		}
 				applet.line(x*(4*16)-(applet.originX%(16*4))-((4*16)/2), 0, x*(4*16)-(applet.originX%(16*4))-((4*16)/2), applet.height);
 				applet.line(0, y*(4*16)-(applet.originY%(16*4))-((4*16)/2), applet.width, y*(4*16)-(applet.originY%(16*4))-((4*16)/2));
-				//applet.line(x*(4*16)-applet.originX, 0-applet.originY, x*(4*16)-applet.originX, applet.height-applet.originY);
-				//applet.line(0-applet.originX, y*(4*16)-applet.originY, applet.width-applet.originX, y*(4*16)-applet.originY);
-			//}
 		}
 	}
 	
 	public float getInventorySize() {
-		//int x = 0;
 		int y = 1;
 		
 		for(int i=0; i<applet.gameGraphics.graphics.size(); i++) {
 			if(i % 6 == 0) {
-				//x=0;
 				y++;
 			}
 			else {
-				//x++;
 			}
 		}
 		return 20*4+10+y*(20*4+10);
@@ -515,14 +492,12 @@ public class SceneMapEditor extends PScene {
 	
 	public void mouseWheel(MouseEvent event) {
 		if(event.isShiftDown()) { 
-			//applet.originTargetX += event.getCount();
 		}
 		else {
 			if(tool == "INVENTORY") {
 				scroll_inventory -= event.getCount() * 10;
 				scroll_inventory = (int)util.clamp(scroll_inventory, -getInventorySize()+applet.height-8,0);
 			}
-			//applet.originTargetY += event.getCount();
 		}
 	}
 }

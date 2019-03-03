@@ -137,9 +137,6 @@ public class WorldViewportEditor extends PClass {
 			applet.worldPosition.y = PApplet.round( (y)/64)*64+pixelOffsetY;
 		}
 		
-		//PApplet.println("-----------------------");
-		//PApplet.println((PApplet.round( (w)/64)*64)/64, (PApplet.round( (h)/64)*64)/64);
-		//PApplet.println(applet.worldPosition.x, applet.worldPosition.y, applet.worldWidth, applet.worldHeight);
 	}
 	
 	public void displayEditor() {

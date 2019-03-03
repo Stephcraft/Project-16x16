@@ -17,10 +17,8 @@ public class Local {
 			pg.strokeWeight(1);
 			pg.stroke(255);
 			
-			for(int x=0; x<w/2; x++) { //(16*4)
+			for(int x=0; x<w/2; x++) { 
 				for(int y=0; y<h/2; y++) {
-					//applet.line(x*(4*16), 0, x*(4*16), h);
-					//applet.line(0, y*(4*16), w, y*(4*16));
 				}
 			}
 		pg.endDraw();

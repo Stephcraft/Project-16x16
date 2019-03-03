@@ -101,7 +101,6 @@ public class MagicProjectile extends ProjectileObject {
 					//Override Animation
 					image = animation.animate(applet.frameCount, applet.deltaTime);
 					
-					//applet.projectileObjects.remove(this);
 				}
 			}
 		}

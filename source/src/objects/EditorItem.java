@@ -63,18 +63,7 @@ public class EditorItem extends PClass {
 						case "OBJECT":
 							GameObject obj = applet.gameGraphics.getObjectClass(id);
 							
-							//Class cl;
-							//Constructor con;
-							
-							/*
-							try {
-								cl = Class.forName(id);
-								con = cl.getConstructor(PApplet.class);
-								
-								obj = (GameObject) con.newInstance(applet);
-							} catch(Exception e) {}
-							*/
-							
+						
 							applet.gameObjects.add( obj );
 							applet.gameObjects.get(applet.gameObjects.size()-1).focus();
 							applet.gameObjects.get(applet.gameObjects.size()-1).pos.x = x;

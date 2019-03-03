@@ -101,7 +101,6 @@ public class EditableObject extends PClass {
 	
 	public void updateEdit() {
 		if(child) return;
-		//pos = new PVector(round(x/4)*4,round(y/4)*4);
 		
 		//Focus Event
 		if(applet.mousePressEvent) {
@@ -119,7 +118,6 @@ public class EditableObject extends PClass {
 					focusX = false;
 					focusY = false;
 					focusM = false;
-					//applet.sceneMapEditor.focusedOnObject = false;
 				}
 			}
 		}
@@ -160,8 +158,6 @@ public class EditableObject extends PClass {
 			//Duplicate Object Shift
 			if(applet.mousePressed) {
 				if(applet.keyPressEvent && applet.keyPress(16)) {
-					//if(focusX) {
-						
 						
 						//Duplicate Instance
 						switch(type) {
@@ -199,26 +195,7 @@ public class EditableObject extends PClass {
 						focus = false;
 						focusX = false;
 						focusY = false;
-					//}
-					/*
-					if(focusY) {
-						focus = false;
-						focusX = false;
-						focusY = false;
-						
-						switch(type) {
-						case "COLLISION":
-							applet.collisions.add( new Collision(applet, id, 0 , 0) );
-							applet.collisions.get(applet.collisions.size()-1).focus = true;
-							applet.collisions.get(applet.collisions.size()-1).focusX = false;
-							applet.collisions.get(applet.collisions.size()-1).focusY = true;
-							applet.collisions.get(applet.collisions.size()-1).pos.x = pos.x;
-							applet.collisions.get(applet.collisions.size()-1).pos.y = pos.y;
-							applet.keyPressEvent = false;
-							break;
-						}
-					}
-					*/
+					
 				}
 			}
 			
