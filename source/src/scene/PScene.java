@@ -8,9 +8,6 @@ public class PScene extends PClass {
 	
 	public static String name;
 	
-	//Global SceneMapEditor Variables and Components
-	//public boolean focusedOnObject;
-	
 	public PScene(SideScroller a) {
 		super(a);
 		
