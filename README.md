@@ -21,3 +21,5 @@ Wow!! This project seems **EPIC!** Right? And its made in processing, like *whhh
 Art by 0x72, more [here](https://0x72.itch.io/16x16-industrial-tileset)
 
 ![image](https://img.itch.zone/aW1hZ2UvMTYyMzY0Lzc3MzkzMy5naWY=/794x1000/K7WB6P.gif) 
+
+[![Open Source Helpers](https://www.codetriage.com/stephcraft/project-16x16/badges/users.svg)](https://www.codetriage.com/stephcraft/project-16x16)
