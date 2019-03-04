@@ -1,11 +1,13 @@
 package sidescroller;
 
+import processing.awt.PGraphicsJava2D;
 import processing.core.*; 
 import processing.event.MouseEvent;
 import projectiles.ProjectileObject;
 
 import java.util.ArrayList;
 
+import scene.Camera;
 import scene.PScene;
 import scene.SceneMapEditor;
 
@@ -85,11 +87,15 @@ public class SideScroller extends PApplet {
 	public boolean mousePressEvent;
 	public boolean mouseReleaseEvent;
 	
+	//Camera Variables
+	Camera cam;
+	
 	/**
 	 * controls how processing handles the window
 	 */
 	public void settings() {
-		size((int)(1280*1.0),(int)(720*1.0)); // *1.5 //Changed to 16:9
+		size((int)(1280*1.0),(int)(720*1.0),JAVA2D); // *1.5 //Changed to 16:9
+		
 		noSmooth();
 	}
 	
@@ -100,6 +106,12 @@ public class SideScroller extends PApplet {
 		
 		//Start Graphics
 		background(0);
+		
+		//Setup Camera
+		cam = new Camera(-400,-400,0,0,1,1,this);
+		cam.CameraInit();
+		cam.useCamera();
+		
 		
 		//Setup modes
 		imageMode(CENTER);
@@ -171,6 +183,7 @@ public class SideScroller extends PApplet {
 		player.load(graphicsSheet);
 		player.pos.x = 0;
 		player.pos.y = -100;
+//		cam.Follow(player);
 		
 		//Set Floor
 		floor = 400;
@@ -187,6 +200,16 @@ public class SideScroller extends PApplet {
 	 */
 	public void draw() {
 		if(!LOADED) { return; }
+		
+		//Camera
+		cam.useCamera();
+//		cam.Move(.5f, 0);
+		
+		if(keyPress(80))
+		{
+			cam.zoom(-.005f);
+		}
+		
 		
 		if(keyPressEvent && keyPress(81)) { frameRate(60); }
 		if(keyPressEvent && keyPress(84)) { frameRate(2); }
@@ -211,6 +234,8 @@ public class SideScroller extends PApplet {
 		//Update World Origin
 		originX = (int)util.smoothMove(originX, originTargetX, (float) 0.1);
 		originY = (int)util.smoothMove(originY, originTargetY, (float) 0.1);
+		
+		
 		
 		//Reset Events
 		keyPressEvent = false;
