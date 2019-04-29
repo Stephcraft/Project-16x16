@@ -1,17 +1,10 @@
-Spoiler Warning
+### Spoiler Warning
 
 This document contains spoilers for the story of Project 16x16. Continue reading at your own risk.
 
+# Project 16x16 (Sardonyx) Story
 
-
-
-
-
-
-
-Project 16x16 (Sardonyx) Story
-
-Abstract
+## Abstract
 
 The game will follow the main protagonist and player character in a battle to save his family from mysterious forces.
 
@@ -21,19 +14,19 @@ The game will be mostly linear, but with an open world component. The player can
 
 The player character will remain silent for the entire game.
 
-Player Character Design
+## Player Character Design
 
 The player character will be designed to take one tile in width and one tile in height. This is important to know when designing the environment. When crouching, the player character will take one tile in width and half a tile in height. This allows for crouching to access tight spaces.
 
-Boss Design
+## Boss Design
 
 The bosses will be designed to resemble the seasons Spring, Summer, Fall and Winter. The player will obtain new skills after defeating each boss.
 
-Map Design
+## Map Design
 
 The map will be divided into five sections. These are the central area and the four surrounding elemental areas.
 
-Gameplay
+## Gameplay
 
 The gameplay will be primarily combat with puzzles. The player character is equipped with a sharp blade, which is the primary weapon. The secondary weapon is an energy projectile, which can be charged and fired. All combo attacks will come from these two base attacks.
 
@@ -47,11 +40,11 @@ The energy meter depletes as energy is used. Energy is consumed by anything cons
 
 The temperature meter indicates the player character's temperature. It will start at neutral, in the center. the far left indicates extreme cold, and the far right indicates extreme heat. The temperature will affect aspects of the combat, and extreme temperature will affect health. The temperature meter will remain fixed at neutral for the beginning of the game.
 
-Special Items
+## Special Items
 
 There will be special items that can be equipped to complete actions in the game. These will take the place of the blade.
 
-Controls
+## Controls
 
 Press E to interact
 
@@ -97,7 +90,7 @@ Press Q while a special item is equipped to quickly switch to the blade
 
 While the blade is equipped, press Q to quickly switch to the most recently equipped special item
 
-Main Story
+## Main Story
 
 In the distant future, the world has been heavily industrialized. Diamonds were a pursuit of mankind since immemorial times. In this pursuit, the New Industrial Revolution brought technology to create diamonds out of raw carbon. There was no longer a measurable distinction between natural diamonds and synthetic ones. This brought about a new industry, the 4C Industry. People would spend everything they had, including their life savings, and take out a loan on top of that to get their own diamond manufacturing machine, or a 4C machine, sold by a corporation named Paragon. Paragon specialized in advanced technology, and experimented with manipulation of energy. The 4C Industry, however, was the most financially stable investment for them. At first, this was a very profitable industry, but it did not last long.
 
@@ -113,7 +106,7 @@ From the ashes of the Industry, a hero rises to reclaim what is rightfully his.
 
 The game begins here.
 
-Introduction
+### Introduction
 
 All tutorial icons in this section are displayed after a delay if the player does not perform the action. This is used only as a hint.
 
@@ -187,7 +180,7 @@ The lighting changes. Emerging from the hatch causes the screen to go white, and
 
 (Cutscene end)
 
-Section 1
+### Section 1
 
 Ignis
 
@@ -503,7 +496,7 @@ Upon returning to the entrance of the Summer area, the Chief is waiting outside.
 
 (End dialogue)
 
-Section 2
+### Section 2
 
 Ventus
 
@@ -723,7 +716,7 @@ After leaving the Fall area, the old man appears. This gives dialogue.
 
 (End dialogue)
 
-Section 3
+### Section 3
 
 Glacies
 
@@ -789,7 +782,7 @@ The ice on the exit melts.
 
 The sapphire allows the player character to see through the blizzards, making the path on the ground to the entrance of the Winter area passable. The lower altitude also increases the temperature, allowing the player character to survive without the amber. The player character leaves the Winter area.
 
-Section 4
+### Section 4
 
 Natura
 
