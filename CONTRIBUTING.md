@@ -4,8 +4,8 @@
 1. Download git [here](https://git-scm.com/downloads)
 2. Fork this repository. Press on the Fork button at the top right corner. This will clone it to your GitHub account.
 3. Open CMD/command prompt if on Windows or Terminal if on mac
-4. Now, let's clone your fork. In command prompt, type ```cd <directory/to/where/you/want/your/project>``` for example: ```cd Desktop/Programming/Java```
-5. Execute ```git clone https://github.com/<your-github-username>/Project-16x16/``` example url: ```https://github.com/Noodleman123/Project-16x16/```
+4. Now, let's clone your fork. In command prompt, type ```cd directory/to/where/you/want/your/project``` for example: ```cd Desktop/Programming/Java```
+5. Execute ```git clone https://github.com/your-github-username/Project-16x16/``` example url: ```https://github.com/Noodleman123/Project-16x16/```
 6. Execute ```cd Project-16x16``` to go in the project directory
 7. Execute ```git checkout development``` to have the right files, the ones that are being developed.
 
