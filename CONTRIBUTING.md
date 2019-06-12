@@ -27,3 +27,6 @@ A pull request is the final step to contribute something. A request should be ma
 1. Go to the project 16x16 GitHub repository and click on Pull requests
 2. Click on the big green Pull request button
 3. Be sure to choose the right repository and the correct branch which is `development`
+
+## Tasks
+Now you are ready to contribute! Tasks are represented as issues in GitHub. You can find them in the **Issues** tab of the repository or by using [this](https://github.com/Stephcraft/Project-16x16/issues) link. You can also add issues if you find some or if you want to contribute to one that is not listed.
