@@ -1,11 +1,13 @@
 package sidescroller;
 
+import processing.awt.PGraphicsJava2D;
 import processing.core.*; 
 import processing.event.MouseEvent;
 import projectiles.ProjectileObject;
 
 import java.util.ArrayList;
 
+import scene.Camera;
 import scene.PScene;
 import scene.SceneMapEditor;
 
@@ -18,6 +20,13 @@ import objects.Collision;
 import objects.GameObject;
 import dm.core.*;
 
+/**
+ * <h1>SideScroller Class
+ * <p>
+ * The SideScroller class is the main class. It extends the processing applet,
+ * and is the heart of the game.
+ * </p> 
+ */
 public class SideScroller extends PApplet {
 	
 	public boolean LOADED;
@@ -56,11 +65,9 @@ public class SideScroller extends PApplet {
 	//Frame Rate
 	public float deltaTime;
 	
-	//public String scene;
 	
 	//Scenes
 	public PScene scene;
-	//public SceneMapEditor sceneMapEditor;
 	
 	Util util = new Util(this);
 	
@@ -72,7 +79,6 @@ public class SideScroller extends PApplet {
 	public ArrayList<BackgroundObject> backgroundObjects;
 	public ArrayList<GameObject> gameObjects;
 	public ArrayList<ProjectileObject> projectileObjects;
-	//public ArrayList<EntitiesObject> entitiesObjects;
 	
 	//Events
 	ArrayList<Integer> keys;
@@ -81,22 +87,31 @@ public class SideScroller extends PApplet {
 	public boolean mousePressEvent;
 	public boolean mouseReleaseEvent;
 	
+	//Camera Variables
+	Camera cam;
+	
+	/**
+	 * controls how processing handles the window
+	 */
 	public void settings() {
-		//fullScreen();
-		size((int)(1280*1.0),(int)(720*1.0)); // *1.5 //Changed to 16:9
+		size((int)(1280*1.0),(int)(720*1.0),JAVA2D); // *1.5 //Changed to 16:9
+		
 		noSmooth();
 	}
 	
+	/**
+	 * setup is called once at the beginning of the game. Most variables will be initialized here. 
+	 */
 	public void setup() {
 		
 		//Start Graphics
 		background(0);
-		/*
-		fill(255);
-		textAlign(CENTER,CENTER);
-		textSize(50);
-		text("Loading...", width/2, height/2);
-		*/
+		
+		//Setup Camera
+		cam = new Camera(-400,-400,0,0,1,1,this);
+		cam.CameraInit();
+		cam.useCamera();
+		
 		
 		//Setup modes
 		imageMode(CENTER);
@@ -136,18 +151,16 @@ public class SideScroller extends PApplet {
 		worldPosition = new PVector(0,0);
 		
 		//Create scene
-		//sceneMapEditor = new SceneMapEditor(this);
 		scene = new SceneMapEditor(this);
 		
 		//Main Load
 		thread("load");
 	}
 	
+	/**
+	 * This is where any needed assets will be loaded.
+	 */
 	public void load() {
-		
-		//TEST
-		//press = new Press(this);
-		//press.setPosition(width/2, height/2);
 		
 		//Load Font
 		font_pixel = loadFont("Assets/Font/font-pixel-48.vlw");
@@ -170,6 +183,7 @@ public class SideScroller extends PApplet {
 		player.load(graphicsSheet);
 		player.pos.x = 0;
 		player.pos.y = -100;
+//		cam.Follow(player);
 		
 		//Set Floor
 		floor = 400;
@@ -180,28 +194,25 @@ public class SideScroller extends PApplet {
 	public float fc = 0;
 	public float fc2 = 0;
 	
+	/**
+	 * draw is called once per frame and is the game loop. Any update or displaying
+	 * functions should be called here.
+	 */
 	public void draw() {
 		if(!LOADED) { return; }
 		
-//		if(keyPressEvent && keyPress(82)) { frameRate(120); }
+		//Camera
+		cam.useCamera();
+//		cam.Move(.5f, 0);
+		
+		if(keyPress(80))
+		{
+			cam.zoom(-.005f);
+		}
+		
+		
 		if(keyPressEvent && keyPress(81)) { frameRate(60); }
-//		if(keyPressEvent && keyPress(87)) { frameRate(30); }
 		if(keyPressEvent && keyPress(84)) { frameRate(2); }
-		
-		//if(!(PApplet.parseInt(fc + DM.deltaTime) > PApplet.parseInt(fc))) {
-			//PApplet.println((fc + DM.deltaTime) - (fc)); //PApplet.parseInt
-			//PApplet.println( "dt : " + DM.deltaTime );
-		//}
-		
-		//PApplet.println( "dt : " + DM.deltaTime );
-		//PApplet.println( "dtr : " + DM.deltaTimeRaw * 30 );
-		
-		//fc += DM.deltaTime;
-		
-		//PApplet.println( "-----------------------" );
-		//PApplet.println("test 1 : " + (PApplet.parseInt(fc) > PApplet.parseInt(fc - DM.deltaTime)));
-		//PApplet.println( "Real FrameCount : " + fc );
-		//PApplet.println( "Nomral FrameCount : " + frameCount );
 		
 		//Update DeltaTime
 		if(frameRate < options.targetFrameRate-20 && frameRate > options.targetFrameRate+20) {
@@ -214,38 +225,7 @@ public class SideScroller extends PApplet {
 		//Handle Draw Scene Method
 		scene.draw();
 		
-		//PApplet.println( DM.deltaTime );
 		
-		// TODO remove this
-		//Post FX
-		//noStroke();
-		//fill(24,28,41, 200);
-		//rect(width/2,height/2,width,height);
-		
-		//fill(255);
-		//text("Java Game 16x16", mouseX,mouseY);
-		
-		
-		/*
-		background(24,28,41);
-		
-		for(int i=0; i<backgroundObjects.size(); i++) {
-			backgroundObjects.get(i).display();
-		}
-		for(int i=0; i<collisions.size(); i++) {
-			collisions.get(i).update();
-			collisions.get(i).display();
-		}
-		
-		player.display();
-		player.update();
-		
-		//GUI
-		player.displayLife();
-		*/
-		//noFill();
-		//stroke(25);
-		//rect(width/2,height/2, screenX,screenY);
 		
 		
 		surface.setTitle("Sardonyx Prealpha - Frame Rate " + (int)frameRate);
@@ -255,6 +235,8 @@ public class SideScroller extends PApplet {
 		originX = (int)util.smoothMove(originX, originTargetX, (float) 0.1);
 		originY = (int)util.smoothMove(originY, originTargetY, (float) 0.1);
 		
+		
+		
 		//Reset Events
 		keyPressEvent = false;
 		keyReleaseEvent = false;
@@ -262,6 +244,10 @@ public class SideScroller extends PApplet {
 		mouseReleaseEvent = false;
 	}
 	
+	/**
+	 * keyPressed decides if the key that has been pressed is a valid key.
+	 * if it is, it is then added to the keys ArrayList, and the keyPressedEvent flag is set.
+	 */
 	public void keyPressed() {
 		for(int i=0; i<keys.size(); i++) {
 			if(keys.get(i) == keyCode) {
@@ -273,6 +259,10 @@ public class SideScroller extends PApplet {
 		keyPressEvent = true;
 	}
 	
+	/**
+	 * keyReleased decides if the key pressed is valid and if it is then removes it from the 
+	 * keys ArrayList and keyReleaseEvent flag is set.
+	 */
 	public void keyReleased() {
 		for(int i=0; i<keys.size(); i++) {
 			if(keys.get(i) == keyCode) {
@@ -283,32 +273,53 @@ public class SideScroller extends PApplet {
 		keyReleaseEvent = true;
 	}
 	
+	/**
+	 * sets the mousePressEvent flag.
+	 */
 	public void mousePressed() {
 		mousePressEvent = true;
 	}
 	
+	/**
+	 * sets the mouseReleaseEvent flag
+	 */
 	public void mouseReleased() {
 		mouseReleaseEvent = true;
 	}
 	
+	/**
+	 * Handles scrolling events.
+	 */
 	public void mouseWheel(MouseEvent event) {
 		
-		//Run mouseWheel Event
 		scene.mouseWheel(event);
 	}
 	
+	/**
+	 * checks if the key pressed was valid, then returns true or false if
+	 * the key was accepted. This method is called when determining if a 
+	 * key has been pressed.
+	 * 
+	 * @param k (int) the key that we are determining is valid and has been pressed. 
+	 * @return boolean key has or has not been pressed.
+	 */
 	public boolean keyPress(int k) {
-		boolean condition = false;
+		boolean condition = false; //no it is not.
+		
+		//is the key k valid?
 		for(int i=0; i<keys.size(); i++) {
 			if(keys.get(i) == k) {
-				condition = true;
+				condition = true; //yes it is end the loop
 				break;
 			}
 		}
-		return condition;
+		return condition;//return decision (key has or has not been pressed)
 	}
 	
-	//Change Scene
+	/**
+	 * Sets the scene to be used.
+	 * @param s the scene id.
+	 */
 	public void setScene(String s) {
 		PScene.name = s;
 		

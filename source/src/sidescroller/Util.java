@@ -1,6 +1,5 @@
 package sidescroller;
 
-//import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -51,10 +50,8 @@ public class Util {
 	}
 	
 	public PGraphics warp(PGraphics source, float waveAmplitude, float numWaves) {
-	 // = 20, // pixels
-	       //numWaves = 5;       // how many full wave cycles to run down the image
 	 int w = source.width, h = source.height;
-	 PImage destination = applet.createImage(w,h, PApplet.ARGB);//new PImage(w,h);
+	 PImage destination = applet.createImage(w,h, PApplet.ARGB);
 	 source.loadPixels();
 	 destination.loadPixels();
 

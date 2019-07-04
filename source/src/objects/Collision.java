@@ -14,8 +14,6 @@ public class Collision extends EditableObject {
 	
 	public String flag;
 	
-	//int editOffsetX;
-	//int editOffsetY;
 	
 	public float pixelOffsetX = 0;
 	public float pixelOffsetY = 0;
@@ -79,18 +77,4 @@ public class Collision extends EditableObject {
 		width = image.width;
 		height = image.height;
 	}
-	
-	/*
-	public boolean collides(Player player) {
-		return (player.pos.x+player.width/2 > pos.x-width/2 && player.pos.x-player.width/2 < pos.x+width/2) &&
-			   (player.pos.y+player.height/2 > pos.y-height/2 && player.pos.y-player.height/2 < pos.y+height/2);
-	}
-	*/
-	
-	//	TODO remove it ?
-	/*
-	private static Collision duplicate(final Collision c) {
-        return new Collision(c.applet, c.type, (int)c.pos.x, (int)c.pos.y);
-    }
-	*/
 }
