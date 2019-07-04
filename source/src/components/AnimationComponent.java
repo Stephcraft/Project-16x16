@@ -6,6 +6,9 @@ import dm.core.DM;
 import processing.core.PApplet;
 import processing.core.PGraphics;
 
+/**
+ * The Animation Class
+ */
 public class AnimationComponent {
 	public ArrayList<PGraphics> frames;
 	
@@ -32,6 +35,12 @@ public class AnimationComponent {
 	
 	public PGraphics image;
 	
+	/**
+	 * This method controls the animation of elements
+	 * @param  frameCount The number of frames in the animation
+	 * @param  dt         The width of the frames
+	 * @return            PGraphics image
+	 */
 	public PGraphics animate(int frameCount, float dt) {
 		try {
 			image = frames.get((int)frame);
@@ -56,10 +65,18 @@ public class AnimationComponent {
 		return image;
 	}
 	
+	/**
+	 * Extends the length of the animation
+	 * @param newLength The new length for the animation
+	 */
 	public void extendAnimation(int newLength) {
 		length=newLength;
 	}
 	
+	/**
+	 * Retrieves the number of remaining frames
+	 * @return The number of remaining frames as an int
+	 */
 	public int remainingFrames() {
 		return (int)(length-frame);
 	}
