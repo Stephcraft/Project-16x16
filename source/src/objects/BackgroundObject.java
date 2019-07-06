@@ -4,13 +4,9 @@ import processing.core.PImage;
 import processing.core.PVector;
 import sidescroller.SideScroller;
 
+
 public class BackgroundObject extends EditableObject {
 	
-	//public PVector pos;
-	//public int width;
-	//public int height;
-	
-	//public String id;
 	
 	public PImage image;
 

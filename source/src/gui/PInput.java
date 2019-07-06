@@ -4,6 +4,10 @@ import processing.core.PApplet;
 import sidescroller.PClass;
 import sidescroller.SideScroller;
 
+/**
+ * The PInput Class extends PClass
+ * An input field 
+ */
 public class PInput extends PClass {
 	private int width;
 	private int height;
@@ -14,6 +18,10 @@ public class PInput extends PClass {
 	
 	private boolean focus;
 	
+	/**
+	 * Constructor for PInput
+	 * @param  a This a reference to the game //TODO: having variable names that are just letters can be confusing to new contributors
+	 */
 	public PInput(SideScroller a) {
 		super(a);
 		
@@ -25,6 +33,9 @@ public class PInput extends PClass {
 		text = "";
 	}
 	
+	/**
+	 * Display for the PInput
+	 */
 	public void display() {
 		
 		//Display Focus Box
@@ -53,6 +64,9 @@ public class PInput extends PClass {
 		}
 	}
 	
+	/**
+	 * Updates the window based on different player input
+	 */
 	public void update() {
 		
 		//Focus Event
@@ -87,19 +101,39 @@ public class PInput extends PClass {
 		}
 	}
 	
+	/**
+	 * Determin if mouse is hovering over window
+	 * @return response as boolean
+	 */
 	public boolean hover() {
 		return(applet.mouseX > x-width/2 && applet.mouseX < x+width/2 && applet.mouseY > y-height/2 && applet.mouseY < y+height/2);
 	}
 	
+	/**
+	 * Changes the object variable text to txt
+	 * @param txt what to update text to as String
+	 */
 	public void setText(String txt) {
 		text = txt;
 	}
 	
+	/**
+	 * Changes the position of the window
+	 * @param _x the new x component
+	 * @param _y the new y component
+	 */
 	public void setPosition(int _x, int _y) {
 		x = _x;
 		y = _y;
 	}
 	
+	/**
+	 * changes size and position
+	 * @param _x new x component
+	 * @param _y new y component
+	 * @param w  new width
+	 * @param h  new height
+	 */
 	public void set(int _x, int _y, int w, int h) {
 		x = _x;
 		y = _y;
@@ -107,10 +141,18 @@ public class PInput extends PClass {
 		height = h;
 	}
 	
+	/**
+	 * Changes the width 
+	 * @param w new width
+	 */
 	public void setWidth(int w) {
 		width = w;
 	}
 	
+	/**
+	 * gets the object variable text
+	 * @return text as String
+	 */
 	public String getText() {
 		return text;
 	}
