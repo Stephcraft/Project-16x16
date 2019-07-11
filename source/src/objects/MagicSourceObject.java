@@ -4,6 +4,9 @@ import projectiles.MagicProjectile;
 import projectiles.Swing;
 import sidescroller.SideScroller;
 
+/**
+ * Extends {@link GameObject}.
+ */
 public class MagicSourceObject extends GameObject {
 
 	public MagicSourceObject(SideScroller a) {

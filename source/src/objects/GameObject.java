@@ -6,6 +6,9 @@ import components.AnimationComponent;
 import processing.core.PGraphics;
 import sidescroller.SideScroller;
 
+/**
+ * Extends {@link EditableObject}.
+ */
 public class GameObject extends EditableObject {
 
 	// Animation Component

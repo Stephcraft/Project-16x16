@@ -6,6 +6,9 @@ import projectiles.ProjectileObject;
 import projectiles.Swing;
 import sidescroller.SideScroller;
 
+/**
+ * Extends {@link GameObject}.
+ */
 public class MirrorBoxObject extends GameObject {
 
 	public int direction;

@@ -1,6 +1,10 @@
 package sidescroller;
 
-import processing.core.*;
+import processing.core.PApplet;
+import processing.core.PConstants;
+import processing.core.PGraphics;
+import processing.core.PImage;
+
 import sidescroller.Util;
 
 /**
@@ -17,20 +21,20 @@ public class PClass {
 	public SideScroller applet;
 	public Util util;
 
-	public int CENTER;
-	public int CORNER;
+	public static final int CENTER = PConstants.CENTER;
+	public static final int CORNER = PConstants.CORNER;
 
 	// Gives the keys identifiers.
-	public final int UP = PApplet.UP;
-	public final int DOWN = PApplet.DOWN;
-	public final int LEFT = PApplet.LEFT;
-	public final int RIGHT = PApplet.RIGHT;
-	public final int SHIFT = PApplet.SHIFT;
-	public final int TOP;
-	public final int KEY_W = 87;
-	public final int KEY_A = 65;
-	public final int KEY_S = 83;
-	public final int KEY_D = 68;
+	public static final int UP = PConstants.UP;
+	public static final int DOWN = PConstants.DOWN;
+	public static final int LEFT = PConstants.LEFT;
+	public static final int RIGHT = PConstants.RIGHT;
+	public static final int SHIFT = PConstants.SHIFT;
+	public static final int TOP = PConstants.TOP;
+	public static final int KEY_W = 87;
+	public static final int KEY_A = 65;
+	public static final int KEY_S = 83;
+	public static final int KEY_D = 68;
 
 	/**
 	 * Constructor
@@ -39,11 +43,6 @@ public class PClass {
 	public PClass(SideScroller a) {
 		applet = a;
 		util = new Util(a);
-
-		CENTER = PConstants.CENTER;
-		CORNER = PConstants.CORNER;
-
-		TOP = PConstants.TOP;
 	}
 
 	/**
