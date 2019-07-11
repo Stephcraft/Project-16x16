@@ -1,10 +1,12 @@
 package sidescroller;
 
 import processing.core.*;
+import processing.event.KeyEvent;
 import processing.event.MouseEvent;
 import projectiles.ProjectileObject;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 
 import scene.Camera;
 import scene.PScene;
@@ -79,7 +81,7 @@ public class SideScroller extends PApplet {
 	public ArrayList<ProjectileObject> projectileObjects;
 
 	// Events
-	ArrayList<Integer> keys;
+	private HashSet<Integer> keys;
 	public boolean keyPressEvent;
 	public boolean keyReleaseEvent;
 	public boolean mousePressEvent;
@@ -129,7 +131,7 @@ public class SideScroller extends PApplet {
 		deltaTime = 1;
 
 		// Create ArrayList
-		keys = new ArrayList<Integer>();
+		keys = new HashSet<Integer>();
 		collisions = new ArrayList<Collision>();
 		backgroundObjects = new ArrayList<BackgroundObject>();
 		gameObjects = new ArrayList<GameObject>();
@@ -247,14 +249,8 @@ public class SideScroller extends PApplet {
 	 * if it is, it is then added to the keys ArrayList, and the keyPressedEvent flag is set.
 	 */
 	@Override
-	public void keyPressed() {
-		for (int i = 0; i < keys.size(); i++) {
-			if (keys.get(i) == keyCode) {
-				return;
-			}
-		}
-		keys.add(keyCode);
-
+	public void keyPressed(KeyEvent event) {
+		keys.add(event.getKeyCode());
 		keyPressEvent = true;
 	}
 
@@ -263,13 +259,8 @@ public class SideScroller extends PApplet {
 	 * keys ArrayList and keyReleaseEvent flag is set.
 	 */
 	@Override
-	public void keyReleased() {
-		for (int i = 0; i < keys.size(); i++) {
-			if (keys.get(i) == keyCode) {
-				keys.remove(i);
-				break;
-			}
-		}
+	public void keyReleased(KeyEvent event) {
+		keys.remove(event.getKeyCode());
 		keyReleaseEvent = true;
 	}
 
@@ -307,16 +298,7 @@ public class SideScroller extends PApplet {
 	 * @return boolean key has or has not been pressed.
 	 */
 	public boolean keyPress(int k) {
-		boolean condition = false; // no it is not.
-
-		// is the key k valid?
-		for (int i = 0; i < keys.size(); i++) {
-			if (keys.get(i) == k) {
-				condition = true; // yes it is end the loop
-				break;
-			}
-		}
-		return condition;// return decision (key has or has not been pressed)
+		return keys.contains(k);
 	}
 
 	/**
