@@ -1,6 +1,10 @@
 package sidescroller;
 
-import processing.core.*;
+import processing.core.PApplet;
+import processing.core.PConstants;
+import processing.core.PGraphics;
+import processing.core.PImage;
+
 import sidescroller.Util;
 
 /**
@@ -16,22 +20,22 @@ import sidescroller.Util;
 public class PClass {
 	public SideScroller applet;
 	public Util util;
-	
-	public int CENTER;
-	public int CORNER;
-	
-	//Gives the keys identifiers.
-	public final int UP = PApplet.UP;
-	public final int DOWN = PApplet.DOWN;
-	public final int LEFT = PApplet.LEFT;
-	public final int RIGHT = PApplet.RIGHT;
-	public final int SHIFT = PApplet.SHIFT;
-	public final int TOP;
-	public final int KEY_W = 87;
-	public final int KEY_A = 65;
-	public final int KEY_S = 83;
-	public final int KEY_D = 68;
-	
+
+	public static final int CENTER = PConstants.CENTER;
+	public static final int CORNER = PConstants.CORNER;
+
+	// Gives the keys identifiers.
+	public static final int UP = PConstants.UP;
+	public static final int DOWN = PConstants.DOWN;
+	public static final int LEFT = PConstants.LEFT;
+	public static final int RIGHT = PConstants.RIGHT;
+	public static final int SHIFT = PConstants.SHIFT;
+	public static final int TOP = PConstants.TOP;
+	public static final int KEY_W = 87;
+	public static final int KEY_A = 65;
+	public static final int KEY_S = 83;
+	public static final int KEY_D = 68;
+
 	/**
 	 * Constructor
 	 * @param a The SideScroller game controller.
@@ -39,14 +43,8 @@ public class PClass {
 	public PClass(SideScroller a) {
 		applet = a;
 		util = new Util(a);
-		
-		CENTER = PApplet.CENTER;
-		CORNER = PApplet.CORNER;
-		
-		
-		TOP = PApplet.TOP;
 	}
-	
+
 	/**
 	 * prints a line to the applet. most likely for debugging purposes.
 	 * @param msg The line to be written.
@@ -54,7 +52,7 @@ public class PClass {
 	public void println(String msg) {
 		PApplet.println(msg);
 	}
-	
+
 	/**
 	 * Controlls the background color of the applet.
 	 * @param r red
@@ -62,9 +60,9 @@ public class PClass {
 	 * @param b blue
 	 */
 	public void background(int r, int g, int b) {
-		applet.background(r,g,b);
+		applet.background(r, g, b);
 	}
-	
+
 	/**
 	 * Controls the background grey scale of the applet
 	 * @param g grey scale
@@ -72,7 +70,7 @@ public class PClass {
 	public void background(int g) {
 		applet.background(g);
 	}
-	
+
 	/**
 	 * Sets the background image of the applet.
 	 * @param img The image to use as PGraphics
@@ -82,7 +80,7 @@ public class PClass {
 	public void image(PGraphics img, float x, float y) {
 		applet.image(img, x, y);
 	}
-	
+
 	/**
 	 * loads an image from source to use.
 	 * @param src the source path for the image
@@ -91,7 +89,7 @@ public class PClass {
 	public PImage loadImage(String src) {
 		return applet.loadImage(src);
 	}
-	
+
 	/**
 	 * rounds a number
 	 * @param n the number to round
