@@ -20,7 +20,5 @@
 	<classpathentry kind="lib" path="libraries/processing/jogl-all-natives-windows-amd64.jar"/>
 	<classpathentry kind="lib" path="libraries/processing/jogl-all-natives-windows-i586.jar"/>
 	<classpathentry kind="lib" path="libraries/processing/jogl-all.jar"/>
-	<classpathentry kind="lib" path="C:/GitProjects/project16x16/source/libraries/dm/DM.jar"/>
-	<classpathentry kind="lib" path="C:/GitProjects/project16x16/source/libraries/processing/core.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
