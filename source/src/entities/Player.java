@@ -8,10 +8,8 @@ import sidescroller.SideScroller;
 import java.util.ArrayList;
 
 import components.AnimationComponent;
-import dm.core.DM;
 import objects.Collision;
 import objects.EditableObject;
-
 
 /**
  * <h1>Player Class</h1>
@@ -69,8 +67,7 @@ public class Player extends EditableObject {
 	public ArrayList<PGraphics> anim_walk;
 	public ArrayList<PGraphics> anim_attack;
 	public ArrayList<PGraphics> anim_shoot;
-	
-	
+
 	/**
 	 * Constructor
 	 * @param a SideScroller game controller.
@@ -106,7 +103,7 @@ public class Player extends EditableObject {
 
 		flying = true;
 	}
-	
+
 	/**
 	 * load any needed assets.
 	 * @param sheet sprite sheet as PImage.
@@ -135,12 +132,11 @@ public class Player extends EditableObject {
 		anim_squish.add(util.pg(sheet.get(14 * 6 + 12, 258, 15, 14), 4));
 		anim_squish.add(util.pg(sheet.get(14 * 7 + 14, 258, 14, 14), 4));
 
-
 		animation.frames = anim_walk;
 
 		setAnimation("IDLE");
 	}
-	
+
 	/**
 	 * The display method controls how to display the character to the screen
 	 * with what animation.
@@ -179,8 +175,7 @@ public class Player extends EditableObject {
 			applet.rect(pos.x, pos.y, width, height);
 		}
 	}
-	
-	
+
 	/**
 	 * The update method handles updating the character. 
 	 */
@@ -219,7 +214,7 @@ public class Player extends EditableObject {
 				setAnimation("WALK");
 			}
 			if (!dashing) {
-				speedX = (float) (-speedWalk * applet.deltaTime);
+				speedX = -speedWalk * applet.deltaTime;
 			} else {
 				speedX = (float) (-speedWalk * applet.deltaTime * 1.5);
 			}
@@ -265,9 +260,8 @@ public class Player extends EditableObject {
 			swings.add(new Swing(applet, (int) pos.x, (int) pos.y, direction));
 		}
 
-		
 		// End Dash
-		
+
 		if (animation.name == "DASH" && animation.ended) {
 			dashing = false;
 			if (flying) {
@@ -288,9 +282,9 @@ public class Player extends EditableObject {
 		if (animation.name == "ATTACK" && animation.ended) {
 			attack = false;
 			if (speedX != 0) {
-			setAnimation("WALK");
+				setAnimation("WALK");
 			} else if (speedX == 0) {
-			setAnimation("IDLE");
+				setAnimation("IDLE");
 			}
 		}
 		// boolean collides = false;
@@ -357,27 +351,26 @@ public class Player extends EditableObject {
 		if (!flying && pflying && !attack && !dashing) {
 			setAnimation("SQUISH");
 		}
-		
+
 		// Idle Animation
 		if (speedX == 0 && speedY == 0 && !attack && !dashing && !flying && !pflying) {
 			setAnimation("IDLE");
 		}
 
-		if (animation.name == "SQUISH" && speedX != 0 && !attack) { 
-																	
+		if (animation.name == "SQUISH" && speedX != 0 && !attack) {
+
 			setAnimation("WALK");
 		}
-		
-		if (animation.name == "WALK" && speedX == 0 && !attack) { 
-																	
-			
+
+		if (animation.name == "WALK" && speedX == 0 && !attack) {
+
 			setAnimation("IDLE");
 		}
-		
+
 		if (speedX == 0 && animation.name == "WALK" && attack) {
 			attack = false;
 		}
-		
+
 		if (dashing) {
 			if (speedY < -25) {
 				speedY = -25;
@@ -404,14 +397,12 @@ public class Player extends EditableObject {
 			applet.originTargetY += PApplet.abs(speedY + 5);
 		}
 
-	
-
 		// Update Swing Projectiles
 		for (int i = 0; i < swings.size(); i++) {
 			swings.get(i).update();
 		}
 	}
-	
+
 	/**
 	 * Displays life capacity as long as the character has health.
 	 */
@@ -438,8 +429,8 @@ public class Player extends EditableObject {
 						&& pos.y - applet.originY - height / 2 < collision.pos.y - applet.originY
 								+ collision.height / 2);
 	}
-	
-	//TODO: optimize these
+
+	// TODO: optimize these
 	public boolean collidesEqual(Collision collision) {
 		return (pos.x - applet.originX + width / 2 >= collision.pos.x - applet.originX - collision.width / 2
 				&& pos.x - applet.originX - width / 2 <= collision.pos.x - applet.originX + collision.width / 2)
@@ -473,74 +464,74 @@ public class Player extends EditableObject {
 						&& pos.y - applet.originY + speedY - height / 2 < collision.pos.y - applet.originY
 								+ collision.height / 2);
 	}
-	
+
 	/**
 	 * Sets the current animation for the Player to use
 	 * @param anim the animation id
 	 */
 	public void setAnimation(String anim) {
 		switch (anim) {
-		case "WALK":
-			animation.frames = getAnimation("PLAYER::WALK"); // anim_walk;
-			animation.loop = true;
-			animation.length = 7;
-			animation.rate = 6; // 6
-			animation.frame = 0;
-			animation.start = 0;
-			break;
-		case "IDLE":
-			animation.frames = getAnimation("PLAYER::IDLE"); // anim_squish;
-			animation.loop = true;
-			animation.length = 3;
-			animation.rate = 20;
-			animation.frame = 0;
-			animation.start = 0;
-			break;
-		case "SQUISH":
-			animation.frames = getAnimation("PLAYER::SQUISH"); // anim_squish;
-			animation.loop = false;
-			animation.length = 5; // 7
-			animation.rate = 4;
-			animation.frame = 0; // 3
-			animation.start = 0; // 3
-			break;
-		case "FALL":
-			animation.frames = anim_squish;
-			animation.loop = false;
-			animation.length = 0;
-			animation.rate = 6;
-			animation.frame = 0;
-			animation.start = 0;
-			break;
-		case "ATTACK":
-			animation.frames = getAnimation("PLAYER::ATTACK");
-			animation.loop = false;
-			animation.length = 3;
-			animation.rate = 4;
-			animation.frame = 0;
-			animation.start = 0;
-			break;
-		case "DASH":
-			animation.frames = getAnimation("PLAYER::SQUISH");
-			animation.loop = false;
-			animation.length = 4;
-			animation.rate = 6;
-			animation.frame = 0;
-			animation.start = 0;
-			break;
-		case "DASH_ATTACK":
-			animation.frames = getAnimation("PLAYER::ATTACK");
-			animation.loop = false;
-			animation.length = 2 + animation.remainingFrames();
-			animation.rate = 4;
-			animation.frame = 0;
-			animation.start = 0;
+			case "WALK" :
+				animation.frames = getAnimation("PLAYER::WALK"); // anim_walk;
+				animation.loop = true;
+				animation.length = 7;
+				animation.rate = 6; // 6
+				animation.frame = 0;
+				animation.start = 0;
+				break;
+			case "IDLE" :
+				animation.frames = getAnimation("PLAYER::IDLE"); // anim_squish;
+				animation.loop = true;
+				animation.length = 3;
+				animation.rate = 20;
+				animation.frame = 0;
+				animation.start = 0;
+				break;
+			case "SQUISH" :
+				animation.frames = getAnimation("PLAYER::SQUISH"); // anim_squish;
+				animation.loop = false;
+				animation.length = 5; // 7
+				animation.rate = 4;
+				animation.frame = 0; // 3
+				animation.start = 0; // 3
+				break;
+			case "FALL" :
+				animation.frames = anim_squish;
+				animation.loop = false;
+				animation.length = 0;
+				animation.rate = 6;
+				animation.frame = 0;
+				animation.start = 0;
+				break;
+			case "ATTACK" :
+				animation.frames = getAnimation("PLAYER::ATTACK");
+				animation.loop = false;
+				animation.length = 3;
+				animation.rate = 4;
+				animation.frame = 0;
+				animation.start = 0;
+				break;
+			case "DASH" :
+				animation.frames = getAnimation("PLAYER::SQUISH");
+				animation.loop = false;
+				animation.length = 4;
+				animation.rate = 6;
+				animation.frame = 0;
+				animation.start = 0;
+				break;
+			case "DASH_ATTACK" :
+				animation.frames = getAnimation("PLAYER::ATTACK");
+				animation.loop = false;
+				animation.length = 2 + animation.remainingFrames();
+				animation.rate = 4;
+				animation.frame = 0;
+				animation.start = 0;
 		}
 		animation.ended = false;
 		animation.pName = animation.name;
 		animation.name = anim;
 	}
-	
+
 	/**
 	 * getter for the currently used animation.
 	 * @param id the animation id
@@ -550,4 +541,3 @@ public class Player extends EditableObject {
 		return applet.gameGraphics.getAnimation(id);
 	}
 }
-
