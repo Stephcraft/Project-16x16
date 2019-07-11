@@ -22,15 +22,14 @@ import objects.GameObject;
 import dm.core.*;
 
 /**
- * <h1>SideScroller Class
+ * <h1>SideScroller Class</h1>
  * <p>
  * The SideScroller class is the main class. It extends the processing applet,
  * and is the heart of the game.
- * </p> 
+ * </p>
  */
 public class SideScroller extends PApplet {
-
-	public boolean LOADED;
+	
 	public boolean FAILED;
 
 	public boolean debug;
@@ -42,7 +41,7 @@ public class SideScroller extends PApplet {
 	public int originY;
 	public int originTargetX;
 	public int originTargetY;
-
+	
 	public int screenX;
 	public int screenY;
 
@@ -155,14 +154,14 @@ public class SideScroller extends PApplet {
 		scene = new SceneMapEditor(this);
 
 		// Main Load
-		thread("load");
+		load();
 	}
 
 	/**
 	 * This is where any needed assets will be loaded.
 	 */
 	public void load() {
-
+		
 		// Load Font
 		font_pixel = loadFont("Assets/Font/font-pixel-48.vlw");
 
@@ -188,8 +187,6 @@ public class SideScroller extends PApplet {
 
 		// Set Floor
 		floor = 400;
-
-		LOADED = true;
 	}
 
 	public float fc = 0;
@@ -201,22 +198,19 @@ public class SideScroller extends PApplet {
 	 */
 	@Override
 	public void draw() {
-		if (!LOADED) {
-			return;
-		}
-
+		
 		// Camera
 		cam.useCamera();
 		// cam.Move(.5f, 0);
 
-		if (keyPress(80)) {
+		if (keyPress(80)) { // 'p'
 			cam.zoom(-.005f);
 		}
 
-		if (keyPressEvent && keyPress(81)) {
+		if (keyPressEvent && keyPress(81)) { // 'q'
 			frameRate(60);
 		}
-		if (keyPressEvent && keyPress(84)) {
+		if (keyPressEvent && keyPress(84)) { // 't'
 			frameRate(2);
 		}
 
@@ -285,7 +279,6 @@ public class SideScroller extends PApplet {
 	 */
 	@Override
 	public void mouseWheel(MouseEvent event) {
-
 		scene.mouseWheel(event);
 	}
 

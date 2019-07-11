@@ -6,6 +6,9 @@ import scene.SceneMapEditor;
 import sidescroller.PClass;
 import sidescroller.SideScroller;
 
+/**
+ * Extends {@link PClass}.
+ */
 public class EditableObject extends PClass {
 
 	// Base Data
