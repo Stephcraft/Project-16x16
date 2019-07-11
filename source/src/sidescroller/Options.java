@@ -2,10 +2,10 @@ package sidescroller;
 
 public class Options {
 	public int targetFrameRate;
-	
+
 	public Options() {
-		
-		//Default
+
+		// Default
 		targetFrameRate = 60;
 	}
 }

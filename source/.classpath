@@ -1,7 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER">
+		<attributes>
+			<attribute name="module" value="true"/>
+		</attributes>
+	</classpathentry>
 	<classpathentry kind="lib" path="libraries/dm/DM.jar"/>
 	<classpathentry kind="lib" path="libraries/processing/core.jar"/>
 	<classpathentry kind="lib" path="libraries/processing/gluegen-rt-natives-linux-aarch64.jar"/>
@@ -20,7 +24,5 @@
 	<classpathentry kind="lib" path="libraries/processing/jogl-all-natives-windows-amd64.jar"/>
 	<classpathentry kind="lib" path="libraries/processing/jogl-all-natives-windows-i586.jar"/>
 	<classpathentry kind="lib" path="libraries/processing/jogl-all.jar"/>
-	<classpathentry kind="lib" path="C:/GitProjects/project16x16/source/libraries/dm/DM.jar"/>
-	<classpathentry kind="lib" path="C:/GitProjects/project16x16/source/libraries/processing/core.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
