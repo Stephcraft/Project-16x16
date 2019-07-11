@@ -93,7 +93,7 @@ public class SideScroller extends PApplet {
 	 */
 	@Override
 	public void settings() {
-		size((int) (1280 * 1.0), (int) (720 * 1.0), JAVA2D); // *1.5 //Changed to 16:9
+		size((int) (1280 * 1.0), (int) (720 * 1.0), FX2D); // *1.5 //Changed to 16:9
 
 		noSmooth();
 	}
