@@ -35,24 +35,24 @@ public class MagicProjectile extends ProjectileObject {
 		switch (direction) {
 			case LEFT :
 				applet.pushMatrix();
-				applet.translate(pos.x - applet.originX, pos.y - applet.originY);
+				applet.translate(pos.x, pos.y);
 				applet.scale(-1, 1);
 				applet.image(image, 0, 0);
 				applet.popMatrix();
 				break;
 			case RIGHT :
-				applet.image(image, pos.x - applet.originX, pos.y - applet.originY);
+				applet.image(image, pos.x, pos.y);
 				break;
 			case UP :
 				applet.pushMatrix();
-				applet.translate(pos.x - applet.originX, pos.y - applet.originY);
+				applet.translate(pos.x, pos.y);
 				applet.rotate(PApplet.radians(-90));
 				applet.image(image, 0, 0);
 				applet.popMatrix();
 				break;
 			case DOWN :
 				applet.pushMatrix();
-				applet.translate(pos.x - applet.originX, pos.y - applet.originY);
+				applet.translate(pos.x, pos.y);
 				applet.rotate(PApplet.radians(90));
 				applet.image(image, 0, 0);
 				applet.popMatrix();
@@ -60,7 +60,7 @@ public class MagicProjectile extends ProjectileObject {
 		}
 		applet.stroke(255);
 		applet.noFill();
-		applet.rect(pos.x - applet.originX, pos.y - applet.originY, width, height);
+		applet.rect(pos.x, pos.y, width, height);
 	}
 
 	@Override
@@ -79,13 +79,13 @@ public class MagicProjectile extends ProjectileObject {
 					height = 8 * 4;
 
 					// Realistic Colliding
-					if (pos.x - applet.originX < collision.pos.x - applet.originX) {
+					if (pos.x < collision.pos.x) {
 						pos.x = collision.pos.x - collision.width / 2;
-					} else if (pos.x - applet.originX > collision.pos.x - applet.originX) {
+					} else if (pos.x > collision.pos.x) {
 						pos.x = collision.pos.x + collision.width / 2;
-					} else if (pos.y - applet.originY + height / 2 < collision.pos.y - applet.originY) {
+					} else if (pos.y + height / 2 < collision.pos.y) {
 						pos.y = collision.pos.y - collision.height / 2 - height / 2;
-					} else if (pos.y - applet.originY > collision.pos.y - applet.originY) {
+					} else if (pos.y > collision.pos.y) {
 						pos.y = collision.pos.y + collision.height / 2 + height / 2;
 					}
 
@@ -142,13 +142,13 @@ public class MagicProjectile extends ProjectileObject {
 		height = 8 * 4;
 
 		// Realistic Colliding
-		if (pos.x - applet.originX < collision.pos.x - applet.originX) {
+		if (pos.x < collision.pos.x) {
 			pos.x = collision.pos.x - collision.width / 2;
-		} else if (pos.x - applet.originX > collision.pos.x - applet.originX) {
+		} else if (pos.x > collision.pos.x) {
 			pos.x = collision.pos.x + collision.width / 2;
-		} else if (pos.y - applet.originY + height / 2 < collision.pos.y - applet.originY) {
+		} else if (pos.y + height / 2 < collision.pos.y) {
 			pos.y = collision.pos.y - collision.height / 2 - height / 2;
-		} else if (pos.y - applet.originY > collision.pos.y - applet.originY) {
+		} else if (pos.y > collision.pos.y) {
 			pos.y = collision.pos.y + collision.height / 2 + height / 2;
 		}
 

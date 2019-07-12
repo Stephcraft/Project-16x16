@@ -43,13 +43,13 @@ public class Swing extends ProjectileObject { // PClass
 			switch (direction) {
 				case LEFT :
 					applet.pushMatrix();
-					applet.translate(pos.x - applet.originX, pos.y - applet.originY);
+					applet.translate(pos.x, pos.y);
 					applet.scale(-1, 1);
 					applet.image(image, 0, 0);
 					applet.popMatrix();
 					break;
 				case RIGHT :
-					applet.image(image, pos.x - applet.originX, pos.y - applet.originY);
+					applet.image(image, pos.x, pos.y);
 					break;
 			}
 		} catch (Exception e) {

@@ -24,6 +24,12 @@ public class Util {
 		return pg(img, 1);
 	}
 
+	/**
+	 * 
+	 * @param img
+	 * @param scl Scale
+	 * @return
+	 */
 	public PGraphics pg(PImage img, float scl) {
 		PGraphics pg = applet.createGraphics((int) (img.width * scl), (int) (img.height * scl));
 
