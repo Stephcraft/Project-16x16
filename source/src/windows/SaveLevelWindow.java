@@ -74,13 +74,13 @@ public class SaveLevelWindow extends PClass {
 		if (pressSave.event()) {
 			util.saveLevel(path + input.getText() + ".dat");
 			input.setText("");
-			scene.tool = "MOVE";
+			scene.tool = SceneMapEditor.Tools.MOVE;
 		}
 
 		pressCancel.update();
 		if (pressCancel.event()) {
 			input.setText("");
-			scene.tool = "MOVE";
+			scene.tool = SceneMapEditor.Tools.MOVE;
 		}
 	}
 }

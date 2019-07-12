@@ -38,7 +38,12 @@ public class SceneMapEditor extends PScene {
 	// Editor Viewport
 	public WorldViewportEditor worldViewportEditor;
 
-	public String tool;
+	public enum Tools {
+		MOVE, MODIFY, INVENTORY, PLAY, SAVE,
+	}
+
+	public Tools tool;
+
 	public ArrayList<String> inventory;
 
 	public boolean focusedOnObject;
@@ -97,7 +102,7 @@ public class SceneMapEditor extends PScene {
 		applet.collisions.add(new Collision(applet, "METAL_WALK_MIDDLE:0", 0, 0));
 
 		// Default Tool
-		tool = "MODIFY";
+		tool = Tools.MODIFY;
 
 		util.loadLevel("Assets/Storage/Game/Maps/level-1.dat");
 	}
@@ -117,7 +122,7 @@ public class SceneMapEditor extends PScene {
 
 		// View Background Objects
 		for (int i = 0; i < applet.backgroundObjects.size(); i++) {
-			if (tool == "MODIFY") {
+			if (tool == Tools.MODIFY) {
 				applet.backgroundObjects.get(i).updateEdit();
 			}
 
@@ -131,7 +136,7 @@ public class SceneMapEditor extends PScene {
 
 		// View Collisions
 		for (int i = 0; i < applet.collisions.size(); i++) {
-			if (tool == "MODIFY") {
+			if (tool == Tools.MODIFY) {
 				applet.collisions.get(i).updateEdit();
 				if (applet.collisions.get(i).focus) {
 					objectFocus = true;
@@ -145,7 +150,7 @@ public class SceneMapEditor extends PScene {
 				applet.keyPressEvent = false;
 			}
 		}
-		if (tool == "MODIFY") {
+		if (tool == Tools.MODIFY) {
 			if (!objectFocus) {
 				focusedOnObject = false;
 
@@ -158,14 +163,14 @@ public class SceneMapEditor extends PScene {
 
 		// View Game Objects
 		for (int i = 0; i < applet.gameObjects.size(); i++) {
-			if (tool == "MODIFY") {
+			if (tool == Tools.MODIFY) {
 				applet.gameObjects.get(i).updateEdit();
 				if (applet.gameObjects.get(i).focus) {
 					objectFocus = true;
 				}
 			}
 
-			if (tool == "PLAY") {
+			if (tool == Tools.PLAY) {
 				applet.gameObjects.get(i).update();
 			}
 
@@ -185,19 +190,19 @@ public class SceneMapEditor extends PScene {
 		}
 
 		// View Player
-		if (tool == "PLAY") {
+		if (tool == Tools.PLAY) {
 			applet.player.update();
 			applet.player.display();
 		} else {
 			applet.player.display();
 		}
-		if (tool == "MODIFY") {
+		if (tool == Tools.PLAY) {
 			applet.player.updateEdit();
 			applet.player.displayEdit();
 		}
 
 		// Update World Origin
-		if (tool == "PLAY") {
+		if (tool == Tools.PLAY) {
 			applet.originTargetX = (int) util.clamp(applet.originTargetX,
 					applet.worldPosition.x - applet.worldWidth / 2,
 					applet.worldPosition.x + applet.worldWidth / 2 - applet.width);
@@ -218,7 +223,7 @@ public class SceneMapEditor extends PScene {
 		worldViewportEditor.displayEditor();
 
 		// Editor View
-		if (tool == "MODIFY") {
+		if (tool == Tools.MODIFY) {
 			for (int i = 0; i < applet.collisions.size(); i++) {
 				applet.collisions.get(i).displayEdit();
 			}
@@ -231,12 +236,12 @@ public class SceneMapEditor extends PScene {
 		}
 
 		// Editor Object Destination
-		if (tool == "MODIFY") {
+		if (tool == Tools.MODIFY) {
 			editorItem.displayDestination();
 		}
 
 		// GUI Slots
-		if (tool != "INVENTORY") {
+		if (tool != Tools.INVENTORY) {
 			for (int i = 0; i < 6; i++) {
 				// Display Slot
 				image(slot, 20 * 4 / 2 + 10 + i * (20 * 4 + 10), 20 * 4 / 2 + 10);
@@ -261,41 +266,44 @@ public class SceneMapEditor extends PScene {
 		}
 
 		// GUI Icons
-		if (tool == "MOVE" || (util.hover(40, 120, 36, 36) && tool != "SAVE" && tool != "INVENTORY")) {
+		if (tool == Tools.MOVE || (util.hover(40, 120, 36, 36) && tool != Tools.SAVE && tool != Tools.INVENTORY)) {
 			if (util.hover(40, 120, 36, 36) && applet.mousePressEvent) {
-				tool = "MOVE";
+				tool = Tools.MOVE;
 			}
 			image(icon_eyeActive, 40, 120);
 		} else {
 			image(icon_eye, 40, 120);
 		}
-		if (tool == "MODIFY" || (util.hover(90, 120, 36, 36) && tool != "SAVE" && tool != "INVENTORY")) {
+		if (tool == Tools.MODIFY || (util.hover(90, 120, 36, 36) && tool != Tools.SAVE && tool != Tools.INVENTORY)) {
 			if (util.hover(90, 120, 36, 36) && applet.mousePressEvent) {
-				tool = "MODIFY";
+				tool = Tools.MODIFY;
 			}
 			image(icon_arrowActive, 90, 120);
 		} else {
 			image(icon_arrow, 90, 120);
 		}
-		if (tool == "INVENTORY" || (util.hover(90 + 48, 120, 36, 36) && tool != "SAVE" && tool != "INVENTORY")) {
+		if (tool == Tools.INVENTORY
+				|| (util.hover(90 + 48, 120, 36, 36) && tool != Tools.SAVE && tool != Tools.INVENTORY)) {
 			if (util.hover(90 + 48, 120, 36, 36) && applet.mousePressEvent) {
-				tool = "INVENTORY";
+				tool = Tools.INVENTORY;
 			}
 			image(icon_inventoryActive, 90 + 48, 120);
 		} else {
 			image(icon_inventory, 90 + 48, 120);
 		}
-		if (tool == "PLAY" || (util.hover(90 + 48 * 2, 120, 36, 36) && tool != "SAVE" && tool != "INVENTORY")) {
+		if (tool == Tools.PLAY
+				|| (util.hover(90 + 48 * 2, 120, 36, 36) && tool != Tools.SAVE && tool != Tools.INVENTORY)) {
 			if (util.hover(90 + 48 * 2, 120, 36, 36) && applet.mousePressEvent) {
-				tool = "PLAY";
+				tool = Tools.PLAY;
 			}
 			image(icon_playActive, 90 + 48 * 2, 120);
 		} else {
 			image(icon_play, 90 + 48 * 2, 120);
 		}
-		if (tool == "SAVE" || (util.hover(90 + 48 * 3, 120, 36, 36) && tool != "SAVE" && tool != "INVENTORY")) {
+		if (tool == Tools.SAVE
+				|| (util.hover(90 + 48 * 3, 120, 36, 36) && tool != Tools.SAVE && tool != Tools.INVENTORY)) {
 			if (util.hover(90 + 48 * 3, 120, 36, 36) && applet.mousePressEvent) {
-				tool = "SAVE";
+				tool = Tools.SAVE;
 			}
 			image(icon_saveActive, 90 + 48 * 3, 120);
 		} else {
@@ -303,24 +311,24 @@ public class SceneMapEditor extends PScene {
 		}
 
 		// GUI Editor Object
-		if (tool == "MODIFY") {
+		if (tool == Tools.MODIFY) {
 			editorItem.update();
 			editorItem.display();
 		}
 
 		// Display Inventory
-		if (tool == "INVENTORY") {
+		if (tool == Tools.INVENTORY) {
 			displayCreativeInventory();
 		}
 
 		// Windows
-		if (tool == "SAVE") {
+		if (tool == Tools.SAVE) {
 			window_saveLevel.update();
 			window_saveLevel.display();
 		}
 
 		// Move Tool
-		if (tool == "MOVE") {
+		if (tool == Tools.MOVE) {
 			if (applet.mousePressed) {
 				applet.originTargetX += applet.pmouseX - applet.getMouseX();
 				applet.originTargetY += applet.pmouseY - applet.getMouseY();
@@ -330,41 +338,41 @@ public class SceneMapEditor extends PScene {
 		}
 
 		// Change tool;
-		if (tool != "SAVE") {
+		if (tool != Tools.SAVE) {
 			if (applet.keyPressEvent) {
 				if (applet.keyPress(49)) {
-					tool = "MOVE";
+					tool = Tools.MOVE;
 					editorItem.setMode("CREATE");
 					editorItem.focus = false;
 				}
 				if (applet.keyPress(50)) {
-					tool = "MODIFY";
+					tool = Tools.MODIFY;
 					editorItem.setMode("CREATE");
 					editorItem.focus = false;
 				}
 				if (applet.keyPress(51)) {
-					tool = "INVENTORY";
+					tool = Tools.INVENTORY;
 					editorItem.setMode("ITEM");
 					editorItem.focus = false;
 					scroll_inventory = 0;
 				}
 				if (applet.keyPress(52)) {
-					tool = "PLAY";
+					tool = Tools.PLAY;
 					editorItem.setMode("CREATE");
 					editorItem.focus = false;
 				}
 				if (applet.keyPress(53)) {
-					tool = "SAVE";
+					tool = Tools.SAVE;
 					editorItem.setMode("CREATE");
 					editorItem.focus = false;
 				}
 				if (applet.keyPress(69)) {
-					if (tool == "INVENTORY") {
-						tool = "MOVE";
+					if (tool == Tools.INVENTORY) {
+						tool = Tools.MOVE;
 						editorItem.setMode("CREATE");
 						editorItem.focus = false;
 					} else {
-						tool = "INVENTORY";
+						tool = Tools.INVENTORY;
 						editorItem.setMode("ITEM");
 						editorItem.focus = false;
 						scroll_inventory = 0;
@@ -373,8 +381,8 @@ public class SceneMapEditor extends PScene {
 			}
 		}
 	}
-	
-	public void displayCreativeInventory() {// complete creative inventory
+
+	private void displayCreativeInventory() {// complete creative inventory
 
 		// Display Background
 		applet.stroke(50);
@@ -462,7 +470,7 @@ public class SceneMapEditor extends PScene {
 		editorItem.display();
 	}
 
-	public void displayGrid() {// world grid
+	private void displayGrid() {// world grid
 		applet.strokeWeight(1);
 		applet.stroke(50);
 		int x = 0;
@@ -482,7 +490,7 @@ public class SceneMapEditor extends PScene {
 		}
 	}
 
-	public float getInventorySize() {
+	private float getInventorySize() {
 		int y = 1;
 
 		for (int i = 0; i < applet.gameGraphics.graphics.size(); i++) {
@@ -498,7 +506,7 @@ public class SceneMapEditor extends PScene {
 	public void mouseWheel(MouseEvent event) {
 		if (event.isShiftDown()) {
 		} else {
-			if (tool == "INVENTORY") {
+			if (tool == Tools.INVENTORY) {
 				scroll_inventory -= event.getCount() * 10;
 				scroll_inventory = (int) util.clamp(scroll_inventory, -getInventorySize() + applet.height - 8, 0);
 			}

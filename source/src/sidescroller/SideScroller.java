@@ -3,8 +3,6 @@ package sidescroller;
 import java.util.ArrayList;
 import java.util.HashSet;
 
-import org.gicentre.utils.move.ZoomPan;
-
 import dm.core.DM;
 
 import entities.Player;
@@ -205,7 +203,7 @@ public class SideScroller extends PApplet {
 
 		drawBelowCamera : { // drawn objects enclosed by pushMatrix() and popMatrix() are transformed by the camera.
 			pushMatrix();
-			camera.setFollowObjectOffset(new PVector(mouseX - (width / 2),  mouseY - (height / 2))); // test
+			// camera.setFollowObjectOffset(new PVector(mouseX - (width / 2), mouseY - (height / 2))); // todo test
 			camera.run();
 			mapEditor.draw(); // Handle Draw Scene Method
 			popMatrix();
@@ -227,6 +225,8 @@ public class SideScroller extends PApplet {
 				text("fly: " + player.flying + " att: " + player.attack + " dash: " + player.dashing, width, 45);
 				text("Camera Pos: " + camera.getCameraPosition(), width, 55);
 				text("Camera Scale: " + camera.getZoomScale(), width, 65);
+				text("World Pos: " + worldPosition.x + ", " + worldPosition.y, width, 75);
+				text("Origin: " + originX + ", " + originY, width, 85);
 			}
 		}
 
@@ -305,7 +305,7 @@ public class SideScroller extends PApplet {
 	@Override
 	public void mouseWheel(MouseEvent event) {
 		mapEditor.mouseWheel(event);
-		camera.zoomIn(0.05f);
+		camera.zoomIn(0.05f); // todo not working
 	}
 
 	/**
