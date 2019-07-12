@@ -158,17 +158,7 @@ public class Player extends EditableObject {
 			applet.image(image, pos.x - applet.originX, pos.y - applet.originY);
 		}
 
-		if (applet.debug) {
-			// debug info
-			applet.fill(255, 0, 0);
-			applet.textSize(15);
-			applet.textAlign(RIGHT, CENTER);
-			applet.text("X: " + pos.x + "Y: " + pos.y, applet.width, 5);
-			applet.text("SX: " + speedX + " SY: " + speedY, applet.width, 15);
-			applet.text("anim: " + animation.name, applet.width, 25);
-			applet.text("f: " + animation.frame + " ends: " + animation.length, applet.width, 35);
-			applet.text("fly: " + flying + " att: " + attack + " dash: " + dashing, applet.width, 45);
-
+		if (SideScroller.DEBUG) {
 			applet.strokeWeight(1);
 			applet.stroke(0, 255, 200);
 			applet.noFill();
@@ -289,7 +279,7 @@ public class Player extends EditableObject {
 		}
 		// boolean collides = false;
 
-		if (applet.debug) {
+		if (SideScroller.DEBUG) {
 			applet.noFill();
 			applet.stroke(255, 0, 0);
 			applet.strokeWeight(1);
@@ -303,7 +293,7 @@ public class Player extends EditableObject {
 			// In Player Range
 			if (PApplet.dist(pos.x, pos.y, collision.pos.x, collision.pos.y) < 200) {
 
-				if (applet.debug) {
+				if (SideScroller.DEBUG) {
 					applet.rect(collision.pos.x - applet.originX, collision.pos.y - applet.originY, 20, 20);
 				}
 				if (collides(collision)) {
@@ -469,7 +459,7 @@ public class Player extends EditableObject {
 	 * Sets the current animation for the Player to use
 	 * @param anim the animation id
 	 */
-	public void setAnimation(String anim) {
+	private void setAnimation(String anim) {
 		switch (anim) {
 			case "WALK" :
 				animation.frames = getAnimation("PLAYER::WALK"); // anim_walk;

@@ -7,7 +7,11 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="lib" path="libraries/dm/DM.jar"/>
-	<classpathentry kind="lib" path="libraries/processing/core.jar"/>
+	<classpathentry kind="lib" path="libraries/processing/core.jar">
+		<attributes>
+			<attribute name="javadoc_location" value="https://processing.github.io/processing-javadocs/core/"/>
+		</attributes>
+	</classpathentry>
 	<classpathentry kind="lib" path="libraries/processing/gluegen-rt-natives-linux-aarch64.jar"/>
 	<classpathentry kind="lib" path="libraries/processing/gluegen-rt-natives-linux-amd64.jar"/>
 	<classpathentry kind="lib" path="libraries/processing/gluegen-rt-natives-linux-armv6hf.jar"/>
@@ -24,5 +28,10 @@
 	<classpathentry kind="lib" path="libraries/processing/jogl-all-natives-windows-amd64.jar"/>
 	<classpathentry kind="lib" path="libraries/processing/jogl-all-natives-windows-i586.jar"/>
 	<classpathentry kind="lib" path="libraries/processing/jogl-all.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Mike/Documents/Project-16x16/source/libraries/processing/gicentreUtils.jar">
+		<attributes>
+			<attribute name="javadoc_location" value="http://gicentre.org/utils/reference/"/>
+		</attributes>
+	</classpathentry>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

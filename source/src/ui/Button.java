@@ -1,4 +1,4 @@
-package gui;
+package ui;
 
 import sidescroller.PClass;
 import sidescroller.SideScroller;
@@ -7,7 +7,7 @@ import sidescroller.SideScroller;
  * The Press Class extends PClass
  * A button for the player to click
  */
-public class Press extends PClass {
+public class Button extends PClass {
 
 	private int width;
 	private int height;
@@ -24,7 +24,7 @@ public class Press extends PClass {
 	 * Constructor for Press
 	 * @param  a Reference to Game
 	 */
-	public Press(SideScroller a) {
+	public Button(SideScroller a) {
 		super(a);
 
 		text = "Press me";
@@ -77,8 +77,8 @@ public class Press extends PClass {
 	 * @return response as a boolean
 	 */
 	public boolean hover() {
-		return (applet.mouseX > x - width / 2 && applet.mouseX < x + width / 2 && applet.mouseY > y - height / 2
-				&& applet.mouseY < y + height / 2);
+		return (applet.getMouseX() > x - width / 2 && applet.getMouseX() < x + width / 2 && applet.getMouseY() > y - height / 2
+				&& applet.getMouseY() < y + height / 2);
 	}
 
 	/**

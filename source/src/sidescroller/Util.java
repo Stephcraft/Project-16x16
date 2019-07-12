@@ -114,8 +114,8 @@ public class Util {
 	}
 
 	public boolean hover(float x, float y, float w, float h) {
-		return (applet.mouseX > x - w / 2 && applet.mouseX < x + w / 2 && applet.mouseY > y - h / 2
-				&& applet.mouseY < y + h / 2);
+		return (applet.getMouseX() > x - w / 2 && applet.getMouseX() < x + w / 2 && applet.getMouseY() > y - h / 2
+				&& applet.getMouseY() < y + h / 2);
 	}
 
 	public static void saveFile(String src, String content) {
@@ -173,7 +173,7 @@ public class Util {
 				applet.worldWidth = d.getInt(2);
 				applet.worldHeight = d.getInt(3);
 				if (PScene.name == "MAPEDITOR") {
-					((SceneMapEditor) applet.scene).worldViewportEditor.setSize();
+					((SceneMapEditor) applet.mapEditor).worldViewportEditor.setSize();
 				}
 			} else {
 				switch (type) {

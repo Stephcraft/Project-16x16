@@ -1,25 +1,33 @@
 package sidescroller;
 
-import processing.core.*;
-import processing.event.KeyEvent;
-import processing.event.MouseEvent;
-import projectiles.ProjectileObject;
-
 import java.util.ArrayList;
 import java.util.HashSet;
 
-import scene.Camera;
-import scene.PScene;
-import scene.SceneMapEditor;
+import org.gicentre.utils.move.ZoomPan;
 
-import entities.*;
-import sidescroller.Util;
-import sidescroller.Options;
+import dm.core.DM;
+
+import entities.Player;
+
+import javafx.scene.canvas.Canvas;
+import javafx.stage.Stage;
 
 import objects.BackgroundObject;
 import objects.Collision;
 import objects.GameObject;
-import dm.core.*;
+
+import processing.core.PApplet;
+import processing.core.PFont;
+import processing.core.PImage;
+import processing.core.PVector;
+import processing.event.KeyEvent;
+import processing.event.MouseEvent;
+import processing.javafx.PSurfaceFX;
+
+import projectiles.ProjectileObject;
+
+import scene.PScene;
+import scene.SceneMapEditor;
 
 /**
  * <h1>SideScroller Class</h1>
@@ -29,10 +37,10 @@ import dm.core.*;
  * </p>
  */
 public class SideScroller extends PApplet {
-	
+
 	public boolean FAILED;
 
-	public boolean debug;
+	public static final boolean DEBUG = true;
 
 	public int floor;
 
@@ -41,7 +49,7 @@ public class SideScroller extends PApplet {
 	public int originY;
 	public int originTargetX;
 	public int originTargetY;
-	
+
 	public int screenX;
 	public int screenY;
 
@@ -66,7 +74,7 @@ public class SideScroller extends PApplet {
 	public float deltaTime;
 
 	// Scenes
-	public PScene scene;
+	public SceneMapEditor mapEditor;
 
 	Util util = new Util(this);
 
@@ -87,7 +95,8 @@ public class SideScroller extends PApplet {
 	public boolean mouseReleaseEvent;
 
 	// Camera Variables
-	Camera cam;
+	private Camera camera;
+	public PVector mousePosition;
 
 	/**
 	 * controls how processing handles the window
@@ -95,7 +104,6 @@ public class SideScroller extends PApplet {
 	@Override
 	public void settings() {
 		size((int) (1280 * 1.0), (int) (720 * 1.0), FX2D); // *1.5 //Changed to 16:9
-
 		noSmooth();
 	}
 
@@ -105,13 +113,11 @@ public class SideScroller extends PApplet {
 	@Override
 	public void setup() {
 
+		camera = new Camera(this);
+		camera.setMouseMask(SHIFT);
+
 		// Start Graphics
 		background(0);
-
-		// Setup Camera
-		cam = new Camera(-400, -400, 0, 0, 1, 1, this);
-		cam.CameraInit();
-		cam.useCamera();
 
 		// Setup modes
 		imageMode(CENTER);
@@ -139,9 +145,6 @@ public class SideScroller extends PApplet {
 		// Create Game Graphics
 		gameGraphics = new GameGraphics(this);
 
-		// Debug Option
-		debug = true;
-
 		// Set Screen Size
 		screenX = width - 400;
 		screenY = height - 400;
@@ -151,7 +154,7 @@ public class SideScroller extends PApplet {
 		worldPosition = new PVector(0, 0);
 
 		// Create scene
-		scene = new SceneMapEditor(this);
+		mapEditor = new SceneMapEditor(this);
 
 		// Main Load
 		load();
@@ -160,8 +163,8 @@ public class SideScroller extends PApplet {
 	/**
 	 * This is where any needed assets will be loaded.
 	 */
-	public void load() {
-		
+	private void load() {
+
 		// Load Font
 		font_pixel = loadFont("Assets/Font/font-pixel-48.vlw");
 
@@ -183,7 +186,7 @@ public class SideScroller extends PApplet {
 		player.load(graphicsSheet);
 		player.pos.x = 0;
 		player.pos.y = -100;
-		// cam.Follow(player);
+		camera.setFollowObject(player, new PVector(-width / 2, 0));
 
 		// Set Floor
 		floor = 400;
@@ -198,20 +201,33 @@ public class SideScroller extends PApplet {
 	 */
 	@Override
 	public void draw() {
-		
-		// Camera
-		cam.useCamera();
-		// cam.Move(.5f, 0);
+		surface.setTitle("Sardonyx Prealpha - Frame Rate " + (int) frameRate);
 
-		if (keyPress(80)) { // 'p'
-			cam.zoom(-.005f);
+		drawBelowCamera : { // drawn objects enclosed by pushMatrix() and popMatrix() are transformed by the camera.
+			pushMatrix();
+			camera.setFollowObjectOffset(new PVector(mouseX - (width / 2),  mouseY - (height / 2))); // test
+			camera.run();
+			mapEditor.draw(); // Handle Draw Scene Method
+			popMatrix();
 		}
 
-		if (keyPressEvent && keyPress(81)) { // 'q'
-			frameRate(60);
-		}
-		if (keyPressEvent && keyPress(84)) { // 't'
-			frameRate(2);
+		drawAboveCamera : { // Where HUD etc should be drawn
+			mousePosition = new PVector(mouseX, mouseY);
+			mapEditor.drawUI();
+
+			if (DEBUG) {
+				fill(255, 0, 0);
+				textSize(15);
+				textAlign(RIGHT, CENTER);
+
+				text("X: " + player.pos.x + "Y: " + player.pos.y, width, 5);
+				text("SX: " + player.speedX + " SY: " + player.speedY, width, 15);
+				text("anim: " + player.animation.name, width, 25);
+				text("f: " + player.animation.frame + " ends: " + player.animation.length, width, 35);
+				text("fly: " + player.flying + " att: " + player.attack + " dash: " + player.dashing, width, 45);
+				text("Camera Pos: " + camera.getCameraPosition(), width, 55);
+				text("Camera Scale: " + camera.getZoomScale(), width, 65);
+			}
 		}
 
 		// Update DeltaTime
@@ -220,16 +236,6 @@ public class SideScroller extends PApplet {
 		} else {
 			deltaTime = 1;
 		}
-
-		// Handle Draw Scene Method
-		scene.draw();
-
-		surface.setTitle("Sardonyx Prealpha - Frame Rate " + (int) frameRate);
-
-		// TODO to be moved
-		// Update World Origin
-		originX = (int) util.smoothMove(originX, originTargetX, (float) 0.1);
-		originY = (int) util.smoothMove(originY, originTargetY, (float) 0.1);
 
 		// Reset Events
 		keyPressEvent = false;
@@ -256,6 +262,25 @@ public class SideScroller extends PApplet {
 	public void keyReleased(KeyEvent event) {
 		keys.remove(event.getKeyCode());
 		keyReleaseEvent = true;
+
+		switch (event.getKey()) { // must be caps
+			case 'Z' :
+				frameRate(60);
+				break;
+			case 'X' :
+				frameRate(10);
+			default :
+				switch (event.getKeyCode()) { // non-character keys
+					case 122 : // F11
+						final PSurfaceFX FXSurface = (PSurfaceFX) surface;
+						final Canvas canvas = (Canvas) FXSurface.getNative();
+						final Stage stage = (Stage) canvas.getScene().getWindow();
+						stage.setFullScreen(!stage.isFullScreen());
+						break;
+					default :
+						break;
+				}
+		}
 	}
 
 	/**
@@ -279,7 +304,8 @@ public class SideScroller extends PApplet {
 	 */
 	@Override
 	public void mouseWheel(MouseEvent event) {
-		scene.mouseWheel(event);
+		mapEditor.mouseWheel(event);
+		camera.zoomIn(0.05f);
 	}
 
 	/**
@@ -298,11 +324,35 @@ public class SideScroller extends PApplet {
 	 * Sets the scene to be used.
 	 * @param s the scene id.
 	 */
-	public void setScene(String s) {
+	private void setScene(String s) {
 		PScene.name = s;
 
 		// Run Setup On Scene Change
-		scene.setup();
+		mapEditor.setup();
+	}
+
+	/**
+	 * Any object that is transformed by the camera (ie. not HUD elements) and uses mouse position in any manner should use
+	 * this method to access the <b>mouse X</b> coordinate. Such objects should not reference the PApplet's 
+	 * {@link processing.core.PApplet.mouseX mouseX} variable.
+	 * @return mouseX coordinate (accounting for camera displacement)
+	 * @see {@link #getMouseY()}
+	 * @see {@link org.gicentre.utils.move.ZoomPan#getMouseCoord() getMouseCoord()}
+	 */
+	public int getMouseX() {
+		return (int) mousePosition.x;
+	}
+
+	/**
+	 * Any object that is transformed by the camera (ie. not HUD elements) and uses mouse position in any manner should use
+	 * this method to access the <b>mouse Y</b> coordinate. Such objects should not reference the PApplet's 
+	 * {@link processing.core.PApplet.mouseX mouseY} variable.
+	 * @return mouseY coordinate (accounting for camera displacement)
+	 * @see {@link #getMouseX()}
+	 * @see {@link org.gicentre.utils.move.ZoomPan#getMouseCoord() getMouseCoord()}
+	 */
+	public int getMouseY() {
+		return (int) mousePosition.y;
 	}
 
 	// Main

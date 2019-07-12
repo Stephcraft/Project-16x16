@@ -196,6 +196,23 @@ public class SceneMapEditor extends PScene {
 			applet.player.displayEdit();
 		}
 
+		// Update World Origin
+		if (tool == "PLAY") {
+			applet.originTargetX = (int) util.clamp(applet.originTargetX,
+					applet.worldPosition.x - applet.worldWidth / 2,
+					applet.worldPosition.x + applet.worldWidth / 2 - applet.width);
+			applet.originTargetY = (int) util.clamp(applet.originTargetY,
+					applet.worldPosition.y - applet.worldHeight / 2,
+					applet.worldPosition.y + applet.worldHeight / 2 - applet.height);
+
+			applet.originX = (int) util.clamp(applet.originX, applet.worldPosition.x - applet.worldWidth / 2,
+					applet.worldPosition.x + applet.worldWidth / 2 - applet.width);
+			applet.originY = (int) util.clamp(applet.originY, applet.worldPosition.y - applet.worldHeight / 2,
+					applet.worldPosition.y + applet.worldHeight / 2 - applet.height);
+		}
+	}
+
+	public void drawUI() {
 		// View Viewport Editor
 		worldViewportEditor.updateEditor();
 		worldViewportEditor.displayEditor();
@@ -233,8 +250,8 @@ public class SceneMapEditor extends PScene {
 				if (applet.mousePressEvent) {
 					float x = 20 * 4 / 2 + 10 + i * (20 * 4 + 10);
 					float y = 20 * 4 / 2 + 10;
-					if (applet.mouseX > x - (20 * 4) / 2 && applet.mouseX < x + (20 * 4) / 2
-							&& applet.mouseY > y - (20 * 4) / 2 && applet.mouseY < y + (20 * 4) / 2) {
+					if (applet.getMouseX() > x - (20 * 4) / 2 && applet.getMouseX() < x + (20 * 4) / 2
+							&& applet.getMouseY() > y - (20 * 4) / 2 && applet.getMouseY() < y + (20 * 4) / 2) {
 						editorItem.focus = true;
 						editorItem.setTile(inventory.get(i));
 						editorItem.type = applet.gameGraphics.getType(inventory.get(i));
@@ -305,8 +322,8 @@ public class SceneMapEditor extends PScene {
 		// Move Tool
 		if (tool == "MOVE") {
 			if (applet.mousePressed) {
-				applet.originTargetX += applet.pmouseX - applet.mouseX;
-				applet.originTargetY += applet.pmouseY - applet.mouseY;
+				applet.originTargetX += applet.pmouseX - applet.getMouseX();
+				applet.originTargetY += applet.pmouseY - applet.getMouseY();
 				applet.originX = applet.originTargetX;
 				applet.originY = applet.originTargetY;
 			}
@@ -355,23 +372,8 @@ public class SceneMapEditor extends PScene {
 				}
 			}
 		}
-
-		// Update World Origin
-		if (tool == "PLAY") {
-			applet.originTargetX = (int) util.clamp(applet.originTargetX,
-					applet.worldPosition.x - applet.worldWidth / 2,
-					applet.worldPosition.x + applet.worldWidth / 2 - applet.width);
-			applet.originTargetY = (int) util.clamp(applet.originTargetY,
-					applet.worldPosition.y - applet.worldHeight / 2,
-					applet.worldPosition.y + applet.worldHeight / 2 - applet.height);
-
-			applet.originX = (int) util.clamp(applet.originX, applet.worldPosition.x - applet.worldWidth / 2,
-					applet.worldPosition.x + applet.worldWidth / 2 - applet.width);
-			applet.originY = (int) util.clamp(applet.originY, applet.worldPosition.y - applet.worldHeight / 2,
-					applet.worldPosition.y + applet.worldHeight / 2 - applet.height);
-		}
 	}
-
+	
 	public void displayCreativeInventory() {// complete creative inventory
 
 		// Display Background
@@ -404,9 +406,9 @@ public class SceneMapEditor extends PScene {
 			if (applet.mousePressEvent) {
 				float xx = 20 * 4 / 2 + 10 + x * (20 * 4 + 10);
 				float yy = y * (20 * 4 + 10) + scroll_inventory;
-				if (applet.mouseY > 100) {
-					if (applet.mouseX > xx - (20 * 4) / 2 && applet.mouseX < xx + (20 * 4) / 2
-							&& applet.mouseY > yy - (20 * 4) / 2 && applet.mouseY < yy + (20 * 4) / 2) {
+				if (applet.getMouseY() > 100) {
+					if (applet.getMouseX() > xx - (20 * 4) / 2 && applet.getMouseX() < xx + (20 * 4) / 2
+							&& applet.getMouseY() > yy - (20 * 4) / 2 && applet.getMouseY() < yy + (20 * 4) / 2) {
 						editorItem.focus = true;
 						editorItem.setTile(applet.gameGraphics.graphics.get(i).name);
 					}
@@ -447,8 +449,8 @@ public class SceneMapEditor extends PScene {
 			if (applet.mouseReleaseEvent) {
 				float xx = 20 * 4 / 2 + 10 + i * (20 * 4 + 10);
 				float yy = 20 * 4 / 2 + 10;
-				if (editorItem.focus && applet.mouseX > xx - (20 * 4) / 2 && applet.mouseX < xx + (20 * 4) / 2
-						&& applet.mouseY > yy - (20 * 4) / 2 && applet.mouseY < yy + (20 * 4) / 2) {
+				if (editorItem.focus && applet.getMouseX() > xx - (20 * 4) / 2 && applet.getMouseX() < xx + (20 * 4) / 2
+						&& applet.getMouseY() > yy - (20 * 4) / 2 && applet.getMouseY() < yy + (20 * 4) / 2) {
 					editorItem.focus = false;
 					inventory.set(i, editorItem.id);
 				}

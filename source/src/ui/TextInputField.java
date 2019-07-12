@@ -1,4 +1,4 @@
-package gui;
+package ui;
 
 import processing.core.PApplet;
 import sidescroller.PClass;
@@ -8,7 +8,7 @@ import sidescroller.SideScroller;
  * The PInput Class extends PClass
  * An input field 
  */
-public class PInput extends PClass {
+public class TextInputField extends PClass {
 	private int width;
 	private int height;
 	private int x;
@@ -22,7 +22,7 @@ public class PInput extends PClass {
 	 * Constructor for PInput
 	 * @param  a This a reference to the game //TODO: having variable names that are just letters can be confusing to new contributors
 	 */
-	public PInput(SideScroller a) {
+	public TextInputField(SideScroller a) {
 		super(a);
 
 		width = 200;
@@ -104,8 +104,8 @@ public class PInput extends PClass {
 	 * @return response as boolean
 	 */
 	public boolean hover() {
-		return (applet.mouseX > x - width / 2 && applet.mouseX < x + width / 2 && applet.mouseY > y - height / 2
-				&& applet.mouseY < y + height / 2);
+		return (applet.getMouseX() > x - width / 2 && applet.getMouseX() < x + width / 2 && applet.getMouseY() > y - height / 2
+				&& applet.getMouseY() < y + height / 2);
 	}
 
 	/**
