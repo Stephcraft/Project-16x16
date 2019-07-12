@@ -42,32 +42,29 @@ public class EditorItem extends PClass {
 				focus = false;
 
 				if (mode == "CREATE") {
-					int x = (int) round((applet.getMouseX()) / 4) * 4;
-					int y = (int) round((applet.getMouseY()) / 4) * 4;
-
-					// Create new Instance
+					PVector realPos = applet.camera.getDispToCoord(new PVector(applet.getMouseX(), applet.getMouseY())); // transform from screen mouse pos to game pos
+					// Create new instance from dragged icon
 					switch (type) {
 						case "COLLISION" :
-							applet.collisions.add(new Collision(applet, id, 0, 0));
-							applet.collisions.get(applet.collisions.size() - 1).focus();
-							applet.collisions.get(applet.collisions.size() - 1).pos.x = x;
-							applet.collisions.get(applet.collisions.size() - 1).pos.y = y;
-							applet.keyPressEvent = false;
+							Collision c = new Collision(applet, id, 0, 0);
+							c.pos.x = realPos.x;
+							c.pos.y = realPos.y;
+							c.focus();
+							applet.collisions.add(c);
 							break;
 						case "BACKGROUND" :
-							applet.backgroundObjects.add(new BackgroundObject(applet, id, 0, 0));
-							applet.backgroundObjects.get(applet.backgroundObjects.size() - 1).focus();
-							applet.backgroundObjects.get(applet.backgroundObjects.size() - 1).pos.x = x;
-							applet.backgroundObjects.get(applet.backgroundObjects.size() - 1).pos.y = y;
+							BackgroundObject bObject = new BackgroundObject(applet, id, 0, 0);
+							bObject.pos.x = realPos.x;
+							bObject.pos.y = realPos.y;
+							bObject.focus();
+							applet.backgroundObjects.add(bObject);
 							break;
 						case "OBJECT" :
 							GameObject obj = applet.gameGraphics.getObjectClass(id);
-
+							obj.focus();
+							obj.pos.x = realPos.x;
+							obj.pos.y = realPos.y;
 							applet.gameObjects.add(obj);
-							applet.gameObjects.get(applet.gameObjects.size() - 1).focus();
-							applet.gameObjects.get(applet.gameObjects.size() - 1).pos.x = x;
-							applet.gameObjects.get(applet.gameObjects.size() - 1).pos.y = y;
-
 							break;
 					}
 				}
@@ -80,7 +77,8 @@ public class EditorItem extends PClass {
 			applet.strokeWeight(1);
 			applet.stroke(0, 255, 200);
 			applet.noFill();
-			applet.rect(round((applet.getMouseX()) / 4) * 4, round((applet.getMouseY()) / 4) * 4, image.width, image.height);
+			applet.rect(round((applet.getMouseX()) / 4) * 4, round((applet.getMouseY()) / 4) * 4, image.width,
+					image.height);
 		}
 	}
 
