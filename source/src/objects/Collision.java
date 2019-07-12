@@ -58,7 +58,7 @@ public class Collision extends EditableObject {
 		}
 
 		if (id == null) {
-			if (applet.debug) {
+			if (SideScroller.DEBUG) {
 				applet.noFill();
 				applet.strokeWeight(1);
 				applet.stroke(0, 255, 200);

@@ -115,16 +115,16 @@ public class WorldViewportEditor extends PClass {
 		if (focus) {
 			switch (focusSide) {
 				case "UP" :
-					sideUp = applet.mouseY + applet.originY;
+					sideUp = applet.getMouseY() + applet.originY;
 					break;
 				case "DOWN" :
-					sideDown = applet.mouseY + applet.originY;
+					sideDown = applet.getMouseY() + applet.originY;
 					break;
 				case "LEFT" :
-					sideLeft = applet.mouseX + applet.originX;
+					sideLeft = applet.getMouseX() + applet.originX;
 					break;
 				case "RIGHT" :
-					sideRight = applet.mouseX + applet.originX;
+					sideRight = applet.getMouseX() + applet.originX;
 					break;
 			}
 
@@ -319,7 +319,7 @@ public class WorldViewportEditor extends PClass {
 	}
 
 	private boolean hover(float x, float y, float w, float h) {
-		return (applet.mouseX > x - w / 2 && applet.mouseX < x + w / 2 && applet.mouseY > y - h / 2
-				&& applet.mouseY < y + h / 2);
+		return (applet.getMouseX() > x - w / 2 && applet.getMouseX() < x + w / 2 && applet.getMouseY() > y - h / 2
+				&& applet.getMouseY() < y + h / 2);
 	}
 }

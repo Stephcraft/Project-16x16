@@ -35,15 +35,15 @@ public class EditorItem extends PClass {
 	public void update() {
 
 		if (focus) {
-			pos.x = applet.mouseX;
-			pos.y = applet.mouseY;
+			pos.x = applet.getMouseX();
+			pos.y = applet.getMouseY();
 
 			if (applet.mouseReleaseEvent) {
 				focus = false;
 
 				if (mode == "CREATE") {
-					int x = (int) round((applet.mouseX + applet.originX) / 4) * 4;
-					int y = (int) round((applet.mouseY + applet.originY) / 4) * 4;
+					int x = (int) round((applet.getMouseX() + applet.originX) / 4) * 4;
+					int y = (int) round((applet.getMouseY() + applet.originY) / 4) * 4;
 
 					// Create new Instance
 					switch (type) {
@@ -80,7 +80,7 @@ public class EditorItem extends PClass {
 			applet.strokeWeight(1);
 			applet.stroke(0, 255, 200);
 			applet.noFill();
-			applet.rect(round((applet.mouseX) / 4) * 4, round((applet.mouseY) / 4) * 4, image.width, image.height);
+			applet.rect(round((applet.getMouseX()) / 4) * 4, round((applet.getMouseY()) / 4) * 4, image.width, image.height);
 		}
 	}
 
