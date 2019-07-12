@@ -174,8 +174,8 @@ public class Util {
 			// Read Main
 			if (i == 0) {
 				JSONArray d = item.getJSONArray("scene-dimension");
-				applet.worldPosition.x = d.getInt(0);
-				applet.worldPosition.y = d.getInt(1);
+				applet.worldPosition.x = d.getInt(0); // TODO
+				applet.worldPosition.y = d.getInt(1); // TODO
 				applet.worldWidth = d.getInt(2);
 				applet.worldHeight = d.getInt(3);
 				if (PScene.name == "MAPEDITOR") {

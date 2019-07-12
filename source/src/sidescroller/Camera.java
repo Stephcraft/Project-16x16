@@ -14,7 +14,7 @@ import processing.core.PVector;
  */
 public final class Camera extends ZoomPan {
 
-	private float lerpSpeed = 0.1f, zoom = 1.0f;
+	private float lerpSpeed = 0.05f, zoom = 1.0f;
 	private PVector position, followObjectOffset = new PVector(0, 0);
 	private boolean shaking = false, following = false;
 	private EditableObject followObject;

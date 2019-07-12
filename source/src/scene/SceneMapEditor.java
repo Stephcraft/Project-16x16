@@ -98,7 +98,7 @@ public class SceneMapEditor extends PScene {
 		// Default Tool
 		tool = Tools.MODIFY;
 
-		util.loadLevel("Assets/Storage/Game/Maps/level-1.dat");
+		util.loadLevel("Assets/Storage/Game/Maps/gg-2.dat"); // TODO change level
 	}
 
 	@Override
@@ -176,6 +176,24 @@ public class SceneMapEditor extends PScene {
 				applet.keyPressEvent = false;
 			}
 		}
+		
+		// Editor View
+		if (tool == Tools.MODIFY) {
+			for (int i = 0; i < applet.collisions.size(); i++) {
+				applet.collisions.get(i).displayEdit();
+			}
+			for (int i = 0; i < applet.backgroundObjects.size(); i++) {
+				applet.backgroundObjects.get(i).displayEdit();
+			}
+			for (int i = 0; i < applet.gameObjects.size(); i++) {
+				applet.gameObjects.get(i).displayEdit();
+			}
+		}
+
+		// Editor Object Destination
+		if (tool == Tools.MODIFY) {
+			editorItem.displayDestination();
+		}
 
 		// View Projectiles
 		for (int i = 0; i < applet.projectileObjects.size(); i++) {
@@ -194,45 +212,13 @@ public class SceneMapEditor extends PScene {
 			applet.player.updateEdit();
 			applet.player.displayEdit();
 		}
-
-		// Update World Origin
-//		if (tool == Tools.PLAY) {
-//			applet.originTargetX = (int) util.clamp(applet.originTargetX,
-//					applet.worldPosition.x - applet.worldWidth / 2,
-//					applet.worldPosition.x + applet.worldWidth / 2 - applet.width);
-//			applet.originTargetY = (int) util.clamp(applet.originTargetY,
-//					applet.worldPosition.y - applet.worldHeight / 2,
-//					applet.worldPosition.y + applet.worldHeight / 2 - applet.height);
-//
-//			applet.originX = (int) util.clamp(applet.originX, applet.worldPosition.x - applet.worldWidth / 2,
-//					applet.worldPosition.x + applet.worldWidth / 2 - applet.width);
-//			applet.originY = (int) util.clamp(applet.originY, applet.worldPosition.y - applet.worldHeight / 2,
-//					applet.worldPosition.y + applet.worldHeight / 2 - applet.height);
-//		}
-	}
-
-	public void drawUI() {
+		
 		// View Viewport Editor
 		worldViewportEditor.updateEditor();
 		worldViewportEditor.displayEditor();
+	}
 
-		// Editor View
-		if (tool == Tools.MODIFY) {
-			for (int i = 0; i < applet.collisions.size(); i++) {
-				applet.collisions.get(i).displayEdit();
-			}
-			for (int i = 0; i < applet.backgroundObjects.size(); i++) {
-				applet.backgroundObjects.get(i).displayEdit();
-			}
-			for (int i = 0; i < applet.gameObjects.size(); i++) {
-				applet.gameObjects.get(i).displayEdit();
-			}
-		}
-
-		// Editor Object Destination
-		if (tool == Tools.MODIFY) {
-			editorItem.displayDestination();
-		}
+	public void drawUI() {
 
 		// GUI Slots
 		if (tool != Tools.INVENTORY) {

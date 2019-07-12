@@ -36,18 +36,18 @@ import scene.SceneMapEditor;
  */
 public class SideScroller extends PApplet {
 
-	public boolean FAILED;
+	public boolean FAILED; // unused - consider removing.
 
 	public static final boolean DEBUG = true;
 
-//	public int floor;
+	public int floor; // unused - consider removing.
 
-	public int screenX;
-	public int screenY;
+	public int screenX; // unused - consider removing.
+	public int screenY; // unused - consider removing.
 
-	public int worldWidth;
-	public int worldHeight;
-	public PVector worldPosition;
+	public int worldWidth; // todo remove?
+	public int worldHeight; // todo remove?
+	public PVector worldPosition; // todo remove?
 
 	// Image Resources
 	public PImage graphicsSheet;
@@ -87,8 +87,8 @@ public class SideScroller extends PApplet {
 	public boolean mouseReleaseEvent;
 
 	// Camera Variables
-	private Camera camera;
-	public PVector mousePosition;
+	public Camera camera;
+	private PVector mousePosition;
 
 	/**
 	 * controls how processing handles the window
@@ -106,7 +106,7 @@ public class SideScroller extends PApplet {
 	public void setup() {
 
 		camera = new Camera(this);
-		camera.setMouseMask(SHIFT);
+		camera.setMouseMask(CONTROL);
 
 		// Start Graphics
 		background(0);
@@ -181,7 +181,7 @@ public class SideScroller extends PApplet {
 		camera.setFollowObject(player, new PVector(-width / 2, 0));
 
 		// Set Floor
-//		floor = 400;
+		// floor = 400;
 	}
 
 	public float fc = 0;
@@ -195,14 +195,15 @@ public class SideScroller extends PApplet {
 	public void draw() {
 		surface.setTitle("Sardonyx Prealpha - Frame Rate " + (int) frameRate);
 
+		pushMatrix();
 		drawBelowCamera : { // drawn objects enclosed by pushMatrix() and popMatrix() are transformed by the camera.
-			pushMatrix();
 			// camera.setFollowObjectOffset(new PVector(mouseX - (width / 2), mouseY - (height / 2))); // todo test
-			 camera.setFollowObjectOffset(new PVector(-width/2, -height/2)); // todo
+			camera.setFollowObjectOffset(new PVector(-width / 2, -height / 2)); // todo
 			camera.run();
+			mousePosition = camera.getMouseCoord().copy();
 			mapEditor.draw(); // Handle Draw Scene Method
-			popMatrix();
 		}
+		popMatrix();
 
 		drawAboveCamera : { // Where HUD etc should be drawn
 			mousePosition = new PVector(mouseX, mouseY);
@@ -221,7 +222,8 @@ public class SideScroller extends PApplet {
 				text("Camera Pos: " + camera.getCameraPosition(), width, 55);
 				text("Camera Scale: " + camera.getZoomScale(), width, 65);
 				text("World Pos: " + worldPosition.x + ", " + worldPosition.y, width, 75);
-//				text("Origin: " + originX + ", " + originY, width, 85);
+				text("World Mouse: " + round(camera.getDispToCoord(new PVector(mouseX, mouseY)).x) + ", "
+						+ round(camera.getDispToCoord(new PVector(mouseX, mouseY)).y), width, 85);
 			}
 		}
 
@@ -300,7 +302,7 @@ public class SideScroller extends PApplet {
 	@Override
 	public void mouseWheel(MouseEvent event) {
 		mapEditor.mouseWheel(event);
-		camera.zoomIn(0.05f); // todo not working
+		// camera.zoomIn(0.05f); // todo not working
 	}
 
 	/**
