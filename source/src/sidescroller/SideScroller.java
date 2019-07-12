@@ -351,6 +351,11 @@ public class SideScroller extends PApplet {
 	public int getMouseY() {
 		return (int) mousePosition.y;
 	}
+	
+	@Override
+	public void exit() {
+		// super.exit(); // commented-out prevents ESC from closing game
+	}
 
 	// Main
 	public static void main(String args[]) {
