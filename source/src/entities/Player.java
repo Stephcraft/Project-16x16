@@ -148,7 +148,7 @@ public class Player extends EditableObject {
 			swings.get(i).display();
 		}
 
-		if (direction == LEFT) {
+		if (direction == LEFT) { // flips sprite along vertical line
 			applet.pushMatrix();
 			applet.translate(pos.x - applet.originX, pos.y - applet.originY);
 			applet.scale(-1, 1);
@@ -162,7 +162,7 @@ public class Player extends EditableObject {
 			applet.strokeWeight(1);
 			applet.stroke(0, 255, 200);
 			applet.noFill();
-			applet.rect(pos.x, pos.y, width, height);
+			applet.rect(pos.x - applet.originX, pos.y- applet.originY, width, height); // display player bounding box
 		}
 	}
 

@@ -70,8 +70,8 @@ public final class Camera extends ZoomPan {
 	 */
 	public void run() {
 		transform();
-		zoom = 0.3f;
-		setZoomScale(1.5);
+		zoom = 0.3f; // todo not working?
+		setZoomScale(zoom); // todo not working?
 		if (following) {
 			setPanOffset(PApplet.lerp(getPanOffset().x, -followObject.pos.x - followObjectOffset.x, lerpSpeed),
 					PApplet.lerp(getPanOffset().y, -followObject.pos.y - followObjectOffset.y, lerpSpeed));
