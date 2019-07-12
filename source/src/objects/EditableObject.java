@@ -64,12 +64,12 @@ public class EditableObject extends PClass {
 			// 16x16 support
 			applet.noFill();
 			applet.stroke(255, 100);
-			applet.rect(pos.x - applet.originX, pos.y - applet.originY, 64, 64);
+			applet.rect(pos.x, pos.y, 64, 64);
 
 			// Main Border
 			applet.noFill();
 			applet.stroke(0, 255, 200);
-			applet.rect(pos.x - applet.originX, pos.y - applet.originY, width, height);
+			applet.rect(pos.x, pos.y, width, height);
 
 			// Setup Style
 			applet.strokeWeight(4);
@@ -81,27 +81,27 @@ public class EditableObject extends PClass {
 			// Axis X
 			if (focusX) {
 				applet.stroke(255, 213, 63);
-				applet.line(pos.x - applet.originX, pos.y - applet.originY, pos.x + 100 - applet.originX,
-						pos.y - applet.originY);
-				applet.image(editArrowXActive, pos.x + 100 - applet.originX, pos.y - applet.originY);
+				applet.line(pos.x, pos.y, pos.x + 100,
+						pos.y);
+				applet.image(editArrowXActive, pos.x + 100, pos.y);
 			} else {
 				applet.stroke(239, 64, 96);
-				applet.line(pos.x - applet.originX, pos.y - applet.originY, pos.x + 100 - applet.originX,
-						pos.y - applet.originY);
-				applet.image(editArrowX, pos.x + 100 - applet.originX, pos.y - applet.originY);
+				applet.line(pos.x, pos.y, pos.x + 100,
+						pos.y);
+				applet.image(editArrowX, pos.x + 100, pos.y);
 			}
 
 			// Axis Y
 			if (focusY) {
 				applet.stroke(255, 213, 63);
-				applet.line(pos.x - applet.originX, pos.y - applet.originY, pos.x - applet.originX,
-						pos.y - 100 - applet.originY);
-				applet.image(editArrowYActive, pos.x - applet.originX, pos.y - 100 - applet.originY);
+				applet.line(pos.x, pos.y, pos.x,
+						pos.y - 100);
+				applet.image(editArrowYActive, pos.x, pos.y - 100);
 			} else {
 				applet.stroke(185, 255, 99);
-				applet.line(pos.x - applet.originX, pos.y - applet.originY, pos.x - applet.originX,
-						pos.y - 100 - applet.originY);
-				applet.image(editArrowY, pos.x - applet.originX, pos.y - 100 - applet.originY);
+				applet.line(pos.x, pos.y, pos.x,
+						pos.y - 100);
+				applet.image(editArrowY, pos.x, pos.y - 100);
 			}
 		}
 	}
@@ -226,15 +226,15 @@ public class EditableObject extends PClass {
 
 	// Utility
 	private boolean mouseHoverX() {
-		return (applet.getMouseX() > pos.x - applet.originX + 100 - 6 * 4
-				&& applet.getMouseX() < pos.x - applet.originX + 100 + 6 * 4)
-				&& (applet.getMouseY() > pos.y - applet.originY - 5 * 4 && applet.getMouseY() < pos.y - applet.originY + 5 * 4);
+		return (applet.getMouseX() > pos.x + 100 - 6 * 4
+				&& applet.getMouseX() < pos.x + 100 + 6 * 4)
+				&& (applet.getMouseY() > pos.y - 5 * 4 && applet.getMouseY() < pos.y + 5 * 4);
 	}
 
 	private boolean mouseHoverY() {
-		return (applet.getMouseX() > pos.x - applet.originX - 6 * 4 && applet.getMouseX() < pos.x - applet.originX + 6 * 4)
-				&& (applet.getMouseY() > pos.y - applet.originY - 100 - 5 * 4
-						&& applet.getMouseY() < pos.y - applet.originY - 100 + 5 * 4);
+		return (applet.getMouseX() > pos.x - 6 * 4 && applet.getMouseX() < pos.x + 6 * 4)
+				&& (applet.getMouseY() > pos.y - 100 - 5 * 4
+						&& applet.getMouseY() < pos.y - 100 + 5 * 4);
 	}
 
 	private boolean mouseHover() {
@@ -242,9 +242,9 @@ public class EditableObject extends PClass {
 			return false;
 		} // On Inventory Bar
 
-		return (applet.getMouseX() > pos.x - applet.originX - width / 2
-				&& applet.getMouseX() < pos.x - applet.originX + width / 2)
-				&& (applet.getMouseY() > pos.y - applet.originY - height / 2
-						&& applet.getMouseY() < pos.y - applet.originY + height / 2);
+		return (applet.getMouseX() > pos.x - width / 2
+				&& applet.getMouseX() < pos.x + width / 2)
+				&& (applet.getMouseY() > pos.y - height / 2
+						&& applet.getMouseY() < pos.y + height / 2);
 	}
 }

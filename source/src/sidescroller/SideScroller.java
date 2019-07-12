@@ -40,13 +40,7 @@ public class SideScroller extends PApplet {
 
 	public static final boolean DEBUG = true;
 
-	public int floor;
-
-	// World Origin Coordinates
-	public int originX;
-	public int originY;
-	public int originTargetX;
-	public int originTargetY;
+//	public int floor;
 
 	public int screenX;
 	public int screenY;
@@ -187,7 +181,7 @@ public class SideScroller extends PApplet {
 		camera.setFollowObject(player, new PVector(-width / 2, 0));
 
 		// Set Floor
-		floor = 400;
+//		floor = 400;
 	}
 
 	public float fc = 0;
@@ -204,6 +198,7 @@ public class SideScroller extends PApplet {
 		drawBelowCamera : { // drawn objects enclosed by pushMatrix() and popMatrix() are transformed by the camera.
 			pushMatrix();
 			// camera.setFollowObjectOffset(new PVector(mouseX - (width / 2), mouseY - (height / 2))); // todo test
+			 camera.setFollowObjectOffset(new PVector(-width/2, -height/2)); // todo
 			camera.run();
 			mapEditor.draw(); // Handle Draw Scene Method
 			popMatrix();
@@ -226,7 +221,7 @@ public class SideScroller extends PApplet {
 				text("Camera Pos: " + camera.getCameraPosition(), width, 55);
 				text("Camera Scale: " + camera.getZoomScale(), width, 65);
 				text("World Pos: " + worldPosition.x + ", " + worldPosition.y, width, 75);
-				text("Origin: " + originX + ", " + originY, width, 85);
+//				text("Origin: " + originX + ", " + originY, width, 85);
 			}
 		}
 

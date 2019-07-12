@@ -35,32 +35,32 @@ public class WorldViewportEditor extends PClass {
 		if (applet.mousePressEvent) {
 
 			// Side Up
-			if (hover(applet.worldPosition.x - applet.originX,
-					applet.worldPosition.y - applet.originY - applet.worldHeight / 2, applet.worldWidth, 10)) {
+			if (hover(applet.worldPosition.x,
+					applet.worldPosition.y - applet.worldHeight / 2, applet.worldWidth, 10)) {
 				focusSide = "UP";
 				focus = true;
 				focused = true;
 			}
 
 			// Side Down
-			else if (hover(applet.worldPosition.x - applet.originX,
-					applet.worldPosition.y - applet.originY + applet.worldHeight / 2, applet.worldWidth, 10)) {
+			else if (hover(applet.worldPosition.x,
+					applet.worldPosition.y + applet.worldHeight / 2, applet.worldWidth, 10)) {
 				focusSide = "DOWN";
 				focus = true;
 				focused = true;
 			}
 
 			// Side right
-			else if (hover(applet.worldPosition.x - applet.originX + applet.worldWidth / 2,
-					applet.worldPosition.y - applet.originY, 10, applet.worldHeight)) {
+			else if (hover(applet.worldPosition.x + applet.worldWidth / 2,
+					applet.worldPosition.y, 10, applet.worldHeight)) {
 				focusSide = "RIGHT";
 				focus = true;
 				focused = true;
 			}
 
 			// Side Left
-			else if (hover(applet.worldPosition.x - applet.originX - applet.worldWidth / 2,
-					applet.worldPosition.y - applet.originY, 10, applet.worldHeight)) {
+			else if (hover(applet.worldPosition.x - applet.worldWidth / 2,
+					applet.worldPosition.y, 10, applet.worldHeight)) {
 				focusSide = "LEFT";
 				focus = true;
 				focused = true;
@@ -73,29 +73,29 @@ public class WorldViewportEditor extends PClass {
 		if (!applet.mousePressed) {
 
 			// Side Up
-			if (hover(applet.worldPosition.x - applet.originX,
-					applet.worldPosition.y - applet.originY - applet.worldHeight / 2, applet.worldWidth, 10)) {
+			if (hover(applet.worldPosition.x,
+					applet.worldPosition.y - applet.worldHeight / 2, applet.worldWidth, 10)) {
 				hover = true;
 				hoverSide = "UP";
 			}
 
 			// Side Down
-			else if (hover(applet.worldPosition.x - applet.originX,
-					applet.worldPosition.y - applet.originY + applet.worldHeight / 2, applet.worldWidth, 10)) {
+			else if (hover(applet.worldPosition.x,
+					applet.worldPosition.y + applet.worldHeight / 2, applet.worldWidth, 10)) {
 				hover = true;
 				hoverSide = "DOWN";
 			}
 
 			// Side right
-			else if (hover(applet.worldPosition.x - applet.originX + applet.worldWidth / 2,
-					applet.worldPosition.y - applet.originY, 10, applet.worldHeight)) {
+			else if (hover(applet.worldPosition.x + applet.worldWidth / 2,
+					applet.worldPosition.y, 10, applet.worldHeight)) {
 				hover = true;
 				hoverSide = "RIGHT";
 			}
 
 			// Side Left
-			else if (hover(applet.worldPosition.x - applet.originX - applet.worldWidth / 2,
-					applet.worldPosition.y - applet.originY, 10, applet.worldHeight)) {
+			else if (hover(applet.worldPosition.x - applet.worldWidth / 2,
+					applet.worldPosition.y, 10, applet.worldHeight)) {
 				hover = true;
 				hoverSide = "LEFT";
 			} else {
@@ -115,16 +115,16 @@ public class WorldViewportEditor extends PClass {
 		if (focus) {
 			switch (focusSide) {
 				case "UP" :
-					sideUp = applet.getMouseY() + applet.originY;
+					sideUp = applet.getMouseY();
 					break;
 				case "DOWN" :
-					sideDown = applet.getMouseY() + applet.originY;
+					sideDown = applet.getMouseY();
 					break;
 				case "LEFT" :
-					sideLeft = applet.getMouseX() + applet.originX;
+					sideLeft = applet.getMouseX();
 					break;
 				case "RIGHT" :
-					sideRight = applet.getMouseX() + applet.originX;
+					sideRight = applet.getMouseX();
 					break;
 			}
 
@@ -158,28 +158,28 @@ public class WorldViewportEditor extends PClass {
 		applet.fill(0, 100);
 
 		// TOP
-		applet.quad(0, 0, 0, applet.worldPosition.y - applet.worldHeight / 2 - applet.originY, applet.width,
-				applet.worldPosition.y - applet.worldHeight / 2 - applet.originY, applet.width, 0);
+		applet.quad(0, 0, 0, applet.worldPosition.y - applet.worldHeight / 2, applet.width,
+				applet.worldPosition.y - applet.worldHeight / 2, applet.width, 0);
 
 		// BOTTOM
-		applet.quad(0, applet.height, 0, applet.worldPosition.y + applet.worldHeight / 2 - applet.originY, applet.width,
-				applet.worldPosition.y + applet.worldHeight / 2 - applet.originY, applet.width, applet.height);
+		applet.quad(0, applet.height, 0, applet.worldPosition.y + applet.worldHeight / 2, applet.width,
+				applet.worldPosition.y + applet.worldHeight / 2, applet.width, applet.height);
 
 		// RIGHT
-		applet.quad(applet.worldPosition.x + applet.worldWidth / 2 - applet.originX,
-				applet.worldPosition.y - applet.worldHeight / 2 - applet.originY, applet.width,
-				applet.worldPosition.y - applet.worldHeight / 2 - applet.originY, applet.width,
-				applet.worldPosition.y + applet.worldHeight / 2 - applet.originY,
-				applet.worldPosition.x + applet.worldWidth / 2 - applet.originX,
-				applet.worldPosition.y + applet.worldHeight / 2 - applet.originY);
+		applet.quad(applet.worldPosition.x + applet.worldWidth / 2,
+				applet.worldPosition.y - applet.worldHeight / 2, applet.width,
+				applet.worldPosition.y - applet.worldHeight / 2, applet.width,
+				applet.worldPosition.y + applet.worldHeight / 2,
+				applet.worldPosition.x + applet.worldWidth / 2,
+				applet.worldPosition.y + applet.worldHeight / 2);
 
 		// LEFT
-		applet.quad(applet.worldPosition.x - applet.worldWidth / 2 - applet.originX,
-				applet.worldPosition.y - applet.worldHeight / 2 - applet.originY, 0,
-				applet.worldPosition.y - applet.worldHeight / 2 - applet.originY, 0,
-				applet.worldPosition.y + applet.worldHeight / 2 - applet.originY,
-				applet.worldPosition.x - applet.worldWidth / 2 - applet.originX,
-				applet.worldPosition.y + applet.worldHeight / 2 - applet.originY);
+		applet.quad(applet.worldPosition.x - applet.worldWidth / 2,
+				applet.worldPosition.y - applet.worldHeight / 2, 0,
+				applet.worldPosition.y - applet.worldHeight / 2, 0,
+				applet.worldPosition.y + applet.worldHeight / 2,
+				applet.worldPosition.x - applet.worldWidth / 2,
+				applet.worldPosition.y + applet.worldHeight / 2);
 
 		applet.noFill();
 		applet.strokeWeight(1);
@@ -190,7 +190,7 @@ public class WorldViewportEditor extends PClass {
 			applet.stroke(200, 200, 200);
 		}
 
-		applet.rect(applet.worldPosition.x - applet.originX, applet.worldPosition.y - applet.originY, applet.worldWidth,
+		applet.rect(applet.worldPosition.x, applet.worldPosition.y, applet.worldWidth,
 				applet.worldHeight);
 
 		if (focus || hover) {
@@ -205,24 +205,24 @@ public class WorldViewportEditor extends PClass {
 					}
 
 					// Line
-					applet.line(applet.worldPosition.x - applet.originX - applet.worldWidth / 2,
-							applet.worldPosition.y - applet.worldHeight / 2 - applet.originY,
-							applet.worldPosition.x - applet.originX + applet.worldWidth / 2,
-							applet.worldPosition.y - applet.worldHeight / 2 - applet.originY);
+					applet.line(applet.worldPosition.x - applet.worldWidth / 2,
+							applet.worldPosition.y - applet.worldHeight / 2,
+							applet.worldPosition.x + applet.worldWidth / 2,
+							applet.worldPosition.y - applet.worldHeight / 2);
 
 					// Arrow
-					applet.line(applet.worldPosition.x - applet.originX,
-							applet.worldPosition.y - applet.worldHeight / 2 - applet.originY,
-							applet.worldPosition.x - applet.originX,
-							applet.worldPosition.y - applet.worldHeight / 2 - applet.originY - 50);
-					applet.line(applet.worldPosition.x - applet.originX,
-							applet.worldPosition.y - applet.worldHeight / 2 - applet.originY - 50,
-							applet.worldPosition.x - applet.originX - 20,
-							applet.worldPosition.y - applet.worldHeight / 2 - applet.originY - 50 + 20);
-					applet.line(applet.worldPosition.x - applet.originX,
-							applet.worldPosition.y - applet.worldHeight / 2 - applet.originY - 50,
-							applet.worldPosition.x - applet.originX + 20,
-							applet.worldPosition.y - applet.worldHeight / 2 - applet.originY - 50 + 20);
+					applet.line(applet.worldPosition.x,
+							applet.worldPosition.y - applet.worldHeight / 2,
+							applet.worldPosition.x,
+							applet.worldPosition.y - applet.worldHeight / 2 - 50);
+					applet.line(applet.worldPosition.x,
+							applet.worldPosition.y - applet.worldHeight / 2 - 50,
+							applet.worldPosition.x - 20,
+							applet.worldPosition.y - applet.worldHeight / 2 - 50 + 20);
+					applet.line(applet.worldPosition.x,
+							applet.worldPosition.y - applet.worldHeight / 2 - 50,
+							applet.worldPosition.x + 20,
+							applet.worldPosition.y - applet.worldHeight / 2 - 50 + 20);
 					break;
 
 				case "DOWN" :
@@ -233,24 +233,24 @@ public class WorldViewportEditor extends PClass {
 					}
 
 					// Line
-					applet.line(applet.worldPosition.x - applet.originX - applet.worldWidth / 2,
-							applet.worldPosition.y + applet.worldHeight / 2 - applet.originY,
-							applet.worldPosition.x - applet.originX + applet.worldWidth / 2,
-							applet.worldPosition.y + applet.worldHeight / 2 - applet.originY);
+					applet.line(applet.worldPosition.x - applet.worldWidth / 2,
+							applet.worldPosition.y + applet.worldHeight / 2,
+							applet.worldPosition.x + applet.worldWidth / 2,
+							applet.worldPosition.y + applet.worldHeight / 2);
 
 					// Arrow
-					applet.line(applet.worldPosition.x - applet.originX,
-							applet.worldPosition.y + applet.worldHeight / 2 - applet.originY,
-							applet.worldPosition.x - applet.originX,
-							applet.worldPosition.y + applet.worldHeight / 2 - applet.originY + 50);
-					applet.line(applet.worldPosition.x - applet.originX,
-							applet.worldPosition.y + applet.worldHeight / 2 - applet.originY + 50,
-							applet.worldPosition.x - applet.originX - 20,
-							applet.worldPosition.y + applet.worldHeight / 2 - applet.originY + 50 - 20);
-					applet.line(applet.worldPosition.x - applet.originX,
-							applet.worldPosition.y + applet.worldHeight / 2 - applet.originY + 50,
-							applet.worldPosition.x - applet.originX + 20,
-							applet.worldPosition.y + applet.worldHeight / 2 - applet.originY + 50 - 20);
+					applet.line(applet.worldPosition.x,
+							applet.worldPosition.y + applet.worldHeight / 2,
+							applet.worldPosition.x,
+							applet.worldPosition.y + applet.worldHeight / 2 + 50);
+					applet.line(applet.worldPosition.x,
+							applet.worldPosition.y + applet.worldHeight / 2 + 50,
+							applet.worldPosition.x - 20,
+							applet.worldPosition.y + applet.worldHeight / 2 + 50 - 20);
+					applet.line(applet.worldPosition.x,
+							applet.worldPosition.y + applet.worldHeight / 2 + 50,
+							applet.worldPosition.x + 20,
+							applet.worldPosition.y + applet.worldHeight / 2 + 50 - 20);
 					break;
 
 				case "LEFT" :
@@ -261,24 +261,24 @@ public class WorldViewportEditor extends PClass {
 					}
 
 					// Line
-					applet.line(applet.worldPosition.x - applet.originX - applet.worldWidth / 2,
-							applet.worldPosition.y - applet.worldHeight / 2 - applet.originY,
-							applet.worldPosition.x - applet.originX - applet.worldWidth / 2,
-							applet.worldPosition.y + applet.worldHeight / 2 - applet.originY);
+					applet.line(applet.worldPosition.x - applet.worldWidth / 2,
+							applet.worldPosition.y - applet.worldHeight / 2,
+							applet.worldPosition.x - applet.worldWidth / 2,
+							applet.worldPosition.y + applet.worldHeight / 2);
 
 					// Arrow
-					applet.line(applet.worldPosition.x - applet.worldWidth / 2 - applet.originX,
-							applet.worldPosition.y - applet.originY,
-							applet.worldPosition.x - applet.worldWidth / 2 - applet.originX - 50,
-							applet.worldPosition.y - applet.originY);
-					applet.line(applet.worldPosition.x - applet.worldWidth / 2 - applet.originX - 50,
-							applet.worldPosition.y - applet.originY,
-							applet.worldPosition.x - applet.worldWidth / 2 - applet.originX - 50 + 20,
-							applet.worldPosition.y - applet.originY - 20);
-					applet.line(applet.worldPosition.x - applet.worldWidth / 2 - applet.originX - 50,
-							applet.worldPosition.y - applet.originY,
-							applet.worldPosition.x - applet.worldWidth / 2 - applet.originX - 50 + 20,
-							applet.worldPosition.y - applet.originY + 20);
+					applet.line(applet.worldPosition.x - applet.worldWidth / 2,
+							applet.worldPosition.y,
+							applet.worldPosition.x - applet.worldWidth / 2 - 50,
+							applet.worldPosition.y);
+					applet.line(applet.worldPosition.x - applet.worldWidth / 2 - 50,
+							applet.worldPosition.y,
+							applet.worldPosition.x - applet.worldWidth / 2 - 50 + 20,
+							applet.worldPosition.y - 20);
+					applet.line(applet.worldPosition.x - applet.worldWidth / 2 - 50,
+							applet.worldPosition.y,
+							applet.worldPosition.x - applet.worldWidth / 2 - 50 + 20,
+							applet.worldPosition.y + 20);
 					break;
 				case "RIGHT" :
 					if (hover) {
@@ -288,24 +288,24 @@ public class WorldViewportEditor extends PClass {
 					}
 
 					// Line
-					applet.line(applet.worldPosition.x - applet.originX + applet.worldWidth / 2,
-							applet.worldPosition.y - applet.worldHeight / 2 - applet.originY,
-							applet.worldPosition.x - applet.originX + applet.worldWidth / 2,
-							applet.worldPosition.y + applet.worldHeight / 2 - applet.originY);
+					applet.line(applet.worldPosition.x + applet.worldWidth / 2,
+							applet.worldPosition.y - applet.worldHeight / 2,
+							applet.worldPosition.x + applet.worldWidth / 2,
+							applet.worldPosition.y + applet.worldHeight / 2);
 
 					// Arrow
-					applet.line(applet.worldPosition.x + applet.worldWidth / 2 - applet.originX,
-							applet.worldPosition.y - applet.originY,
-							applet.worldPosition.x + applet.worldWidth / 2 - applet.originX + 50,
-							applet.worldPosition.y - applet.originY);
-					applet.line(applet.worldPosition.x + applet.worldWidth / 2 - applet.originX + 50,
-							applet.worldPosition.y - applet.originY,
-							applet.worldPosition.x + applet.worldWidth / 2 - applet.originX + 50 - 20,
-							applet.worldPosition.y - applet.originY - 20);
-					applet.line(applet.worldPosition.x + applet.worldWidth / 2 - applet.originX + 50,
-							applet.worldPosition.y - applet.originY,
-							applet.worldPosition.x + applet.worldWidth / 2 - applet.originX + 50 - 20,
-							applet.worldPosition.y - applet.originY + 20);
+					applet.line(applet.worldPosition.x + applet.worldWidth / 2,
+							applet.worldPosition.y,
+							applet.worldPosition.x + applet.worldWidth / 2 + 50,
+							applet.worldPosition.y);
+					applet.line(applet.worldPosition.x + applet.worldWidth / 2 + 50,
+							applet.worldPosition.y,
+							applet.worldPosition.x + applet.worldWidth / 2 + 50 - 20,
+							applet.worldPosition.y - 20);
+					applet.line(applet.worldPosition.x + applet.worldWidth / 2 + 50,
+							applet.worldPosition.y,
+							applet.worldPosition.x + applet.worldWidth / 2 + 50 - 20,
+							applet.worldPosition.y + 20);
 					break;
 			}
 		}

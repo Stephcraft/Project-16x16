@@ -42,8 +42,8 @@ public class EditorItem extends PClass {
 				focus = false;
 
 				if (mode == "CREATE") {
-					int x = (int) round((applet.getMouseX() + applet.originX) / 4) * 4;
-					int y = (int) round((applet.getMouseY() + applet.originY) / 4) * 4;
+					int x = (int) round((applet.getMouseX()) / 4) * 4;
+					int y = (int) round((applet.getMouseY()) / 4) * 4;
 
 					// Create new Instance
 					switch (type) {

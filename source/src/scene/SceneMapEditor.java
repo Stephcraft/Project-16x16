@@ -92,12 +92,6 @@ public class SceneMapEditor extends PScene {
 		// Init Window
 		window_saveLevel = new SaveLevelWindow(applet);
 
-		// Default Camera Position
-		applet.originTargetX = -applet.width / 2;
-		applet.originTargetY = -applet.height / 2;
-		applet.originX = applet.originTargetX;
-		applet.originY = applet.originTargetY;
-
 		// Default Scene
 		applet.collisions.add(new Collision(applet, "METAL_WALK_MIDDLE:0", 0, 0));
 
@@ -113,8 +107,8 @@ public class SceneMapEditor extends PScene {
 
 		applet.noStroke();
 		applet.fill(29, 33, 45);
-		applet.rect(applet.worldPosition.x - applet.originX, applet.worldPosition.y - applet.originY, applet.worldWidth,
-				applet.worldHeight);
+		applet.rect(applet.worldPosition.x, applet.worldPosition.y, applet.worldWidth,
+				applet.worldHeight); // todo
 
 		displayGrid();
 
@@ -202,19 +196,19 @@ public class SceneMapEditor extends PScene {
 		}
 
 		// Update World Origin
-		if (tool == Tools.PLAY) {
-			applet.originTargetX = (int) util.clamp(applet.originTargetX,
-					applet.worldPosition.x - applet.worldWidth / 2,
-					applet.worldPosition.x + applet.worldWidth / 2 - applet.width);
-			applet.originTargetY = (int) util.clamp(applet.originTargetY,
-					applet.worldPosition.y - applet.worldHeight / 2,
-					applet.worldPosition.y + applet.worldHeight / 2 - applet.height);
-
-			applet.originX = (int) util.clamp(applet.originX, applet.worldPosition.x - applet.worldWidth / 2,
-					applet.worldPosition.x + applet.worldWidth / 2 - applet.width);
-			applet.originY = (int) util.clamp(applet.originY, applet.worldPosition.y - applet.worldHeight / 2,
-					applet.worldPosition.y + applet.worldHeight / 2 - applet.height);
-		}
+//		if (tool == Tools.PLAY) {
+//			applet.originTargetX = (int) util.clamp(applet.originTargetX,
+//					applet.worldPosition.x - applet.worldWidth / 2,
+//					applet.worldPosition.x + applet.worldWidth / 2 - applet.width);
+//			applet.originTargetY = (int) util.clamp(applet.originTargetY,
+//					applet.worldPosition.y - applet.worldHeight / 2,
+//					applet.worldPosition.y + applet.worldHeight / 2 - applet.height);
+//
+//			applet.originX = (int) util.clamp(applet.originX, applet.worldPosition.x - applet.worldWidth / 2,
+//					applet.worldPosition.x + applet.worldWidth / 2 - applet.width);
+//			applet.originY = (int) util.clamp(applet.originY, applet.worldPosition.y - applet.worldHeight / 2,
+//					applet.worldPosition.y + applet.worldHeight / 2 - applet.height);
+//		}
 	}
 
 	public void drawUI() {
@@ -330,10 +324,10 @@ public class SceneMapEditor extends PScene {
 		// Move Tool
 		if (tool == Tools.MOVE) {
 			if (applet.mousePressed) {
-				applet.originTargetX += applet.pmouseX - applet.getMouseX();
-				applet.originTargetY += applet.pmouseY - applet.getMouseY();
-				applet.originX = applet.originTargetX;
-				applet.originY = applet.originTargetY;
+//				applet.originTargetX += applet.pmouseX - applet.getMouseX();
+//				applet.originTargetY += applet.pmouseY - applet.getMouseY();
+//				applet.originX = applet.originTargetX;
+//				applet.originY = applet.originTargetY;
 			}
 		}
 
@@ -483,10 +477,15 @@ public class SceneMapEditor extends PScene {
 				y++;
 				x = 0;
 			}
-			applet.line(x * (4 * 16) - (applet.originX % (16 * 4)) - ((4 * 16) / 2), 0,
-					x * (4 * 16) - (applet.originX % (16 * 4)) - ((4 * 16) / 2), applet.height);
-			applet.line(0, y * (4 * 16) - (applet.originY % (16 * 4)) - ((4 * 16) / 2), applet.width,
-					y * (4 * 16) - (applet.originY % (16 * 4)) - ((4 * 16) / 2));
+//			applet.line(x * (4 * 16) - (applet.originX % (16 * 4)) - ((4 * 16) / 2), 0,
+//					x * (4 * 16) - (applet.originX % (16 * 4)) - ((4 * 16) / 2), applet.height);
+//			applet.line(0, y * (4 * 16) - (applet.originY % (16 * 4)) - ((4 * 16) / 2), applet.width,
+//					y * (4 * 16) - (applet.originY % (16 * 4)) - ((4 * 16) / 2)); // todo
+			
+			applet.line(x * (4 * 16) - (0 % (16 * 4)) - ((4 * 16) / 2), 0,
+					x * (4 * 16) - (0 % (16 * 4)) - ((4 * 16) / 2), applet.height);
+			applet.line(0, y * (4 * 16) - (0 % (16 * 4)) - ((4 * 16) / 2), applet.width,
+					y * (4 * 16) - (0 % (16 * 4)) - ((4 * 16) / 2)); // todo
 		}
 	}
 
