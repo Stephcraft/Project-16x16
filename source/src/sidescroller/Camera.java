@@ -18,6 +18,7 @@ public final class Camera extends ZoomPan {
 	private PVector position, followObjectOffset = new PVector(0, 0);
 	private boolean shaking = false, following = false;
 	private EditableObject followObject;
+	private float zoomMax = 100, zoomMin = 0;
 
 	/**
 	 * The most basic constructor.
@@ -48,7 +49,7 @@ public final class Camera extends ZoomPan {
 		super(applet);
 		this.followObject = followObject;
 		following = true;
-//		setPanOffset(0, 0);
+		// setPanOffset(0, 0);
 	}
 
 	/**
@@ -62,7 +63,7 @@ public final class Camera extends ZoomPan {
 		this.followObject = followObject;
 		following = true;
 		followObjectOffset = offset.copy();
-//		setPanOffset(0, 0);
+		// setPanOffset(0, 0);
 	}
 
 	/**
@@ -70,11 +71,12 @@ public final class Camera extends ZoomPan {
 	 */
 	public void run() {
 		transform();
-		zoom = 0.3f; // todo not working?
-		setZoomScale(zoom); // todo not working?
+		float scale = PApplet.lerp((float) getZoomScaleX(), zoom, lerpSpeed);
+		setZoomScaleX(scale);
+		setZoomScaleY(scale);
 		if (following) {
-			setPanOffset(PApplet.lerp(getPanOffset().x, -followObject.pos.x - followObjectOffset.x, lerpSpeed),
-					PApplet.lerp(getPanOffset().y, -followObject.pos.y - followObjectOffset.y, lerpSpeed));
+			setPanOffset(PApplet.lerp(getPanOffset().x, (-followObject.pos.x - followObjectOffset.x) * zoom, lerpSpeed),
+					PApplet.lerp(getPanOffset().y, (-followObject.pos.y - followObjectOffset.y) * zoom, lerpSpeed));
 		} else {
 			// setPanOffset(PApplet.lerp(getPanOffset().x, position.x, lerpSpeed),
 			// PApplet.lerp(getPanOffset().y, position.y, lerpSpeed));
@@ -115,9 +117,10 @@ public final class Camera extends ZoomPan {
 
 	/**
 	 * Shake camera around current position
+	 * @param duration Duration in frames.
 	 * @param force
 	 */
-	public void shake(float force) { // todo
+	public void shake(Float duration, float force) { // todo
 		shaking = true;
 		// will need to record frame # when it began
 		// and initial/return position
@@ -133,12 +136,24 @@ public final class Camera extends ZoomPan {
 		zoom = (float) zoomScale;
 	}
 
+	@Override
+	public void setMinZoomScale(double minZoomScale) {
+		zoomMin = (float) minZoomScale;
+	}
+
+	@Override
+	public void setMaxZoomScale(double maxZoomScale) {
+		zoomMax = (float) maxZoomScale;
+	}
+
 	public void zoomIn(float amount) {
-		zoom -= amount;
+		zoom += amount;
+		zoom = PApplet.min(zoom, zoomMax);
 	}
 
 	public void zoomOut(float amount) {
-		zoom += amount;
+		zoom -= amount;
+		zoom = PApplet.max(zoom, zoomMin);
 	}
 
 	/**

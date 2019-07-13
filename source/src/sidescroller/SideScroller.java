@@ -107,6 +107,8 @@ public class SideScroller extends PApplet {
 
 		camera = new Camera(this);
 		camera.setMouseMask(CONTROL);
+		camera.setMinZoomScale(0.3);
+		camera.setMaxZoomScale(3);
 
 		// Start Graphics
 		background(0);
@@ -211,19 +213,21 @@ public class SideScroller extends PApplet {
 
 			if (DEBUG) {
 				fill(255, 0, 0);
-				textSize(15);
+				textSize(20);
 				textAlign(RIGHT, CENTER);
 
+				int lineOffset = 15;
 				text("X: " + player.pos.x + "Y: " + player.pos.y, width, 5);
-				text("SX: " + player.speedX + " SY: " + player.speedY, width, 15);
-				text("anim: " + player.animation.name, width, 25);
-				text("f: " + player.animation.frame + " ends: " + player.animation.length, width, 35);
-				text("fly: " + player.flying + " att: " + player.attack + " dash: " + player.dashing, width, 45);
-				text("Camera Pos: " + camera.getCameraPosition(), width, 55);
-				text("Camera Scale: " + camera.getZoomScale(), width, 65);
-				text("World Pos: " + worldPosition.x + ", " + worldPosition.y, width, 75);
+				text("SX: " + player.speedX + " SY: " + player.speedY, width, 5 + lineOffset * 1);
+				text("anim: " + player.animation.name, width, 5 + lineOffset * 2);
+				text("f: " + player.animation.frame + " ends: " + player.animation.length, width, 5 + lineOffset * 3);
+				text("fly: " + player.flying + " att: " + player.attack + " dash: " + player.dashing, width,
+						5 + lineOffset * 4);
+				text("Camera Pos: " + camera.getCameraPosition(), width, 5 + lineOffset * 5);
+				text("Camera Zoom: " + String.format("%.2f", camera.getZoomScale()), width, 5 + lineOffset * 6);
+				text("World Pos: " + worldPosition.x + ", " + worldPosition.y, width, 5 + lineOffset * 7);
 				text("World Mouse: " + round(camera.getDispToCoord(new PVector(mouseX, mouseY)).x) + ", "
-						+ round(camera.getDispToCoord(new PVector(mouseX, mouseY)).y), width, 85);
+						+ round(camera.getDispToCoord(new PVector(mouseX, mouseY)).y), width, 5 + lineOffset * 8);
 			}
 		}
 
@@ -262,7 +266,7 @@ public class SideScroller extends PApplet {
 
 		switch (event.getKey()) { // must be caps
 			case 'Z' :
-				frameRate(60);
+				frameRate(100);
 				break;
 			case 'X' :
 				frameRate(10);
@@ -302,7 +306,11 @@ public class SideScroller extends PApplet {
 	@Override
 	public void mouseWheel(MouseEvent event) {
 		mapEditor.mouseWheel(event);
-		// camera.zoomIn(0.05f); // todo not working
+		if (event.getAmount() == -1.0) {
+			camera.zoomIn(0.02f);
+		} else {
+			camera.zoomOut(0.02f);
+		}
 	}
 
 	/**
@@ -351,7 +359,7 @@ public class SideScroller extends PApplet {
 	public int getMouseY() {
 		return (int) mousePosition.y;
 	}
-	
+
 	@Override
 	public void exit() {
 		// super.exit(); // commented-out prevents ESC from closing game
