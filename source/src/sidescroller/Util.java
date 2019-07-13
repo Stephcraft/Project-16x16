@@ -151,7 +151,7 @@ public class Util {
 	}
 
 	// Game
-	public void loadLevel(String src) {
+	public void loadLevel(String src) { // todo save camera position/settings.
 		String[] script = applet.loadStrings(src);
 		String scriptD = decrypt(PApplet.join(script, "\n"));
 
@@ -174,8 +174,10 @@ public class Util {
 			// Read Main
 			if (i == 0) {
 				JSONArray d = item.getJSONArray("scene-dimension");
-				applet.worldPosition.x = d.getInt(0); // TODO
-				applet.worldPosition.y = d.getInt(1); // TODO
+//				applet.worldPosition.x = d.getInt(0); // TODO
+//				applet.worldPosition.y = d.getInt(1); // TODO
+				applet.worldPosition.x = 0; // TODO
+				applet.worldPosition.y = 0; // TODO
 				applet.worldWidth = d.getInt(2);
 				applet.worldHeight = d.getInt(3);
 				if (PScene.name == "MAPEDITOR") {
