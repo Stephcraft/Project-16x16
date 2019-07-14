@@ -148,7 +148,8 @@ public class SideScroller extends PApplet {
 		camera.setMouseMask(CONTROL);
 		camera.setMinZoomScale(0.3);
 		camera.setMaxZoomScale(3);
-//		camera.setDeadZone(new PVector(width * 0.25f, height * 0.25f), new PVector(width * 0.75f, height * 0.75f)); // example
+//		camera.setScreenDeadZone(new PVector(width * 0.25f, height * 0.25f), new PVector(width * 0.75f, height * 0.75f)); // example
+		camera.setWorldDeadZone(new PVector(50, 0), new PVector(width * 0.25f, height * 0.25f)); // example
 		camera.setFollowObject(player);
 	}
 
@@ -196,7 +197,8 @@ public class SideScroller extends PApplet {
 							// camera.
 			camera.run();
 			mousePosition = camera.getMouseCoord().copy();
-			mapEditor.draw(); // Handle Draw Scene Method
+			mapEditor.draw(); // Handle Draw Scene Method - draws player, world, etc.
+			camera.postDebug(); // for development
 		}
 		popMatrix();
 
@@ -218,8 +220,8 @@ public class SideScroller extends PApplet {
 						5 + lineOffset * 4);
 				text("Camera Pos: " + camera.getCameraPosition(), width, 5 + lineOffset * 5);
 				text("Camera Zoom: " + String.format("%.2f", camera.getZoomScale()), width, 5 + lineOffset * 6);
-				text("World Mouse: " + round(camera.getMouseCoord().x) + ", " + round(camera.getMouseCoord().y), width,
-						5 + lineOffset * 7);
+				text("World Mouse: " + round(camera.getMouseCoord().x) + ", " + round(camera.getMouseCoord().y),
+						width, 5 + lineOffset * 7);
 			}
 		}
 
@@ -235,6 +237,13 @@ public class SideScroller extends PApplet {
 		keyReleaseEvent = false;
 		mousePressEvent = false;
 		mouseReleaseEvent = false;
+
+		if (keys.contains(75)) { // K - for development
+			camera.rotate(-PI / 60);
+		}
+		if (keys.contains(76)) { // L - for development
+			camera.rotate(PI / 60);
+		}
 	}
 
 	/**
@@ -258,19 +267,22 @@ public class SideScroller extends PApplet {
 
 		switch (event.getKey()) { // must be caps
 		case 'Z':
-			frameRate(100);
+			frameRate(2000);
 			break;
 		case 'X':
 			frameRate(10);
 			break;
 		case 'V':
-			camera.toggleDeadZone();
+			camera.toggleDeadZone(); // for development
 			break;
 		case 'C':
-			camera.setCameraPosition(camera.getMouseCoord());
+			camera.setCameraPosition(camera.getMouseCoord()); // for development
 			break;
 		case 'F':
-			camera.setFollowObject(player);
+			camera.setFollowObject(player); // for development
+			break;
+		case 'G':
+			camera.shake(0.4f); // for development
 			break;
 		default:
 			switch (event.getKeyCode()) { // non-character keys

@@ -6,13 +6,17 @@ import objects.EditableObject;
 import processing.core.PApplet;
 import processing.core.PVector;
 
+import static processing.core.PApplet.sin;
+import static processing.core.PApplet.cos;
+
 /**
  * Camera class. Extends {@link org.gicentre.utils.move.ZoomPan ZoomPan},
  * offering some bespoke methods relating to Project-16x16. At the moment, the
  * camera uses {@link PApplet#lerp(float, float, float) lerp()} to follow
  * objects or go to target position.
  * 
- * @todo: deadzone mode can be choppy when tracking + shaking
+ * @todo deadzone mode can be choppy when tracking; shaking; worlddeadzone;
+ *       zoom-to-fit (multiple entities)
  * @author micycle1
  * @see {@link org.gicentre.utils.move.ZoomPan ZoomPan}
  */
@@ -20,12 +24,15 @@ public final class Camera extends ZoomPan {
 
 	private SideScroller applet;
 	private float lerpSpeed = 0.05f, zoom = 1.0f;
+	private float rotation = 0, shakeRotationOffset = 0;
 	private PVector targetPosition, logicalPosition, offset;
 	private PVector followObjectOffset = new PVector(0, 0), shakeOffset = new PVector(0, 0);
 	private PVector deadZoneP1, deadZoneP2;
-	private boolean shaking = false, following = false, deadZone = false;
+	private boolean following = false, deadZoneScreen = false, deadZoneWorld = false;
+	private int deadZoneTypeLast = 0;
 	private EditableObject followObject;
 	private float zoomMax = 100, zoomMin = 0;
+	private float trauma = 0, traumaDecay = 0.02f;
 
 	/**
 	 * The most basic constructor. Initialises the camera at position (0, 0).
@@ -42,6 +49,7 @@ public final class Camera extends ZoomPan {
 	}
 
 	/**
+	 * Constructor. Can specify camera's initial fixed position.
 	 * 
 	 * @param applet        Target applet ({@link SideScroller}).
 	 * @param startPosition Initial camera position.
@@ -97,12 +105,18 @@ public final class Camera extends ZoomPan {
 		applet.noFill();
 		applet.stroke(0, 150, 255);
 		applet.strokeWeight(2);
-		int length = 20;
+		final int length = 20;
 		applet.line(applet.width / 2 - length, applet.height / 2, applet.width / 2 + length, applet.height / 2);
 		applet.line(applet.width / 2, applet.height / 2 - length, applet.width / 2, applet.height / 2 + length);
+		applet.pushMatrix();
+		applet.translate(offset.x, offset.y);
+		applet.rotate(rotation);
+		applet.translate(-offset.x, -offset.y);
+		applet.line(applet.width / 2 - length * 2, applet.height / 2, applet.width / 2 + length * 2, applet.height / 2);
+		applet.popMatrix();
 		if (following) {
 			applet.rect(getCoordToDisp(followObject.pos).x, getCoordToDisp(followObject.pos).y, length * 2, length * 2);
-			if (deadZone) {
+			if (deadZoneScreen) {
 				applet.rectMode(PApplet.CORNER);
 				applet.rect(deadZoneP1.x, deadZoneP1.y, deadZoneP2.x - deadZoneP1.x, deadZoneP2.y - deadZoneP1.y);
 				applet.rectMode(PApplet.CENTER);
@@ -115,16 +129,23 @@ public final class Camera extends ZoomPan {
 
 	/**
 	 * Updates the camera. Should be put in the {@link SideScroller#Draw draw()}
-	 * loop.
+	 * loop of the PApplet.
 	 */
 	public void run() {
+		offset = new PVector(applet.width / 2, applet.height / 2);
+
+		applet.translate(offset.x, offset.y);
+		applet.rotate(rotation + shakeRotationOffset);
+		applet.translate(-offset.x, -offset.y);
+
 		transform();
+
 		float scale = PApplet.lerp((float) getZoomScaleX(), zoom, lerpSpeed);
 		setZoomScaleX(scale);
 		setZoomScaleY(scale);
-		offset = new PVector(applet.width / 2, applet.height / 2);
 
-		if (following && ((deadZone && !withinDeadZone()) || !deadZone)) {
+		if (following && (((deadZoneScreen && !withinScreenDeadZone()) || ((deadZoneWorld && !withinWorldDeadZone()))
+				|| (!deadZoneScreen && !deadZoneWorld)))) {
 			setPanOffset(
 					PApplet.lerp(getPanOffset().x,
 							(-followObject.pos.x - followObjectOffset.x - shakeOffset.x + offset.x) * zoom, lerpSpeed),
@@ -136,19 +157,33 @@ public final class Camera extends ZoomPan {
 					PApplet.lerp(getPanOffset().y, (targetPosition.y - shakeOffset.y + offset.y) * zoom, lerpSpeed));
 		}
 
-		if (shaking) {
-			// todo
+		if (trauma > 0) { // 400 and 0.35 seem suitable values
+			trauma -= traumaDecay;
+
+			float x = (trauma * trauma) * applet.random(-1, 1) * 400;
+			float y = (trauma * trauma) * applet.random(-1, 1) * 400;
+			shakeOffset = new PVector(x, y);
+			shakeRotationOffset = (trauma * trauma) * applet.random(-1, 1) * 0.35f;
+			if (trauma == 0) {
+				shakeOffset = new PVector(0, 0);
+				shakeRotationOffset = 0;
+			}
 		}
 	}
 
 	/**
-	 * Determines whether the following-object is within deadzone.
-	 * 
-	 * @return
+	 * Debug info for worldDeadZone area (since it is part of the world, it cannot
+	 * be drawn above the camera and msut be called after).
 	 */
-	private boolean withinDeadZone() {
-		PVector coord = applet.camera.getCoordToDisp(followObject.pos); // object screen coord
-		return withinRegion(coord, deadZoneP1, deadZoneP2);
+	public void postDebug() {
+		if (deadZoneWorld) {
+			applet.noFill();
+			applet.stroke(0, 150, 255);
+			applet.strokeWeight(2);
+			applet.rectMode(PApplet.CORNER);
+			applet.rect(deadZoneP1.x, deadZoneP1.y, deadZoneP2.x - deadZoneP1.x, deadZoneP2.y - deadZoneP1.y);
+			applet.rectMode(PApplet.CENTER);
+		}
 	}
 
 	/**
@@ -184,40 +219,81 @@ public final class Camera extends ZoomPan {
 	}
 
 	/**
-	 * Shakes the camera around current position
+	 * Shakes the camera around current position. Force is additive, so successive
+	 * shakes produce more camera shaking.
 	 * 
-	 * @param duration Duration in frames.
-	 * @param force
+	 * @param force shaking force (should be at most 1).
 	 */
-	public void shake(Float duration, float force) { // todo
-		shaking = true;
-		// will need to record frame # when it began
-		// and initial/return position
+	public void shake(float force) { // todo
+		trauma = PApplet.min(1, trauma + force);
 	}
 
-	//
-	// coords are screen coords, not game coords todo game coord too?
-	// todo deadzone should scale with zoom?
 	/**
-	 * Defines the region in which the tracked object can move without the camera
-	 * following. When the tracked object exits the region, the camera will track
-	 * the object until it returns within the region.
+	 * Defines the screen region in which the tracked object can move without the
+	 * camera following. When the tracked object exits the region, the camera will
+	 * track the object until it returns within the region.
 	 * 
-	 * @param point1 Coordinate 1
-	 * @param point2 Coordinate 2 (opposite corner)
+	 * @param point1 Coordinate 1 (Screen coordinate)
+	 * @param point2 Coordinate 2 (Screen coordinate - the point opposite point1)
+	 * @see {@link #setWorldDeadZone(PVector, PVector) setWorldDeadZone()}
 	 */
-	public void setDeadZone(PVector point1, PVector point2) {
-		deadZone = true; // auto enable
+	public void setScreenDeadZone(PVector point1, PVector point2) {
+		deadZoneScreen = true;
+		deadZoneWorld = false;
+		deadZoneTypeLast = 0;
 		deadZoneP1 = point1.copy();
 		deadZoneP2 = point2.copy();
 	}
 
 	/**
-	 * Toggles the deadzone active/inactive.
+	 * Determines whether the following-object is within the screen deadzone.
+	 * 
+	 * @return
+	 */
+	private boolean withinScreenDeadZone() {
+		PVector coord = getCoordToDisp(followObject.pos); // object screen coord
+		return withinRegion(coord, deadZoneP1, deadZoneP2);
+	}
+
+	/**
+	 * Defines the game world region in which the tracked object can move without
+	 * the camera following. When the tracked object exits the region, the camera
+	 * will track the object until it returns within the region.
+	 * 
+	 * @param point1 Coordinate 1 (Screen coordinate)
+	 * @param point2 Coordinate 2 (Screen coordinate - the point opposite point1)
+	 * @see {@link #setScreenDeadZone(PVector, PVector) setScreenDeadZone()}
+	 */
+	public void setWorldDeadZone(PVector point1, PVector point2) {
+		deadZoneWorld = true;
+		deadZoneScreen = false;
+		deadZoneTypeLast = 1;
+		deadZoneP1 = point1.copy();
+		deadZoneP2 = point2.copy();
+	}
+
+	/**
+	 * Determines whether the following-object is within the world deadzone.
+	 * 
+	 * @return
+	 */
+	private boolean withinWorldDeadZone() {
+		PVector coord = followObject.pos;
+		return withinRegion(coord, deadZoneP1, deadZoneP2);
+	}
+
+	/**
+	 * Toggles the most recently assigned deadzone inactive/active.
 	 */
 	public void toggleDeadZone() {
 		if (deadZoneP1 != null && deadZoneP2 != null) {
-			deadZone = !deadZone;
+			if (deadZoneTypeLast == 0) { // 0 is screen
+				deadZoneScreen = !deadZoneScreen;
+			}
+			if (deadZoneTypeLast == 1) { // 1 is world
+				deadZoneWorld = !deadZoneWorld;
+			}
+
 		} else {
 			System.err.print("Define a deadzone first");
 		}
@@ -233,6 +309,24 @@ public final class Camera extends ZoomPan {
 	public void setCameraPosition(PVector position) {
 		following = false;
 		this.targetPosition = new PVector(-position.x, -position.y);
+	}
+
+	/**
+	 * Set camera rotation (rotates around camera position).
+	 * 
+	 * @param angle radians
+	 */
+	public void setRotation(float angle) {
+		rotation = angle;
+	}
+
+	/**
+	 * Modify existing rotation.
+	 * 
+	 * @param angle radians
+	 */
+	public void rotate(float angle) {
+		rotation += angle;
 	}
 
 	@Override
@@ -261,8 +355,9 @@ public final class Camera extends ZoomPan {
 	}
 
 	/**
-	 * Specify lerp (linear interpolation) speed for camera motion. Default = 0.02
-	 * (moves 2% towards target per frame). Smaller values provide a smoother, less
+	 * Specify lerp (linear interpolation) speed for camera motion. Default = 0.05.
+	 * Since the lerp is calculated per-frame (after prior motion), the camera
+	 * motion is effectively non-linear. Smaller values provide a smoother, less
 	 * snappy, slower camera.
 	 * 
 	 * @param lerpSpeed Range = [0-1.0]
@@ -300,6 +395,22 @@ public final class Camera extends ZoomPan {
 	public String getCameraPosition() {
 		logicalPosition = PVector.sub(getPanOffset(), offset); // offset camera to center screen
 		return PApplet.round(-logicalPosition.x) + ", " + PApplet.round(-logicalPosition.y);
+	}
+
+	/**
+	 * Return the world positon the mouse is over, accounting for camera rotation.
+	 * NOT WORKING FULLY. todo
+	 * 
+	 * @return
+	 */
+	private PVector getRotationMouseCoord() { // return mouseCoord, acc
+		logicalPosition = PVector.sub(getPanOffset(), offset); // offset camera to center screen
+		PVector z = new PVector(getMouseCoord().x - logicalPosition.x, getMouseCoord().y + logicalPosition.y);
+		PVector n = new PVector(
+				(z.x * cos(rotation + shakeRotationOffset)) + (z.y * sin(rotation + shakeRotationOffset)),
+				z.x * sin(rotation + shakeRotationOffset) - z.y * cos(rotation + shakeRotationOffset));
+		n = new PVector((logicalPosition.x + n.x), -(logicalPosition.y + n.y));
+		return n;
 	}
 
 }
