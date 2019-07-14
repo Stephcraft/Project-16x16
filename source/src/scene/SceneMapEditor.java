@@ -107,8 +107,8 @@ public class SceneMapEditor extends PScene {
 
 		applet.noStroke();
 		applet.fill(29, 33, 45);
-		applet.rect(applet.worldPosition.x, applet.worldPosition.y, applet.worldWidth,
-				applet.worldHeight); // todo
+//		applet.rect(applet.worldPosition.x, applet.worldPosition.y, applet.worldWidth,
+//				applet.worldHeight); // todo
 
 		displayGrid();
 
