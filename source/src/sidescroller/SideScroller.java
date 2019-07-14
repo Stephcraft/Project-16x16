@@ -36,18 +36,7 @@ import scene.SceneMapEditor;
  */
 public class SideScroller extends PApplet {
 
-	public boolean FAILED; // unused - consider removing.
-
 	public static final boolean DEBUG = true;
-
-	public int floor; // unused - consider removing.
-
-	public int screenX; // unused - consider removing.
-	public int screenY; // unused - consider removing.
-
-	public int worldWidth; // todo remove?
-	public int worldHeight; // todo remove?
-	public PVector worldPosition; // todo remove?
 
 	// Image Resources
 	public PImage graphicsSheet;
@@ -95,7 +84,7 @@ public class SideScroller extends PApplet {
 	 */
 	@Override
 	public void settings() {
-		size((int) (1280 * 1.0), (int) (720 * 1.0), FX2D); // *1.5 //Changed to 16:9
+		size(1280, 720, FX2D);
 	}
 
 	/**
@@ -128,12 +117,12 @@ public class SideScroller extends PApplet {
 		strokeCap(SQUARE);
 
 		// Setup DM
-		DM.setup(this);
+		DM.setup(this); // what is this?
 
 		// Create Option Class
 		options = new Options();
 
-		// Default frameRates
+		// Default frameRate
 		frameRate(60);
 
 		deltaTime = 1;
@@ -147,14 +136,6 @@ public class SideScroller extends PApplet {
 
 		// Create Game Graphics
 		gameGraphics = new GameGraphics(this);
-
-		// Set Screen Size
-		screenX = width - 400;
-		screenY = height - 400;
-
-		worldWidth = width * 2;
-		worldHeight = height;
-		worldPosition = new PVector(0, 0);
 
 		// Create scene
 		mapEditor = new SceneMapEditor(this);
@@ -213,7 +194,6 @@ public class SideScroller extends PApplet {
 		pushMatrix();
 		drawBelowCamera: { // drawn objects enclosed by pushMatrix() and popMatrix() are transformed by the
 							// camera.
-//			camera.setFollowObjectOffset(new PVector(-width / 2, -height / 2)); // todo
 			camera.run();
 			mousePosition = camera.getMouseCoord().copy();
 			mapEditor.draw(); // Handle Draw Scene Method
@@ -363,10 +343,11 @@ public class SideScroller extends PApplet {
 	/**
 	 * Any object that is transformed by the camera (ie. not HUD elements) and uses
 	 * mouse position in any manner should use this method to access the <b>mouse
-	 * X</b> coordinate. Such objects should not reference the PApplet's
-	 * {@link processing.core.PApplet.mouseX mouseX} variable.
+	 * X</b> coordinate (ie. where the mouse is in the game world). Such objects
+	 * should not reference the PApplet's {@link processing.core.PApplet.mouseX
+	 * mouseX} variable.
 	 * 
-	 * @return mouseX coordinate (accounting for camera displacement)
+	 * @return mouseX coordinate (accounting for camera displacement).
 	 * @see {@link #getMouseY()}
 	 * @see {@link org.gicentre.utils.move.ZoomPan#getMouseCoord() getMouseCoord()}
 	 */
@@ -377,10 +358,11 @@ public class SideScroller extends PApplet {
 	/**
 	 * Any object that is transformed by the camera (ie. not HUD elements) and uses
 	 * mouse position in any manner should use this method to access the <b>mouse
-	 * Y</b> coordinate. Such objects should not reference the PApplet's
-	 * {@link processing.core.PApplet.mouseX mouseY} variable.
+	 * Y</b> coordinate (ie. where the mouse is in the game world). Such objects
+	 * should not reference the PApplet's {@link processing.core.PApplet.mouseX
+	 * mouseY} variable.
 	 * 
-	 * @return mouseY coordinate (accounting for camera displacement)
+	 * @return mouseY coordinate (accounting for camera displacement).
 	 * @see {@link #getMouseX()}
 	 * @see {@link org.gicentre.utils.move.ZoomPan#getMouseCoord() getMouseCoord()}
 	 */
@@ -390,7 +372,7 @@ public class SideScroller extends PApplet {
 
 	@Override
 	public void exit() {
-		// super.exit(); // commented-out prevents ESC from closing game
+		// super.exit(); // commented-out - prevents ESC from closing game
 	}
 
 	// Main
