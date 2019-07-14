@@ -50,28 +50,28 @@ public class Util {
 	}
 	
 	public PGraphics warp(PGraphics source, float waveAmplitude, float numWaves) {
-	 int w = source.width, h = source.height;
-	 PImage destination = applet.createImage(w,h, PApplet.ARGB);
-	 source.loadPixels();
-	 destination.loadPixels();
+		int w = source.width, h = source.height;
+		PImage destination = applet.createImage(w,h, PApplet.ARGB);
+		source.loadPixels();
+		destination.loadPixels();
 
-	 float yToPhase = 2*PApplet.PI*numWaves / h; // conversion factor from y values to radians.
+		float yToPhase = 2*PApplet.PI*numWaves / h; // conversion factor from y values to radians.
 
-	 for(int x = 0; x < w; x++)
-	   for(int y = 0; y < h; y++)
-	   {
-	     int newX, newY;
-	     newX = PApplet.parseInt(x + waveAmplitude*PApplet.sin(y * yToPhase));
-	     newY = y;
-	     int c;
-	     if(newX >= w || newX < 0 ||
-	        newY >= h || newY < 0)
-	       c = applet.color(0,0,0,0);
-	     else
-	       c = source.pixels[newY*w + newX];
-	     destination.pixels[y*w+x] = c;
-	   }
-	 return pg(destination);
+		for(int x = 0; x < w; x++)
+			for(int y = 0; y < h; y++)
+			{
+				int newX, newY;
+				newX = PApplet.parseInt(x + waveAmplitude*PApplet.sin(y * yToPhase));
+				newY = y;
+				int c;
+				if(newX >= w || newX < 0 ||
+						newY >= h || newY < 0)
+					c = applet.color(0,0,0,0);
+				else
+					c = source.pixels[newY*w + newX];
+				destination.pixels[y*w+x] = c;
+			}
+		return pg(destination);
 	}
 	
 	public PGraphics scale(PGraphics pBuffer, int scaling) { 

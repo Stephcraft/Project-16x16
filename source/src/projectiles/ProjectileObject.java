@@ -24,10 +24,16 @@ public class ProjectileObject extends PClass {
 	
 	public int speed;
 	
-	//Identification
+	// Identification - what kind of projectile is this? e.g. "MAGIC"
 	public String id;
 	
 	public boolean hit;
+	
+	// create a unique identifier for the projectile. this will help to make sure 
+	// projectiles are reflected properly when they collide with mirror box.
+	// 0 is reserved just in case.
+	private static int instanceCounter = 1;
+	private final int uniqueID;
 
 	public ProjectileObject(SideScroller a) {
 		super(a);
@@ -36,6 +42,11 @@ public class ProjectileObject extends PClass {
 		
 		animation = new AnimationComponent();
 		pos = new PVector(0,0);
+		
+		// set the uniqueID as the current value of instanceCounter
+		uniqueID = instanceCounter;
+		// increment the static instance counter with every new instance of the object
+		instanceCounter += 1;
 	}
 	
 	public void display() {}
@@ -48,5 +59,9 @@ public class ProjectileObject extends PClass {
 	
 	protected ArrayList<PGraphics> getAnimation(String id) {
 		return applet.gameGraphics.getAnimation(id);
+	}
+	
+	public int getUniqueID() {
+		return uniqueID;
 	}
 }
