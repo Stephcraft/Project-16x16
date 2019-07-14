@@ -36,6 +36,7 @@ import scene.SceneMapEditor;
  */
 public class SideScroller extends PApplet {
 
+	public static final String LEVEL = "Assets/Storage/Game/Maps/gg-2.dat";
 	public static final boolean DEBUG = true;
 
 	// Image Resources
@@ -195,7 +196,7 @@ public class SideScroller extends PApplet {
 		pushMatrix();
 		drawBelowCamera: { // drawn objects enclosed by pushMatrix() and popMatrix() are transformed by the
 							// camera.
-			camera.run();
+			camera.update();
 			mousePosition = camera.getMouseCoord().copy();
 			mapEditor.draw(); // Handle Draw Scene Method - draws player, world, etc.
 			camera.postDebug(); // for development
@@ -280,6 +281,7 @@ public class SideScroller extends PApplet {
 			break;
 		case 'F':
 			camera.setFollowObject(player); // for development
+			camera.setZoomScale(1.0f); // for development
 			break;
 		case 'G':
 			camera.shake(0.4f); // for development
@@ -287,11 +289,13 @@ public class SideScroller extends PApplet {
 		default:
 			switch (event.getKeyCode()) { // non-character keys
 			case 122: // F11
+				noLoop();
 				final PSurfaceFX FXSurface = (PSurfaceFX) surface;
 				final Canvas canvas = (Canvas) FXSurface.getNative();
 				final Stage stage = (Stage) canvas.getScene().getWindow();
 				canvas.getGraphicsContext2D().setImageSmoothing(false);
 				stage.setFullScreen(!stage.isFullScreen());
+				loop();
 				break;
 			default:
 				break;
@@ -321,7 +325,7 @@ public class SideScroller extends PApplet {
 	@Override
 	public void mouseWheel(MouseEvent event) {
 		mapEditor.mouseWheel(event);
-		if (event.getAmount() == -1.0) {
+		if (event.getAmount() == -1.0) { // for development
 			camera.zoomIn(0.02f);
 		} else {
 			camera.zoomOut(0.02f);
