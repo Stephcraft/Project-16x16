@@ -148,8 +148,6 @@ public class MirrorBoxObject extends GameObject {
 						// their collider doesn't overlap with that of an adjacent object, e.g. ground tile. a better
 						// fix could be to change the size of the collider for the projectile, as i'm pretty sure
 						// we don't need to cover the projectile's trail, only the front.
-
-						
 						int xDisplacement = 0; 
 						int yDisplacement = 0;
 						

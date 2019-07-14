@@ -31,8 +31,7 @@ public class ProjectileObject extends PClass {
 	
 	// create a unique identifier for the projectile. this will help to make sure 
 	// projectiles are reflected properly when they collide with mirror box.
-	// 0 is reserved just in case.
-	private static int instanceCounter = 1;
+	private static int instanceCounter = 0;
 	private final int uniqueID;
 
 	public ProjectileObject(SideScroller a) {

@@ -183,7 +183,7 @@ public class SideScroller extends PApplet {
 		player.load(graphicsSheet);
 		player.pos.x = 0;
 		player.pos.y = -100;
-		cam.Follow(player);
+//		cam.Follow(player);
 		
 		//Set Floor
 		floor = 400;
