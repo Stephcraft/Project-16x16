@@ -239,6 +239,7 @@ public class Player extends EditableObject {
 		if (applet.mousePressed && !attack) {
 			if (applet.mouseButton == LEFT) {
 				attack = true;
+				applet.camera.shake(0.3f); // todo remove
 				if (!dashing) {
 					setAnimation("ATTACK");
 				} else if (dashing) {
@@ -340,6 +341,7 @@ public class Player extends EditableObject {
 		// On Ground Event
 		if (!flying && pflying && !attack && !dashing) {
 			setAnimation("SQUISH");
+			applet.camera.shake(0.4f); // todo remove
 		}
 
 		// Idle Animation
@@ -348,12 +350,10 @@ public class Player extends EditableObject {
 		}
 
 		if (animation.name == "SQUISH" && speedX != 0 && !attack) {
-
 			setAnimation("WALK");
 		}
 
 		if (animation.name == "WALK" && speedX == 0 && !attack) {
-
 			setAnimation("IDLE");
 		}
 

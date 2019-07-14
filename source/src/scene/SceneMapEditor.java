@@ -98,7 +98,7 @@ public class SceneMapEditor extends PScene {
 		// Default Tool
 		tool = Tools.MODIFY;
 
-		util.loadLevel("Assets/Storage/Game/Maps/gg-2.dat"); // TODO change level
+		util.loadLevel(SideScroller.LEVEL); // TODO change level
 	}
 
 	@Override
