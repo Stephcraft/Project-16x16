@@ -174,48 +174,48 @@ public class Util {
 			// Read Main
 			if (i == 0) {
 				JSONArray d = item.getJSONArray("scene-dimension");
-				// applet.worldPosition.x = d.getInt(0); // TODO
-				// applet.worldPosition.y = d.getInt(1); // TODO
-				// applet.worldPosition.x = 0; // TODO
-				// applet.worldPosition.y = 0; // TODO
-				// applet.worldWidth = d.getInt(2); TODO
-				// applet.worldHeight = d.getInt(3); TODO
+//				applet.worldPosition.x = d.getInt(0); // TODO
+//				applet.worldPosition.y = d.getInt(1); // TODO
+//				applet.worldPosition.x = 0; // TODO
+//				applet.worldPosition.y = 0; // TODO
+//				applet.worldWidth = d.getInt(2); TODO
+//				applet.worldHeight = d.getInt(3); TODO
 				if (PScene.name == "MAPEDITOR") {
 					((SceneMapEditor) applet.mapEditor).worldViewportEditor.setSize();
 				}
 			} else {
 				switch (type) {
-				case "COLLISION":
-					Collision collision = new Collision(applet);
-					try {
-						collision.setGraphic(item.getString("id"));
-					} catch (Exception e) {
-						collision.width = 64;
-						collision.height = 64;
-					}
-					collision.pos.x = item.getInt("x");
-					collision.pos.y = item.getInt("y");
+					case "COLLISION" :
+						Collision collision = new Collision(applet);
+						try {
+							collision.setGraphic(item.getString("id"));
+						} catch (Exception e) {
+							collision.width = 64;
+							collision.height = 64;
+						}
+						collision.pos.x = item.getInt("x");
+						collision.pos.y = item.getInt("y");
 
-					// Append To Level
-					applet.collisions.add(collision);
-					break;
-				case "BACKGROUND":
-					BackgroundObject backgroundObject = new BackgroundObject(applet);
-					backgroundObject.setGraphic(item.getString("id"));
-					backgroundObject.pos.x = item.getInt("x");
-					backgroundObject.pos.y = item.getInt("y");
+						// Append To Level
+						applet.collisions.add(collision);
+						break;
+					case "BACKGROUND" :
+						BackgroundObject backgroundObject = new BackgroundObject(applet);
+						backgroundObject.setGraphic(item.getString("id"));
+						backgroundObject.pos.x = item.getInt("x");
+						backgroundObject.pos.y = item.getInt("y");
 
-					// Append To Level
-					applet.backgroundObjects.add(backgroundObject);
-					break;
-				case "OBJECT":
-					GameObject gameObject = applet.gameGraphics.getObjectClass(item.getString("id"));
-					gameObject.pos.x = item.getInt("x");
-					gameObject.pos.y = item.getInt("y");
+						// Append To Level
+						applet.backgroundObjects.add(backgroundObject);
+						break;
+					case "OBJECT" :
+						GameObject gameObject = applet.gameGraphics.getObjectClass(item.getString("id"));
+						gameObject.pos.x = item.getInt("x");
+						gameObject.pos.y = item.getInt("y");
 
-					// Append To Level
-					applet.gameObjects.add(gameObject);
-					break;
+						// Append To Level
+						applet.gameObjects.add(gameObject);
+						break;
 				}
 			}
 		}
@@ -231,12 +231,12 @@ public class Util {
 		main.setString("version", "alpha 1.0.0");
 
 		JSONArray dimension = new JSONArray();
-		// dimension.setInt(0, (int) applet.worldPosition.x); // todo
-		// dimension.setInt(1, (int) applet.worldPosition.y); // todo
+//		dimension.setInt(0, (int) applet.worldPosition.x); // todo
+//		dimension.setInt(1, (int) applet.worldPosition.y); // todo
 		dimension.setInt(0, (int) 0); // todo
 		dimension.setInt(1, (int) 0); // todo
-		// dimension.setInt(2, applet.worldWidth); todo
-		// dimension.setInt(3, applet.worldHeight); todo
+//		dimension.setInt(2, applet.worldWidth); todo
+//		dimension.setInt(3, applet.worldHeight); todo
 		dimension.setInt(2, 0); // todo
 		dimension.setInt(3, 0); // todo
 

@@ -149,8 +149,7 @@ public class SideScroller extends PApplet {
 		camera.setMouseMask(CONTROL);
 		camera.setMinZoomScale(0.3);
 		camera.setMaxZoomScale(3);
-		// camera.setScreenDeadZone(new PVector(width * 0.25f, height * 0.25f), new
-		// PVector(width * 0.75f, height * 0.75f)); // example
+//		camera.setScreenDeadZone(new PVector(width * 0.25f, height * 0.25f), new PVector(width * 0.75f, height * 0.75f)); // example
 		camera.setWorldDeadZone(new PVector(50, 0), new PVector(width * 0.25f, height * 0.25f)); // example
 		camera.setFollowObject(player);
 	}
@@ -222,8 +221,8 @@ public class SideScroller extends PApplet {
 						5 + lineOffset * 4);
 				text("Camera Pos: " + camera.getCameraPosition(), width, 5 + lineOffset * 5);
 				text("Camera Zoom: " + String.format("%.2f", camera.getZoomScale()), width, 5 + lineOffset * 6);
-				text("World Mouse: " + round(camera.getMouseCoord().x) + ", " + round(camera.getMouseCoord().y), width,
-						5 + lineOffset * 7);
+				text("World Mouse: " + round(camera.getMouseCoord().x) + ", " + round(camera.getMouseCoord().y),
+						width, 5 + lineOffset * 7);
 			}
 		}
 
