@@ -29,6 +29,11 @@ public class ProjectileObject extends PClass {
 
 	public boolean hit;
 
+	// create a unique identifier for the projectile. this will help to make sure
+	// projectiles are reflected properly when they collide with mirror box.
+	private static int instanceCounter = 0;
+	private final int uniqueID;
+
 	public ProjectileObject(SideScroller a) {
 		super(a);
 
@@ -40,6 +45,7 @@ public class ProjectileObject extends PClass {
 
 	public void display() {
 	}
+
 	public void update() {
 	}
 
@@ -47,11 +53,14 @@ public class ProjectileObject extends PClass {
 		return (pos.x + width / 2 > collision.pos.x - collision.width / 2
 				&& pos.x - width / 2 < collision.pos.x + collision.width / 2)
 				&& (pos.y + height / 2 > collision.pos.y - collision.height / 2
-						&& pos.y - height / 2 < collision.pos.y
-								+ collision.height / 2);
+						&& pos.y - height / 2 < collision.pos.y + collision.height / 2);
 	}
 
 	protected ArrayList<PGraphics> getAnimation(String id) {
 		return applet.gameGraphics.getAnimation(id);
+	}
+
+	public int getUniqueID() {
+		return uniqueID;
 	}
 }

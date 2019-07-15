@@ -38,30 +38,30 @@ public class MirrorBoxObject extends GameObject {
 	@Override
 	public void display() {
 		switch (direction) {
-			case 0 :
-				applet.image(image, pos.x, pos.y);
-				break;
-			case 1 :
-				applet.pushMatrix();
-				applet.translate(pos.x, pos.y);
-				applet.rotate(PApplet.radians(90));
-				applet.image(image, 0, 0);
-				applet.popMatrix();
-				break;
-			case 2 :
-				applet.pushMatrix();
-				applet.translate(pos.x, pos.y);
-				applet.scale(-1, -1);
-				applet.image(image, 0, 0);
-				applet.popMatrix();
-				break;
-			case 3 :
-				applet.pushMatrix();
-				applet.translate(pos.x, pos.y);
-				applet.rotate(PApplet.radians(270));
-				applet.image(image, 0, 0);
-				applet.popMatrix();
-				break;
+		case 0:
+			applet.image(image, pos.x, pos.y);
+			break;
+		case 1:
+			applet.pushMatrix();
+			applet.translate(pos.x, pos.y);
+			applet.rotate(PApplet.radians(90));
+			applet.image(image, 0, 0);
+			applet.popMatrix();
+			break;
+		case 2:
+			applet.pushMatrix();
+			applet.translate(pos.x, pos.y);
+			applet.scale(-1, -1);
+			applet.image(image, 0, 0);
+			applet.popMatrix();
+			break;
+		case 3:
+			applet.pushMatrix();
+			applet.translate(pos.x, pos.y);
+			applet.rotate(PApplet.radians(270));
+			applet.image(image, 0, 0);
+			applet.popMatrix();
+			break;
 		}
 	}
 
@@ -106,18 +106,18 @@ public class MirrorBoxObject extends GameObject {
 					activated = true;
 
 					switch (projectile.direction) {
-						case RIGHT :
+					case RIGHT:
 
-							if (direction == 0 || direction == 1) {
-								((MagicProjectile) projectile).hit(collision);
-							} else if (direction == 2) {
-								projectile.direction = DOWN;
-								projectile.pos.x = pos.x;
-							} else if (direction == 3) {
-								projectile.direction = UP;
-								projectile.pos.x = pos.x;
-							}
-							break;
+						if (direction == 0 || direction == 1) {
+							((MagicProjectile) projectile).hit(collision);
+						} else if (direction == 2) {
+							projectile.direction = DOWN;
+							projectile.pos.x = pos.x;
+						} else if (direction == 3) {
+							projectile.direction = UP;
+							projectile.pos.x = pos.x;
+						}
+						break;
 					}
 
 				}
@@ -142,15 +142,13 @@ public class MirrorBoxObject extends GameObject {
 	}
 
 	public boolean collidesWithSwing(Swing swing) {
-		return (swing.pos.x + swing.width / 2 > pos.x - width / 2
-				&& swing.pos.x - swing.width / 2 < pos.x + width / 2)
+		return (swing.pos.x + swing.width / 2 > pos.x - width / 2 && swing.pos.x - swing.width / 2 < pos.x + width / 2)
 				&& (swing.pos.y + swing.height / 2 > pos.y - height / 2
 						&& swing.pos.y - swing.height / 2 < pos.y + height / 2);
 	}
 
 	public boolean collidesWithProjectile(ProjectileObject swing) {
-		return (swing.pos.x + swing.width / 2 > pos.x - width / 2
-				&& swing.pos.x - swing.width / 2 < pos.x + width / 2)
+		return (swing.pos.x + swing.width / 2 > pos.x - width / 2 && swing.pos.x - swing.width / 2 < pos.x + width / 2)
 				&& (swing.pos.y + swing.height / 2 > pos.y - height / 2
 						&& swing.pos.y - swing.height / 2 < pos.y + height / 2);
 	}
