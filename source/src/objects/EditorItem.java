@@ -6,93 +6,90 @@ import sidescroller.PClass;
 import sidescroller.SideScroller;
 
 public class EditorItem extends PClass {
-	
+
 	public PVector pos;
 	public boolean focus;
-	
+
 	public PGraphics image;
-	
+
 	public String id;
 	public String type;
-	
+
 	private String mode;
-	
+
 	public EditorItem(SideScroller a) {
 		super(a);
-		
+
 		setTile("BOX");
 		setMode("CREATE");
-		
-		pos = new PVector(0,0);
+
+		pos = new PVector(0, 0);
 	}
-	
+
 	public void display() {
-		if(focus) {
-			applet.image(image, pos.x, pos.y, image.width*(float)0.5,image.height*(float)0.5);
+		if (focus) {
+			applet.image(image, pos.x, pos.y, image.width * (float) 0.5, image.height * (float) 0.5);
 		}
 	}
-	
+
 	public void update() {
-		
-		if(focus) {
-			pos.x = applet.mouseX;
-			pos.y = applet.mouseY;
-			
-			if(applet.mouseReleaseEvent) {
+
+		if (focus) {
+			pos.x = applet.getMouseX();
+			pos.y = applet.getMouseY();
+
+			if (applet.mouseReleaseEvent) {
 				focus = false;
-				
-				if(mode == "CREATE") {
-					int x = (int)round( (applet.mouseX+applet.originX) /4)*4;
-					int y = (int)round( (applet.mouseY+applet.originY) /4)*4;
-					
-					//Create new Instance
-					switch(type) {
-						case "COLLISION":
-							applet.collisions.add( new Collision(applet, id, 0 , 0) );
-							applet.collisions.get(applet.collisions.size()-1).focus();
-							applet.collisions.get(applet.collisions.size()-1).pos.x = x;
-							applet.collisions.get(applet.collisions.size()-1).pos.y = y;
-							applet.keyPressEvent = false;
+
+				if (mode == "CREATE") {
+					PVector realPos = applet.camera.getDispToCoord(new PVector(applet.getMouseX(), applet.getMouseY())); // transform from screen mouse pos to game pos
+					// Create new instance from dragged icon
+					switch (type) {
+						case "COLLISION" :
+							Collision c = new Collision(applet, id, 0, 0);
+							c.pos.x = realPos.x;
+							c.pos.y = realPos.y;
+							c.focus();
+							applet.collisions.add(c);
 							break;
-						case "BACKGROUND":
-							applet.backgroundObjects.add( new BackgroundObject(applet, id, 0 , 0) );
-							applet.backgroundObjects.get(applet.backgroundObjects.size()-1).focus();
-							applet.backgroundObjects.get(applet.backgroundObjects.size()-1).pos.x = x;
-							applet.backgroundObjects.get(applet.backgroundObjects.size()-1).pos.y = y;
+						case "BACKGROUND" :
+							BackgroundObject bObject = new BackgroundObject(applet, id, 0, 0);
+							bObject.pos.x = realPos.x;
+							bObject.pos.y = realPos.y;
+							bObject.focus();
+							applet.backgroundObjects.add(bObject);
 							break;
-						case "OBJECT":
+						case "OBJECT" :
 							GameObject obj = applet.gameGraphics.getObjectClass(id);
-							
-						
-							applet.gameObjects.add( obj );
-							applet.gameObjects.get(applet.gameObjects.size()-1).focus();
-							applet.gameObjects.get(applet.gameObjects.size()-1).pos.x = x;
-							applet.gameObjects.get(applet.gameObjects.size()-1).pos.y = y;
-							
+							obj.focus();
+							obj.pos.x = realPos.x;
+							obj.pos.y = realPos.y;
+							applet.gameObjects.add(obj);
 							break;
 					}
 				}
 			}
 		}
 	}
-	
+
 	public void displayDestination() {
-		if(focus) {
+		if (focus) {
 			applet.strokeWeight(1);
 			applet.stroke(0, 255, 200);
 			applet.noFill();
-			applet.rect(round( (applet.mouseX) /4)*4, round( (applet.mouseY) /4)*4, image.width,image.height);
+			applet.rect(round((applet.getMouseX()) / 4) * 4, round((applet.getMouseY()) / 4) * 4, image.width,
+					image.height);
 		}
 	}
-	
+
 	public void setMode(String m) {
 		mode = m;
 	}
-	
+
 	public void setTile(String t) {
 		image = applet.gameGraphics.get(t);
 		type = applet.gameGraphics.getType(t);
-		
+
 		id = t;
 	}
 }
