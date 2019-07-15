@@ -148,31 +148,21 @@ public class Player extends EditableObject {
 			swings.get(i).display();
 		}
 
-		if (direction == LEFT) {
+		if (direction == LEFT) { // flips sprite along vertical line
 			applet.pushMatrix();
-			applet.translate(pos.x - applet.originX, pos.y - applet.originY);
+			applet.translate(pos.x, pos.y);
 			applet.scale(-1, 1);
 			applet.image(image, 0, 0);
 			applet.popMatrix();
 		} else {
-			applet.image(image, pos.x - applet.originX, pos.y - applet.originY);
+			applet.image(image, pos.x, pos.y );
 		}
 
-		if (applet.debug) {
-			// debug info
-			applet.fill(255, 0, 0);
-			applet.textSize(15);
-			applet.textAlign(RIGHT, CENTER);
-			applet.text("X: " + pos.x + "Y: " + pos.y, applet.width, 5);
-			applet.text("SX: " + speedX + " SY: " + speedY, applet.width, 15);
-			applet.text("anim: " + animation.name, applet.width, 25);
-			applet.text("f: " + animation.frame + " ends: " + animation.length, applet.width, 35);
-			applet.text("fly: " + flying + " att: " + attack + " dash: " + dashing, applet.width, 45);
-
+		if (SideScroller.DEBUG) {
 			applet.strokeWeight(1);
 			applet.stroke(0, 255, 200);
 			applet.noFill();
-			applet.rect(pos.x, pos.y, width, height);
+			applet.rect(pos.x, pos.y, width, height); // display player bounding box
 		}
 	}
 
@@ -249,6 +239,7 @@ public class Player extends EditableObject {
 		if (applet.mousePressed && !attack) {
 			if (applet.mouseButton == LEFT) {
 				attack = true;
+				applet.camera.shake(0.3f); // todo remove
 				if (!dashing) {
 					setAnimation("ATTACK");
 				} else if (dashing) {
@@ -289,11 +280,11 @@ public class Player extends EditableObject {
 		}
 		// boolean collides = false;
 
-		if (applet.debug) {
+		if (SideScroller.DEBUG) {
 			applet.noFill();
 			applet.stroke(255, 0, 0);
 			applet.strokeWeight(1);
-			applet.ellipse(pos.x - applet.originX, pos.y - applet.originY, 400, 400);
+			applet.ellipse(pos.x, pos.y , 400, 400);
 		}
 
 		// All Collision Global Check
@@ -303,14 +294,14 @@ public class Player extends EditableObject {
 			// In Player Range
 			if (PApplet.dist(pos.x, pos.y, collision.pos.x, collision.pos.y) < 200) {
 
-				if (applet.debug) {
-					applet.rect(collision.pos.x - applet.originX, collision.pos.y - applet.originY, 20, 20);
+				if (SideScroller.DEBUG) {
+					applet.rect(collision.pos.x, collision.pos.y , 20, 20);
 				}
 				if (collides(collision)) {
-					if (px - applet.originX + width / 2 < collision.pos.x + collision.width / 2 - applet.originX) {
+					if (px + width / 2 < collision.pos.x + collision.width / 2) {
 						pos.x = collision.pos.x - collision.width / 2 - width / 2;
-					} else if (px - applet.originX - width / 2 > collision.pos.x - collision.width / 2
-							- applet.originX) { // +collision.width/2
+					} else if (px - width / 2 > collision.pos.x - collision.width / 2
+							) { // +collision.width/2
 						pos.x = collision.pos.x + collision.width / 2 + width / 2;
 					}
 					if (dashing) {
@@ -320,9 +311,9 @@ public class Player extends EditableObject {
 
 				}
 				if (collidesFuturX(collision)) {
-					if (px - applet.originX < collision.pos.x - applet.originX) {
+					if (px < collision.pos.x) {
 						speedX = 0;
-					} else if (px - applet.originX > collision.pos.x - applet.originX) {
+					} else if (px > collision.pos.x) {
 						speedX = 0;
 					}
 					if (dashing) {
@@ -331,11 +322,11 @@ public class Player extends EditableObject {
 					}
 				}
 				if (collidesFuturY(collision)) {
-					if (py - applet.originY + height / 2 < collision.pos.y - applet.originY) {
+					if (py  + height / 2 < collision.pos.y ) {
 						pos.y = collision.pos.y - collision.height / 2 - height / 2;
 						speedY = 0;
 						flying = false;
-					} else if (pos.y - applet.originY > collision.pos.y - applet.originY) {
+					} else if (pos.y  > collision.pos.y ) {
 						pos.y = collision.pos.y + collision.height / 2 + height / 2;
 						speedY = 0;
 					}
@@ -350,6 +341,7 @@ public class Player extends EditableObject {
 		// On Ground Event
 		if (!flying && pflying && !attack && !dashing) {
 			setAnimation("SQUISH");
+			applet.camera.shake(0.4f); // todo remove
 		}
 
 		// Idle Animation
@@ -358,12 +350,10 @@ public class Player extends EditableObject {
 		}
 
 		if (animation.name == "SQUISH" && speedX != 0 && !attack) {
-
 			setAnimation("WALK");
 		}
 
 		if (animation.name == "WALK" && speedX == 0 && !attack) {
-
 			setAnimation("IDLE");
 		}
 
@@ -386,16 +376,16 @@ public class Player extends EditableObject {
 		}
 
 		// Apply World Transformation
-		if (pos.x - applet.originX - width / 2 < applet.width / 2 - applet.screenX / 2) {
-			applet.originTargetX -= PApplet.abs(speedX - 5);
-		} else if (pos.x - applet.originX + width / 2 > applet.width / 2 + applet.screenX / 2) {
-			applet.originTargetX += PApplet.abs(speedX + 5);
-		}
-		if (pos.y - applet.originY - height / 2 < applet.height / 2 - applet.screenY / 2) {
-			applet.originTargetY -= PApplet.abs(speedY - 5);
-		} else if (pos.y - applet.originY + height / 2 > applet.height / 2 + applet.screenY / 2) {
-			applet.originTargetY += PApplet.abs(speedY + 5);
-		}
+//		if (pos.x - width / 2 < applet.width / 2 - applet.screenX / 2) {
+//			applet.originTargetX -= PApplet.abs(speedX - 5);
+//		} else if (pos.x + width / 2 > applet.width / 2 + applet.screenX / 2) {
+//			applet.originTargetX += PApplet.abs(speedX + 5);
+//		}
+//		if (pos.y  - height / 2 < applet.height / 2 - applet.screenY / 2) {
+//			applet.originTargetY -= PApplet.abs(speedY - 5);
+//		} else if (pos.y  + height / 2 > applet.height / 2 + applet.screenY / 2) {
+//			applet.originTargetY += PApplet.abs(speedY + 5);
+//		}
 
 		// Update Swing Projectiles
 		for (int i = 0; i < swings.size(); i++) {
@@ -423,45 +413,45 @@ public class Player extends EditableObject {
 	 * @return boolean if it has or has not collided with the object.
 	 */
 	public boolean collides(Collision collision) {
-		return (pos.x - applet.originX + width / 2 > collision.pos.x - applet.originX - collision.width / 2
-				&& pos.x - applet.originX - width / 2 < collision.pos.x - applet.originX + collision.width / 2)
-				&& (pos.y - applet.originY + height / 2 > collision.pos.y - applet.originY - collision.height / 2
-						&& pos.y - applet.originY - height / 2 < collision.pos.y - applet.originY
+		return (pos.x + width / 2 > collision.pos.x - collision.width / 2
+				&& pos.x - width / 2 < collision.pos.x + collision.width / 2)
+				&& (pos.y  + height / 2 > collision.pos.y  - collision.height / 2
+						&& pos.y  - height / 2 < collision.pos.y 
 								+ collision.height / 2);
 	}
 
 	// TODO: optimize these
 	public boolean collidesEqual(Collision collision) {
-		return (pos.x - applet.originX + width / 2 >= collision.pos.x - applet.originX - collision.width / 2
-				&& pos.x - applet.originX - width / 2 <= collision.pos.x - applet.originX + collision.width / 2)
-				&& (pos.y - applet.originY + height / 2 >= collision.pos.y - applet.originY - collision.height / 2
-						&& pos.y - applet.originY - height / 2 <= collision.pos.y - applet.originY
+		return (pos.x + width / 2 >= collision.pos.x - collision.width / 2
+				&& pos.x - width / 2 <= collision.pos.x + collision.width / 2)
+				&& (pos.y  + height / 2 >= collision.pos.y  - collision.height / 2
+						&& pos.y  - height / 2 <= collision.pos.y 
 								+ collision.height / 2);
 	}
 
 	public boolean collidesFutur(Collision collision) {
-		return (pos.x - applet.originX + speedX + width / 2 > collision.pos.x - applet.originX - collision.width / 2
-				&& pos.x - applet.originX + speedX - width / 2 < collision.pos.x - applet.originX + collision.width / 2)
-				&& (pos.y - applet.originY + speedY + height / 2 > collision.pos.y - applet.originY
+		return (pos.x + speedX + width / 2 > collision.pos.x - collision.width / 2
+				&& pos.x + speedX - width / 2 < collision.pos.x + collision.width / 2)
+				&& (pos.y  + speedY + height / 2 > collision.pos.y 
 						- collision.height / 2
-						&& pos.y - applet.originY + speedY - height / 2 < collision.pos.y - applet.originY
+						&& pos.y  + speedY - height / 2 < collision.pos.y 
 								+ collision.height / 2);
 	}
 
 	public boolean collidesFuturX(Collision collision) {
-		return (pos.x - applet.originX + speedX + width / 2 > collision.pos.x - applet.originX - collision.width / 2
-				&& pos.x - applet.originX + speedX - width / 2 < collision.pos.x - applet.originX + collision.width / 2)
-				&& (pos.y - applet.originY + 0 + height / 2 > collision.pos.y - applet.originY - collision.height / 2
-						&& pos.y - applet.originY + 0 - height / 2 < collision.pos.y - applet.originY
+		return (pos.x + speedX + width / 2 > collision.pos.x - collision.width / 2
+				&& pos.x + speedX - width / 2 < collision.pos.x + collision.width / 2)
+				&& (pos.y  + 0 + height / 2 > collision.pos.y  - collision.height / 2
+						&& pos.y  + 0 - height / 2 < collision.pos.y 
 								+ collision.height / 2);
 	}
 
 	public boolean collidesFuturY(Collision collision) {
-		return (pos.x - applet.originX + 0 + width / 2 > collision.pos.x - applet.originX - collision.width / 2
-				&& pos.x - applet.originX + 0 - width / 2 < collision.pos.x - applet.originX + collision.width / 2)
-				&& (pos.y - applet.originY + speedY + height / 2 > collision.pos.y - applet.originY
+		return (pos.x + 0 + width / 2 > collision.pos.x - collision.width / 2
+				&& pos.x + 0 - width / 2 < collision.pos.x + collision.width / 2)
+				&& (pos.y  + speedY + height / 2 > collision.pos.y 
 						- collision.height / 2
-						&& pos.y - applet.originY + speedY - height / 2 < collision.pos.y - applet.originY
+						&& pos.y  + speedY - height / 2 < collision.pos.y 
 								+ collision.height / 2);
 	}
 
@@ -469,7 +459,7 @@ public class Player extends EditableObject {
 	 * Sets the current animation for the Player to use
 	 * @param anim the animation id
 	 */
-	public void setAnimation(String anim) {
+	private void setAnimation(String anim) {
 		switch (anim) {
 			case "WALK" :
 				animation.frames = getAnimation("PLAYER::WALK"); // anim_walk;

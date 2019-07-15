@@ -39,25 +39,25 @@ public class MirrorBoxObject extends GameObject {
 	public void display() {
 		switch (direction) {
 			case 0 :
-				applet.image(image, pos.x - applet.originX, pos.y - applet.originY);
+				applet.image(image, pos.x, pos.y);
 				break;
 			case 1 :
 				applet.pushMatrix();
-				applet.translate(pos.x - applet.originX, pos.y - applet.originY);
+				applet.translate(pos.x, pos.y);
 				applet.rotate(PApplet.radians(90));
 				applet.image(image, 0, 0);
 				applet.popMatrix();
 				break;
 			case 2 :
 				applet.pushMatrix();
-				applet.translate(pos.x - applet.originX, pos.y - applet.originY);
+				applet.translate(pos.x, pos.y);
 				applet.scale(-1, -1);
 				applet.image(image, 0, 0);
 				applet.popMatrix();
 				break;
 			case 3 :
 				applet.pushMatrix();
-				applet.translate(pos.x - applet.originX, pos.y - applet.originY);
+				applet.translate(pos.x, pos.y);
 				applet.rotate(PApplet.radians(270));
 				applet.image(image, 0, 0);
 				applet.popMatrix();
@@ -142,16 +142,16 @@ public class MirrorBoxObject extends GameObject {
 	}
 
 	public boolean collidesWithSwing(Swing swing) {
-		return (swing.pos.x - applet.originX + swing.width / 2 > pos.x - applet.originX - width / 2
-				&& swing.pos.x - applet.originX - swing.width / 2 < pos.x - applet.originX + width / 2)
-				&& (swing.pos.y - applet.originY + swing.height / 2 > pos.y - applet.originY - height / 2
-						&& swing.pos.y - applet.originY - swing.height / 2 < pos.y - applet.originY + height / 2);
+		return (swing.pos.x + swing.width / 2 > pos.x - width / 2
+				&& swing.pos.x - swing.width / 2 < pos.x + width / 2)
+				&& (swing.pos.y + swing.height / 2 > pos.y - height / 2
+						&& swing.pos.y - swing.height / 2 < pos.y + height / 2);
 	}
 
 	public boolean collidesWithProjectile(ProjectileObject swing) {
-		return (swing.pos.x - applet.originX + swing.width / 2 > pos.x - applet.originX - width / 2
-				&& swing.pos.x - applet.originX - swing.width / 2 < pos.x - applet.originX + width / 2)
-				&& (swing.pos.y - applet.originY + swing.height / 2 > pos.y - applet.originY - height / 2
-						&& swing.pos.y - applet.originY - swing.height / 2 < pos.y - applet.originY + height / 2);
+		return (swing.pos.x + swing.width / 2 > pos.x - width / 2
+				&& swing.pos.x - swing.width / 2 < pos.x + width / 2)
+				&& (swing.pos.y + swing.height / 2 > pos.y - height / 2
+						&& swing.pos.y - swing.height / 2 < pos.y + height / 2);
 	}
 }

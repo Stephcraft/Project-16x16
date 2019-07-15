@@ -22,3 +22,6 @@ hs_err_pid*
 # Project-16x16
 source/bin/
 source/.settings/
+source/.classpath
+/.classpath
+.classpath

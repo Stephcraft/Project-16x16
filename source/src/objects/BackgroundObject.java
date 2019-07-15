@@ -38,7 +38,7 @@ public class BackgroundObject extends EditableObject {
 			pixelOffsetX = 2;
 		}
 
-		applet.image(image, pos.x + pixelOffsetX - applet.originX, pos.y + pixelOffsetY - applet.originY);
+		applet.image(image, pos.x + pixelOffsetX, pos.y + pixelOffsetY);
 	}
 
 	public void update() {
