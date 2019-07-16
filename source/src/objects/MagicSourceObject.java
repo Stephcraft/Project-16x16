@@ -34,7 +34,7 @@ public class MagicSourceObject extends GameObject {
 
 	@Override
 	public void display() {
-		applet.image(image, pos.x - applet.originX, pos.y - applet.originY);
+		applet.image(image, pos.x, pos.y);
 	}
 
 	@Override
@@ -57,18 +57,18 @@ public class MagicSourceObject extends GameObject {
 	}
 
 	public boolean collidesWithSwing(Swing swing) {
-		return (swing.pos.x - applet.originX + swing.width / 2 > pos.x - applet.originX - width / 2
-				&& swing.pos.x - applet.originX - swing.width / 2 < pos.x - applet.originX + width / 2)
-				&& (swing.pos.y - applet.originY + swing.height / 2 > pos.y - applet.originY - height / 2
-						&& swing.pos.y - applet.originY - swing.height / 2 < pos.y - applet.originY + height / 2);
+		return (swing.pos.x + swing.width / 2 > pos.x - width / 2
+				&& swing.pos.x - swing.width / 2 < pos.x + width / 2)
+				&& (swing.pos.y + swing.height / 2 > pos.y - height / 2
+						&& swing.pos.y - swing.height / 2 < pos.y + height / 2);
 	}
 
 	public boolean collidesWithPlayer() {
-		return (applet.player.pos.x - applet.originX + applet.player.width / 2 > pos.x - applet.originX - width / 2
-				&& applet.player.pos.x - applet.originX - applet.player.width / 2 < pos.x - applet.originX + width / 2)
-				&& (applet.player.pos.y - applet.originY + applet.player.height / 2 > pos.y - applet.originY
+		return (applet.player.pos.x + applet.player.width / 2 > pos.x - width / 2
+				&& applet.player.pos.x - applet.player.width / 2 < pos.x + width / 2)
+				&& (applet.player.pos.y + applet.player.height / 2 > pos.y
 						- height / 2
-						&& applet.player.pos.y - applet.originY - applet.player.height / 2 < pos.y - applet.originY
+						&& applet.player.pos.y - applet.player.height / 2 < pos.y
 								+ height / 2);
 	}
 }

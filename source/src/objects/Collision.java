@@ -58,15 +58,15 @@ public class Collision extends EditableObject {
 		}
 
 		if (id == null) {
-			if (applet.debug) {
+			if (SideScroller.DEBUG) {
 				applet.noFill();
 				applet.strokeWeight(1);
 				applet.stroke(0, 255, 200);
-				applet.rect(pos.x + pixelOffsetX - applet.originX, pos.y + pixelOffsetY - applet.originY, width,
+				applet.rect(pos.x + pixelOffsetX, pos.y + pixelOffsetY, width,
 						height);
 			}
 		} else {
-			applet.image(image, pos.x + pixelOffsetX - applet.originX, pos.y + pixelOffsetY - applet.originY);
+			applet.image(image, pos.x + pixelOffsetX, pos.y + pixelOffsetY);
 		}
 	}
 

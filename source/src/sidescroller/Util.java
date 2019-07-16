@@ -24,6 +24,12 @@ public class Util {
 		return pg(img, 1);
 	}
 
+	/**
+	 * 
+	 * @param img
+	 * @param scl Scale
+	 * @return
+	 */
 	public PGraphics pg(PImage img, float scl) {
 		PGraphics pg = applet.createGraphics((int) (img.width * scl), (int) (img.height * scl));
 
@@ -114,8 +120,8 @@ public class Util {
 	}
 
 	public boolean hover(float x, float y, float w, float h) {
-		return (applet.mouseX > x - w / 2 && applet.mouseX < x + w / 2 && applet.mouseY > y - h / 2
-				&& applet.mouseY < y + h / 2);
+		return (applet.getMouseX() > x - w / 2 && applet.getMouseX() < x + w / 2 && applet.getMouseY() > y - h / 2
+				&& applet.getMouseY() < y + h / 2);
 	}
 
 	public static void saveFile(String src, String content) {
@@ -145,7 +151,7 @@ public class Util {
 	}
 
 	// Game
-	public void loadLevel(String src) {
+	public void loadLevel(String src) { // todo save camera position/settings.
 		String[] script = applet.loadStrings(src);
 		String scriptD = decrypt(PApplet.join(script, "\n"));
 
@@ -168,12 +174,14 @@ public class Util {
 			// Read Main
 			if (i == 0) {
 				JSONArray d = item.getJSONArray("scene-dimension");
-				applet.worldPosition.x = d.getInt(0);
-				applet.worldPosition.y = d.getInt(1);
-				applet.worldWidth = d.getInt(2);
-				applet.worldHeight = d.getInt(3);
+//				applet.worldPosition.x = d.getInt(0); // TODO
+//				applet.worldPosition.y = d.getInt(1); // TODO
+//				applet.worldPosition.x = 0; // TODO
+//				applet.worldPosition.y = 0; // TODO
+//				applet.worldWidth = d.getInt(2); TODO
+//				applet.worldHeight = d.getInt(3); TODO
 				if (PScene.name == "MAPEDITOR") {
-					((SceneMapEditor) applet.scene).worldViewportEditor.setSize();
+					((SceneMapEditor) applet.mapEditor).worldViewportEditor.setSize();
 				}
 			} else {
 				switch (type) {
@@ -223,10 +231,14 @@ public class Util {
 		main.setString("version", "alpha 1.0.0");
 
 		JSONArray dimension = new JSONArray();
-		dimension.setInt(0, (int) applet.worldPosition.x);
-		dimension.setInt(1, (int) applet.worldPosition.y);
-		dimension.setInt(2, applet.worldWidth);
-		dimension.setInt(3, applet.worldHeight);
+//		dimension.setInt(0, (int) applet.worldPosition.x); // todo
+//		dimension.setInt(1, (int) applet.worldPosition.y); // todo
+		dimension.setInt(0, (int) 0); // todo
+		dimension.setInt(1, (int) 0); // todo
+//		dimension.setInt(2, applet.worldWidth); todo
+//		dimension.setInt(3, applet.worldHeight); todo
+		dimension.setInt(2, 0); // todo
+		dimension.setInt(3, 0); // todo
 
 		main.setJSONArray("scene-dimension", dimension);
 

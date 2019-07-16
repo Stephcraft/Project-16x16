@@ -44,10 +44,10 @@ public class ProjectileObject extends PClass {
 	}
 
 	public boolean collides(Collision collision) {
-		return (pos.x - applet.originX + width / 2 > collision.pos.x - applet.originX - collision.width / 2
-				&& pos.x - applet.originX - width / 2 < collision.pos.x - applet.originX + collision.width / 2)
-				&& (pos.y - applet.originY + height / 2 > collision.pos.y - applet.originY - collision.height / 2
-						&& pos.y - applet.originY - height / 2 < collision.pos.y - applet.originY
+		return (pos.x + width / 2 > collision.pos.x - collision.width / 2
+				&& pos.x - width / 2 < collision.pos.x + collision.width / 2)
+				&& (pos.y + height / 2 > collision.pos.y - collision.height / 2
+						&& pos.y - height / 2 < collision.pos.y
 								+ collision.height / 2);
 	}
 
