@@ -47,10 +47,10 @@ public class Options {
 	
 	private static void loadDefault()
 	{
-		moveLeftKey = 65;
-		moveRightKey = 68;
-		jumpKey = 87;
-		attackKey = 83;
+		moveLeftKey = 37;     	//A = 65	LeftArrow = 37
+		moveRightKey = 39;		//D = 68	RightArrow = 39
+		jumpKey = 38;			//W = 87	UpArrow = 38
+		attackKey = 40;			//S = 83    DownArrow = 40
 		targetFrameRate = 60;
 	}
 	
