@@ -2,6 +2,7 @@ package entities;
 
 import processing.core.*;
 import projectiles.Swing;
+import sidescroller.Options;
 //import sidescroller.PClass;
 import sidescroller.SideScroller;
 
@@ -62,8 +63,7 @@ public class Player extends EditableObject {
 		
 		pos = new PVector(100,300);
 		gravity = 2;
-		
-		
+
 		animation = new AnimationComponent();
 		swings = new ArrayList<Swing>();
 		
@@ -169,14 +169,14 @@ public class Player extends EditableObject {
 		pflying = flying;
 		
 		//Move on the x axis
-		if(applet.keyPress(RIGHT)) {
+		if(applet.keyPress(Options.moveRightKey)) {
 			if(applet.keyPressEvent && !attack) {
 				setAnimation("WALK");
 			}
 			speedX = (int)(speedWalk * applet.deltaTime);
 			direction = RIGHT;
 		}
-		else if(applet.keyPress(LEFT)) {
+		else if(applet.keyPress(Options.moveLeftKey)) {
 			if(applet.keyPressEvent && !attack) {
 				setAnimation("WALK");
 			}
@@ -193,7 +193,7 @@ public class Player extends EditableObject {
 		}
 		
 		//Move on the y axis
-		if(applet.keyPress(UP) && applet.keyPressEvent && !flying) { //&& speedY == 0 && !flying
+		if(applet.keyPress(Options.jumpKey) && applet.keyPressEvent && !flying) { //&& speedY == 0 && !flying
 			speedY -= (int)(speedJump * applet.deltaTime);
 			flying = true;
 		}

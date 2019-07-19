@@ -50,9 +50,6 @@ public class SideScroller extends PApplet {
 	//Font Resources
 	public PFont font_pixel;
 	
-	//Options
-	public Options options;
-	
 	//Frame Rate
 	public float deltaTime;
 	
@@ -106,9 +103,6 @@ public class SideScroller extends PApplet {
 		//Setup DM
 		DM.setup(this);
 		
-		//Create Option Class
-		options = new Options();
-		
 		//Default frameRate
 		frameRate(60);
 		
@@ -151,6 +145,10 @@ public class SideScroller extends PApplet {
 		
 		//Load Font
 		font_pixel = loadFont("Assets/Font/font-pixel-48.vlw");
+		
+		//Load Options
+		Options.load();
+		Options.save();
 		
 		//Apply Text Font
 		textFont(font_pixel);
@@ -204,7 +202,7 @@ public class SideScroller extends PApplet {
 		//PApplet.println( "Nomral FrameCount : " + frameCount );
 		
 		//Update DeltaTime
-		if(frameRate < options.targetFrameRate-20 && frameRate > options.targetFrameRate+20) {
+		if(frameRate < Options.targetFrameRate-20 && frameRate > Options.targetFrameRate+20) {
 			deltaTime = DM.deltaTime;
 		}
 		else {
