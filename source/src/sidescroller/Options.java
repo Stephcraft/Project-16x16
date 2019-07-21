@@ -13,12 +13,12 @@ public class Options {
 	
 	private static final String SAVELOCATION = "Assets/options.json";
 	
-	public static int moveLeftKey;
-	public static int moveRightKey;
-	public static int jumpKey;
-	public static int attackKey;
-	public static int dashKey;
-	public static int targetFrameRate;
+	public static int moveLeftKey = 37;		//A = 65	LeftArrow = 37
+	public static int moveRightKey = 39;	//D = 68	RightArrow = 39
+	public static int jumpKey = 38;			//W = 87	UpArrow = 38
+	public static int attackKey = 40;		//S = 83    DownArrow = 40
+	public static int dashKey = 16;			//Shift = 16
+	public static int targetFrameRate = 60;
 
 	@SuppressWarnings("unchecked")
 	public static void load()
@@ -38,24 +38,14 @@ public class Options {
 			targetFrameRate = (int) (long) jsonObject.getOrDefault("targetFrameRate", 60l);
 			
 		} catch (FileNotFoundException e) {
-			loadDefault();
+			
 		} catch (IOException e)
 		{
-			loadDefault();
+			
 		} catch (ParseException e)
 		{
-			loadDefault();
+			
 		}
-	}
-	
-	private static void loadDefault()
-	{
-		moveLeftKey = 37;     	//A = 65	LeftArrow = 37
-		moveRightKey = 39;		//D = 68	RightArrow = 39
-		jumpKey = 38;			//W = 87	UpArrow = 38
-		attackKey = 40;			//S = 83    DownArrow = 40
-		dashKey = 16;			//Shift = 16
-		targetFrameRate = 60;
 	}
 	
 	@SuppressWarnings("unchecked")
