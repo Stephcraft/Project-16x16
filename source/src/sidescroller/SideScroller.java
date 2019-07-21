@@ -168,6 +168,10 @@ public class SideScroller extends PApplet {
 		// Load Graphics Sheet
 		graphicsSheet = loadImage("Assets/Art/graphics-sheet.png");
 		magicSheet = loadImage("Assets/Art/magic.png");
+		
+		// Load Options
+		Options.load();
+		Options.save();
 
 		// Create All Graphics
 		gameGraphics.load();
