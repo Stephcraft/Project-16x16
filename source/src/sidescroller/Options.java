@@ -3,7 +3,6 @@ package sidescroller;
 import java.io.FileWriter;
 import java.io.FileReader;
 import java.io.IOException;
-import java.io.FileNotFoundException;
 
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -29,15 +28,13 @@ public class Options {
 		{
 			Object obj = parser.parse(new FileReader(SAVELOCATION));
 			JSONObject jsonObject = (JSONObject) obj;
-
-			moveLeftKey = (int) (long) jsonObject.getOrDefault("moveLeftKey", 37l);
-			moveRightKey = (int) (long) jsonObject.getOrDefault("moveRightKey", 39l);
-			jumpKey = (int) (long) jsonObject.getOrDefault("jumpKey", 38l);
-			attackKey = (int) (long) jsonObject.getOrDefault("attackKey", 40l);
-			dashKey = (int) (long) jsonObject.getOrDefault("dashKey", 16l);
-			targetFrameRate = (int) (long) jsonObject.getOrDefault("targetFrameRate", 60l);
 			
-		} catch (FileNotFoundException e) {
+			moveLeftKey = (int) (long) jsonObject.getOrDefault("moveLeftKey", moveLeftKey);
+			moveRightKey = (int) (long) jsonObject.getOrDefault("moveRightKey", moveRightKey);
+			jumpKey = (int) (long) jsonObject.getOrDefault("jumpKey", jumpKey);
+			attackKey = (int) (long) jsonObject.getOrDefault("attackKey", attackKey);
+			dashKey = (int) (long) jsonObject.getOrDefault("dashKey", dashKey);
+			targetFrameRate = (int) (long) jsonObject.getOrDefault("targetFrameRate", targetFrameRate);
 			
 		} catch (IOException e)
 		{
@@ -66,7 +63,7 @@ public class Options {
 			file.flush();
 		} catch (IOException e)
 		{
-			//e.printStackTrace();
+			
 		}
 	}
 }
