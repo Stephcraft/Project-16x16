@@ -20,6 +20,7 @@ public class Options {
 	public static int dashKey;
 	public static int targetFrameRate;
 
+	@SuppressWarnings("unchecked")
 	public static void load()
 	{
 		JSONParser parser = new JSONParser();
@@ -29,12 +30,12 @@ public class Options {
 			Object obj = parser.parse(new FileReader(SAVELOCATION));
 			JSONObject jsonObject = (JSONObject) obj;
 
-			moveLeftKey = (int) (long) jsonObject.get("moveLeftKey");
-			moveRightKey = (int) (long) jsonObject.get("moveRightKey");
-			jumpKey = (int) (long) jsonObject.get("jumpKey");
-			attackKey = (int) (long) jsonObject.get("attackKey");
-			dashKey = (int) (long) jsonObject.get("dashKey");
-			targetFrameRate = (int) (long) jsonObject.get("targetFrameRate");
+			moveLeftKey = (int) (long) jsonObject.getOrDefault("moveLeftKey", 37l);
+			moveRightKey = (int) (long) jsonObject.getOrDefault("moveRightKey", 39l);
+			jumpKey = (int) (long) jsonObject.getOrDefault("jumpKey", 38l);
+			attackKey = (int) (long) jsonObject.getOrDefault("attackKey", 40l);
+			dashKey = (int) (long) jsonObject.getOrDefault("dashKey", 16l);
+			targetFrameRate = (int) (long) jsonObject.getOrDefault("targetFrameRate", 60l);
 			
 		} catch (FileNotFoundException e) {
 			loadDefault();
