@@ -1,17 +1,11 @@
 package sidescroller;
 
-import org.json.*;
-import java.io.FileWriter;
-import java.io.FileReader;
-import java.io.IOException;
-
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
+import processing.core.PApplet;
+import processing.data.JSONObject;
 
 public class Options {
 	
-	private static final String SAVELOCATION = "Assets/options.json";
+	private static final String SAVEPATH = "Assets/options.json";
 	
 	public static int moveLeftKey = 37;		//A = 65	LeftArrow = 37
 	public static int moveRightKey = 39;	//D = 68	RightArrow = 39
@@ -20,51 +14,42 @@ public class Options {
 	public static int dashKey = 16;			//Shift = 16
 	public static int targetFrameRate = 60;
 
-	@SuppressWarnings("unchecked")
 	public static void load()
 	{
-		JSONParser parser = new JSONParser();
+		PApplet app = new PApplet();
+		app.sketchPath(SAVEPATH);
+		JSONObject json;
 		
 		try
 		{
-			Object obj = parser.parse(new FileReader(SAVELOCATION));
-			JSONObject jsonObject = (JSONObject) obj;
+			json = app.loadJSONObject(SAVEPATH);
 			
-			moveLeftKey = (int) (long) jsonObject.getOrDefault("moveLeftKey", Long.valueOf(moveLeftKey));
-			moveRightKey = (int) (long) jsonObject.getOrDefault("moveRightKey", Long.valueOf(moveRightKey));
-			jumpKey = (int) (long) jsonObject.getOrDefault("jumpKey", Long.valueOf(jumpKey));
-			attackKey = (int) (long) jsonObject.getOrDefault("attackKey", Long.valueOf(attackKey));
-			dashKey = (int) (long) jsonObject.getOrDefault("dashKey", Long.valueOf(dashKey));
-			targetFrameRate = (int) (long) jsonObject.getOrDefault("targetFrameRate", Long.valueOf(targetFrameRate));
-			
-		} catch (IOException e)
-		{
-			
-		} catch (ParseException e)
+			moveLeftKey = json.getInt("moveLeftKey", moveLeftKey);
+			moveRightKey = json.getInt("moveRightKey", moveRightKey);
+			jumpKey = json.getInt("jumpKey", jumpKey);
+			attackKey = json.getInt("attackKey", attackKey);
+			dashKey = json.getInt("dashKey", dashKey);
+			targetFrameRate = json.getInt("targetFrameRate", targetFrameRate);
+		} catch (Exception e)
 		{
 			
 		}
 	}
 	
-	@SuppressWarnings("unchecked")
 	public static void save()
 	{
-		JSONObject save = new JSONObject();
+		PApplet app = new PApplet();
+		app.sketchPath(SAVEPATH);
 		
-		save.put("moveLeftKey", moveLeftKey);
-		save.put("moveRightKey", moveRightKey);
-		save.put("jumpKey", jumpKey);
-		save.put("attackKey", attackKey);
-		save.put("dashKey", dashKey);
-		save.put("targetFrameRate", targetFrameRate);
+		JSONObject json = new JSONObject();
 		
-		try (FileWriter file = new FileWriter(SAVELOCATION))
-		{
-			file.write(save.toJSONString());
-			file.flush();
-		} catch (IOException e)
-		{
-			
-		}
+		json.setInt("moveLeftKey", moveLeftKey);
+		json.setInt("moveRightKey", moveRightKey);
+		json.setInt("jumpKey", jumpKey);
+		json.setInt("attackKey", attackKey);
+		json.setInt("dashKey", dashKey);
+		json.setInt("targetFrameRate", targetFrameRate);
+		
+		app.saveJSONObject(json, SAVEPATH);
 	}
 }
