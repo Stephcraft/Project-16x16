@@ -403,6 +403,12 @@ public class SceneMapEditor extends PScene {
 				}
 			}
 		}
+		
+		// Scroll Bar Mouse Click Control
+		if (applet.mousePressed == true && tool == Tools.INVENTORY && applet.mouseX > applet.width-40) {
+			scroll_inventory = (int) PApplet.map(applet.mouseY, applet.height - 25, 125, -getInventorySize() + applet.height - 8, 0);
+			scroll_inventory = (int) util.clamp(scroll_inventory, -getInventorySize() + applet.height - 8, 0);
+		}
 
 		// Display Scroll Bar
 		applet.noStroke();
