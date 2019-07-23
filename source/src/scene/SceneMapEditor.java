@@ -7,10 +7,10 @@ import objects.Collision;
 
 import processing.core.*;
 import processing.event.MouseEvent;
-import scene.components.Anchor;
 import scene.components.WorldViewportEditor;
-import scene.components.ScrollBar;
 import sidescroller.SideScroller;
+import ui.Anchor;
+import ui.ScrollBar;
 import windows.SaveLevelWindow;
 
 public class SceneMapEditor extends PScene {

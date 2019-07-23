@@ -1,4 +1,4 @@
-package scene.components;
+package ui;
 
 import processing.core.PApplet;
 
@@ -28,7 +28,7 @@ public class Anchor {
 	public Scale scale = Scale.None;
 	public int rectMode = PApplet.CORNER;
 	
-	public PApplet app;				// reference for anchor
+	public PApplet app;					// reference for anchor
 	private Anchor container = null;	// TODO: if set overrides references from Applet
 	
 	public Anchor(PApplet applet, int posX, int posY, int width, int height)

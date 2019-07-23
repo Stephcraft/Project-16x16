@@ -1,9 +1,9 @@
-package scene.components;
+package ui;
 
 import processing.core.*;
 import processing.event.MouseEvent;
-import scene.components.Anchor;
-import scene.components.ScrollBar;
+import ui.Anchor;
+import ui.ScrollBar;
 
 
 
