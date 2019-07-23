@@ -9,6 +9,8 @@ import processing.core.*;
 import processing.event.MouseEvent;
 import scene.components.WorldViewportEditor;
 import sidescroller.SideScroller;
+import ui.Anchor;
+import ui.ScrollBar;
 import windows.SaveLevelWindow;
 
 public class SceneMapEditor extends PScene {
@@ -37,6 +39,9 @@ public class SceneMapEditor extends PScene {
 
 	// Editor Viewport
 	public WorldViewportEditor worldViewportEditor;
+	
+	// Scroll Bar
+	public ScrollBar scrollBar;
 
 	public enum Tools {
 		MOVE, MODIFY, INVENTORY, PLAY, SAVE,
@@ -71,7 +76,7 @@ public class SceneMapEditor extends PScene {
 		// Init Editor Components
 		editorItem = new EditorItem(applet);
 		worldViewportEditor = new WorldViewportEditor(applet);
-
+		
 		// Get Slots Graphics
 		slot = util.pg(applet.graphicsSheet.get(289, 256, 20, 21), 4);
 		slotEditor = util.pg(applet.graphicsSheet.get(310, 256, 20, 21), 4);
@@ -91,6 +96,13 @@ public class SceneMapEditor extends PScene {
 
 		// Init Window
 		window_saveLevel = new SaveLevelWindow(applet);
+		
+		// Init ScollBar
+		Anchor scrollBarAnchor = new Anchor(applet, -20, 150, 20, 50);
+		scrollBarAnchor.anchorX = Anchor.AnchorX.Right;
+		scrollBarAnchor.anchorY = Anchor.AnchorY.Top;
+		scrollBarAnchor.scale = Anchor.Scale.Vertical;
+		scrollBar = new ScrollBar(scrollBarAnchor);
 
 		// Default Scene
 		applet.collisions.add(new Collision(applet, "METAL_WALK_MIDDLE:0", 0, 0));
@@ -244,7 +256,7 @@ public class SceneMapEditor extends PScene {
 				}
 			}
 		}
-
+		
 		// GUI Icons
 		if (tool == Tools.MOVE || (util.hover(40, 120, 36, 36) && tool != Tools.SAVE && tool != Tools.INVENTORY)) {
 			if (util.hover(40, 120, 36, 36) && applet.mousePressEvent) {
@@ -403,15 +415,14 @@ public class SceneMapEditor extends PScene {
 				}
 			}
 		}
-
-		// Display Scroll Bar
-		applet.noStroke();
-		applet.fill(100, 100);
-		applet.rect(applet.width - 10, applet.height / 2, 20, applet.height);
-		applet.fill(100);
-		applet.rect(applet.width - 10,
-				PApplet.map(scroll_inventory, -getInventorySize() + applet.height - 8, 0, applet.height - 25, 125), 20,
-				50);
+		
+		if (applet.mousePressed && tool == Tools.INVENTORY && applet.mouseX > applet.width-40) {
+			scroll_inventory = (int) PApplet.map(applet.mouseY, applet.height - 25, 125, -getInventorySize() + applet.height - 8, 0);
+			scroll_inventory = (int) util.clamp(scroll_inventory, -getInventorySize() + applet.height - 8, 0);
+			scrollBar.barLocation = (float) PApplet.map(scroll_inventory, -getInventorySize() + applet.height - 8, 0, 1, 0);
+		}
+		
+		scrollBar.draw();
 
 		// Display Top Bar
 		applet.noStroke();
@@ -494,6 +505,7 @@ public class SceneMapEditor extends PScene {
 			if (tool == Tools.INVENTORY) {
 				scroll_inventory -= event.getCount() * 10;
 				scroll_inventory = (int) util.clamp(scroll_inventory, -getInventorySize() + applet.height - 8, 0);
+				scrollBar.barLocation = (float) PApplet.map(scroll_inventory, -getInventorySize() + applet.height - 8, 0, 1, 0);
 			}
 		}
 	}
