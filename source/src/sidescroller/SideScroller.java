@@ -168,6 +168,10 @@ public class SideScroller extends PApplet {
 		// Load Graphics Sheet
 		graphicsSheet = loadImage("Assets/Art/graphics-sheet.png");
 		magicSheet = loadImage("Assets/Art/magic.png");
+		
+		// Load Options
+		Options.load();
+		Options.save();
 
 		// Create All Graphics
 		gameGraphics.load();
@@ -221,8 +225,8 @@ public class SideScroller extends PApplet {
 						5 + lineOffset * 4);
 				text("Camera Pos: " + camera.getCameraPosition(), width, 5 + lineOffset * 5);
 				text("Camera Zoom: " + String.format("%.2f", camera.getZoomScale()), width, 5 + lineOffset * 6);
-				text("World Mouse: " + round(camera.getMouseCoord().x) + ", " + round(camera.getMouseCoord().y),
-						width, 5 + lineOffset * 7);
+				text("World Mouse: " + round(camera.getMouseCoord().x) + ", " + round(camera.getMouseCoord().y), width,
+						5 + lineOffset * 7);
 			}
 		}
 
@@ -293,9 +297,15 @@ public class SideScroller extends PApplet {
 				final PSurfaceFX FXSurface = (PSurfaceFX) surface;
 				final Canvas canvas = (Canvas) FXSurface.getNative();
 				final Stage stage = (Stage) canvas.getScene().getWindow();
-				canvas.getGraphicsContext2D().setImageSmoothing(false);
 				stage.setFullScreen(!stage.isFullScreen());
 				loop();
+				break;
+			case 27: // ESC - Pause menu here
+				if (looping) {
+					noLoop();
+				} else {
+					loop();
+				}
 				break;
 			default:
 				break;

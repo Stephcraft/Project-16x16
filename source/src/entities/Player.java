@@ -2,6 +2,7 @@ package entities;
 
 import processing.core.*;
 import projectiles.Swing;
+import sidescroller.Options;
 //import sidescroller.PClass;
 import sidescroller.SideScroller;
 
@@ -189,7 +190,7 @@ public class Player extends EditableObject {
 		prevKey = applet.key;
 
 		// Move on the x axis
-		if (applet.keyPress(RIGHT) || applet.keyPress(68)) {
+		if (applet.keyPress(Options.moveRightKey) || applet.keyPress(68)) {
 			if (applet.keyPressEvent && !attack && !dashing) {
 				setAnimation("WALK");
 			}
@@ -199,7 +200,7 @@ public class Player extends EditableObject {
 				speedX = (float) (speedWalk * applet.deltaTime * 1.5);
 			}
 			direction = RIGHT;
-		} else if (applet.keyPress(LEFT) || applet.keyPress(65)) {
+		} else if (applet.keyPress(Options.moveLeftKey) || applet.keyPress(65)) {
 			if (applet.keyPressEvent && !attack && !dashing) {
 				setAnimation("WALK");
 			}
@@ -215,7 +216,7 @@ public class Player extends EditableObject {
 			speedX = 0;
 		}
 		// Dash
-		if (applet.keyPress(SHIFT)) {
+		if (applet.keyPress(Options.dashKey)) {
 			if (applet.keyPressEvent && !dashing) {
 				setAnimation("DASH");
 				dashing = true;
@@ -223,7 +224,7 @@ public class Player extends EditableObject {
 		}
 
 		// Move on the y axis
-		if (applet.keyPress(UP) || applet.keyPress(' ')) {
+		if (applet.keyPress(Options.jumpKey) || applet.keyPress(' ')) {
 			if (applet.keyPressEvent && !flying) { // && speedY == 0 && !flying
 				flying = true;
 				if (!dashing) {
