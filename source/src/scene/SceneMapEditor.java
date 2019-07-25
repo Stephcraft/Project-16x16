@@ -99,9 +99,8 @@ public class SceneMapEditor extends PScene {
 		
 		// Init ScollBar
 		Anchor scrollBarAnchor = new Anchor(applet, -20, 150, 20, 50);
-		scrollBarAnchor.anchorX = Anchor.AnchorX.Right;
-		scrollBarAnchor.anchorY = Anchor.AnchorY.Top;
-		scrollBarAnchor.scale = Anchor.Scale.Vertical;
+		scrollBarAnchor.anchorOrigin = Anchor.AnchorOrigin.TopRight;
+		scrollBarAnchor.stretch = Anchor.Stretch.Vertical;
 		scrollBar = new ScrollBar(scrollBarAnchor);
 
 		// Default Scene
@@ -417,7 +416,7 @@ public class SceneMapEditor extends PScene {
 		}
 		
 		if (applet.mousePressed && tool == Tools.INVENTORY && applet.mouseX > applet.width-40) {
-			scroll_inventory = (int) PApplet.map(applet.mouseY, applet.height - 25, 125, -getInventorySize() + applet.height - 8, 0);
+			scroll_inventory = (int) PApplet.map(applet.mouseY, scrollBar.getPosY() + scrollBar.getLength()-25, scrollBar.getPosY()+25, -getInventorySize() + applet.height - 8, 0);
 			scroll_inventory = (int) util.clamp(scroll_inventory, -getInventorySize() + applet.height - 8, 0);
 			scrollBar.barLocation = (float) PApplet.map(scroll_inventory, -getInventorySize() + applet.height - 8, 0, 1, 0);
 		}
