@@ -4,121 +4,208 @@ import processing.core.PApplet;
 
 public class Anchor {
 	
-	public enum AnchorX
+	public enum AnchorOrigin
 	{
-		Left, Center, Right
-	}
-	public enum AnchorY
-	{
-		Top, Center, Bottom
-	}
-	public enum Scale
-	{
-		Horizontal, Vertical, None
+		TopLeft,	Top, 	TopRight,
+		Left, 		Center, Right,
+		BottomLeft, Bottom, BottomRight,
 	}
 	
-	public int posX = 0;
-	public int posY = 0;
+	public enum Stretch
+	{
+		Horizontal, Vertical,  InverseHorizontal, InverseVertical, None
+	}
 	
-	public int width = 0;
-	public int height = 0;
+	// position respect to anchor type
+	public int localX = 0; 
+	public int localY = 0;
 	
-	public AnchorX anchorX = AnchorX.Center;
-	public AnchorY anchorY = AnchorY.Center;
-	public Scale scale = Scale.None;
+	public int localWidth = 0;
+	public int localHeight = 0;
+	
+	public AnchorOrigin anchorOrigin = AnchorOrigin.Center;
+	public Stretch stretch = Stretch.None;
 	public int rectMode = PApplet.CORNER;
 	
-	public PApplet app;					// reference for anchor
-	private Anchor container = null;	// TODO: if set overrides references from Applet
+	private PApplet app;
+	private Anchor frame = null;
 	
-	public Anchor(PApplet applet, int posX, int posY, int width, int height)
+	//TODO: add rectmode support
+	
+	public Anchor(Anchor anchor, int x, int y, int width, int height)
+	{
+		this(anchor.getPApplet(), x, y, width, height);
+		this.frame = anchor;
+	}
+	
+	public Anchor(PApplet applet, int x, int y, int width, int height)
 	{
 		this.app = applet;
-		this.posX = posX;
-		this.posY = posY;
-		this.width = width;
-		this.height = height;
+		this.localX = x;
+		this.localY = y;
+		this.localWidth = width;
+		this.localHeight = height;
 	}
 	
 	public Anchor copy()
 	{
-		Anchor anchor = new Anchor(app, posX, posY, width, height);
-		anchor.anchorX = anchorX;
-		anchor.anchorY = anchorY;
-		anchor.scale = scale;
+		Anchor anchor = new Anchor(app, localX, localY, localWidth, localHeight);
 		
 		return anchor;
 	}
 	
-	public int getPosX()
+	// PApplet
+	
+	public PApplet getPApplet()
+	{
+		if (hasContainer())	return frame.getPApplet();
+		else				return app;
+	}
+	
+	public void setPApplet(PApplet app)
+	{
+		this.app = app;
+	}
+	
+	
+	// Container
+	
+	public boolean hasContainer()
+	{
+		return frame != null;
+	}
+	
+	public Anchor getContainer()
+	{
+		if (hasContainer()) return frame;
+		else 				return null;
+	}
+	
+	public void setContainer(Anchor anchor)
+	{
+		frame = anchor;
+		app = anchor.getPApplet();
+	}
+	
+	// Position
+	
+	public int globalX()
 	{
 		int value = 0;
-		switch(anchorX)
+		switch(anchorOrigin)
 		{
-			case Left:
-				value = posX;
+			// case Left
+			case Left:  case TopLeft:  case BottomLeft:
+				value = localX + frameGlobalX();
 				break;
-			case Right:
-				value = app.width + posX;
+			// case Right
+			case Right: case TopRight: case BottomRight:
+				value = (frameGlobalWidth() + localX) + frameGlobalX();
 				break;
+			// case Center
 			case Center:
-				value = app.width/2 + posX;
+				value = (frameGlobalWidth()/2 + localX) + frameGlobalX();
+				break;
+			// case Top or Bottom
+			default:
+				value = localX + frameGlobalX();
 				break;
 		}
 		return value;
 	}
 	
-	public int getPosY()
+	public int globalY()
 	{
 		int value = 0;
-		switch(anchorY)
+		switch(anchorOrigin)
 		{
-			case Top:
-				value = posY;
+			// case TOP
+			case Top:    case TopLeft:    case TopRight:
+				value = localY + frameGlobalY();
 				break;
-			case Bottom:
-				value = app.height + posY;
+			// case Bottom
+			case Bottom: case BottomLeft: case BottomRight:
+				value = (frameGlobalHeight() + localY) + frameGlobalY();
 				break;
+			// case Center
 			case Center:
-				value = app.height/2 + posY;
+				value = (frameGlobalHeight()/2 + localY) + frameGlobalY();
+				break;
+			// case Left or Right
+			default:
+				value = localY + frameGlobalY();
 				break;
 		}
 		return value;
 	}
 	
-	public int getWidth()
+	// Stretch
+	
+	public int globalWidth()
 	{
 		int value = 0;
-		switch(scale)
+		switch(stretch)
 		{
 			case Horizontal:
-				value = app.width - getPosX();
+				value = frameGlobalWidth() - globalX();
 				break;
-			case Vertical:
-				value = width;
+			case InverseHorizontal:
+				value = globalX() - frameGlobalWidth();;
+				break;
+			case Vertical: case InverseVertical:
+				value = localWidth;
 				break;
 			case None:
-				value = width;
+				value = localWidth;
 				break;
 		}
 		return value;
 	}
 	
-	public int getHeight()
+	public int globalHeight()
 	{
 		int value = 0;
-		switch(scale)
+		switch(stretch)
 		{
-			case Horizontal:
-				value = height;
+			case Horizontal: case InverseHorizontal:
+				value = localHeight;
 				break;
 			case Vertical:
-				value = app.height - getPosY();
+				value = frameGlobalHeight() - globalY();
+				break;
+			case InverseVertical:
+				value = globalY() - frameGlobalHeight();
 				break;
 			case None:
-				value = height;
+				value = localHeight;
 				break;
 		}
 		return value;
+	}
+	
+	// Container Variables
+	
+	public int frameGlobalX()
+	{
+		if (hasContainer()) return frame.globalX();
+		else 				return 0;
+	}
+	
+	public int frameGlobalY()
+	{
+		if (hasContainer()) return frame.globalY();
+		else 				return 0;
+	}
+	
+	public int frameGlobalWidth()
+	{
+		if (hasContainer()) return frame.globalWidth();
+		else 				return app.width;
+	}
+	
+	public int frameGlobalHeight()
+	{
+		if (hasContainer()) return frame.globalHeight();
+		else				return app.height;
 	}
 }
