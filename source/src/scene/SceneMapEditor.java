@@ -10,7 +10,7 @@ import processing.event.MouseEvent;
 import scene.components.WorldViewportEditor;
 import sidescroller.SideScroller;
 import ui.Anchor;
-import ui.ScrollBar;
+import ui.ScrollBarVertical;
 import windows.SaveLevelWindow;
 
 public class SceneMapEditor extends PScene {
@@ -41,7 +41,7 @@ public class SceneMapEditor extends PScene {
 	public WorldViewportEditor worldViewportEditor;
 	
 	// Scroll Bar
-	public ScrollBar scrollBar;
+	public ScrollBarVertical scrollBar;
 
 	public enum Tools {
 		MOVE, MODIFY, INVENTORY, PLAY, SAVE,
@@ -101,8 +101,8 @@ public class SceneMapEditor extends PScene {
 		Anchor scrollBarAnchor = new Anchor(applet, -20, 150, 20, 50);
 		scrollBarAnchor.anchorOrigin = Anchor.AnchorOrigin.TopRight;
 		scrollBarAnchor.stretch = Anchor.Stretch.Vertical;
-		scrollBar = new ScrollBar(applet, scrollBarAnchor);
-
+		scrollBar = new ScrollBarVertical(applet, scrollBarAnchor);
+		
 		// Default Scene
 		applet.collisions.add(new Collision(applet, "METAL_WALK_MIDDLE:0", 0, 0));
 
@@ -419,7 +419,7 @@ public class SceneMapEditor extends PScene {
 		scrollBar.display();
 		scrollBar.update();
 		scroll_inventory = (int) PApplet.map(scrollBar.barLocation, 1, 0,  -getInventorySize() + applet.height - 8, 0);
-
+		
 		// Display Top Bar
 		applet.noStroke();
 		applet.fill(29, 33, 45);
