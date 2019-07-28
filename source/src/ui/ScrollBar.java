@@ -1,19 +1,29 @@
 package ui;
 
-import processing.core.*;
 import ui.Anchor;
 import ui.Anchor.AnchorOrigin;
 import ui.ScrollBar;
+import processing.core.*;
+import processing.event.MouseEvent;
+import sidescroller.PClass;
+import sidescroller.SideScroller;
 
-public class ScrollBar {
+/**
+ * Horizontal ScrollBar
+ */
+public class ScrollBar extends PClass {
 
-	private Anchor anchor;
-	private Anchor barAnchor;
-	
-	private PApplet app;
 	public float barLocation = 0f; // between 0-1
 	
-	public ScrollBar(Anchor anchor) {
+	private PApplet app;
+	
+	private Anchor anchor;
+	private Anchor barAnchor;
+	private boolean barSelected = false;
+	
+	
+	public ScrollBar(SideScroller a, Anchor anchor) {
+		super(a);
 		setAnchor(anchor);
 	}
 	
@@ -27,7 +37,7 @@ public class ScrollBar {
 		barAnchor.anchorOrigin = AnchorOrigin.TopLeft;
 	}
 	
-	public void draw()
+	public void display()
 	{
 		//Display ScrollBar
 		app.noStroke();
@@ -37,25 +47,26 @@ public class ScrollBar {
 		
 		// DisplayLocationBar
 		app.fill(100);
-		int location = (int) PApplet.map(barLocation, 0, 1, barAnchor.globalY(), anchor.globalY() + anchor.globalHeight() - barAnchor.globalHeight());
-		app.rect(barAnchor.globalX(), location, anchor.globalWidth(), anchor.localHeight);
+		barAnchor.localY = (int) PApplet.map(barLocation, 0, 1, 0, anchor.globalHeight() - barAnchor.localHeight);
+		app.rect(barAnchor.globalX(), barAnchor.globalY(), anchor.globalWidth(), anchor.localHeight);
 	}
 	
-	public int getPosX()
-	{
-		return anchor.globalX();
+	public void update() {
+		if (applet.mousePressEvent && anchor.hover()) {
+			barSelected = true;
+		}
+		if (applet.mouseReleaseEvent) {
+			barSelected = false;
+		}
+		if (barSelected)
+		{
+			barLocation = (float) PApplet.map(applet.mouseY, anchor.globalY() + anchor.globalHeight() - (barAnchor.localHeight/2), anchor.globalY() + (barAnchor.localHeight/2), 1, 0);
+			barLocation = util.clamp(barLocation, 0, 1);
+		}
 	}
 	
-	public int getPosY()
-	{
-		return anchor.globalY();
-	}
-	
-	public int getLength()
-	{
-		// return longest length
-		int value = anchor.globalWidth();
-		if (anchor.globalHeight() > value) value = anchor.globalHeight();
-		return value;
+	public void mouseWheel(MouseEvent event) {
+		barLocation += event.getCount() * 0.1;
+		barLocation = util.clamp(barLocation, 0, 1);
 	}
 }
