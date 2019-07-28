@@ -101,7 +101,7 @@ public class SceneMapEditor extends PScene {
 		Anchor scrollBarAnchor = new Anchor(applet, -20, 150, 20, 50);
 		scrollBarAnchor.anchorOrigin = Anchor.AnchorOrigin.TopRight;
 		scrollBarAnchor.stretch = Anchor.Stretch.Vertical;
-		scrollBar = new ScrollBar(scrollBarAnchor);
+		scrollBar = new ScrollBar(applet, scrollBarAnchor);
 
 		// Default Scene
 		applet.collisions.add(new Collision(applet, "METAL_WALK_MIDDLE:0", 0, 0));
@@ -415,13 +415,10 @@ public class SceneMapEditor extends PScene {
 			}
 		}
 		
-		if (applet.mousePressed && tool == Tools.INVENTORY && applet.mouseX > applet.width-40) {
-			scroll_inventory = (int) PApplet.map(applet.mouseY, scrollBar.getPosY() + scrollBar.getLength()-25, scrollBar.getPosY()+25, -getInventorySize() + applet.height - 8, 0);
-			scroll_inventory = (int) util.clamp(scroll_inventory, -getInventorySize() + applet.height - 8, 0);
-			scrollBar.barLocation = (float) PApplet.map(scroll_inventory, -getInventorySize() + applet.height - 8, 0, 1, 0);
-		}
-		
-		scrollBar.draw();
+		// Display ScrollBar
+		scrollBar.display();
+		scrollBar.update();
+		scroll_inventory = (int) PApplet.map(scrollBar.barLocation, 1, 0,  -getInventorySize() + applet.height - 8, 0);
 
 		// Display Top Bar
 		applet.noStroke();
@@ -502,9 +499,8 @@ public class SceneMapEditor extends PScene {
 		if (event.isShiftDown()) {
 		} else {
 			if (tool == Tools.INVENTORY) {
-				scroll_inventory -= event.getCount() * 10;
-				scroll_inventory = (int) util.clamp(scroll_inventory, -getInventorySize() + applet.height - 8, 0);
-				scrollBar.barLocation = (float) PApplet.map(scroll_inventory, -getInventorySize() + applet.height - 8, 0, 1, 0);
+				scrollBar.mouseWheel(event);
+				scroll_inventory = (int) PApplet.map(scrollBar.barLocation, 1, 0, -getInventorySize() + applet.height - 8, 0);
 			}
 		}
 	}
