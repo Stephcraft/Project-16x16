@@ -208,4 +208,10 @@ public class Anchor {
 		if (hasContainer()) return frame.globalHeight();
 		else				return app.height;
 	}
+	
+	// is mouse over anchor
+	public boolean hover() {
+		return(app.mouseX > globalX() && app.mouseX < globalX() + globalWidth() 
+		    && app.mouseY > globalY() && app.mouseY < globalY() + globalHeight());
+	}
 }
