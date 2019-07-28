@@ -2,7 +2,6 @@ package ui;
 
 import ui.Anchor;
 import ui.Anchor.AnchorOrigin;
-import ui.ScrollBar;
 import processing.core.*;
 import processing.event.MouseEvent;
 import sidescroller.PClass;
@@ -11,18 +10,18 @@ import sidescroller.SideScroller;
 /**
  * Horizontal ScrollBar
  */
-public class ScrollBar extends PClass {
+public class ScrollBarHorizontal extends PClass {
 
 	public float barLocation = 0f; // between 0-1
 	
-	private PApplet app;
+	protected PApplet app;
 	
-	private Anchor anchor;
-	private Anchor barAnchor;
-	private boolean barSelected = false;
+	protected Anchor anchor;
+	protected Anchor barAnchor;
+	protected boolean barSelected = false;
 	
 	
-	public ScrollBar(SideScroller a, Anchor anchor) {
+	public ScrollBarHorizontal(SideScroller a, Anchor anchor) {
 		super(a);
 		setAnchor(anchor);
 	}
@@ -47,8 +46,8 @@ public class ScrollBar extends PClass {
 		
 		// DisplayLocationBar
 		app.fill(100);
-		barAnchor.localY = (int) PApplet.map(barLocation, 0, 1, 0, anchor.globalHeight() - barAnchor.localHeight);
-		app.rect(barAnchor.globalX(), barAnchor.globalY(), anchor.globalWidth(), anchor.localHeight);
+		barAnchor.localX = (int) PApplet.map(barLocation, 0, 1, 0, anchor.globalWidth() - barAnchor.localWidth);
+		app.rect(barAnchor.globalX(), barAnchor.globalY(), anchor.localWidth, anchor.globalHeight());
 	}
 	
 	public void update() {
@@ -57,11 +56,6 @@ public class ScrollBar extends PClass {
 		}
 		if (applet.mouseReleaseEvent) {
 			barSelected = false;
-		}
-		if (barSelected)
-		{
-			barLocation = (float) PApplet.map(applet.mouseY, anchor.globalY() + anchor.globalHeight() - (barAnchor.localHeight/2), anchor.globalY() + (barAnchor.localHeight/2), 1, 0);
-			barLocation = util.clamp(barLocation, 0, 1);
 		}
 	}
 	
