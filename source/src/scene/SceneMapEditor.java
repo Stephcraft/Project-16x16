@@ -10,7 +10,7 @@ import processing.event.MouseEvent;
 import scene.components.WorldViewportEditor;
 import sidescroller.SideScroller;
 import ui.Anchor;
-import ui.ScrollBar;
+import ui.ScrollBarVertical;
 import windows.SaveLevelWindow;
 
 public class SceneMapEditor extends PScene {
@@ -41,7 +41,7 @@ public class SceneMapEditor extends PScene {
 	public WorldViewportEditor worldViewportEditor;
 	
 	// Scroll Bar
-	public ScrollBar scrollBar;
+	public ScrollBarVertical scrollBar;
 
 	public enum Tools {
 		MOVE, MODIFY, INVENTORY, PLAY, SAVE,
@@ -99,11 +99,10 @@ public class SceneMapEditor extends PScene {
 		
 		// Init ScollBar
 		Anchor scrollBarAnchor = new Anchor(applet, -20, 150, 20, 50);
-		scrollBarAnchor.anchorX = Anchor.AnchorX.Right;
-		scrollBarAnchor.anchorY = Anchor.AnchorY.Top;
-		scrollBarAnchor.scale = Anchor.Scale.Vertical;
-		scrollBar = new ScrollBar(scrollBarAnchor);
-
+		scrollBarAnchor.anchorOrigin = Anchor.AnchorOrigin.TopRight;
+		scrollBarAnchor.stretch = Anchor.Stretch.Vertical;
+		scrollBar = new ScrollBarVertical(applet, scrollBarAnchor);
+		
 		// Default Scene
 		applet.collisions.add(new Collision(applet, "METAL_WALK_MIDDLE:0", 0, 0));
 
@@ -416,14 +415,11 @@ public class SceneMapEditor extends PScene {
 			}
 		}
 		
-		if (applet.mousePressed && tool == Tools.INVENTORY && applet.mouseX > applet.width-40) {
-			scroll_inventory = (int) PApplet.map(applet.mouseY, applet.height - 25, 125, -getInventorySize() + applet.height - 8, 0);
-			scroll_inventory = (int) util.clamp(scroll_inventory, -getInventorySize() + applet.height - 8, 0);
-			scrollBar.barLocation = (float) PApplet.map(scroll_inventory, -getInventorySize() + applet.height - 8, 0, 1, 0);
-		}
+		// Display ScrollBar
+		scrollBar.display();
+		scrollBar.update();
+		scroll_inventory = (int) PApplet.map(scrollBar.barLocation, 1, 0,  -getInventorySize() + applet.height - 8, 0);
 		
-		scrollBar.draw();
-
 		// Display Top Bar
 		applet.noStroke();
 		applet.fill(29, 33, 45);
@@ -503,9 +499,8 @@ public class SceneMapEditor extends PScene {
 		if (event.isShiftDown()) {
 		} else {
 			if (tool == Tools.INVENTORY) {
-				scroll_inventory -= event.getCount() * 10;
-				scroll_inventory = (int) util.clamp(scroll_inventory, -getInventorySize() + applet.height - 8, 0);
-				scrollBar.barLocation = (float) PApplet.map(scroll_inventory, -getInventorySize() + applet.height - 8, 0, 1, 0);
+				scrollBar.mouseWheel(event);
+				scroll_inventory = (int) PApplet.map(scrollBar.barLocation, 1, 0, -getInventorySize() + applet.height - 8, 0);
 			}
 		}
 	}
