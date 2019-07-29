@@ -57,6 +57,11 @@ public class ScrollBarVertical extends PClass {
 		if (applet.mouseReleaseEvent) {
 			barSelected = false;
 		}
+		if (barSelected)
+		{
+			barLocation = (float) PApplet.map(applet.mouseY, anchor.globalY() + anchor.globalHeight() - (barAnchor.localHeight/2), anchor.globalY() + (barAnchor.localHeight/2), 1, 0);
+			barLocation = util.clamp(barLocation, 0, 1);
+		}
 	}
 	
 	public void mouseWheel(MouseEvent event) {
