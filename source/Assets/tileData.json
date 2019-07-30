@@ -1,0 +1,49 @@
+{
+  "tiles": [
+    {"id": 0, "name": "RailingLeft", "x": 0, "y": 0, "width": 1, "height": 1},
+    {"id": 1, "name": "Railing1", "x": 1, "y": 0, "width": 1, "height": 1},
+    {"id": 2, "name": "Railing2", "x": 2, "y": 0, "width": 1, "height": 1},
+    {"id": 3, "name": "RailingRight", "x": 3, "y": 0, "width": 1, "height": 1},
+    {"id": 4, "name": "RailingBroken", "x": 4, "y": 0, "width": 1, "height": 1},
+    {"id": 5, "name": "XBox", "x": 5, "y": 0, "width": 1, "height": 1},
+    {"id": 6, "name": "HalfChain", "x": 6, "y": 0, "width": 1, "height": 1},
+    {"id": 7, "name": "Chain", "x": 7, "y": 0, "width": 1, "height": 1},
+    {"id": 8, "name": "LargeChain1", "x": 8, "y": 0, "width": 1, "height": 1},
+    {"id": 9, "name": "Grass1", "x": 9, "y": 0, "width": 1, "height": 1},
+    {"id": 10, "name": "Grass2", "x": 10, "y": 0, "width": 1, "height": 1},
+    {"id": 11, "name": "Grass3", "x": 11, "y": 0, "width": 1, "height": 1},
+    {"id": 12, "name": "PlatformScaffoldLeft", "x": 12, "y": 0, "width": 1, "height": 1},
+    {"id": 13, "name": "PlatformScaffold1", "x": 13, "y": 0, "width": 1, "height": 1},
+    {"id": 14, "name": "PlatformScaffold2", "x": 14, "y": 0, "width": 1, "height": 1},
+    {"id": 15, "name": "PlatformScaffoldRight", "x": 15, "y": 0, "width": 1, "height": 1},
+    {"id": 16, "name": "GridRight", "x": 16, "y": 0, "width": 1, "height": 1},
+    {"id": 17, "name": "GridLeft", "x": 17, "y": 0, "width": 1, "height": 1},
+    {"id": 18, "name": "PlatformGridTop", "x": 18, "y": 0, "width": 1, "height": 1},
+    {"id": 19, "name": "ScaffoldLeft", "x": 19, "y": 0, "width": 1, "height": 1},
+    {"id": 20, "name": "Scaffold1", "x": 20, "y": 0, "width": 1, "height": 1},
+    {"id": 21, "name": "ScaffoldRight", "x": 21, "y": 0, "width": 1, "height": 1},
+    {"id": 22, "name": "HalfCircle", "x": 22, "y": 0, "width": 1, "height": 1},
+    {"id": 23, "name": "CircleDisplay", "x": 23, "y": 0, "width": 2, "height": 2},
+    {"id": 24, "name": "LargeChain2", "x": 25, "y": 0, "width": 1, "height": 1}
+  ],
+  "animations": [
+    {
+      "id": 0,
+      "name": "new animation",
+      "tileRef": 
+      [
+        {"id": 0},
+        {"id": 1}
+      ]
+    },
+    {
+      "id": 1,
+      "name": "new animation",
+      "tileRef": 
+      [
+        {"id": 0},
+        {"id": 1}
+      ]
+    }
+  ]
+}
