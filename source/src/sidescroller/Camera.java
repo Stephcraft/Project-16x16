@@ -468,6 +468,14 @@ public final class Camera extends ZoomPan {
 		logicalPosition = PVector.sub(getPanOffset(), offset); // offset camera to center screen
 		return PApplet.round(-logicalPosition.x) + ", " + PApplet.round(-logicalPosition.y);
 	}
+	
+	/**
+	 * Returns clockwise rotation of the camera.
+	 * @return rotation (radians).
+	 */
+	public float getCameraRotation() {
+		return PApplet.abs(rotation) % PApplet.TWO_PI;
+	}
 
 	/**
 	 * Return the world positon the mouse is over, accounting for camera rotation.
