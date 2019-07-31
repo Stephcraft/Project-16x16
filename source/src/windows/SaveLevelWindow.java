@@ -11,6 +11,8 @@ public class SaveLevelWindow extends PClass {
 	TextInputField input;
 	Button pressSave;
 	Button pressCancel;
+	Button test;
+
 
 	String path = "Assets/Storage/Game/Maps/";
 
@@ -28,15 +30,15 @@ public class SaveLevelWindow extends PClass {
 
 		pressCancel = new Button(applet);
 		pressCancel.setText("Cancel");
-		pressCancel.setPosition(applet.width / 2, applet.height / 2 + 200);
-
+		pressCancel.setPosition(applet.width / 2, pressSave.getYPosition()+50);
+		
 		input = new TextInputField(applet);
 		input.setPosition(applet.width / 2, applet.height / 2);
 		input.setWidth(300);
 	}
 
 	public void display() {
-		// Display Privacy Area
+		// Display Privacy Area (background)
 		applet.fill(0, 100);
 		applet.noStroke();
 		applet.rect(applet.width / 2, applet.height / 2, applet.width, applet.height);
@@ -46,6 +48,7 @@ public class SaveLevelWindow extends PClass {
 		applet.stroke(47, 54, 73);
 		applet.strokeWeight(8);
 		applet.rect(applet.width / 2, applet.height / 2, 400, 500);
+
 
 		// Display Window Title
 		applet.fill(255);

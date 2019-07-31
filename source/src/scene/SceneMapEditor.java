@@ -9,6 +9,7 @@ import processing.core.*;
 import processing.event.MouseEvent;
 import scene.components.WorldViewportEditor;
 import sidescroller.SideScroller;
+import windows.OptionsInterface;
 import windows.SaveLevelWindow;
 
 public class SceneMapEditor extends PScene {
@@ -23,14 +24,20 @@ public class SceneMapEditor extends PScene {
 	PGraphics icon_inventory;
 	PGraphics icon_play;
 	PGraphics icon_save;
+	PGraphics icon_options;
 	PGraphics icon_eyeActive;
 	PGraphics icon_arrowActive;
 	PGraphics icon_inventoryActive;
 	PGraphics icon_playActive;
 	PGraphics icon_saveActive;
+	PGraphics icon_optionsActive;
+	PGraphics icon_leavePlayMode;
+	PGraphics icon_leavePlayModeActive;
 
 	// Windows
 	public SaveLevelWindow window_saveLevel;
+	public OptionsInterface window_options;
+
 
 	// Editor Item
 	public EditorItem editorItem;
@@ -39,10 +46,10 @@ public class SceneMapEditor extends PScene {
 	public WorldViewportEditor worldViewportEditor;
 
 	public enum Tools {
-		MOVE, MODIFY, INVENTORY, PLAY, SAVE,
+		MOVE, MODIFY, INVENTORY, PLAY, SAVE, OPTIONS,
 	}
 
-	public Tools tool;
+	public static Tools tool;
 
 	public ArrayList<String> inventory;
 
@@ -76,21 +83,29 @@ public class SceneMapEditor extends PScene {
 		slot = util.pg(applet.graphicsSheet.get(289, 256, 20, 21), 4);
 		slotEditor = util.pg(applet.graphicsSheet.get(310, 256, 20, 21), 4);
 
-		// Get Icon Graphics
+		// Get Icon Graphics from graphics-sheet.png
+
 		icon_eye = util.pg(applet.graphicsSheet.get(267, 302, 11, 8), 4);
 		icon_arrow = util.pg(applet.graphicsSheet.get(279, 301, 9, 9), 4);
 		icon_inventory = util.pg(applet.graphicsSheet.get(289, 301, 9, 9), 4);
 		icon_play = util.pg(applet.graphicsSheet.get(298, 301, 9, 9), 4);
 		icon_save = util.pg(applet.graphicsSheet.get(307, 301, 9, 9), 4);
+		icon_options = util.pg(applet.graphicsSheet.get(327, 302, 8, 8), 4);
+
 
 		icon_eyeActive = util.pg(applet.graphicsSheet.get(267, 292, 11, 8), 4);
 		icon_arrowActive = util.pg(applet.graphicsSheet.get(279, 291, 9, 9), 4);
 		icon_inventoryActive = util.pg(applet.graphicsSheet.get(289, 291, 9, 9), 4);
 		icon_playActive = util.pg(applet.graphicsSheet.get(298, 291, 9, 9), 4);
 		icon_saveActive = util.pg(applet.graphicsSheet.get(307, 291, 9, 9), 4);
+		icon_optionsActive = util.pg(applet.graphicsSheet.get(327, 292, 8, 8), 4);
+		
+		icon_leavePlayMode = util.pg(applet.graphicsSheet.get(306, 321, 9, 9), 4); 
+		icon_leavePlayModeActive = util.pg(applet.graphicsSheet.get(306, 311, 9, 9), 4); 
 
 		// Init Window
 		window_saveLevel = new SaveLevelWindow(applet);
+		window_options = new OptionsInterface(applet);
 
 		// Default Scene
 		applet.collisions.add(new Collision(applet, "METAL_WALK_MIDDLE:0", 0, 0));
@@ -107,8 +122,8 @@ public class SceneMapEditor extends PScene {
 
 		applet.noStroke();
 		applet.fill(29, 33, 45);
-//		applet.rect(applet.worldPosition.x, applet.worldPosition.y, applet.worldWidth,
-//				applet.worldHeight); // todo
+		//		applet.rect(applet.worldPosition.x, applet.worldPosition.y, applet.worldWidth,
+		//				applet.worldHeight); // todo
 
 		displayGrid();
 
@@ -176,7 +191,7 @@ public class SceneMapEditor extends PScene {
 				applet.keyPressEvent = false;
 			}
 		}
-		
+
 		// Editor View
 		if (tool == Tools.MODIFY) {
 			for (int i = 0; i < applet.collisions.size(); i++) {
@@ -212,7 +227,8 @@ public class SceneMapEditor extends PScene {
 			applet.player.updateEdit();
 			applet.player.displayEdit();
 		}
-		
+
+
 		// View Viewport Editor
 		worldViewportEditor.updateEditor();
 		worldViewportEditor.displayEditor();
@@ -246,49 +262,73 @@ public class SceneMapEditor extends PScene {
 		}
 
 		// GUI Icons
-		if (tool == Tools.MOVE || (util.hover(40, 120, 36, 36) && tool != Tools.SAVE && tool != Tools.INVENTORY)) {
-			if (util.hover(40, 120, 36, 36) && applet.mousePressEvent) {
-				tool = Tools.MOVE;
+		if(tool != Tools.PLAY) {
+			if (tool == Tools.MOVE || (util.hover(40, 120, 36, 36) && tool != Tools.SAVE && tool != Tools.INVENTORY)) {
+				if (util.hover(40, 120, 36, 36) && applet.mousePressEvent) {
+					tool = Tools.MOVE;
+				}
+				image(icon_eyeActive, 40, 120);
+			} else {
+				image(icon_eye, 40, 120);
 			}
-			image(icon_eyeActive, 40, 120);
-		} else {
-			image(icon_eye, 40, 120);
-		}
-		if (tool == Tools.MODIFY || (util.hover(90, 120, 36, 36) && tool != Tools.SAVE && tool != Tools.INVENTORY)) {
-			if (util.hover(90, 120, 36, 36) && applet.mousePressEvent) {
-				tool = Tools.MODIFY;
+			if (tool == Tools.MODIFY || (util.hover(90, 120, 36, 36) && tool != Tools.SAVE && tool != Tools.INVENTORY)) {
+				if (util.hover(90, 120, 36, 36) && applet.mousePressEvent) {
+					tool = Tools.MODIFY;
+				}
+				image(icon_arrowActive, 90, 120);
+			} else {
+				image(icon_arrow, 90, 120);
 			}
-			image(icon_arrowActive, 90, 120);
-		} else {
-			image(icon_arrow, 90, 120);
-		}
-		if (tool == Tools.INVENTORY
-				|| (util.hover(90 + 48, 120, 36, 36) && tool != Tools.SAVE && tool != Tools.INVENTORY)) {
-			if (util.hover(90 + 48, 120, 36, 36) && applet.mousePressEvent) {
-				tool = Tools.INVENTORY;
+			if (tool == Tools.INVENTORY
+					|| (util.hover(90 + 48, 120, 36, 36) && tool != Tools.SAVE && tool != Tools.INVENTORY)) {
+				if (util.hover(90 + 48, 120, 36, 36) && applet.mousePressEvent) {
+					tool = Tools.INVENTORY;
+				}
+				image(icon_inventoryActive, 90 + 48, 120);
+			} else {
+				image(icon_inventory, 90 + 48, 120);
 			}
-			image(icon_inventoryActive, 90 + 48, 120);
-		} else {
-			image(icon_inventory, 90 + 48, 120);
-		}
-		if (tool == Tools.PLAY
-				|| (util.hover(90 + 48 * 2, 120, 36, 36) && tool != Tools.SAVE && tool != Tools.INVENTORY)) {
-			if (util.hover(90 + 48 * 2, 120, 36, 36) && applet.mousePressEvent) {
-				tool = Tools.PLAY;
+			if (tool == Tools.PLAY
+					|| (util.hover(90 + 48 * 2, 120, 36, 36) && tool != Tools.SAVE && tool != Tools.INVENTORY)) {
+				if (util.hover(90 + 48 * 2, 120, 36, 36) && applet.mousePressEvent) {
+					tool = Tools.PLAY;
+				}
+				image(icon_playActive, 90 + 48 * 2, 120);
+			} else {
+				image(icon_play, 90 + 48 * 2, 120);
 			}
-			image(icon_playActive, 90 + 48 * 2, 120);
-		} else {
-			image(icon_play, 90 + 48 * 2, 120);
-		}
-		if (tool == Tools.SAVE
-				|| (util.hover(90 + 48 * 3, 120, 36, 36) && tool != Tools.SAVE && tool != Tools.INVENTORY)) {
-			if (util.hover(90 + 48 * 3, 120, 36, 36) && applet.mousePressEvent) {
-				tool = Tools.SAVE;
+			if (tool == Tools.SAVE
+					|| (util.hover(90 + 48 * 3, 120, 36, 36) && tool != Tools.SAVE && tool != Tools.INVENTORY)) {
+				if (util.hover(90 + 48 * 3, 120, 36, 36) && applet.mousePressEvent) {
+					tool = Tools.SAVE;
+				}
+				image(icon_saveActive, 90 + 48 * 3, 120);
+			} else {
+				image(icon_save, 90 + 48 * 3, 120);
 			}
-			image(icon_saveActive, 90 + 48 * 3, 120);
-		} else {
-			image(icon_save, 90 + 48 * 3, 120);
+		}else {
+			if(tool != Tools.PLAY
+					|| (util.hover(80, 850, 36, 36) && tool != Tools.SAVE && tool != Tools.INVENTORY)) {
+				if (util.hover(80, 850, 36, 36) && applet.mousePressEvent) {
+					tool = Tools.MOVE;
+				}
+				image(icon_leavePlayModeActive, 80, 850);
+				applet.text("Leave Play Mode",  172, 820);
+			} else {
+				image(icon_leavePlayMode, 80, 850);
+			}
 		}
+		if(tool == Tools.OPTIONS
+				|| (util.hover(90 + 48 * 30, 850, 36, 36) && tool != Tools.SAVE && tool != Tools.INVENTORY)) {
+			if (util.hover(90 + 48 * 30, 850, 36, 36) && applet.mousePressEvent) {
+				tool = Tools.OPTIONS;
+			}
+			image(icon_optionsActive, 90 + 48 * 30, 850);
+			applet.text("Option Menu",  1585, 820);
+		} else {
+			image(icon_options, 90 + 48 * 30, 850);
+		}
+
 
 		// GUI Editor Object
 		if (tool == Tools.MODIFY) {
@@ -307,13 +347,22 @@ public class SceneMapEditor extends PScene {
 			window_saveLevel.display();
 		}
 
+		if(tool == Tools.OPTIONS)
+			window_options.display();
+		window_options.update();
+		window_options.displayOptions();
+
+		// Display player health
+		// TODO player health	
+
+
 		// Move Tool
 		if (tool == Tools.MOVE) {
 			if (applet.mousePressed) {
-//				applet.originTargetX += applet.pmouseX - applet.getMouseX();
-//				applet.originTargetY += applet.pmouseY - applet.getMouseY();
-//				applet.originX = applet.originTargetX;
-//				applet.originY = applet.originTargetY;
+				//				applet.originTargetX += applet.pmouseX - applet.getMouseX();
+				//				applet.originTargetY += applet.pmouseY - applet.getMouseY();
+				//				applet.originX = applet.originTargetX;
+				//				applet.originY = applet.originTargetY;
 			}
 		}
 
@@ -356,6 +405,16 @@ public class SceneMapEditor extends PScene {
 						editorItem.setMode("ITEM");
 						editorItem.focus = false;
 						scroll_inventory = 0;
+					}
+				}
+				if(applet.keyPress(79)) {
+					if(tool != Tools.OPTIONS) {
+						tool = Tools.OPTIONS;
+						editorItem.setMode("CREATE");
+						editorItem.focus = false;
+					}
+					else {
+						tool = Tools.MOVE;
 					}
 				}
 			}
@@ -424,9 +483,11 @@ public class SceneMapEditor extends PScene {
 		applet.line(0, 100, applet.width, 100);
 
 		// Display Inventory Slots
+
 		for (int i = 0; i < 6; i++) {
 			// Display Slot
 			image(slot, 20 * 4 / 2 + 10 + i * (20 * 4 + 10), 20 * 4 / 2 + 10);
+
 
 			// Display Item
 			PGraphics img = applet.gameGraphics.get(inventory.get(i));
@@ -463,11 +524,11 @@ public class SceneMapEditor extends PScene {
 				y++;
 				x = 0;
 			}
-//			applet.line(x * (4 * 16) - (applet.originX % (16 * 4)) - ((4 * 16) / 2), 0,
-//					x * (4 * 16) - (applet.originX % (16 * 4)) - ((4 * 16) / 2), applet.height);
-//			applet.line(0, y * (4 * 16) - (applet.originY % (16 * 4)) - ((4 * 16) / 2), applet.width,
-//					y * (4 * 16) - (applet.originY % (16 * 4)) - ((4 * 16) / 2)); // todo
-			
+			//			applet.line(x * (4 * 16) - (applet.originX % (16 * 4)) - ((4 * 16) / 2), 0,
+			//					x * (4 * 16) - (applet.originX % (16 * 4)) - ((4 * 16) / 2), applet.height);
+			//			applet.line(0, y * (4 * 16) - (applet.originY % (16 * 4)) - ((4 * 16) / 2), applet.width,
+			//					y * (4 * 16) - (applet.originY % (16 * 4)) - ((4 * 16) / 2)); // todo
+
 			applet.line(x * (4 * 16) - (0 % (16 * 4)) - ((4 * 16) / 2), 0,
 					x * (4 * 16) - (0 % (16 * 4)) - ((4 * 16) / 2), applet.height);
 			applet.line(0, y * (4 * 16) - (0 % (16 * 4)) - ((4 * 16) / 2), applet.width,

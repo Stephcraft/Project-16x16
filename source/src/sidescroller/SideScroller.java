@@ -6,7 +6,6 @@ import java.util.HashSet;
 import dm.core.DM;
 
 import entities.Player;
-
 import javafx.scene.canvas.Canvas;
 import javafx.stage.Stage;
 
@@ -26,6 +25,7 @@ import projectiles.ProjectileObject;
 
 import scene.PScene;
 import scene.SceneMapEditor;
+import scene.SceneMapEditor.Tools;
 
 /**
  * <h1>SideScroller Class</h1>
@@ -79,13 +79,14 @@ public class SideScroller extends PApplet {
 	// Camera Variables
 	public Camera camera;
 	private PVector mousePosition;
+	
 
 	/**
 	 * controls how processing handles the window
 	 */
 	@Override
 	public void settings() {
-		size(1280, 720, FX2D);
+		size(displayWidth, displayHeight, FX2D);
 	}
 
 	/**
@@ -93,12 +94,7 @@ public class SideScroller extends PApplet {
 	 * default function with a working technique. Cannot be placed in
 	 * {@link #settings()}, like it normally would be.
 	 */
-	@Override
-	public void noSmooth() {
-		final PSurfaceFX FXSurface = (PSurfaceFX) surface;
-		final Canvas canvas = (Canvas) FXSurface.getNative();
-		canvas.getGraphicsContext2D().setImageSmoothing(false);
-	}
+
 
 	/**
 	 * setup is called once at the beginning of the game. Most variables will be
@@ -203,13 +199,14 @@ public class SideScroller extends PApplet {
 			camera.update();
 			mousePosition = camera.getMouseCoord().copy();
 			mapEditor.draw(); // Handle Draw Scene Method - draws player, world, etc.
-			camera.postDebug(); // for development
+			//camera.postDebug(); // for development
 		}
 		popMatrix();
 
 		drawAboveCamera: { // Where HUD etc should be drawn
 			mousePosition = new PVector(mouseX, mouseY);
 			mapEditor.drawUI();
+			player.displayLife();
 
 			if (DEBUG) {
 				fill(255, 0, 0);
@@ -244,10 +241,14 @@ public class SideScroller extends PApplet {
 		mouseReleaseEvent = false;
 
 		if (keys.contains(75)) { // K - for development
+			if(SceneMapEditor.tool == Tools.PLAY) {
 			camera.rotate(-PI / 60);
+			}
 		}
 		if (keys.contains(76)) { // L - for development
+			if(SceneMapEditor.tool == Tools.PLAY) {
 			camera.rotate(PI / 60);
+			}
 		}
 	}
 
@@ -264,32 +265,51 @@ public class SideScroller extends PApplet {
 	/**
 	 * keyReleased decides if the key pressed is valid and if it is then removes it
 	 * from the keys ArrayList and keyReleaseEvent flag is set.
+	 * Here for development
 	 */
 	@Override
 	public void keyReleased(KeyEvent event) {
 		keys.remove(event.getKeyCode());
 		keyReleaseEvent = true;
-
+		
 		switch (event.getKey()) { // must be caps
-		case 'Z':
-			frameRate(2000);
-			break;
 		case 'X':
-			frameRate(10);
+			frameRate(10); //slow down
+			break;
+		case 'R':
+			frameRate(60); //reset framerate
 			break;
 		case 'V':
-			camera.toggleDeadZone(); // for development
+			if(SceneMapEditor.tool == Tools.PLAY) {
+			camera.toggleDeadZone();
+			}// for development
 			break;
 		case 'C':
+			if(SceneMapEditor.tool == Tools.PLAY) {
 			camera.setCameraPosition(camera.getMouseCoord()); // for development
+			}
 			break;
 		case 'F':
+			if(SceneMapEditor.tool == Tools.PLAY) {
 			camera.setFollowObject(player); // for development
 			camera.setZoomScale(1.0f); // for development
+			}
 			break;
 		case 'G':
+			if(SceneMapEditor.tool == Tools.PLAY) {
 			camera.shake(0.4f); // for development
+			}
 			break;
+		case 'H':
+			if(SceneMapEditor.tool == Tools.PLAY && player.lifeCapacity <= 10) {
+			player.lifeCapacity += 1;
+			}
+			break;
+		case 'I':
+			if(SceneMapEditor.tool == Tools.PLAY) {
+			player.lifeCapacity -= 1;
+			}
+			break;	
 		default:
 			switch (event.getKeyCode()) { // non-character keys
 			case 122: // F11

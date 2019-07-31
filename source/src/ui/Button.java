@@ -16,7 +16,7 @@ public class Button extends PClass {
 	private int y;
 
 	private boolean focus;
-	private boolean press;
+	public static boolean press;
 
 	public boolean blocked;
 
@@ -54,6 +54,8 @@ public class Button extends PClass {
 		applet.text(text, x, y);
 		width = (int) applet.textWidth(text) + 40;
 		height = 30;
+		
+		applet.rectMode(CENTER);
 	}
 
 	/**
@@ -73,7 +75,7 @@ public class Button extends PClass {
 	}
 
 	/**
-	 * Determins if the mouse is over the button
+	 * Determines if the mouse is over the button
 	 * @return response as a boolean
 	 */
 	public boolean hover() {
@@ -98,9 +100,17 @@ public class Button extends PClass {
 		x = _x;
 		y = _y;
 	}
+	
+	public int getXPosition() {
+		return x;
+	}
+	
+	public int getYPosition() {
+		return y;
+	}
 
 	/**
-	 * Determin if the button is pressed
+	 * Determine if the button is pressed
 	 * @return response as a boolean
 	 */
 	public boolean event() {
