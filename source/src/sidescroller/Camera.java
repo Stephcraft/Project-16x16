@@ -5,6 +5,7 @@ import org.gicentre.utils.move.ZoomPan;
 import objects.EditableObject;
 import processing.core.PApplet;
 import processing.core.PVector;
+import scene.SceneMapEditor.Tools;
 
 import static processing.core.PApplet.sin;
 import static processing.core.PApplet.cos;
@@ -84,6 +85,7 @@ public final class Camera extends ZoomPan {
 	 * 
 	 * @param applet Target applet ({@link SideScroller}).
 	 */
+
 	public Camera(SideScroller applet) {
 		super(applet);
 		this.applet = applet;
@@ -247,6 +249,7 @@ public final class Camera extends ZoomPan {
 	 * be drawn above the camera and msut be called after).
 	 */
 	public void postDebug() {
+
 		if (deadZoneWorld) {
 			applet.noFill();
 			applet.stroke(0, 150, 255);
@@ -485,5 +488,4 @@ public final class Camera extends ZoomPan {
 		n = new PVector((logicalPosition.x + n.x), -(logicalPosition.y + n.y));
 		return n;
 	}
-
 }

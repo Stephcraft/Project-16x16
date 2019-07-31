@@ -45,27 +45,27 @@ public class EditorItem extends PClass {
 					PVector realPos = applet.camera.getDispToCoord(new PVector(applet.getMouseX(), applet.getMouseY())); // transform from screen mouse pos to game pos
 					// Create new instance from dragged icon
 					switch (type) {
-						case "COLLISION" :
-							Collision c = new Collision(applet, id, 0, 0);
-							c.pos.x = realPos.x;
-							c.pos.y = realPos.y;
-							c.focus();
-							applet.collisions.add(c);
-							break;
-						case "BACKGROUND" :
-							BackgroundObject bObject = new BackgroundObject(applet, id, 0, 0);
-							bObject.pos.x = realPos.x;
-							bObject.pos.y = realPos.y;
-							bObject.focus();
-							applet.backgroundObjects.add(bObject);
-							break;
-						case "OBJECT" :
-							GameObject obj = applet.gameGraphics.getObjectClass(id);
-							obj.focus();
-							obj.pos.x = realPos.x;
-							obj.pos.y = realPos.y;
-							applet.gameObjects.add(obj);
-							break;
+					case "COLLISION" :
+						Collision c = new Collision(applet, id, 0, 0);
+						c.pos.x = realPos.x;
+						c.pos.y = realPos.y;
+						c.focus();
+						applet.collisions.add(c);
+						break;
+					case "BACKGROUND" :
+						BackgroundObject bObject = new BackgroundObject(applet, id, 0, 0);
+						bObject.pos.x = realPos.x;
+						bObject.pos.y = realPos.y;
+						bObject.focus();
+						applet.backgroundObjects.add(bObject);
+						break;
+					case "OBJECT" :
+						GameObject obj = applet.gameGraphics.getObjectClass(id);
+						obj.focus();
+						obj.pos.x = realPos.x;
+						obj.pos.y = realPos.y;
+						applet.gameObjects.add(obj);
+						break;
 					}
 				}
 			}

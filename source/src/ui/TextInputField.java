@@ -125,6 +125,7 @@ public class TextInputField extends PClass {
 		x = _x;
 		y = _y;
 	}
+	
 
 	/**
 	 * changes size and position
@@ -139,6 +140,7 @@ public class TextInputField extends PClass {
 		width = w;
 		height = h;
 	}
+	
 
 	/**
 	 * Changes the width 
@@ -147,6 +149,8 @@ public class TextInputField extends PClass {
 	public void setWidth(int w) {
 		width = w;
 	}
+	
+	
 
 	/**
 	 * gets the object variable text
