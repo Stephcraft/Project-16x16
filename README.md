@@ -3,7 +3,7 @@ Looking for a cool project ? well here is a good one !
 Project 16x16 is a 2D Platformer game made using java/processing. **You** are able to contribute to this project. The goal is to make a cool game in processing together, that includes **You**. Plus, if you are not a programmer, well this is a game so, we also need cool ideas for gameplay mechanics and story, level designers, also people who can do soundtracks/audio, and artists ! We are already using the amazing industrial tileset made by [0x72](https://0x72.itch.io/16x16-industrial-tileset), **but!** Additional art can be added like UI designs, effects and **epic bosses for epic boss fights** ;)
 
 ## How do I start!
-Wow!! This project seems **EPIC!** Right? And its made in processing, like *whhhooaaahht* ! So how do I get in, how do I start? Simple! 
+Wow!! This project seems **EPIC!** Right? And its made in processing, like *whhhooaaahht* ! So how do I get in, how do I start? Simple:
 
 ### Programmers
 1. Join the [discord server](https://discord.gg/zDJSCqd)

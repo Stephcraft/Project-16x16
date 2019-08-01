@@ -1,4 +1,4 @@
-Introduction
+# Introduction
 
 All tutorial icons in this section are displayed after a delay if the player does not perform the action. This is used only as a hint.
 
