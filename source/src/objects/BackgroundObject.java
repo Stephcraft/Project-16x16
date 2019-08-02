@@ -46,7 +46,7 @@ public class BackgroundObject extends EditableObject {
 	}
 
 	public void setGraphic(String _id) {
-		image = applet.gameGraphics.get(_id);
+		image = applet.tileset.getTileGraphic(_id, 4);
 		id = _id;
 		width = image.width;
 		height = image.height;

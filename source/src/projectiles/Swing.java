@@ -29,7 +29,7 @@ public class Swing extends ProjectileObject { // PClass
 		height = 9 * 4;
 
 		// Setup Animation
-		animation.frames = applet.gameGraphics.ga(applet.graphicsSheet, 65, 292, 28, 9, 4);
+		animation.frames = applet.tileset.getAnimationGraphic("Swing", 4);
 		animation.loop = false;
 		animation.length = 3;
 		animation.rate = 4; // 6

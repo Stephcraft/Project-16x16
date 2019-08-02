@@ -34,14 +34,14 @@ public class GameObject extends EditableObject {
 	}
 
 	protected ArrayList<PGraphics> getAnimation(String id) {
-		return applet.gameGraphics.getAnimation(id);
+		return applet.tileset.getAnimationGraphic(id, 4);
 	}
 
 	protected PGraphics g(int x, int y, int w, int h) {
-		return applet.gameGraphics.g(x, y, w, h);
+		return util.pg(applet.tileset.getTile(x, y, w, h));
 	}
 
 	protected PGraphics g(int x, int y, int w, int h, float s) {
-		return applet.gameGraphics.g(x, y, w, h, s);
+		return util.pg(applet.tileset.getTile(x, y, w, h), s);
 	}
 }

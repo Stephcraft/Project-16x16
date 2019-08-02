@@ -238,7 +238,7 @@ public class SceneMapEditor extends PScene {
 				image(slot, 20 * 4 / 2 + 10 + i * (20 * 4 + 10), 20 * 4 / 2 + 10);
 
 				// Display Item
-				PGraphics img = applet.gameGraphics.get(inventory.get(i));
+				PGraphics img = applet.tileset.getTileGraphic(inventory.get(i), 4);
 				applet.image(img, 20 * 4 / 2 + 10 + i * (20 * 4 + 10), 20 * 4 / 2 + 10, img.width * (float) 0.5,
 						img.height * (float) 0.5);
 
@@ -250,7 +250,7 @@ public class SceneMapEditor extends PScene {
 							&& applet.getMouseY() > y - (20 * 4) / 2 && applet.getMouseY() < y + (20 * 4) / 2) {
 						editorItem.focus = true;
 						editorItem.setTile(inventory.get(i));
-						editorItem.type = applet.gameGraphics.getType(inventory.get(i));
+						editorItem.type = applet.tileset.getTileType(inventory.get(i));
 					}
 				}
 			}
@@ -383,7 +383,7 @@ public class SceneMapEditor extends PScene {
 		// Display Editor Mode Items
 		int x = 0;
 		int y = 1;
-		for (int i = 0; i < applet.gameGraphics.graphics.size(); i++) {
+		for (int i = 0; i < applet.tileset.loadedTilesSize(); i++) {
 			if (i % 6 == 0) {
 				x = 0;
 				y++;
@@ -392,7 +392,7 @@ public class SceneMapEditor extends PScene {
 			}
 			applet.image(slotEditor, 20 * 4 / 2 + 10 + x * (20 * 4 + 10), y * (20 * 4 + 10) + scroll_inventory);
 
-			PGraphics img = applet.gameGraphics.graphics.get(i).image;
+			PGraphics img = util.pg(applet.tileset.getTile(i), 4);
 			if (img.width > 20 * 4 || img.height > 20 * 4) {
 				applet.image(img, 20 * 4 / 2 + 10 + x * (20 * 4 + 10), y * (20 * 4 + 10) + scroll_inventory,
 						img.width / 4, img.height / 4);
@@ -409,7 +409,7 @@ public class SceneMapEditor extends PScene {
 					if (applet.getMouseX() > xx - (20 * 4) / 2 && applet.getMouseX() < xx + (20 * 4) / 2
 							&& applet.getMouseY() > yy - (20 * 4) / 2 && applet.getMouseY() < yy + (20 * 4) / 2) {
 						editorItem.focus = true;
-						editorItem.setTile(applet.gameGraphics.graphics.get(i).name);
+						editorItem.setTile(applet.tileset.getTileName(i));
 					}
 				}
 			}
@@ -436,7 +436,7 @@ public class SceneMapEditor extends PScene {
 			image(slot, 20 * 4 / 2 + 10 + i * (20 * 4 + 10), 20 * 4 / 2 + 10);
 
 			// Display Item
-			PGraphics img = applet.gameGraphics.get(inventory.get(i));
+			PGraphics img = util.pg(applet.tileset.getTile(i), 4);
 			applet.image(img, 20 * 4 / 2 + 10 + i * (20 * 4 + 10), 20 * 4 / 2 + 10, img.width * (float) 0.5,
 					img.height * (float) 0.5);
 
@@ -485,7 +485,7 @@ public class SceneMapEditor extends PScene {
 	private float getInventorySize() {
 		int y = 1;
 
-		for (int i = 0; i < applet.gameGraphics.graphics.size(); i++) {
+		for (int i = 0; i < applet.tileset.loadedTilesSize(); i++) {
 			if (i % 6 == 0) {
 				y++;
 			} else {

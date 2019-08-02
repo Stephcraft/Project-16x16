@@ -4,6 +4,7 @@ import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
 //import java.io.PrintWriter;
+import java.util.ArrayList;
 
 import objects.BackgroundObject;
 import objects.Collision;
@@ -40,6 +41,15 @@ public class Util {
 		pg.endDraw();
 
 		return pg;
+	}
+	
+	public ArrayList<PGraphics> pg(ArrayList<PImage> imgs, float scl) {
+		ArrayList<PGraphics> pgs = new ArrayList<PGraphics>();
+		for (PImage img : imgs)
+		{
+			pgs.add(pg(img, scl));
+		}
+		return pgs;
 	}
 
 	public PGraphics blur(PGraphics img, float b) {
@@ -209,7 +219,7 @@ public class Util {
 						applet.backgroundObjects.add(backgroundObject);
 						break;
 					case "OBJECT" :
-						GameObject gameObject = applet.gameGraphics.getObjectClass(item.getString("id"));
+						GameObject gameObject = applet.tileset.getObjectClass(item.getString("id"));
 						gameObject.pos.x = item.getInt("x");
 						gameObject.pos.y = item.getInt("y");
 

@@ -52,6 +52,6 @@ public class ProjectileObject extends PClass {
 	}
 
 	protected ArrayList<PGraphics> getAnimation(String id) {
-		return applet.gameGraphics.getAnimation(id);
+		return applet.tileset.getAnimationGraphic(id, 4);
 	}
 }

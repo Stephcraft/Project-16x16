@@ -25,7 +25,7 @@ public class MirrorBoxObject extends GameObject {
 		id = "MIRROR_BOX";
 
 		// Default image
-		image = applet.gameGraphics.get("MIRROR_BOX");
+		image = applet.tileset.getTileGraphic("MIRROR_BOX", 4);
 
 		width = 64;
 		height = 64;
@@ -83,7 +83,7 @@ public class MirrorBoxObject extends GameObject {
 					rotating = true;
 
 					// Setup Animation
-					animation.frames = applet.gameGraphics.getAnimation("MIRROR_BOX::ROTATE");
+					animation.frames = applet.tileset.getAnimationGraphic("MIRROR_BOX::ROTATE", 4);
 					animation.loop = false;
 					animation.length = 7;
 					animation.rate = 1;
@@ -124,15 +124,15 @@ public class MirrorBoxObject extends GameObject {
 			}
 			if (!rotating) {
 				if (activated) {
-					image = applet.gameGraphics.g(352, 160, 16, 16);
+					image = util.pg(applet.tileset.getTile(352, 160, 16, 16), 4);
 				} else {
-					image = applet.gameGraphics.get("MIRROR_BOX");
+					image = applet.tileset.getTileGraphic("MIRROR_BOX", 4);
 				}
 			}
 		}
 
 		if (animation.ended && rotating) {
-			image = applet.gameGraphics.get("MIRROR_BOX");
+			image = applet.tileset.getTileGraphic("MIRROR_BOX", 4);
 			rotating = false;
 			direction += 1;
 			if (direction >= 4) {

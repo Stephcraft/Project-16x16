@@ -60,7 +60,7 @@ public class EditorItem extends PClass {
 							applet.backgroundObjects.add(bObject);
 							break;
 						case "OBJECT" :
-							GameObject obj = applet.gameGraphics.getObjectClass(id);
+							GameObject obj = applet.tileset.getObjectClass(id);
 							obj.focus();
 							obj.pos.x = realPos.x;
 							obj.pos.y = realPos.y;
@@ -87,8 +87,8 @@ public class EditorItem extends PClass {
 	}
 
 	public void setTile(String t) {
-		image = applet.gameGraphics.get(t);
-		type = applet.gameGraphics.getType(t);
+		image = applet.tileset.getTileGraphic(t, 4);
+		type = applet.tileset.getTileType(t);
 
 		id = t;
 	}

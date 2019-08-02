@@ -16,12 +16,12 @@ public class MagicSourceObject extends GameObject {
 		id = "MAGIC_SOURCE";
 
 		// Default image
-		image = applet.gameGraphics.get("MAGIC_SOURCE");
+		image = applet.tileset.getTileGraphic("MAGIC_SOURCE", 4);
 
 		// Setup Animation
-		animation.frames = applet.gameGraphics.ga(applet.magicSheet, 0, 0, 16, 16, 80);
+		animation.frames = applet.tileset.getAnimationGraphic("MAGIC::IDLE", 4);
 		animation.loop = true;
-		animation.length = 79;
+		animation.length = 9;
 		animation.rate = 6;
 		animation.frame = 0;
 		animation.start = 0;
