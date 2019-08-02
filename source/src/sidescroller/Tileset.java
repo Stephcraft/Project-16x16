@@ -1,137 +1,142 @@
 package sidescroller;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
+import objects.GameObject;
+import objects.MagicSourceObject;
+import objects.MirrorBoxObject;
 import processing.core.PApplet;
+import processing.core.PGraphics;
 import processing.core.PImage;
 import processing.data.JSONObject;
 import processing.data.JSONArray;
 
 public class Tileset extends PClass {
 
+	private final int TILESETSIZE = 16;
 	private final String DATAPATH = "Assets/tileData.json";
 	
-	private PImage tileset;
+	private HashMap<String, Integer> tileRef = new HashMap<String, Integer>();
+	private ArrayList<PImage> loadedTiles = new ArrayList<PImage>();
 	
-	private JSONObject tileData;
-	private JSONArray tiles;
-	private JSONArray animations;
+	private JSONArray JSONtiles;
+	private JSONArray JSONanimations;
 	
 	public Tileset(SideScroller a) {
 		super(a);
-		//setTestJson();
+	}
+	
+	public void load(){
 		// load JSON
-		tileData = applet.loadJSONObject(DATAPATH);
-		tiles = tileData.getJSONArray("tiles");
-		animations = tileData.getJSONArray("animations");
-		// load tile set
-		tileset = applet.loadImage("Assets/Art/graphics-sheet.png");
-	}
-	
-	public PImage getTile(int id)
-	{
-		JSONObject tile = tiles.getJSONObject(id);
-		int x = tile.getInt("x") * 16;
-		int y = tile.getInt("y") * 16;
-		return tileset.get(x, y, 16, 16);
-	}
-	
-	public PImage getTile(String name)
-	{
-		for(int i  = 0; i < tiles.size(); i++)
+		JSONObject JSONtileData;
+		JSONtileData = applet.loadJSONObject(DATAPATH);
+		JSONtiles = JSONtileData.getJSONArray("tiles");
+		JSONanimations = JSONtileData.getJSONArray("animations");
+		// load tiles
+		for(int i  = 0; i < JSONtiles.size(); i++)
 		{
-			JSONObject tile = tiles.getJSONObject(i);
-			
-			if (tile.getString("name").contentEquals(name))
-			{
-				return getTile(i);
-			}
+			JSONObject tile = JSONtiles.getJSONObject(i);
+			String key = tile.getString("name");
+			tileRef.put(key, i);
+			getTile(key);
 		}
-		
-		PApplet.println("tile does not exist");
-		return null;
 	}
 	
-	public ArrayList<PImage> getAnimation(int id)
-	{
-		JSONObject animation = animations.getJSONObject(id);
-		ArrayList<PImage> frames = new ArrayList<PImage>();
-		JSONArray tileRefs = animation.getJSONArray("tileRefs");
+	public PImage getTile(int id){
+		if (loadedTiles.size() > id)
+			return loadedTiles.get(id);
 		
-		for(int i = 0; i < tileRefs.size(); i++)
-		{
-			JSONObject tileRef = tileRefs.getJSONObject(i);
-			frames.add(getTile(tileRef.getInt("id", 0)));
-		}
-
-		return frames;
+		JSONObject tile = JSONtiles.getJSONObject(id);
+		int x = (int) (tile.getFloat("x") * TILESETSIZE);
+		int y = (int) (tile.getFloat("y") * TILESETSIZE);
+		int w = tile.getInt("w");
+		int h = tile.getInt("h");
+		PImage image = getTile(x, y, w, h);
+		loadedTiles.add(image);
+		return image;
 	}
 	
-	public ArrayList<PImage> getAnimation(String name)
+	public PImage getTile(String name){
+		int id = getTileId(name);
+		return getTile(id);
+	}
+	
+	public PImage getTile(int x, int y, int w, int h)
 	{
-		for(int i = 0; i < animations.size(); i++)
+		return applet.graphicsSheet.get(x, y, w, h);
+	}
+		
+	public ArrayList<PImage> getAnimation(String name){
+		for(int i = 0; i < JSONanimations.size(); i++)
 		{
-			JSONObject animation = animations.getJSONObject(i);
+			JSONObject animation = JSONanimations.getJSONObject(i);
 			if (animation.getString("name").contentEquals(name))
 			{
-				return getAnimation(i);
+				ArrayList<PImage> tiles = new ArrayList<PImage>();
+				JSONArray tileRefs = animation.getJSONArray("tileRef");
+				
+				for(int k = 0; k < tileRefs.size(); k++)
+				{
+					JSONObject tileRef = tileRefs.getJSONObject(k);
+					tiles.add(getTile(tileRef.getString("name")));
+				}
+
+				return tiles;
 			}
 		}
-		
+		PApplet.println("<Tileset> Error while loading, null string reference to animation ( " + name + " ) >");
 		return null;
 	}
 	
-//test method creates JSON template
-private void setTestJson()
-{
-	int size = 32;
-	tileData = new JSONObject();
-	JSONArray tiles = new JSONArray();
-	
-	for(int i = 0; i < 2; i++)
-	{
-		JSONObject tile = new JSONObject();
-		
-		int x = i%size;
-		int y = i/size;
-		
-		tile.setInt("id", i);
-		tile.setString("name", "new Tile");
-		tile.setInt("x", x);
-		tile.setInt("y", y);
-		tile.setInt("width", 1);
-		tile.setInt("height", 1);
-		
-		tiles.setJSONObject(i, tile);
+	public PGraphics getTileGraphic(String name, float scale) {
+		PImage image = getTile(name);
+		return util.pg(image, scale);
 	}
 	
-	tileData.setJSONArray("tiles", tiles);
-	
-	JSONArray animations = new JSONArray();
-	
-	for(int i = 0; i < 2; i++)
+	public ArrayList<PGraphics> getAnimationGraphic(String name, float scale)
 	{
-		JSONObject animation = new JSONObject();
-		
-		animation.setInt("id", i);
-		animation.setString("name", "new animation");
+		return util.pg(getAnimation(name), 4);
+	}
+	
+	public GameObject getObjectClass(String id) {
+		GameObject obj = new GameObject(applet);
 
-		JSONArray tileRefs = new JSONArray();
-		
-		for(int k = 0; k < 2; k++)
-		{
-			JSONObject tileRef = new JSONObject();
-			tileRef.setInt("id", k);
-			tileRefs.setJSONObject(k, tileRef);
+		switch (id) {
+			case "MAGIC_SOURCE" :
+				obj = new MagicSourceObject(applet);
+				break;
+			case "MIRROR_BOX" :
+				obj = new MirrorBoxObject(applet);
+				break;
 		}
-		
-		animation.setJSONArray("tileRefs", tileRefs);
-		
-		animations.setJSONObject(i, animation);
+
+		return obj;
 	}
 	
-	tileData.setJSONArray("animations", animations);
+	public int getTileId(String key){
+		if (tileRef.containsKey(key))
+			return tileRef.get(key);
+		
+		PApplet.println("<Tileset> Error while loading, null string reference to tile ( " + key + " ) >");
+		return 0;
+	}
 	
-	applet.saveJSONObject(tileData, DATAPATH);
-}
+	public String getTileType(String name) {
+		int id = getTileId(name);
+		JSONObject tile = JSONtiles.getJSONObject(id);
+		String type = tile.getString("type", "COLLISION");
+		return type;
+	}
+	
+	public int loadedTilesSize()
+	{
+		return loadedTiles.size();
+	}
+	
+	public String getTileName(int id)
+	{
+		JSONObject tile = JSONtiles.getJSONObject(id);
+		return tile.getString("name");
+	}
 }
