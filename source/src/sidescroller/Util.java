@@ -20,29 +20,25 @@ public class Util {
 		applet = a;
 	}
 
-	public PGraphics pg(PImage img) {
+	public PImage pg(PImage img) {
 		return pg(img, 1);
 	}
 
 	/**
-	 * 
 	 * @param img
 	 * @param scl Scale
 	 * @return
 	 */
-	public PGraphics pg(PImage img, float scl) {
+	public PImage pg(PImage img, float scl) {
 		PGraphics pg = applet.createGraphics((int) (img.width * scl), (int) (img.height * scl));
-
 		pg.noSmooth();
 		pg.beginDraw();
-		pg.clear();
 		pg.image(img, 0, 0, (int) (img.width * scl), (int) (img.height * scl));
 		pg.endDraw();
-
-		return pg;
+		return pg.get();
 	}
 
-	public PGraphics blur(PGraphics img, float b) {
+	public PImage blur(PImage img, float b) {
 		PGraphics pg = applet.createGraphics(img.width, img.height);
 
 		pg.noSmooth();
@@ -52,10 +48,10 @@ public class Util {
 		pg.filter(PConstants.BLUR, b);
 		pg.endDraw();
 
-		return pg;
+		return pg.get();
 	}
 
-	public PGraphics warp(PGraphics source, float waveAmplitude, float numWaves) {
+	public PImage warp(PImage source, float waveAmplitude, float numWaves) {
 		int w = source.width, h = source.height;
 		PImage destination = applet.createImage(w, h, PConstants.ARGB);
 		source.loadPixels();
@@ -77,10 +73,10 @@ public class Util {
 				destination.pixels[y * w + x] = c;
 			}
 		}
-		return pg(destination);
+		return pg(destination).get();
 	}
 
-	public PGraphics scale(PGraphics pBuffer, int scaling) {
+	public PImage scale(PImage pBuffer, int scaling) {
 		PImage originalImage = pBuffer;
 		PImage tempImage = applet.createImage(PApplet.parseInt(originalImage.width * scaling),
 				PApplet.parseInt(originalImage.height * scaling), PConstants.ARGB);
@@ -93,7 +89,7 @@ public class Util {
 			tempImage.pixels[i * scaling + originalImage.width + 1] = originalImage.pixels[i];
 		}
 		tempImage.updatePixels();
-		return pg(tempImage);
+		return pg(tempImage).get();
 	}
 
 	public float clamp(float val, float min, float max) {

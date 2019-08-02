@@ -23,10 +23,10 @@ public class Player extends EditableObject {
 	public float px;
 	public float py;
 
-	public PGraphics image;
+	public PImage image;
 
-	PGraphics lifeOn;
-	PGraphics lifeOff;
+	PImage lifeOn;
+	PImage lifeOff;
 
 	public float gravity;
 
@@ -63,11 +63,11 @@ public class Player extends EditableObject {
 	public AnimationComponent animation;
 
 	// Animation frames
-	public ArrayList<PGraphics> anim_squish;
-	public ArrayList<PGraphics> anim_idle;
-	public ArrayList<PGraphics> anim_walk;
-	public ArrayList<PGraphics> anim_attack;
-	public ArrayList<PGraphics> anim_shoot;
+	public ArrayList<PImage> anim_squish;
+	public ArrayList<PImage> anim_idle;
+	public ArrayList<PImage> anim_walk;
+	public ArrayList<PImage> anim_attack;
+	public ArrayList<PImage> anim_shoot;
 
 	/**
 	 * Constructor
@@ -82,11 +82,11 @@ public class Player extends EditableObject {
 		animation = new AnimationComponent();
 		swings = new ArrayList<Swing>();
 
-		anim_squish = new ArrayList<PGraphics>();
-		anim_idle = new ArrayList<PGraphics>();
-		anim_walk = new ArrayList<PGraphics>();
+		anim_squish = new ArrayList<PImage>();
+		anim_idle = new ArrayList<PImage>();
+		anim_walk = new ArrayList<PImage>();
 		anim_attack = applet.gameGraphics.getAnimation("PLAYER::WALK");
-		anim_shoot = new ArrayList<PGraphics>();
+		anim_shoot = new ArrayList<PImage>();
 
 		animation.length = 7;
 		animation.loop = true;
@@ -528,7 +528,7 @@ public class Player extends EditableObject {
 	 * @param id the animation id
 	 * @return the animation being used.
 	 */
-	private ArrayList<PGraphics> getAnimation(String id) {
+	private ArrayList<PImage> getAnimation(String id) {
 		return applet.gameGraphics.getAnimation(id);
 	}
 }

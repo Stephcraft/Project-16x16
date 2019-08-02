@@ -1,6 +1,6 @@
 package objects;
 
-import processing.core.PGraphics;
+import processing.core.PImage;
 import processing.core.PVector;
 import scene.SceneMapEditor;
 import sidescroller.PClass;
@@ -29,10 +29,10 @@ public class EditableObject extends PClass {
 	public boolean child;
 
 	// Arrows Graphics
-	public PGraphics editArrowX;
-	public PGraphics editArrowY;
-	public PGraphics editArrowXActive;
-	public PGraphics editArrowYActive;
+	public PImage editArrowX;
+	public PImage editArrowY;
+	public PImage editArrowXActive;
+	public PImage editArrowYActive;
 
 	// Map Editor Scene
 	public SceneMapEditor scene;

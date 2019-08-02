@@ -16,20 +16,20 @@ import windows.SaveLevelWindow;
 public class SceneMapEditor extends PScene {
 
 	// Graphics Slots
-	PGraphics slot;
-	PGraphics slotEditor;
+	PImage slot;
+	PImage slotEditor;
 
 	// Graphics Icon
-	PGraphics icon_eye;
-	PGraphics icon_arrow;
-	PGraphics icon_inventory;
-	PGraphics icon_play;
-	PGraphics icon_save;
-	PGraphics icon_eyeActive;
-	PGraphics icon_arrowActive;
-	PGraphics icon_inventoryActive;
-	PGraphics icon_playActive;
-	PGraphics icon_saveActive;
+	PImage icon_eye;
+	PImage icon_arrow;
+	PImage icon_inventory;
+	PImage icon_play;
+	PImage icon_save;
+	PImage icon_eyeActive;
+	PImage icon_arrowActive;
+	PImage icon_inventoryActive;
+	PImage icon_playActive;
+	PImage icon_saveActive;
 
 	// Windows
 	public SaveLevelWindow window_saveLevel;
@@ -238,7 +238,7 @@ public class SceneMapEditor extends PScene {
 				image(slot, 20 * 4 / 2 + 10 + i * (20 * 4 + 10), 20 * 4 / 2 + 10);
 
 				// Display Item
-				PGraphics img = applet.gameGraphics.get(inventory.get(i));
+				PImage img = applet.gameGraphics.get(inventory.get(i));
 				applet.image(img, 20 * 4 / 2 + 10 + i * (20 * 4 + 10), 20 * 4 / 2 + 10, img.width * (float) 0.5,
 						img.height * (float) 0.5);
 
@@ -392,7 +392,7 @@ public class SceneMapEditor extends PScene {
 			}
 			applet.image(slotEditor, 20 * 4 / 2 + 10 + x * (20 * 4 + 10), y * (20 * 4 + 10) + scroll_inventory);
 
-			PGraphics img = applet.gameGraphics.graphics.get(i).image;
+			PImage img = applet.gameGraphics.graphics.get(i).image;
 			if (img.width > 20 * 4 || img.height > 20 * 4) {
 				applet.image(img, 20 * 4 / 2 + 10 + x * (20 * 4 + 10), y * (20 * 4 + 10) + scroll_inventory,
 						img.width / 4, img.height / 4);
@@ -436,7 +436,7 @@ public class SceneMapEditor extends PScene {
 			image(slot, 20 * 4 / 2 + 10 + i * (20 * 4 + 10), 20 * 4 / 2 + 10);
 
 			// Display Item
-			PGraphics img = applet.gameGraphics.get(inventory.get(i));
+			PImage img = applet.gameGraphics.get(inventory.get(i));
 			applet.image(img, 20 * 4 / 2 + 10 + i * (20 * 4 + 10), 20 * 4 / 2 + 10, img.width * (float) 0.5,
 					img.height * (float) 0.5);
 

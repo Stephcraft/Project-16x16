@@ -3,7 +3,7 @@ package objects;
 import java.util.ArrayList;
 
 import components.AnimationComponent;
-import processing.core.PGraphics;
+import processing.core.PImage;
 import sidescroller.SideScroller;
 
 /**
@@ -17,7 +17,7 @@ public class GameObject extends EditableObject {
 	// Collision Component
 	public Collision collision;
 
-	public PGraphics image;
+	public PImage image;
 
 	public GameObject(SideScroller a) {
 		super(a);
@@ -33,15 +33,15 @@ public class GameObject extends EditableObject {
 	public void delete() {
 	}
 
-	protected ArrayList<PGraphics> getAnimation(String id) {
+	protected ArrayList<PImage> getAnimation(String id) {
 		return applet.gameGraphics.getAnimation(id);
 	}
 
-	protected PGraphics g(int x, int y, int w, int h) {
+	protected PImage g(int x, int y, int w, int h) {
 		return applet.gameGraphics.g(x, y, w, h);
 	}
 
-	protected PGraphics g(int x, int y, int w, int h, float s) {
+	protected PImage g(int x, int y, int w, int h, float s) {
 		return applet.gameGraphics.g(x, y, w, h, s);
 	}
 }

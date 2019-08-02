@@ -122,8 +122,8 @@ public class GameGraphics extends PClass {
 		// ga("PLAYER::ATTACK", 392,168, 20,23, 7, "Y");
 	}
 
-	// Get PGraphics Form ID
-	public PGraphics get(String id) {
+	// Get PImage Form ID
+	public PImage get(String id) {
 		for (int i = 0; i < graphics.size(); i++) {
 			if (graphics.get(i).name.equals(id)) {
 				return graphics.get(i).image;
@@ -144,8 +144,8 @@ public class GameGraphics extends PClass {
 		return null;
 	}
 
-	// Get Animation PGraphics ArrayList
-	public ArrayList<PGraphics> getAnimation(String id) {
+	// Get Animation PImage ArrayList
+	public ArrayList<PImage> getAnimation(String id) {
 		for (int i = 0; i < animations.size(); i++) {
 			if (animations.get(i).name.equals(id)) {
 				return animations.get(i).frames;
@@ -174,7 +174,7 @@ public class GameGraphics extends PClass {
 	public class Graphic {
 		public String name;
 		public String type;
-		public PGraphics image;
+		public PImage image;
 
 		public Graphic(String n, String t, int x, int y, int w, int h, float s) {
 			name = n;
@@ -185,9 +185,9 @@ public class GameGraphics extends PClass {
 
 	public class AnimationGraphic {
 		public String name;
-		public ArrayList<PGraphics> frames;
+		public ArrayList<PImage> frames;
 
-		public AnimationGraphic(String n, ArrayList<PGraphics> f) {
+		public AnimationGraphic(String n, ArrayList<PImage> f) {
 			name = n;
 			frames = f;
 		}
@@ -215,7 +215,7 @@ public class GameGraphics extends PClass {
 
 	// Graphics Animation
 	private void ga(String n, int sx, int sy, int w, int h, int l) {
-		ArrayList<PGraphics> frames = new ArrayList<PGraphics>();
+		ArrayList<PImage> frames = new ArrayList<PImage>();
 
 		for (int i = 0; i < l; i++) {
 			frames.add(util.pg(applet.graphicsSheet.get(sx + (w * i), sy, w, h), 4));
@@ -226,7 +226,7 @@ public class GameGraphics extends PClass {
 
 	// Graphics Animation Y
 	private void ga(String n, int sx, int sy, int w, int h, int l, String mode) {
-		ArrayList<PGraphics> frames = new ArrayList<PGraphics>();
+		ArrayList<PImage> frames = new ArrayList<PImage>();
 
 		for (int i = 0; i < l; i++) {
 			frames.add(util.pg(applet.graphicsSheet.get(sx, sy + (h * i), w, h), 4));
@@ -235,8 +235,8 @@ public class GameGraphics extends PClass {
 		animations.add(new AnimationGraphic(n, frames));
 	}
 
-	public ArrayList<PGraphics> ga(PImage src, int sx, int sy, int w, int h, int l) {
-		ArrayList<PGraphics> frames = new ArrayList<PGraphics>();
+	public ArrayList<PImage> ga(PImage src, int sx, int sy, int w, int h, int l) {
+		ArrayList<PImage> frames = new ArrayList<PImage>();
 
 		for (int i = 0; i < l; i++) {
 			frames.add(util.pg(src.get(sx + (w * i), sy, w, h), 4));
@@ -245,15 +245,15 @@ public class GameGraphics extends PClass {
 		return frames;
 	}
 
-	public PGraphics g(int x, int y, int w, int h) {
+	public PImage g(int x, int y, int w, int h) {
 		return util.pg(applet.graphicsSheet.get(x, y, w, h), 4);
 	}
 
-	public PGraphics g(int x, int y, int w, int h, float s) {
+	public PImage g(int x, int y, int w, int h, float s) {
 		return util.pg(applet.graphicsSheet.get(x, y, w, h), s);
 	}
 
-	public PGraphics g(PImage src, int x, int y, int w, int h, float s) {
+	public PImage g(PImage src, int x, int y, int w, int h, float s) {
 		return util.pg(src.get(x, y, w, h), s);
 	}
 }

@@ -10,7 +10,7 @@ public class EditorItem extends PClass {
 	public PVector pos;
 	public boolean focus;
 
-	public PGraphics image;
+	public PImage image;
 
 	public String id;
 	public String type;

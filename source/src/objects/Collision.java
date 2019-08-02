@@ -7,10 +7,10 @@ public class Collision extends EditableObject {
 
 	public PImage image;
 
-	public PGraphics editArrowX;
-	public PGraphics editArrowY;
-	public PGraphics editArrowXActive;
-	public PGraphics editArrowYActive;
+	public PImage editArrowX;
+	public PImage editArrowY;
+	public PImage editArrowXActive;
+	public PImage editArrowYActive;
 
 	public String flag;
 

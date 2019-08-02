@@ -167,7 +167,8 @@ public class SideScroller extends PApplet {
 		camera.setMouseMask(CONTROL);
 		camera.setMinZoomScale(0.3);
 		camera.setMaxZoomScale(3);
-		// camera.setScreenDeadZone(new PVector(width * 0.25f, height * 0.25f), new PVector(width * 0.75f, height * 0.75f)); // example
+		// camera.setScreenDeadZone(new PVector(width * 0.25f, height * 0.25f), new
+		// PVector(width * 0.75f, height * 0.75f)); // example
 		camera.setWorldDeadZone(new PVector(50, 0), new PVector(width * 0.25f, height * 0.25f)); // example
 		camera.setFollowObject(player);
 	}
@@ -216,7 +217,7 @@ public class SideScroller extends PApplet {
 		surface.setTitle("Sardonyx Prealpha - Frame Rate " + (int) frameRate);
 
 		pushMatrix();
-		drawBelowCamera : { // drawn objects enclosed by pushMatrix() and popMatrix() are transformed by the
+		drawBelowCamera: { // drawn objects enclosed by pushMatrix() and popMatrix() are transformed by the
 							// camera.
 			camera.update();
 			mousePosition = camera.getMouseCoord().copy();
@@ -225,7 +226,7 @@ public class SideScroller extends PApplet {
 		}
 		popMatrix();
 
-		drawAboveCamera : { // Where HUD etc should be drawn
+		drawAboveCamera: { // Where HUD etc should be drawn
 			mousePosition = new PVector(mouseX, mouseY);
 			mapEditor.drawUI();
 
@@ -246,7 +247,7 @@ public class SideScroller extends PApplet {
 		keyReleaseEvent = false;
 		mousePressEvent = false;
 		mouseReleaseEvent = false;
-		
+
 		rectMode(CENTER);
 
 		if (keys.contains(75)) { // K - for development
@@ -277,42 +278,42 @@ public class SideScroller extends PApplet {
 		keyReleaseEvent = true;
 
 		switch (event.getKey()) { // must be caps
-			case 'Z' :
-				frameRate(2000);
+		case 'Z':
+			frameRate(2000);
+			break;
+		case 'X':
+			frameRate(10);
+			break;
+		case 'V':
+			camera.toggleDeadZone(); // for development
+			break;
+		case 'C':
+			camera.setCameraPosition(camera.getMouseCoord()); // for development
+			break;
+		case 'F':
+			camera.setFollowObject(player); // for development
+			camera.setZoomScale(1.0f); // for development
+			break;
+		case 'G':
+			camera.shake(0.4f); // for development
+			break;
+		default:
+			switch (event.getKeyCode()) { // non-character keys
+			case 122: // F11
+				noLoop();
+				stage.setFullScreen(!stage.isFullScreen());
+				loop();
 				break;
-			case 'X' :
-				frameRate(10);
-				break;
-			case 'V' :
-				camera.toggleDeadZone(); // for development
-				break;
-			case 'C' :
-				camera.setCameraPosition(camera.getMouseCoord()); // for development
-				break;
-			case 'F' :
-				camera.setFollowObject(player); // for development
-				camera.setZoomScale(1.0f); // for development
-				break;
-			case 'G' :
-				camera.shake(0.4f); // for development
-				break;
-			default :
-				switch (event.getKeyCode()) { // non-character keys
-					case 122 : // F11
-						noLoop();
-						stage.setFullScreen(!stage.isFullScreen());
-						loop();
-						break;
-					case 27 : // ESC - Pause menu here
-						if (looping) {
-							noLoop();
-						} else {
-							loop();
-						}
-						break;
-					default :
-						break;
+			case 27: // ESC - Pause menu here
+				if (looping) {
+					noLoop();
+				} else {
+					loop();
 				}
+				break;
+			default:
+				break;
+			}
 		}
 	}
 
@@ -398,7 +399,7 @@ public class SideScroller extends PApplet {
 	public int getMouseY() {
 		return (int) mousePosition.y;
 	}
-	
+
 	private void displayDebugInfo() {
 		final int lineOffset = 15; // horizontal offset
 		final int yOffset = 0;
@@ -428,8 +429,7 @@ public class SideScroller extends PApplet {
 		text("[" + player.animation.name + "]", width, lineOffset * 2 + yOffset);
 		text("[" + round(player.animation.frame) + " / " + player.animation.length + "]", width,
 				lineOffset * 3 + yOffset);
-		text("[" + (player.flying ? "FLY" : player.attack ? "ATT" : "DASH") + "]", width,
-				lineOffset * 4 + yOffset);
+		text("[" + (player.flying ? "FLY" : player.attack ? "ATT" : "DASH") + "]", width, lineOffset * 4 + yOffset);
 		text("[" + camera.getCameraPosition() + "]", width, lineOffset * 5 + yOffset);
 		text("[" + String.format("%.2f", camera.getZoomScale()) + "]", width, lineOffset * 6 + yOffset);
 		text("[" + round(degrees(camera.getCameraRotation())) + "]", width, lineOffset * 7 + yOffset);
@@ -439,7 +439,7 @@ public class SideScroller extends PApplet {
 			fill(0, 255, 0);
 		}
 		text("[" + round(frameRate) + "]", width, lineOffset * 9 + yOffset);
-}
+	}
 
 	@Override
 	public void exit() {
@@ -448,6 +448,6 @@ public class SideScroller extends PApplet {
 
 	// Main
 	public static void main(String args[]) {
-		PApplet.main(new String[]{SideScroller.class.getName()});
+		PApplet.main(new String[] { SideScroller.class.getName() });
 	}
 }
