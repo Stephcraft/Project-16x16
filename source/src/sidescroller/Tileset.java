@@ -12,23 +12,23 @@ import processing.core.PImage;
 import processing.data.JSONObject;
 import processing.data.JSONArray;
 
-public class Tileset extends PClass {
+public class Tileset {
 
-	private final int TILESETSIZE = 16;
-	private final String DATAPATH = "Assets/tileData.json";
+	private static final int TILESETSIZE = 16;
+	private static final String DATAPATH = "Assets/tileData.json";
+	private static final int SCALE = 4;
 	
-	private HashMap<String, Integer> tileRef = new HashMap<String, Integer>();
-	private ArrayList<PImage> loadedTiles = new ArrayList<PImage>();
+	private static HashMap<String, Integer> tileRef = new HashMap<String, Integer>();
+	private static ArrayList<PImage> loadedTiles = new ArrayList<PImage>();
 	
-	private JSONArray JSONtiles;
-	private JSONArray JSONanimations;
+	private static JSONArray JSONtiles;
+	private static JSONArray JSONanimations;
 	
-	public Tileset(SideScroller a) {
-		super(a);
-	}
+	private static SideScroller applet;
 	
-	public void load(){
+	public static void load(SideScroller app){
 		// load JSON
+		applet = app;
 		JSONObject JSONtileData;
 		JSONtileData = applet.loadJSONObject(DATAPATH);
 		JSONtiles = JSONtileData.getJSONArray("tiles");
@@ -43,7 +43,7 @@ public class Tileset extends PClass {
 		}
 	}
 	
-	public PImage getTile(int id){
+	public static PImage getTile(int id){
 		if (loadedTiles.size() > id)
 			return loadedTiles.get(id);
 		
@@ -53,21 +53,23 @@ public class Tileset extends PClass {
 		int w = tile.getInt("w");
 		int h = tile.getInt("h");
 		PImage image = getTile(x, y, w, h);
+		image = pixelate(image, SCALE);
+
 		loadedTiles.add(image);
 		return image;
 	}
 	
-	public PImage getTile(String name){
+	public static PImage getTile(String name){
 		int id = getTileId(name);
 		return getTile(id);
 	}
 	
-	public PImage getTile(int x, int y, int w, int h)
+	public static PImage getTile(int x, int y, int w, int h)
 	{
 		return applet.graphicsSheet.get(x, y, w, h);
 	}
 		
-	public ArrayList<PImage> getAnimation(String name){
+	public static ArrayList<PImage> getAnimation(String name){
 		for(int i = 0; i < JSONanimations.size(); i++)
 		{
 			JSONObject animation = JSONanimations.getJSONObject(i);
@@ -89,17 +91,7 @@ public class Tileset extends PClass {
 		return null;
 	}
 	
-	public PGraphics getTileGraphic(String name, float scale) {
-		PImage image = getTile(name);
-		return util.pg(image, scale);
-	}
-	
-	public ArrayList<PGraphics> getAnimationGraphic(String name, float scale)
-	{
-		return util.pg(getAnimation(name), 4);
-	}
-	
-	public GameObject getObjectClass(String id) {
+	public static GameObject getObjectClass(String id) {
 		GameObject obj = new GameObject(applet);
 
 		switch (id) {
@@ -114,7 +106,7 @@ public class Tileset extends PClass {
 		return obj;
 	}
 	
-	public int getTileId(String key){
+	public static int getTileId(String key){
 		if (tileRef.containsKey(key))
 			return tileRef.get(key);
 		
@@ -122,21 +114,31 @@ public class Tileset extends PClass {
 		return 0;
 	}
 	
-	public String getTileType(String name) {
+	public static String getTileType(String name) {
 		int id = getTileId(name);
 		JSONObject tile = JSONtiles.getJSONObject(id);
 		String type = tile.getString("type", "COLLISION");
 		return type;
 	}
 	
-	public int loadedTilesSize()
+	public static int loadedTilesSize()
 	{
 		return loadedTiles.size();
 	}
 	
-	public String getTileName(int id)
+	public static String getTileName(int id)
 	{
 		JSONObject tile = JSONtiles.getJSONObject(id);
 		return tile.getString("name");
+	}
+	
+	public static PImage pixelate(PImage img, int scale) {
+	    PGraphics pg = applet.createGraphics(img.width * SCALE, img.height * SCALE);
+	    pg.noSmooth();
+	    pg.beginDraw();
+	    pg.clear();
+	    pg.image(img, 0, 0, img.width * SCALE, img.height * SCALE);
+	    pg.endDraw();
+	    return pg.get();
 	}
 }
