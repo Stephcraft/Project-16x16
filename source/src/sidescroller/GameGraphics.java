@@ -1,4 +1,4 @@
-package sidescroller;
+	package sidescroller;
 
 import java.util.ArrayList;
 

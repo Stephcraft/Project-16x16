@@ -1,3 +1,5 @@
+/.classpath
+/.project
 /components/
 /entities/
 /gui/
@@ -6,5 +8,3 @@
 /scene/
 /sidescroller/
 /windows/
-/.classpath
-/.project
