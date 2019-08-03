@@ -3,6 +3,7 @@ package projectiles;
 import components.AnimationComponent;
 import processing.core.PVector;
 import sidescroller.SideScroller;
+import sidescroller.Tileset;
 
 public class Swing extends ProjectileObject { // PClass
 
@@ -29,7 +30,7 @@ public class Swing extends ProjectileObject { // PClass
 		height = 9 * 4;
 
 		// Setup Animation
-		animation.frames = applet.tileset.getAnimationGraphic("Swing", 4);
+		animation.frames = Tileset.getAnimation("Swing");
 		animation.loop = false;
 		animation.length = 3;
 		animation.rate = 4; // 6

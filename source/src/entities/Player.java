@@ -24,10 +24,10 @@ public class Player extends EditableObject {
 	public float px;
 	public float py;
 
-	public PGraphics image;
+	public PImage image;
 
-	PGraphics lifeOn;
-	PGraphics lifeOff;
+	PImage lifeOn;
+	PImage lifeOff;
 
 	public float gravity;
 
@@ -64,11 +64,11 @@ public class Player extends EditableObject {
 	public AnimationComponent animation;
 
 	// Animation frames
-	public ArrayList<PGraphics> anim_squish;
-	public ArrayList<PGraphics> anim_idle;
-	public ArrayList<PGraphics> anim_walk;
-	public ArrayList<PGraphics> anim_attack;
-	public ArrayList<PGraphics> anim_shoot;
+	public ArrayList<PImage> anim_squish;
+	public ArrayList<PImage> anim_idle;
+	public ArrayList<PImage> anim_walk;
+	public ArrayList<PImage> anim_attack;
+	public ArrayList<PImage> anim_shoot;
 
 	/**
 	 * Constructor
@@ -83,11 +83,11 @@ public class Player extends EditableObject {
 		animation = new AnimationComponent();
 		swings = new ArrayList<Swing>();
 
-		anim_squish = new ArrayList<PGraphics>();
-		anim_idle = new ArrayList<PGraphics>();
-		anim_walk = new ArrayList<PGraphics>();
-		anim_attack = new ArrayList<PGraphics>();
-		anim_shoot = new ArrayList<PGraphics>();
+		anim_squish = new ArrayList<PImage>();
+		anim_idle = new ArrayList<PImage>();
+		anim_walk = new ArrayList<PImage>();
+		anim_attack = new ArrayList<PImage>();
+		anim_shoot = new ArrayList<PImage>();
 
 		animation.length = 7;
 		animation.loop = true;
@@ -110,17 +110,17 @@ public class Player extends EditableObject {
 	 * load any needed assets.
 	 * @param sheet sprite sheet as PImage.
 	 */
-	public void load(Tileset tileset) {
-		image = util.pg(tileset.getTile("PlayerIdle1"), 4);
+	public void load() {
+		image = Tileset.getTile("PlayerIdle1");
 
-		lifeOn = util.pg(tileset.getTile("PlayerIdle1"), 4);
-		lifeOff = util.pg(tileset.getTile("PlayerIdle1"), 4);
+		lifeOn = Tileset.getTile("PlayerIdle1");
+		lifeOff = Tileset.getTile("PlayerIdle1");
 
-		anim_idle = util.pg(tileset.getAnimation("PlayerIdle"), 4);
-		anim_walk = util.pg(tileset.getAnimation("PlayerWalk"), 4);
-		anim_squish = util.pg(tileset.getAnimation("PlayerSquish"), 4);
-		anim_attack = util.pg(tileset.getAnimation("PlayerAttack"), 4);
-		anim_shoot = util.pg(tileset.getAnimation("PlayerAttack"), 4);
+		anim_idle = Tileset.getAnimation("PlayerIdle");
+		anim_walk = Tileset.getAnimation("PlayerWalk");
+		anim_squish = Tileset.getAnimation("PlayerSquish");
+		anim_attack = Tileset.getAnimation("PlayerAttack");
+		anim_shoot = Tileset.getAnimation("PlayerAttack");
 
 		animation.frames = anim_walk;
 

@@ -1,14 +1,13 @@
 package components;
 
 import java.util.ArrayList;
-
-import processing.core.PGraphics;
+import processing.core.PImage;
 
 /**
  * The Animation Class
  */
 public class AnimationComponent {
-	public ArrayList<PGraphics> frames;
+	public ArrayList<PImage> frames;
 
 	public float frame;
 	public int length;
@@ -31,7 +30,7 @@ public class AnimationComponent {
 
 	public boolean ended;
 
-	public PGraphics image;
+	public PImage image;
 
 	/**
 	 * This method controls the animation of elements
@@ -39,7 +38,7 @@ public class AnimationComponent {
 	 * @param  dt         The width of the frames
 	 * @return            PGraphics image
 	 */
-	public PGraphics animate(int frameCount, float dt) {
+	public PImage animate(int frameCount, float dt) {
 		try {
 			image = frames.get((int) frame);
 		} catch (Exception e) {

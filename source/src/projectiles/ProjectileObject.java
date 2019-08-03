@@ -4,10 +4,11 @@ import java.util.ArrayList;
 
 import components.AnimationComponent;
 import objects.Collision;
-import processing.core.PGraphics;
+import processing.core.PImage;
 import processing.core.PVector;
 import sidescroller.PClass;
 import sidescroller.SideScroller;
+import sidescroller.Tileset;
 
 public class ProjectileObject extends PClass {
 
@@ -15,7 +16,7 @@ public class ProjectileObject extends PClass {
 
 	public PVector pos;
 
-	public PGraphics image;
+	public PImage image;
 
 	public int direction;
 
@@ -51,7 +52,7 @@ public class ProjectileObject extends PClass {
 								+ collision.height / 2);
 	}
 
-	protected ArrayList<PGraphics> getAnimation(String id) {
-		return applet.tileset.getAnimationGraphic(id, 4);
+	protected ArrayList<PImage> getAnimation(String id) {
+		return Tileset.getAnimation(id);
 	}
 }

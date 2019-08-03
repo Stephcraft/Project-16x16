@@ -219,7 +219,7 @@ public class Util {
 						applet.backgroundObjects.add(backgroundObject);
 						break;
 					case "OBJECT" :
-						GameObject gameObject = applet.tileset.getObjectClass(item.getString("id"));
+						GameObject gameObject = Tileset.getObjectClass(item.getString("id"));
 						gameObject.pos.x = item.getInt("x");
 						gameObject.pos.y = item.getInt("y");
 

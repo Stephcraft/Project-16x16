@@ -2,6 +2,7 @@ package objects;
 
 import processing.core.*;
 import sidescroller.SideScroller;
+import sidescroller.Tileset;
 
 public class Collision extends EditableObject {
 
@@ -71,7 +72,7 @@ public class Collision extends EditableObject {
 	}
 
 	public void setGraphic(String _id) {
-		image = applet.tileset.getTileGraphic(_id, 4);
+		image = Tileset.getTile(_id);
 		id = _id;
 		width = image.width;
 		height = image.height;

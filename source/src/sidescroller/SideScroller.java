@@ -42,10 +42,7 @@ public class SideScroller extends PApplet {
 	// Image Resources
 	public PImage graphicsSheet;
 	public PImage magicSheet;
-
-	// Main Resource
-	public Tileset tileset;
-
+	
 	// Font Resources
 	public PFont font_pixel;
 
@@ -135,9 +132,6 @@ public class SideScroller extends PApplet {
 		gameObjects = new ArrayList<GameObject>();
 		projectileObjects = new ArrayList<ProjectileObject>();
 
-		// Create Game Graphics
-		tileset = new Tileset(this);
-
 		// Create scene
 		mapEditor = new SceneMapEditor(this);
 
@@ -174,14 +168,14 @@ public class SideScroller extends PApplet {
 		Options.save();
 
 		// Create All Graphics
-		tileset.load();
+		Tileset.load(this);
 
 		// Set Scene
 		setScene("MAPEDITOR");
 
 		// Create Player
 		player = new Player(this);
-		player.load(tileset);
+		player.load();
 		player.pos.x = 0;
 		player.pos.y = -100;
 	}

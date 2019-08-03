@@ -4,13 +4,14 @@ import processing.core.*;
 
 import sidescroller.PClass;
 import sidescroller.SideScroller;
+import sidescroller.Tileset;
 
 public class EditorItem extends PClass {
 
 	public PVector pos;
 	public boolean focus;
 
-	public PGraphics image;
+	public PImage image;
 
 	public String id;
 	public String type;
@@ -60,7 +61,7 @@ public class EditorItem extends PClass {
 							applet.backgroundObjects.add(bObject);
 							break;
 						case "OBJECT" :
-							GameObject obj = applet.tileset.getObjectClass(id);
+							GameObject obj = Tileset.getObjectClass(id);
 							obj.focus();
 							obj.pos.x = realPos.x;
 							obj.pos.y = realPos.y;
@@ -87,8 +88,8 @@ public class EditorItem extends PClass {
 	}
 
 	public void setTile(String t) {
-		image = applet.tileset.getTileGraphic(t, 4);
-		type = applet.tileset.getTileType(t);
+		image = Tileset.getTile(t);
+		type = Tileset.getTileType(t);
 
 		id = t;
 	}

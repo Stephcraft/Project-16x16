@@ -5,6 +5,7 @@ import processing.core.PVector;
 import scene.SceneMapEditor;
 import sidescroller.PClass;
 import sidescroller.SideScroller;
+import sidescroller.Tileset;
 
 /**
  * Extends {@link PClass}.
@@ -179,7 +180,7 @@ public class EditableObject extends PClass {
 							applet.keyPressEvent = false;
 							break;
 						case "OBJECT" :
-							applet.gameObjects.add(applet.tileset.getObjectClass(id));
+							applet.gameObjects.add(Tileset.getObjectClass(id));
 							applet.gameObjects.get(applet.gameObjects.size() - 1).focus = true;
 							applet.gameObjects.get(applet.gameObjects.size() - 1).focusX = focusX;
 							applet.gameObjects.get(applet.gameObjects.size() - 1).focusY = focusY;
