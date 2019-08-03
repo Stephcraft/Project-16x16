@@ -6,82 +6,83 @@ import projectiles.ProjectileObject;
 import projectiles.Swing;
 import sidescroller.SideScroller;
 
+/**
+ * Extends {@link GameObject}.
+ */
 public class MirrorBoxObject extends GameObject {
-	
+
 	public int direction;
 	public boolean rotating;
-	
+
 	public boolean activated;
-	
+
 	public MirrorBoxObject(SideScroller a) {
 		super(a);
-		
+
 		direction = 0;
-		//	0	:	RIGHT
-		//  1	:	DOWN
-		//  2	:	LEFT
-		//  3	:	UP
-		
+
 		type = "OBJECT";
 		id = "MIRROR_BOX";
-		
-		//Default image
+
+		// Default image
 		image = applet.gameGraphics.get("MIRROR_BOX");
-		
+
 		width = 64;
 		height = 64;
-		
+
 		collision = new Collision(applet, 64, 64, 0, 0, true);
 		collision.flag = "TRANSPARENT_BULLET";
-		applet.collisions.add( collision );
+		applet.collisions.add(collision);
 	}
-	
+
+	@Override
 	public void display() {
-		switch(direction) {
-			case 0:
-				applet.image(image, pos.x-applet.originX, pos.y-applet.originY);
+		switch (direction) {
+			case 0 :
+				applet.image(image, pos.x, pos.y);
 				break;
-			case 1:
+			case 1 :
 				applet.pushMatrix();
-					applet.translate(pos.x-applet.originX, pos.y-applet.originY);
-					applet.rotate(PApplet.radians(90));
-					applet.image(image, 0,0);
+				applet.translate(pos.x, pos.y);
+				applet.rotate(PApplet.radians(90));
+				applet.image(image, 0, 0);
 				applet.popMatrix();
 				break;
-			case 2:
+			case 2 :
 				applet.pushMatrix();
-					applet.translate(pos.x-applet.originX, pos.y-applet.originY);
-					applet.scale(-1,-1);
-					applet.image(image, 0,0);
+				applet.translate(pos.x, pos.y);
+				applet.scale(-1, -1);
+				applet.image(image, 0, 0);
 				applet.popMatrix();
 				break;
-			case 3:
+			case 3 :
 				applet.pushMatrix();
-					applet.translate(pos.x-applet.originX, pos.y-applet.originY);
-					applet.rotate(PApplet.radians(270));
-					applet.image(image, 0,0);
+				applet.translate(pos.x, pos.y);
+				applet.rotate(PApplet.radians(270));
+				applet.image(image, 0, 0);
 				applet.popMatrix();
 				break;
 		}
 	}
-	
+
+	@Override
 	public void update() {
-		if(rotating) {
+		if (rotating) {
 			image = animation.animate(applet.frameCount, applet.deltaTime);
 		}
-		
+
 		collision.pos = pos;
-		
-		//Change Mirror Box Axis
-		for(int i=0; i<applet.player.swings.size(); i++) {
+
+		// Change Mirror Box Axis
+		for (int i = 0; i < applet.player.swings.size(); i++) {
 			Swing swing = applet.player.swings.get(i);
-			
-			if(collidesWithSwing(swing)) {
-				if(!swing.activated) {
-					
+
+			if (collidesWithSwing(swing)) {
+				if (!swing.activated) {
+
 					rotating = true;
-					
-					//Setup Animation
+
+					// Setup Animation
 					animation.frames = applet.gameGraphics.getAnimation("MIRROR_BOX::ROTATE");
 					animation.loop = false;
 					animation.length = 7;
@@ -89,95 +90,68 @@ public class MirrorBoxObject extends GameObject {
 					animation.frame = 0;
 					animation.start = 0;
 					animation.ended = false;
-					
-					//applet.projectileObjects.add( new MagicProjectile(applet, (int)pos.x, (int)pos.y, swing.direction) );
-					
+
 					swing.activated = true;
 				}
 			}
 		}
-		
-		//Reflect Magic Projectile
-		for(int i=0; i<applet.projectileObjects.size(); i++) {
+
+		// Reflect Magic Projectile
+		for (int i = 0; i < applet.projectileObjects.size(); i++) {
 			ProjectileObject projectile = applet.projectileObjects.get(i);
-			
+
 			activated = false;
-			if(projectile.id.equals("MAGIC")) {
-				if(collidesWithProjectile(projectile) && !projectile.hit) {
-					//if(!projectile.activated) {
+			if (projectile.id.equals("MAGIC")) {
+				if (collidesWithProjectile(projectile) && !projectile.hit) {
 					activated = true;
-					
-					switch(projectile.direction) {
-						case RIGHT:
-							
-							if(direction == 0 || direction == 1) {
-								//if(projectile.pos.y != pos.y && projectile.pos.x > pos.x) {
-									((MagicProjectile) projectile).hit(collision);
-								//}
-							}
-							else if(direction == 2) {
+
+					switch (projectile.direction) {
+						case RIGHT :
+
+							if (direction == 0 || direction == 1) {
+								((MagicProjectile) projectile).hit(collision);
+							} else if (direction == 2) {
 								projectile.direction = DOWN;
 								projectile.pos.x = pos.x;
-							}
-							else if(direction == 3) {
+							} else if (direction == 3) {
 								projectile.direction = UP;
 								projectile.pos.x = pos.x;
 							}
 							break;
-							/*
-						case UP:
-							if(direction == 0 || direction == 3) {
-								if(projectile.pos.x != pos.x && projectile.pos.y > pos.y) {
-									((MagicProjectile) projectile).hit(collision);
-								}
-							}
-							else if(direction == 1) {
-								projectile.direction = RIGHT;
-								projectile.pos.y = pos.y;
-							}
-							else if(direction == 2) {
-								projectile.direction = LEFT;
-								projectile.pos.y = pos.y;
-							}
-							break;
-							*/
 					}
-					
-					
-					//projectile.direction = LEFT;
-					//projectile.hit = false;
-					
-						//applet.projectileObjects.add( new MagicProjectile(applet, (int)pos.x, (int)pos.y, swing.direction) );
-						
-					//	swing.activated = true;
-					//}
+
 				}
 			}
-			if(!rotating) {
-				if(activated) {
+			if (!rotating) {
+				if (activated) {
 					image = applet.gameGraphics.g(352, 160, 16, 16);
-				}
-				else {
+				} else {
 					image = applet.gameGraphics.get("MIRROR_BOX");
 				}
 			}
 		}
-		
-		if(animation.ended && rotating) {
+
+		if (animation.ended && rotating) {
 			image = applet.gameGraphics.get("MIRROR_BOX");
 			rotating = false;
 			direction += 1;
-			if(direction >= 4) { direction = 0; }
+			if (direction >= 4) {
+				direction = 0;
+			}
 		}
 	}
-	
+
 	public boolean collidesWithSwing(Swing swing) {
-		return (swing.pos.x-applet.originX+swing.width/2 > pos.x-applet.originX-width/2 && swing.pos.x-applet.originX-swing.width/2 < pos.x-applet.originX+width/2) &&
-			   (swing.pos.y-applet.originY+swing.height/2 > pos.y-applet.originY-height/2 && swing.pos.y-applet.originY-swing.height/2 < pos.y-applet.originY+height/2);
+		return (swing.pos.x + swing.width / 2 > pos.x - width / 2
+				&& swing.pos.x - swing.width / 2 < pos.x + width / 2)
+				&& (swing.pos.y + swing.height / 2 > pos.y - height / 2
+						&& swing.pos.y - swing.height / 2 < pos.y + height / 2);
 	}
-	
+
 	public boolean collidesWithProjectile(ProjectileObject swing) {
-		return (swing.pos.x-applet.originX+swing.width/2 > pos.x-applet.originX-width/2 && swing.pos.x-applet.originX-swing.width/2 < pos.x-applet.originX+width/2) &&
-			   (swing.pos.y-applet.originY+swing.height/2 > pos.y-applet.originY-height/2 && swing.pos.y-applet.originY-swing.height/2 < pos.y-applet.originY+height/2);
+		return (swing.pos.x + swing.width / 2 > pos.x - width / 2
+				&& swing.pos.x - swing.width / 2 < pos.x + width / 2)
+				&& (swing.pos.y + swing.height / 2 > pos.y - height / 2
+						&& swing.pos.y - swing.height / 2 < pos.y + height / 2);
 	}
 }

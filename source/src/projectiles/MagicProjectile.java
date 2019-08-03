@@ -136,4 +136,4 @@ public class MagicProjectile extends ProjectileObject {
 		applet.image(image, 0, 0);
 		applet.popMatrix();
 	}
-}
+}-
