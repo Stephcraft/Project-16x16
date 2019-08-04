@@ -19,7 +19,7 @@ import objects.EditableObject;
  * displaying, and updating the character. 
  * </p>
  */
-public class Player extends EditableObject {
+public class Player extends Entity {
 	public float px;
 	public float py;
 
@@ -528,7 +528,7 @@ public class Player extends EditableObject {
 	 * @param id the animation id
 	 * @return the animation being used.
 	 */
-	private ArrayList<PGraphics> getAnimation(String id) {
+	protected ArrayList<PGraphics> getAnimation(String id) {
 		return applet.gameGraphics.getAnimation(id);
 	}
 }
