@@ -235,7 +235,7 @@ public class SideScroller extends PApplet {
 		}
 
 		// Update DeltaTime
-		if (frameRate < options.targetFrameRate - 20 && frameRate > options.targetFrameRate + 20) {
+		if (frameRate < Options.targetFrameRate - 20 && frameRate > Options.targetFrameRate + 20) {
 			deltaTime = DM.deltaTime;
 		} else {
 			deltaTime = 1;
@@ -338,7 +338,7 @@ public class SideScroller extends PApplet {
 	@Override
 	public void mouseWheel(MouseEvent event) {
 		mapEditor.mouseWheel(event);
-		if (event.getAmount() == -1.0) { // for development
+		if (event.getCount() == -1.0) { // for development
 			camera.zoomIn(0.02f);
 		} else {
 			camera.zoomOut(0.02f);
