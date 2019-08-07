@@ -314,6 +314,7 @@ public class SceneMapEditor extends PScene {
 
 		// Windows
 		if (tool == Tools.SAVE || !SideScroller.getRunning()) {
+			SideScroller.setRunning(false);
 			window_saveLevel.update();
 			window_saveLevel.display();
 		}
