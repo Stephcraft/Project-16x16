@@ -150,28 +150,30 @@ public final class Camera extends ZoomPan {
 	 * registerMethod()} - don't call this method manually!
 	 */
 	public void post() {
-		applet.noFill();
-		applet.stroke(0, 150, 255);
-		applet.strokeWeight(2);
 		final int length = 20;
-		applet.line(applet.width / 2 - length, applet.height / 2, applet.width / 2 + length, applet.height / 2);
-		applet.line(applet.width / 2, applet.height / 2 - length, applet.width / 2, applet.height / 2 + length);
-		applet.pushMatrix();
-		applet.translate(offset.x, offset.y);
-		applet.rotate(rotation);
-		applet.translate(-offset.x, -offset.y);
-		applet.line(applet.width / 2 - length * 2, applet.height / 2, applet.width / 2 + length * 2, applet.height / 2);
-		applet.popMatrix();
-		if (following) {
-			applet.rect(getCoordToDisp(followObject.pos).x, getCoordToDisp(followObject.pos).y, length * 2, length * 2);
-			if (deadZoneScreen) {
-				applet.rectMode(PApplet.CORNER);
-				applet.rect(deadZoneP1.x, deadZoneP1.y, deadZoneP2.x - deadZoneP1.x, deadZoneP2.y - deadZoneP1.y);
-				applet.rectMode(PApplet.CENTER);
+		if(SideScroller.DEBUG) {
+			applet.noFill();
+			applet.stroke(0, 150, 255);
+			applet.strokeWeight(2);
+			applet.line(applet.width / 2 - length, applet.height / 2, applet.width / 2 + length, applet.height / 2);
+			applet.line(applet.width / 2, applet.height / 2 - length, applet.width / 2, applet.height / 2 + length);
+			applet.pushMatrix();
+			applet.translate(offset.x, offset.y);
+			applet.rotate(rotation);
+			applet.translate(-offset.x, -offset.y);
+			applet.line(applet.width / 2 - length * 2, applet.height / 2, applet.width / 2 + length * 2, applet.height / 2);
+			applet.popMatrix();
+			if (following) {
+				applet.rect(getCoordToDisp(followObject.pos).x, getCoordToDisp(followObject.pos).y, length * 2, length * 2);
+				if (deadZoneScreen) {
+					applet.rectMode(PApplet.CORNER);
+					applet.rect(deadZoneP1.x, deadZoneP1.y, deadZoneP2.x - deadZoneP1.x, deadZoneP2.y - deadZoneP1.y);
+					applet.rectMode(PApplet.CENTER);
+				}
+			} else {
+				applet.rect(getCoordToDisp(PVector.mult(targetPosition, -1)).x,
+						getCoordToDisp(PVector.mult(targetPosition, -1)).y, length * 2, length * 2);
 			}
-		} else {
-			applet.rect(getCoordToDisp(PVector.mult(targetPosition, -1)).x,
-					getCoordToDisp(PVector.mult(targetPosition, -1)).y, length * 2, length * 2);
 		}
 	}
 
@@ -215,29 +217,31 @@ public final class Camera extends ZoomPan {
 		setZoomScaleX(scale);
 		setZoomScaleY(scale);
 
-		if (following && (((deadZoneScreen && !withinScreenDeadZone()) || ((deadZoneWorld && !withinWorldDeadZone()))
-				|| (!deadZoneScreen && !deadZoneWorld)))) {
-			setPanOffset(
-					PApplet.lerp(getPanOffset().x,
-							(-followObject.pos.x - followObjectOffset.x - shakeOffset.x + offset.x) * zoom, lerpSpeed),
-					PApplet.lerp(getPanOffset().y,
-							(-followObject.pos.y - followObjectOffset.y - shakeOffset.y + offset.y) * zoom, lerpSpeed));
-		} else if (!following) {
-			setPanOffset(
-					PApplet.lerp(getPanOffset().x, (targetPosition.x - shakeOffset.x + offset.x) * zoom, lerpSpeed),
-					PApplet.lerp(getPanOffset().y, (targetPosition.y - shakeOffset.y + offset.y) * zoom, lerpSpeed));
-		}
-
-		if (trauma > 0) { // 400 and 0.35 seem suitable values
-			trauma -= traumaDecay;
-
-			float x = (trauma * trauma) * applet.random(-1, 1) * 400;
-			float y = (trauma * trauma) * applet.random(-1, 1) * 400;
-			shakeOffset = new PVector(x, y);
-			shakeRotationOffset = (trauma * trauma) * applet.random(-1, 1) * 0.35f;
-			if (trauma == 0) {
-				shakeOffset = new PVector(0, 0);
-				shakeRotationOffset = 0;
+		if(SideScroller.getRunning()) {
+			if (following && (((deadZoneScreen && !withinScreenDeadZone()) || ((deadZoneWorld && !withinWorldDeadZone()))
+					|| (!deadZoneScreen && !deadZoneWorld)))) {
+				setPanOffset(
+						PApplet.lerp(getPanOffset().x,
+								(-followObject.pos.x - followObjectOffset.x - shakeOffset.x + offset.x) * zoom, lerpSpeed),
+						PApplet.lerp(getPanOffset().y,
+								(-followObject.pos.y - followObjectOffset.y - shakeOffset.y + offset.y) * zoom, lerpSpeed));
+			} else if (!following) {
+				setPanOffset(
+						PApplet.lerp(getPanOffset().x, (targetPosition.x - shakeOffset.x + offset.x) * zoom, lerpSpeed),
+						PApplet.lerp(getPanOffset().y, (targetPosition.y - shakeOffset.y + offset.y) * zoom, lerpSpeed));
+			}
+	
+			if (trauma > 0) { // 400 and 0.35 seem suitable values
+				trauma -= traumaDecay;
+	
+				float x = (trauma * trauma) * applet.random(-1, 1) * 400;
+				float y = (trauma * trauma) * applet.random(-1, 1) * 400;
+				shakeOffset = new PVector(x, y);
+				shakeRotationOffset = (trauma * trauma) * applet.random(-1, 1) * 0.35f;
+				if (trauma == 0) {
+					shakeOffset = new PVector(0, 0);
+					shakeRotationOffset = 0;
+				}
 			}
 		}
 	}
@@ -359,16 +363,21 @@ public final class Camera extends ZoomPan {
 	 * Toggles the most recently assigned deadzone inactive/active.
 	 */
 	public void toggleDeadZone() {
-		if (deadZoneP1 != null && deadZoneP2 != null) {
-			if (deadZoneTypeLast == 0) { // 0 is screen
-				deadZoneScreen = !deadZoneScreen;
-			}
-			if (deadZoneTypeLast == 1) { // 1 is world
-				deadZoneWorld = !deadZoneWorld;
-			}
-
+		if(!SideScroller.DEBUG) {
+			deadZoneScreen = false;
+			deadZoneWorld = false;
 		} else {
-			System.err.print("Specify a deadzone first");
+			if (deadZoneP1 != null && deadZoneP2 != null) {
+				if (deadZoneTypeLast == 0) { // 0 is screen
+					deadZoneScreen = !deadZoneScreen;
+				}
+				if (deadZoneTypeLast == 1) { // 1 is world
+					deadZoneWorld = !deadZoneWorld;
+				}
+	
+			} else {
+				System.err.print("Specify a deadzone first");
+			}
 		}
 	}
 

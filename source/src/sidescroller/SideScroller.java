@@ -38,7 +38,9 @@ import scene.SceneMapEditor;
 public class SideScroller extends PApplet {
 
 	public static final String LEVEL = "Assets/Storage/Game/Maps/gg-2.dat";
-	public static final boolean DEBUG = true;
+	public static boolean DEBUG = true;
+	//Outer game loop: used to halt gamestate without stopping draw()
+	private static boolean running = true;
 
 	// Image Resources
 	public PImage graphicsSheet;
@@ -55,7 +57,7 @@ public class SideScroller extends PApplet {
 
 	// Frame Rate
 	public float deltaTime;
-
+	
 	// Scenes
 	public SceneMapEditor mapEditor;
 
@@ -132,7 +134,7 @@ public class SideScroller extends PApplet {
 
 		// Setup modes
 		imageMode(CENTER);
-		rectMode(CENTER);
+		rectMode(CORNER);
 		strokeCap(SQUARE);
 
 		// Setup DM
@@ -256,7 +258,16 @@ public class SideScroller extends PApplet {
 			camera.rotate(PI / 60);
 		}
 	}
-
+	
+	public static void setRunning(boolean state) {
+		running = state;
+	}
+	
+	//Return state of outer game loop
+	public static boolean getRunning() {
+		return(running);
+	}
+	
 	/**
 	 * keyPressed decides if the key that has been pressed is a valid key. if it is,
 	 * it is then added to the keys ArrayList, and the keyPressedEvent flag is set.
@@ -276,43 +287,56 @@ public class SideScroller extends PApplet {
 		keys.remove(event.getKeyCode());
 		keyReleaseEvent = true;
 
-		switch (event.getKey()) { // must be caps
-			case 'Z' :
-				frameRate(2000);
-				break;
-			case 'X' :
-				frameRate(10);
-				break;
-			case 'V' :
-				camera.toggleDeadZone(); // for development
-				break;
-			case 'C' :
-				camera.setCameraPosition(camera.getMouseCoord()); // for development
-				break;
-			case 'F' :
-				camera.setFollowObject(player); // for development
-				camera.setZoomScale(1.0f); // for development
-				break;
-			case 'G' :
-				camera.shake(0.4f); // for development
-				break;
-			default :
-				switch (event.getKeyCode()) { // non-character keys
-					case 122 : // F11
-						noLoop();
-						stage.setFullScreen(!stage.isFullScreen());
-						loop();
+		switch (event.getKeyCode()) { // non-character keys
+		case 122 : // F11
+			running = false;
+			stage.setFullScreen(!stage.isFullScreen());
+			running = true;
+			break;
+		case 27 : // ESC - Pause menu here
+			if (running) {
+				running = false;
+				mapEditor.window_saveLevel.update();
+				mapEditor.window_saveLevel.display();
+			} else {
+				running = true;
+			}
+			break;
+		default :
+			if(running) {
+				switch (event.getKey()) { // must be caps
+					case 'Z' :
+						frameRate(2000);
 						break;
-					case 27 : // ESC - Pause menu here
-						if (looping) {
-							noLoop();
+					case 'X' :
+						frameRate(10);
+						break;
+					case 'V' :
+						camera.toggleDeadZone(); // for development
+						break;
+					case 'C' :
+						camera.setCameraPosition(camera.getMouseCoord()); // for development
+						break;
+					case 'F' :
+						camera.setFollowObject(player); // for development
+						camera.setZoomScale(1.0f); // for development
+						break;
+					case 'G' :
+						camera.shake(0.4f); // for development
+						break;
+					case 'H' :
+						//Debug view toggle
+						if(!DEBUG) {
+							DEBUG = true;
 						} else {
-							loop();
+							DEBUG = false;
 						}
+						camera.toggleDeadZone();
 						break;
 					default :
-						break;
 				}
+			}
+			break;
 		}
 	}
 

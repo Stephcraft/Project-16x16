@@ -39,18 +39,19 @@ public class MagicSourceObject extends GameObject {
 
 	@Override
 	public void update() {
-		image = animation.animate(applet.frameCount, applet.deltaTime);
-
-		// Create new Magic Projectiles
-		for (int i = 0; i < applet.player.swings.size(); i++) {
-			Swing swing = applet.player.swings.get(i);
-
-			if (collidesWithSwing(swing)) {
-				if (!swing.activated) {
-					applet.projectileObjects
-							.add(new MagicProjectile(applet, (int) pos.x, (int) pos.y, swing.direction));
-
-					swing.activated = true;
+		if(SideScroller.getRunning()) {
+			image = animation.animate(applet.frameCount, applet.deltaTime);
+			// Create new Magic Projectiles
+			for (int i = 0; i < applet.player.swings.size(); i++) {
+				Swing swing = applet.player.swings.get(i);
+	
+				if (collidesWithSwing(swing)) {
+					if (!swing.activated) {
+						applet.projectileObjects
+								.add(new MagicProjectile(applet, (int) pos.x, (int) pos.y, swing.direction));
+	
+						swing.activated = true;
+					}
 				}
 			}
 		}

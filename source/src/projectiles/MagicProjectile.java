@@ -58,9 +58,11 @@ public class MagicProjectile extends ProjectileObject {
 				applet.popMatrix();
 				break;
 		}
-		applet.stroke(255);
-		applet.noFill();
-		applet.rect(pos.x, pos.y, width, height);
+		if(SideScroller.DEBUG) {
+			applet.stroke(255);
+			applet.noFill();
+			applet.rect(pos.x, pos.y, width, height);
+		}
 	}
 
 	@Override

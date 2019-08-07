@@ -228,7 +228,7 @@ public class SceneMapEditor extends PScene {
 		worldViewportEditor.updateEditor();
 		worldViewportEditor.displayEditor();
 	}
-
+	
 	public void drawUI() {
 
 		// GUI Slots
@@ -313,13 +313,13 @@ public class SceneMapEditor extends PScene {
 		}
 
 		// Windows
-		if (tool == Tools.SAVE) {
+		if (tool == Tools.SAVE || !SideScroller.getRunning()) {
 			window_saveLevel.update();
 			window_saveLevel.display();
 		}
 
 		// Move Tool
-		if (tool == Tools.MOVE) {
+		if (tool == Tools.MOVE || !SideScroller.getRunning()) {
 			if (applet.mousePressed) {
 //				applet.originTargetX += applet.pmouseX - applet.getMouseX();
 //				applet.originTargetY += applet.pmouseY - applet.getMouseY();
