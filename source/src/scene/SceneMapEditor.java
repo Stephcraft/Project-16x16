@@ -8,6 +8,7 @@ import objects.Collision;
 import processing.core.*;
 import processing.event.MouseEvent;
 import scene.components.WorldViewportEditor;
+import sidescroller.GameGraphics.Graphic;
 import sidescroller.SideScroller;
 import ui.Anchor;
 import ui.ScrollBarVertical;
@@ -383,16 +384,16 @@ public class SceneMapEditor extends PScene {
 		// Display Editor Mode Items
 		int x = 0;
 		int y = 1;
-		for (int i = 0; i < applet.gameGraphics.graphics.size(); i++) {
-			if (i % 6 == 0) {
+		int index = 0;
+		for (Graphic g : applet.gameGraphics.graphics.values()) {
+			if (index % 6 == 0) { // show 6 items per row
 				x = 0;
 				y++;
 			} else {
 				x++;
 			}
 			applet.image(slotEditor, 20 * 4 / 2 + 10 + x * (20 * 4 + 10), y * (20 * 4 + 10) + scroll_inventory);
-
-			PImage img = applet.gameGraphics.graphics.get(i).image;
+			PImage img = g.image;
 			if (img.width > 20 * 4 || img.height > 20 * 4) {
 				applet.image(img, 20 * 4 / 2 + 10 + x * (20 * 4 + 10), y * (20 * 4 + 10) + scroll_inventory,
 						img.width / 4, img.height / 4);
@@ -409,11 +410,13 @@ public class SceneMapEditor extends PScene {
 					if (applet.getMouseX() > xx - (20 * 4) / 2 && applet.getMouseX() < xx + (20 * 4) / 2
 							&& applet.getMouseY() > yy - (20 * 4) / 2 && applet.getMouseY() < yy + (20 * 4) / 2) {
 						editorItem.focus = true;
-						editorItem.setTile(applet.gameGraphics.graphics.get(i).name);
+						editorItem.setTile(g.name);
 					}
 				}
 			}
+			index++;
 		}
+
 		
 		// Display ScrollBar
 		scrollBar.display();

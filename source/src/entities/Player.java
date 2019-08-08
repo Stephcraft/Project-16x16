@@ -16,19 +16,19 @@ import objects.EditableObject;
  * <h1>Player Class</h1>
  * <p>
  * This class handles the playable character. It covers controlling, animating,
- * displaying, and updating the character. 
+ * displaying, and updating the character.
  * </p>
  */
 public class Player extends EditableObject {
-	public float px;
-	public float py;
+	private float px;
+	private float py;
 
-	public PImage image;
+	private PImage image;
 
-	PImage lifeOn;
-	PImage lifeOff;
+	private PImage lifeOn;
+	private PImage lifeOff;
 
-	public float gravity;
+	private float gravity;
 
 	public int prevKey;
 
@@ -42,19 +42,19 @@ public class Player extends EditableObject {
 	public int pAccX;
 	public int pAccY;
 
-	public int speedWalk;
-	public int speedJump;
+	private int speedWalk;
+	private int speedJump;
 
-	public int direction;
+	private int direction;
 
-	public int life;
-	public int lifeCapacity;
+	private int life;
+	private int lifeCapacity;
 
 	public boolean flying;
-	public boolean pflying;
+	private boolean pflying;
 
 	public boolean attack;
-	public boolean dashing;
+	private boolean dashing;
 
 	// Player Projectile
 	public ArrayList<Swing> swings;
@@ -63,14 +63,15 @@ public class Player extends EditableObject {
 	public AnimationComponent animation;
 
 	// Animation frames
-	public ArrayList<PImage> anim_squish;
+	private ArrayList<PImage> anim_squish;
 	public ArrayList<PImage> anim_idle;
-	public ArrayList<PImage> anim_walk;
+	private ArrayList<PImage> anim_walk;
 	public ArrayList<PImage> anim_attack;
 	public ArrayList<PImage> anim_shoot;
 
 	/**
 	 * Constructor
+	 * 
 	 * @param a SideScroller game controller.
 	 */
 	public Player(SideScroller a) {
@@ -107,6 +108,7 @@ public class Player extends EditableObject {
 
 	/**
 	 * load any needed assets.
+	 * 
 	 * @param sheet sprite sheet as PImage.
 	 */
 	public void load(PImage sheet) {
@@ -139,8 +141,8 @@ public class Player extends EditableObject {
 	}
 
 	/**
-	 * The display method controls how to display the character to the screen
-	 * with what animation.
+	 * The display method controls how to display the character to the screen with
+	 * what animation.
 	 */
 	public void display() {
 
@@ -156,7 +158,7 @@ public class Player extends EditableObject {
 			applet.image(image, 0, 0);
 			applet.popMatrix();
 		} else {
-			applet.image(image, pos.x, pos.y );
+			applet.image(image, pos.x, pos.y);
 		}
 
 		if (SideScroller.DEBUG) {
@@ -168,10 +170,9 @@ public class Player extends EditableObject {
 	}
 
 	/**
-	 * The update method handles updating the character. 
+	 * The update method handles updating the character.
 	 */
 	public void update() {
-		image = animation.animate(applet.frameCount, applet.deltaTime);
 
 		if (!dashing) {
 			speedY += gravity * applet.deltaTime;
@@ -285,7 +286,7 @@ public class Player extends EditableObject {
 			applet.noFill();
 			applet.stroke(255, 0, 0);
 			applet.strokeWeight(1);
-			applet.ellipse(pos.x, pos.y , 400, 400);
+			applet.ellipse(pos.x, pos.y, 400, 400);
 		}
 
 		// All Collision Global Check
@@ -296,13 +297,12 @@ public class Player extends EditableObject {
 			if (PApplet.dist(pos.x, pos.y, collision.pos.x, collision.pos.y) < 200) {
 
 				if (SideScroller.DEBUG) {
-					applet.rect(collision.pos.x, collision.pos.y , 20, 20);
+					applet.rect(collision.pos.x, collision.pos.y, 20, 20);
 				}
 				if (collides(collision)) {
 					if (px + width / 2 < collision.pos.x + collision.width / 2) {
 						pos.x = collision.pos.x - collision.width / 2 - width / 2;
-					} else if (px - width / 2 > collision.pos.x - collision.width / 2
-							) { // +collision.width/2
+					} else if (px - width / 2 > collision.pos.x - collision.width / 2) { // +collision.width/2
 						pos.x = collision.pos.x + collision.width / 2 + width / 2;
 					}
 					if (dashing) {
@@ -323,11 +323,11 @@ public class Player extends EditableObject {
 					}
 				}
 				if (collidesFuturY(collision)) {
-					if (py  + height / 2 < collision.pos.y ) {
+					if (py + height / 2 < collision.pos.y) {
 						pos.y = collision.pos.y - collision.height / 2 - height / 2;
 						speedY = 0;
 						flying = false;
-					} else if (pos.y  > collision.pos.y ) {
+					} else if (pos.y > collision.pos.y) {
 						pos.y = collision.pos.y + collision.height / 2 + height / 2;
 						speedY = 0;
 					}
@@ -376,22 +376,11 @@ public class Player extends EditableObject {
 			pos.x = 50;
 		}
 
-		// Apply World Transformation
-//		if (pos.x - width / 2 < applet.width / 2 - applet.screenX / 2) {
-//			applet.originTargetX -= PApplet.abs(speedX - 5);
-//		} else if (pos.x + width / 2 > applet.width / 2 + applet.screenX / 2) {
-//			applet.originTargetX += PApplet.abs(speedX + 5);
-//		}
-//		if (pos.y  - height / 2 < applet.height / 2 - applet.screenY / 2) {
-//			applet.originTargetY -= PApplet.abs(speedY - 5);
-//		} else if (pos.y  + height / 2 > applet.height / 2 + applet.screenY / 2) {
-//			applet.originTargetY += PApplet.abs(speedY + 5);
-//		}
-
 		// Update Swing Projectiles
 		for (int i = 0; i < swings.size(); i++) {
 			swings.get(i).update();
 		}
+		image = animation.animate(applet.frameCount, applet.deltaTime);
 	}
 
 	/**
@@ -406,58 +395,53 @@ public class Player extends EditableObject {
 			}
 		}
 	}
+
 	/**
 	 * 
-	 * Determines is the character has collided with an object of type Collision. 
+	 * Determines is the character has collided with an object of type Collision.
 	 * 
 	 * @param collision The other object
 	 * @return boolean if it has or has not collided with the object.
 	 */
-	public boolean collides(Collision collision) {
+	private boolean collides(Collision collision) {
 		return (pos.x + width / 2 > collision.pos.x - collision.width / 2
 				&& pos.x - width / 2 < collision.pos.x + collision.width / 2)
-				&& (pos.y  + height / 2 > collision.pos.y  - collision.height / 2
-						&& pos.y  - height / 2 < collision.pos.y 
-								+ collision.height / 2);
+				&& (pos.y + height / 2 > collision.pos.y - collision.height / 2
+						&& pos.y - height / 2 < collision.pos.y + collision.height / 2);
 	}
 
-	// TODO: optimize these
-	public boolean collidesEqual(Collision collision) {
+	// TODO: optimize these (unused)
+	private boolean collidesEqual(Collision collision) {
 		return (pos.x + width / 2 >= collision.pos.x - collision.width / 2
 				&& pos.x - width / 2 <= collision.pos.x + collision.width / 2)
-				&& (pos.y  + height / 2 >= collision.pos.y  - collision.height / 2
-						&& pos.y  - height / 2 <= collision.pos.y 
-								+ collision.height / 2);
+				&& (pos.y + height / 2 >= collision.pos.y - collision.height / 2
+						&& pos.y - height / 2 <= collision.pos.y + collision.height / 2);
 	}
 
-	public boolean collidesFutur(Collision collision) {
+	private boolean collidesFutur(Collision collision) {
 		return (pos.x + speedX + width / 2 > collision.pos.x - collision.width / 2
 				&& pos.x + speedX - width / 2 < collision.pos.x + collision.width / 2)
-				&& (pos.y  + speedY + height / 2 > collision.pos.y 
-						- collision.height / 2
-						&& pos.y  + speedY - height / 2 < collision.pos.y 
-								+ collision.height / 2);
+				&& (pos.y + speedY + height / 2 > collision.pos.y - collision.height / 2
+						&& pos.y + speedY - height / 2 < collision.pos.y + collision.height / 2);
 	}
 
-	public boolean collidesFuturX(Collision collision) {
+	private boolean collidesFuturX(Collision collision) {
 		return (pos.x + speedX + width / 2 > collision.pos.x - collision.width / 2
 				&& pos.x + speedX - width / 2 < collision.pos.x + collision.width / 2)
-				&& (pos.y  + 0 + height / 2 > collision.pos.y  - collision.height / 2
-						&& pos.y  + 0 - height / 2 < collision.pos.y 
-								+ collision.height / 2);
+				&& (pos.y + 0 + height / 2 > collision.pos.y - collision.height / 2
+						&& pos.y + 0 - height / 2 < collision.pos.y + collision.height / 2);
 	}
 
-	public boolean collidesFuturY(Collision collision) {
+	private boolean collidesFuturY(Collision collision) {
 		return (pos.x + 0 + width / 2 > collision.pos.x - collision.width / 2
 				&& pos.x + 0 - width / 2 < collision.pos.x + collision.width / 2)
-				&& (pos.y  + speedY + height / 2 > collision.pos.y 
-						- collision.height / 2
-						&& pos.y  + speedY - height / 2 < collision.pos.y 
-								+ collision.height / 2);
+				&& (pos.y + speedY + height / 2 > collision.pos.y - collision.height / 2
+						&& pos.y + speedY - height / 2 < collision.pos.y + collision.height / 2);
 	}
 
 	/**
 	 * Sets the current animation for the Player to use
+	 * 
 	 * @param anim the animation id
 	 */
 	private void setAnimation(String anim) {
@@ -525,6 +509,7 @@ public class Player extends EditableObject {
 
 	/**
 	 * getter for the currently used animation.
+	 * 
 	 * @param id the animation id
 	 * @return the animation being used.
 	 */
