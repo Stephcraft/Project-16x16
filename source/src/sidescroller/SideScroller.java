@@ -39,7 +39,7 @@ import scene.SceneMapEditor;
 public class SideScroller extends PApplet {
 
 	public static final String LEVEL = "Assets/Storage/Game/Maps/gg-2.dat";
-	public static final boolean DEBUG = false;
+	public static final boolean DEBUG = true;
 
 	// Image Resources
 	public PImage graphicsSheet;
