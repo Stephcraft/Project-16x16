@@ -15,14 +15,8 @@ public class MagicProjectile extends ProjectileObject {
 		pos = new PVector(x, y);
 
 		direction = dir;
-
-		// Setup Animation
-		animation.frames = getAnimation("MAGIC::MOVE");
-		animation.loop = true;
-		animation.length = 8;
-		animation.rate = 4;
-		animation.frame = 0;
-		animation.start = 0;
+		
+		animation.changeAnimation(getAnimation("MAGIC::MOVE"), true, 4); // Setup Animation
 
 		speed = 10;
 
@@ -65,7 +59,7 @@ public class MagicProjectile extends ProjectileObject {
 
 	@Override
 	public void update() {
-		image = animation.animate(applet.frameCount, applet.deltaTime);
+		image = animation.animate();
 
 		// Destroy on collide
 		if (!hit) {
@@ -90,15 +84,10 @@ public class MagicProjectile extends ProjectileObject {
 					}
 
 					// Setup Animation
-					animation.frames = getAnimation("MAGIC::IDLE");
-					animation.loop = true;
-					animation.length = 8;
-					animation.rate = 4;
-					animation.frame = 0;
-					animation.start = 0;
+					animation.changeAnimation(getAnimation("MAGIC::IDLE"), true, 4);
 
 					// Override Animation
-					image = animation.animate(applet.frameCount, applet.deltaTime);
+					image = animation.animate();
 
 				}
 			}
@@ -153,14 +142,9 @@ public class MagicProjectile extends ProjectileObject {
 		}
 
 		// Setup Animation
-		animation.frames = getAnimation("MAGIC::IDLE");
-		animation.loop = true;
-		animation.length = 8;
-		animation.rate = 4;
-		animation.frame = 0;
-		animation.start = 0;
+		animation.changeAnimation(getAnimation("MAGIC::IDLE"), true, 4);
 
 		// Override Animation
-		image = animation.animate(applet.frameCount, applet.deltaTime);
+		image = animation.animate();
 	}
 }

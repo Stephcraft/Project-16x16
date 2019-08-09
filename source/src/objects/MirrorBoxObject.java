@@ -68,7 +68,7 @@ public class MirrorBoxObject extends GameObject {
 	@Override
 	public void update() {
 		if (rotating) {
-			image = animation.animate(applet.frameCount, applet.deltaTime);
+			image = animation.animate();
 		}
 
 		collision.pos = pos;
@@ -82,14 +82,8 @@ public class MirrorBoxObject extends GameObject {
 
 					rotating = true;
 
-					// Setup Animation
-					animation.frames = applet.gameGraphics.getAnimation("MIRROR_BOX::ROTATE");
-					animation.loop = false;
-					animation.length = 7;
-					animation.rate = 1;
-					animation.frame = 0;
-					animation.start = 0;
-					animation.ended = false;
+					// Setup Animation					
+					animation.changeAnimation(applet.gameGraphics.getAnimation("MIRROR_BOX::ROTATE"), false, 1);
 
 					swing.activated = true;
 				}

@@ -3,6 +3,7 @@ package sidescroller;
 import java.util.ArrayList;
 import java.util.HashSet;
 
+import components.AnimationComponent;
 import dm.core.DM;
 
 import entities.Player;
@@ -37,6 +38,7 @@ import scene.SceneMapEditor;
  */
 public class SideScroller extends PApplet {
 
+	public static final String LEVEL = "Assets/Storage/Game/Maps/gg-2.dat";
 	public static final boolean DEBUG = true;
 
 	// Image Resources
@@ -136,12 +138,14 @@ public class SideScroller extends PApplet {
 
 		// Setup DM
 		DM.setup(this); // what is this?
+		
+		AnimationComponent.applet = this;
 
 		// Create Option Class
 		options = new Options();
 
 		// Default frameRate
-		frameRate(60);
+		frameRate(Options.targetFrameRate);
 
 		deltaTime = 1;
 
@@ -235,7 +239,7 @@ public class SideScroller extends PApplet {
 		}
 
 		// Update DeltaTime
-		if (frameRate < options.targetFrameRate - 20 && frameRate > options.targetFrameRate + 20) {
+		if (frameRate < Options.targetFrameRate - 20 && frameRate > Options.targetFrameRate + 20) {
 			deltaTime = DM.deltaTime;
 		} else {
 			deltaTime = 1;
@@ -426,7 +430,7 @@ public class SideScroller extends PApplet {
 		text("[" + round(player.pos.x) + ", " + round(player.pos.y) + "]", width, lineOffset * 0 + yOffset);
 		text("[" + player.speedX + ", " + player.speedY + "]", width, lineOffset * 1 + yOffset);
 		text("[" + player.animation.name + "]", width, lineOffset * 2 + yOffset);
-		text("[" + round(player.animation.frame) + " / " + player.animation.length + "]", width,
+		text("[" + round(player.animation.getFrame()) + " / " + player.animation.getAnimLength() + "]", width,
 				lineOffset * 3 + yOffset);
 		text("[" + (player.flying ? "FLY" : player.attack ? "ATT" : "DASH") + "]", width, lineOffset * 4 + yOffset);
 		text("[" + camera.getCameraPosition() + "]", width, lineOffset * 5 + yOffset);

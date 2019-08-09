@@ -29,12 +29,7 @@ public class Swing extends ProjectileObject { // PClass
 		height = 9 * 4;
 
 		// Setup Animation
-		animation.frames = applet.gameGraphics.ga(applet.graphicsSheet, 65, 292, 28, 9, 4);
-		animation.loop = false;
-		animation.length = 3;
-		animation.rate = 4; // 6
-		animation.frame = 0;
-		animation.start = 0;
+		animation.changeAnimation(applet.gameGraphics.ga(applet.graphicsSheet, 65, 292, 28, 9, 4), false, 4);
 	}
 
 	@Override
@@ -58,7 +53,7 @@ public class Swing extends ProjectileObject { // PClass
 
 	@Override
 	public void update() {
-		image = animation.animate(applet.frameCount, applet.deltaTime);
+		image = animation.animate();
 
 		if (animation.ended) {
 			applet.player.swings.remove(this);

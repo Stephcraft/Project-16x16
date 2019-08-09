@@ -18,13 +18,8 @@ public class MagicSourceObject extends GameObject {
 		// Default image
 		image = applet.gameGraphics.get("MAGIC_SOURCE");
 
-		// Setup Animation
-		animation.frames = applet.gameGraphics.ga(applet.magicSheet, 0, 0, 16, 16, 80);
-		animation.loop = true;
-		animation.length = 79;
-		animation.rate = 6;
-		animation.frame = 0;
-		animation.start = 0;
+		// Setup Animation		
+		animation.changeAnimation(applet.gameGraphics.ga(applet.magicSheet, 0, 0, 16, 16, 80), true, 6);
 
 		width = 48;
 		height = 48;
@@ -39,7 +34,7 @@ public class MagicSourceObject extends GameObject {
 
 	@Override
 	public void update() {
-		image = animation.animate(applet.frameCount, applet.deltaTime);
+		image = animation.animate();
 
 		// Create new Magic Projectiles
 		for (int i = 0; i < applet.player.swings.size(); i++) {
