@@ -1,9 +1,9 @@
 package sidescroller;
 
-import java.io.BufferedWriter;
-import java.io.FileWriter;
+import java.io.FileOutputStream;
 import java.io.IOException;
-//import java.io.PrintWriter;
+import java.io.OutputStreamWriter;
+import java.nio.charset.StandardCharsets;
 
 import objects.BackgroundObject;
 import objects.Collision;
@@ -14,6 +14,9 @@ import scene.PScene;
 import scene.SceneMapEditor;
 
 public class Util {
+
+	private static final boolean encrypt = true; // encrypt saving
+
 	SideScroller applet;
 
 	public Util(SideScroller a) {
@@ -120,14 +123,11 @@ public class Util {
 				&& applet.getMouseY() < y + h / 2);
 	}
 
-	public static void saveFile(String src, String content) {
-		FileWriter fw;
+	public static void saveFile(String path, String content) {
 		try {
-			fw = new FileWriter(src);
-			BufferedWriter bw = new BufferedWriter(fw);
-			bw.write(content);
-			bw.close();
-			fw.close();
+			OutputStreamWriter o = new OutputStreamWriter(new FileOutputStream(path), StandardCharsets.UTF_8);
+			o.write(content);
+			o.close();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -147,15 +147,12 @@ public class Util {
 	}
 
 	// Game
-	public void loadLevel(String src) { // todo save camera position/settings.
-		String[] script = applet.loadStrings(src);
+	public void loadLevel(String path) { // TODO save camera position/settings.
+		String[] script = applet.loadStrings(path);
 		String scriptD = decrypt(PApplet.join(script, "\n"));
 
 		// Parse JSON
 		JSONArray data = JSONArray.parse(scriptD);
-
-		// Debug
-		// PApplet.println( scriptD );
 
 		// Clear Object Arrays
 		applet.collisions.clear();
@@ -170,12 +167,6 @@ public class Util {
 			// Read Main
 			if (i == 0) {
 				JSONArray d = item.getJSONArray("scene-dimension");
-//				applet.worldPosition.x = d.getInt(0); // TODO
-//				applet.worldPosition.y = d.getInt(1); // TODO
-//				applet.worldPosition.x = 0; // TODO
-//				applet.worldPosition.y = 0; // TODO
-//				applet.worldWidth = d.getInt(2); TODO
-//				applet.worldHeight = d.getInt(3); TODO
 				if (PScene.name == "MAPEDITOR") {
 					((SceneMapEditor) applet.mapEditor).worldViewportEditor.setSize();
 				}
@@ -217,7 +208,7 @@ public class Util {
 		}
 	}
 
-	public void saveLevel(String src) {
+	public void saveLevel(String path) {
 		JSONArray data = new JSONArray();
 
 		// MAIN
@@ -225,19 +216,7 @@ public class Util {
 		main.setString("title", "undefined");
 		main.setString("creator", "undefined");
 		main.setString("version", "alpha 1.0.0");
-
-		JSONArray dimension = new JSONArray();
-//		dimension.setInt(0, (int) applet.worldPosition.x); // todo
-//		dimension.setInt(1, (int) applet.worldPosition.y); // todo
-		dimension.setInt(0, (int) 0); // todo
-		dimension.setInt(1, (int) 0); // todo
-//		dimension.setInt(2, applet.worldWidth); todo
-//		dimension.setInt(3, applet.worldHeight); todo
-		dimension.setInt(2, 0); // todo
-		dimension.setInt(3, 0); // todo
-
-		main.setJSONArray("scene-dimension", dimension);
-
+		
 		// Add Main
 		data.append(main);
 
@@ -274,37 +253,28 @@ public class Util {
 		}
 
 		// Save Level
-		saveFile(src, encrypt(data.toString()));
+		saveFile(path, encrypt(data.toString()));
 	}
 
-	public static String encrypt(String str) {
-		String output = "";
-
-		for (int i = 0; i < str.length(); i++) {
-			int k = PApplet.parseInt(str.charAt(i));
-
-			// Encrypt Key
-			k = (k * 8) - 115;
-
-			char c = PApplet.parseChar(k);
-
-			output += c;
+	private static String encrypt(String str) {
+		if (encrypt) {
+			String output = "";
+			for (int i = 0; i < str.length(); i++) {
+				int k = PApplet.parseInt(str.charAt(i));
+				k = (k * 8) - 115; // Encrypt Key
+				output += PApplet.parseChar(k);
+			}
+			return output;
 		}
-		return output;
+		return str;
 	}
 
-	public static String decrypt(String str) {
+	private static String decrypt(String str) {
 		String output = "";
-
 		for (int i = 0; i < str.length(); i++) {
 			int k = PApplet.parseInt(str.charAt(i));
-
-			// Encrypt Key
-			k = (k + 115) / 8;
-
-			char c = PApplet.parseChar(k);
-
-			output += c;
+			k = (k + 115) / 8; // Encrypt Key
+			output += PApplet.parseChar(k);
 		}
 		return output.replaceAll("" + PApplet.parseChar(8202), "\n").replaceAll("" + PApplet.parseChar(8201), "\t");
 	}
