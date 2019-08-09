@@ -39,7 +39,7 @@ import scene.SceneMapEditor;
 public class SideScroller extends PApplet {
 
 	public static final String LEVEL = "Assets/Storage/Game/Maps/gg-2.dat";
-	public static final boolean DEBUG = true;
+	public static final boolean DEBUG = false;
 
 	// Image Resources
 	public PImage graphicsSheet;
@@ -49,7 +49,7 @@ public class SideScroller extends PApplet {
 	public GameGraphics gameGraphics;
 
 	// Font Resources
-	public PFont font_pixel;
+	private PFont font_pixel;
 
 	// Options
 	public Options options;
@@ -217,7 +217,7 @@ public class SideScroller extends PApplet {
 	 */
 	@Override
 	public void draw() {
-		surface.setTitle("Sardonyx Prealpha - Frame Rate " + (int) frameRate);
+		surface.setTitle("Sardonyx Prealpha | " + mapEditor.tool.toString() + " | " + frameCount);
 
 		pushMatrix();
 		drawBelowCamera: { // drawn objects enclosed by pushMatrix() and popMatrix() are transformed by the
@@ -280,7 +280,7 @@ public class SideScroller extends PApplet {
 		keys.remove(event.getKeyCode());
 		keyReleaseEvent = true;
 
-		switch (event.getKey()) { // must be caps
+		switch (event.getKey()) { // must be ALL-CAPS
 			case 'Z' :
 				frameRate(2000);
 				break;
@@ -404,15 +404,16 @@ public class SideScroller extends PApplet {
 	}
 
 	private void displayDebugInfo() {
-		final int lineOffset = 15; // horizontal offset
-		final int yOffset = 0;
-		final int labelPadding = 250; // label -x offset (from screen width)
+		final int lineOffset = 12; // vertical offset
+		final int yOffset = 1;
+		final int labelPadding = 225; // label -x offset (from screen width)
+		final int ip = 1; // infoPadding -xoffset (from screen width)
 		fill(0, 50);
 		noStroke();
 		rectMode(CORNER);
 		rect(width - labelPadding, 0, labelPadding, yOffset + lineOffset * 10);
 		fill(255, 0, 0);
-		textSize(20);
+		textSize(18);
 
 		textAlign(LEFT, TOP);
 		text("Player Pos:", width - labelPadding, lineOffset * 0 + yOffset);
@@ -424,24 +425,26 @@ public class SideScroller extends PApplet {
 		text("Camera Zoom:", width - labelPadding, lineOffset * 6 + yOffset);
 		text("Camera Rot:", width - labelPadding, lineOffset * 7 + yOffset);
 		text("World Mouse:", width - labelPadding, lineOffset * 8 + yOffset);
-		text("Framerate:", width - labelPadding, lineOffset * 9 + yOffset);
+		text("Projectiles:", width - labelPadding, lineOffset * 9 + yOffset);
+		text("Framerate:", width - labelPadding, lineOffset * 10 + yOffset);
 
 		textAlign(RIGHT, TOP);
-		text("[" + round(player.pos.x) + ", " + round(player.pos.y) + "]", width, lineOffset * 0 + yOffset);
-		text("[" + player.speedX + ", " + player.speedY + "]", width, lineOffset * 1 + yOffset);
-		text("[" + player.animation.name + "]", width, lineOffset * 2 + yOffset);
-		text("[" + round(player.animation.getFrame()) + " / " + player.animation.getAnimLength() + "]", width,
+		text("[" + round(player.pos.x) + ", " + round(player.pos.y) + "]", width - ip, lineOffset * 0 + yOffset);
+		text("[" + player.speedX + ", " + player.speedY + "]", width - ip, lineOffset * 1 + yOffset);
+		text("[" + player.animation.name + "]", width - ip, lineOffset * 2 + yOffset);
+		text("[" + round(player.animation.getFrame()) + " / " + player.animation.getAnimLength() + "]", width - ip,
 				lineOffset * 3 + yOffset);
-		text("[" + (player.flying ? "FLY" : player.attack ? "ATT" : "DASH") + "]", width, lineOffset * 4 + yOffset);
-		text("[" + camera.getCameraPosition() + "]", width, lineOffset * 5 + yOffset);
-		text("[" + String.format("%.2f", camera.getZoomScale()) + "]", width, lineOffset * 6 + yOffset);
-		text("[" + round(degrees(camera.getCameraRotation())) + "]", width, lineOffset * 7 + yOffset);
-		text("[" + round(camera.getMouseCoord().x) + ", " + round(camera.getMouseCoord().y) + "]", width,
+		text("[" + (player.flying ? "FLY" : player.attack ? "ATT" : "DASH") + "]", width - ip, lineOffset * 4 + yOffset);
+		text("[" + camera.getCameraPosition() + "]", width - ip, lineOffset * 5 + yOffset);
+		text("[" + String.format("%.2f", camera.getZoomScale()) + "]", width - ip, lineOffset * 6 + yOffset);
+		text("[" + round(degrees(camera.getCameraRotation())) + "]", width - ip, lineOffset * 7 + yOffset);
+		text("[" + round(camera.getMouseCoord().x) + ", " + round(camera.getMouseCoord().y) + "]", width - ip,
 				lineOffset * 8 + yOffset);
+		text("[" + projectileObjects.size() + "]", width - ip, lineOffset * 9 + yOffset);
 		if (frameRate >= 59.5) {
 			fill(0, 255, 0);
 		}
-		text("[" + round(frameRate) + "]", width, lineOffset * 9 + yOffset);
+		text("[" + round(frameRate) + "]", width - ip, lineOffset * 10 + yOffset);
 	}
 
 	@Override

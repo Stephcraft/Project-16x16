@@ -1,12 +1,14 @@
 package scene;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 
 import objects.EditorItem;
 import objects.Collision;
 
 import processing.core.*;
 import processing.event.MouseEvent;
+import projectiles.ProjectileObject;
 import scene.components.WorldViewportEditor;
 import sidescroller.GameGraphics.Graphic;
 import sidescroller.SideScroller;
@@ -17,32 +19,32 @@ import windows.SaveLevelWindow;
 public class SceneMapEditor extends PScene {
 
 	// Graphics Slots
-	PImage slot;
-	PImage slotEditor;
+	private PImage slot;
+	private PImage slotEditor;
 
 	// Graphics Icon
-	PImage icon_eye;
-	PImage icon_arrow;
-	PImage icon_inventory;
-	PImage icon_play;
-	PImage icon_save;
-	PImage icon_eyeActive;
-	PImage icon_arrowActive;
-	PImage icon_inventoryActive;
-	PImage icon_playActive;
-	PImage icon_saveActive;
+	private PImage icon_eye;
+	private PImage icon_arrow;
+	private PImage icon_inventory;
+	private PImage icon_play;
+	private PImage icon_save;
+	private PImage icon_eyeActive;
+	private PImage icon_arrowActive;
+	private PImage icon_inventoryActive;
+	private PImage icon_playActive;
+	private PImage icon_saveActive;
 
 	// Windows
-	public SaveLevelWindow window_saveLevel;
+	private SaveLevelWindow window_saveLevel;
 
 	// Editor Item
-	public EditorItem editorItem;
+	private EditorItem editorItem;
 
 	// Editor Viewport
 	public WorldViewportEditor worldViewportEditor;
 	
 	// Scroll Bar
-	public ScrollBarVertical scrollBar;
+	private ScrollBarVertical scrollBar;
 
 	public enum Tools {
 		MOVE, MODIFY, INVENTORY, PLAY, SAVE,
@@ -50,13 +52,13 @@ public class SceneMapEditor extends PScene {
 
 	public Tools tool;
 
-	public ArrayList<String> inventory;
+	private ArrayList<String> inventory;
 
 	public boolean focusedOnObject;
 
 	public boolean edit;
 
-	int scroll_inventory;
+	private int scroll_inventory;
 
 	public SceneMapEditor(SideScroller a) {
 		super(a);
@@ -208,9 +210,16 @@ public class SceneMapEditor extends PScene {
 		}
 
 		// View Projectiles
-		for (int i = 0; i < applet.projectileObjects.size(); i++) {
-			applet.projectileObjects.get(i).update();
-			applet.projectileObjects.get(i).display();
+		Iterator<ProjectileObject> i = applet.projectileObjects.iterator();
+		while (i.hasNext()) {
+			ProjectileObject o = i.next();
+			if (applet.frameCount - o.spawnTime > 600) {
+				i.remove(); // kill projectile after 10s
+			}
+			else {
+				o.update();
+				o.display();
+			}
 		}
 
 		// View Player

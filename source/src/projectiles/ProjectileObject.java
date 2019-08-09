@@ -21,6 +21,8 @@ public class ProjectileObject extends PClass {
 
 	public int width;
 	public int height;
+	
+	public int spawnTime;
 
 	public int speed;
 
@@ -33,7 +35,7 @@ public class ProjectileObject extends PClass {
 		super(a);
 
 		id = "";
-
+		spawnTime = applet.frameCount;
 		animation = new AnimationComponent();
 		pos = new PVector(0, 0);
 	}
