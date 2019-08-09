@@ -22,23 +22,23 @@ public class EditableObject extends PClass {
 
 	// Focus
 	public boolean focus;
-	public boolean focusX;
-	public boolean focusY;
-	public boolean focusM;
+	protected boolean focusX;
+	protected boolean focusY;
+	private boolean focusM;
 
 	public boolean child;
 
 	// Arrows Graphics
-	public PImage editArrowX;
-	public PImage editArrowY;
-	public PImage editArrowXActive;
-	public PImage editArrowYActive;
+	private PImage editArrowX;
+	private PImage editArrowY;
+	private PImage editArrowXActive;
+	private PImage editArrowYActive;
 
 	// Map Editor Scene
-	public SceneMapEditor scene;
+	private SceneMapEditor scene;
 
-	int editOffsetX;
-	int editOffsetY;
+	protected int editOffsetX;
+	protected int editOffsetY;
 
 	public EditableObject(SideScroller a) {
 		super(a);
@@ -54,6 +54,10 @@ public class EditableObject extends PClass {
 		editArrowYActive = util.pg(applet.graphicsSheet.get(275, 284, 5, 6), 4);
 	}
 
+	/**
+	 * Draws position edit arrows and bounding box if the object is selected
+	 * (focused) in MODIFY mode.
+	 */
 	public void displayEdit() {
 		// When Focused
 		if (focus) {
@@ -81,26 +85,22 @@ public class EditableObject extends PClass {
 			// Axis X
 			if (focusX) {
 				applet.stroke(255, 213, 63);
-				applet.line(pos.x, pos.y, pos.x + 100,
-						pos.y);
+				applet.line(pos.x, pos.y, pos.x + 100, pos.y);
 				applet.image(editArrowXActive, pos.x + 100, pos.y);
 			} else {
 				applet.stroke(239, 64, 96);
-				applet.line(pos.x, pos.y, pos.x + 100,
-						pos.y);
+				applet.line(pos.x, pos.y, pos.x + 100, pos.y);
 				applet.image(editArrowX, pos.x + 100, pos.y);
 			}
 
 			// Axis Y
 			if (focusY) {
 				applet.stroke(255, 213, 63);
-				applet.line(pos.x, pos.y, pos.x,
-						pos.y - 100);
+				applet.line(pos.x, pos.y, pos.x, pos.y - 100);
 				applet.image(editArrowYActive, pos.x, pos.y - 100);
 			} else {
 				applet.stroke(185, 255, 99);
-				applet.line(pos.x, pos.y, pos.x,
-						pos.y - 100);
+				applet.line(pos.x, pos.y, pos.x, pos.y - 100);
 				applet.image(editArrowY, pos.x, pos.y - 100);
 			}
 		}
@@ -110,18 +110,23 @@ public class EditableObject extends PClass {
 		if (child) {
 			return;
 		}
-
+		
+		if (applet.mouseReleaseEvent) {
+			focusX = false;
+			focusY = false;
+			focusM = false;
+		}
+		
 		// Focus Event
 		if (applet.mousePressEvent) {
-			if (mouseHover()) {
-				// Focus Enable
+			if (mouseHover()) { // Focus Enable
 				if (!scene.focusedOnObject) {
 					focus = true;
 					scene.focusedOnObject = true;
 				}
 			} else {
-				// Focus Disable
-				if (!mouseHoverX() && !mouseHoverY()) {
+				if (!mouseHoverX() && !mouseHoverY() && focus) { // Focus Disable
+					scene.focusedOnObject = false;
 					focus = false;
 					focusX = false;
 					focusY = false;
@@ -129,15 +134,9 @@ public class EditableObject extends PClass {
 				}
 			}
 		}
-		if (applet.mouseReleaseEvent) {
-			focusX = false;
-			focusY = false;
-			focusM = false;
-		}
 
 		// When Focused
 		if (focus) {
-
 			// Focus Arrow Event
 			if (applet.mousePressEvent) {
 				if (mouseHoverX()) {
@@ -224,27 +223,30 @@ public class EditableObject extends PClass {
 		focus = true;
 	}
 
-	// Utility
+	/**
+	 * Is mouse hovering the x-axis slider for the object?
+	 * 
+	 * @return boolean true if mouse hovering.
+	 */
 	private boolean mouseHoverX() {
-		return (applet.getMouseX() > pos.x + 100 - 6 * 4
-				&& applet.getMouseX() < pos.x + 100 + 6 * 4)
+		return (applet.getMouseX() > pos.x + 100 - 6 * 4 && applet.getMouseX() < pos.x + 100 + 6 * 4)
 				&& (applet.getMouseY() > pos.y - 5 * 4 && applet.getMouseY() < pos.y + 5 * 4);
 	}
 
+	/**
+	 * Is mouse hovering the y-axis slider for the object?
+	 * 
+	 * @return boolean true if mouse hovering.
+	 */
 	private boolean mouseHoverY() {
 		return (applet.getMouseX() > pos.x - 6 * 4 && applet.getMouseX() < pos.x + 6 * 4)
-				&& (applet.getMouseY() > pos.y - 100 - 5 * 4
-						&& applet.getMouseY() < pos.y - 100 + 5 * 4);
+				&& (applet.getMouseY() > pos.y - 100 - 5 * 4 && applet.getMouseY() < pos.y - 100 + 5 * 4);
 	}
 
 	private boolean mouseHover() {
-		if (applet.getMouseX() < 400 && applet.getMouseY() < 100) {
+		if (applet.getMouseX() < 400 && applet.getMouseY() < 100) { // Over Inventory Bar
 			return false;
-		} // On Inventory Bar
-
-		return (applet.getMouseX() > pos.x - width / 2
-				&& applet.getMouseX() < pos.x + width / 2)
-				&& (applet.getMouseY() > pos.y - height / 2
-						&& applet.getMouseY() < pos.y + height / 2);
+		}
+		return util.hover(pos.x, pos.y, width, height);
 	}
 }

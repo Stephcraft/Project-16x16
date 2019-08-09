@@ -118,11 +118,26 @@ public class Util {
 		return pos + (target - pos) * speed;
 	}
 
+	/**
+	 * Is the mouse within a square region, given by its center coordinate (x,y).
+	 * 
+	 * @param x region center pos X
+	 * @param y region center pos Y
+	 * @param w region width
+	 * @param h region height
+	 * @return Whether mouse hovers region.
+	 */
 	public boolean hover(float x, float y, float w, float h) {
 		return (applet.getMouseX() > x - w / 2 && applet.getMouseX() < x + w / 2 && applet.getMouseY() > y - h / 2
 				&& applet.getMouseY() < y + h / 2);
 	}
 
+	/**
+	 * Writes data to file.
+	 * 
+	 * @param path    File location.
+	 * @param content File contents
+	 */
 	public static void saveFile(String path, String content) {
 		try {
 			OutputStreamWriter o = new OutputStreamWriter(new FileOutputStream(path), StandardCharsets.UTF_8);
@@ -208,6 +223,12 @@ public class Util {
 		}
 	}
 
+	/**
+	 * Saves the level (background, game and collideable objects), encrypting the
+	 * output.
+	 * 
+	 * @param path Save location path.
+	 */
 	public void saveLevel(String path) {
 		JSONArray data = new JSONArray();
 
@@ -216,7 +237,7 @@ public class Util {
 		main.setString("title", "undefined");
 		main.setString("creator", "undefined");
 		main.setString("version", "alpha 1.0.0");
-		
+
 		// Add Main
 		data.append(main);
 
@@ -256,6 +277,12 @@ public class Util {
 		saveFile(path, encrypt(data.toString()));
 	}
 
+	/**
+	 * Encrypts str (JSON) for output.
+	 * 
+	 * @param str
+	 * @return
+	 */
 	private static String encrypt(String str) {
 		if (encrypt) {
 			String output = "";
@@ -269,6 +296,12 @@ public class Util {
 		return str;
 	}
 
+	/**
+	 * Decrypt input to str (JSON).
+	 * 
+	 * @param str
+	 * @return
+	 */
 	private static String decrypt(String str) {
 		String output = "";
 		for (int i = 0; i < str.length(); i++) {

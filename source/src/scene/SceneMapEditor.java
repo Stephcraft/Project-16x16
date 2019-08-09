@@ -42,7 +42,7 @@ public class SceneMapEditor extends PScene {
 
 	// Editor Viewport
 	public WorldViewportEditor worldViewportEditor;
-	
+
 	// Scroll Bar
 	private ScrollBarVertical scrollBar;
 
@@ -54,7 +54,7 @@ public class SceneMapEditor extends PScene {
 
 	private ArrayList<String> inventory;
 
-	public boolean focusedOnObject;
+	public boolean focusedOnObject; // mutex
 
 	public boolean edit;
 
@@ -79,7 +79,7 @@ public class SceneMapEditor extends PScene {
 		// Init Editor Components
 		editorItem = new EditorItem(applet);
 		worldViewportEditor = new WorldViewportEditor(applet);
-		
+
 		// Get Slots Graphics
 		slot = util.pg(applet.graphicsSheet.get(289, 256, 20, 21), 4);
 		slotEditor = util.pg(applet.graphicsSheet.get(310, 256, 20, 21), 4);
@@ -99,13 +99,13 @@ public class SceneMapEditor extends PScene {
 
 		// Init Window
 		window_saveLevel = new SaveLevelWindow(applet);
-		
+
 		// Init ScollBar
 		Anchor scrollBarAnchor = new Anchor(applet, -20, 150, 20, 50);
 		scrollBarAnchor.anchorOrigin = Anchor.AnchorOrigin.TopRight;
 		scrollBarAnchor.stretch = Anchor.Stretch.Vertical;
 		scrollBar = new ScrollBarVertical(applet, scrollBarAnchor);
-		
+
 		// Default Scene
 		applet.collisions.add(new Collision(applet, "METAL_WALK_MIDDLE:0", 0, 0));
 
@@ -115,18 +115,19 @@ public class SceneMapEditor extends PScene {
 		util.loadLevel(SideScroller.LEVEL); // TODO change level
 	}
 
+	/**
+	 * Draw scene elements that are below (affected by) the camera.
+	 */
 	@Override
 	public void draw() {
 		background(29, 33, 45);
 
 		applet.noStroke();
 		applet.fill(29, 33, 45);
-//		applet.rect(applet.worldPosition.x, applet.worldPosition.y, applet.worldWidth,
-//				applet.worldHeight); // todo
-
-		displayGrid();
-
-		boolean objectFocus = false;
+		
+		if (tool == Tools.MODIFY) {
+			displayGrid();
+		}
 
 		// View Background Objects
 		for (int i = 0; i < applet.backgroundObjects.size(); i++) {
@@ -146,9 +147,6 @@ public class SceneMapEditor extends PScene {
 		for (int i = 0; i < applet.collisions.size(); i++) {
 			if (tool == Tools.MODIFY) {
 				applet.collisions.get(i).updateEdit();
-				if (applet.collisions.get(i).focus) {
-					objectFocus = true;
-				}
 			}
 
 			applet.collisions.get(i).display();
@@ -158,24 +156,11 @@ public class SceneMapEditor extends PScene {
 				applet.keyPressEvent = false;
 			}
 		}
-		if (tool == Tools.MODIFY) {
-			if (!objectFocus) {
-				focusedOnObject = false;
-
-				// Loop for new Selection
-				for (int i = 0; i < applet.collisions.size(); i++) {
-					applet.collisions.get(i).updateEdit();
-				}
-			}
-		}
-
-		// View Game Objects
+		
+		// View Game Objects (player-interactable objects)
 		for (int i = 0; i < applet.gameObjects.size(); i++) {
 			if (tool == Tools.MODIFY) {
 				applet.gameObjects.get(i).updateEdit();
-				if (applet.gameObjects.get(i).focus) {
-					objectFocus = true;
-				}
 			}
 
 			if (tool == Tools.PLAY) {
@@ -190,24 +175,6 @@ public class SceneMapEditor extends PScene {
 				applet.keyPressEvent = false;
 			}
 		}
-		
-		// Editor View
-		if (tool == Tools.MODIFY) {
-			for (int i = 0; i < applet.collisions.size(); i++) {
-				applet.collisions.get(i).displayEdit();
-			}
-			for (int i = 0; i < applet.backgroundObjects.size(); i++) {
-				applet.backgroundObjects.get(i).displayEdit();
-			}
-			for (int i = 0; i < applet.gameObjects.size(); i++) {
-				applet.gameObjects.get(i).displayEdit();
-			}
-		}
-
-		// Editor Object Destination
-		if (tool == Tools.MODIFY) {
-			editorItem.displayDestination();
-		}
 
 		// View Projectiles
 		Iterator<ProjectileObject> i = applet.projectileObjects.iterator();
@@ -215,33 +182,46 @@ public class SceneMapEditor extends PScene {
 			ProjectileObject o = i.next();
 			if (applet.frameCount - o.spawnTime > 600) {
 				i.remove(); // kill projectile after 10s
-			}
-			else {
+			} else {
 				o.update();
 				o.display();
 			}
 		}
-
-		// View Player
-		if (tool == Tools.PLAY) {
-			applet.player.update();
-			applet.player.display();
-		} else {
-			applet.player.display();
-		}
-		if (tool == Tools.PLAY) {
-			applet.player.updateEdit();
-			applet.player.displayEdit();
-		}
 		
+		switch (tool) {
+			case INVENTORY :
+				break;
+			case MODIFY :
+				applet.player.updateEdit();
+				applet.player.displayEdit();
+				editorItem.displayDestination();
+				applet.collisions.forEach(o -> o.displayEdit());
+				applet.backgroundObjects.forEach(o -> o.displayEdit());
+				applet.gameObjects.forEach(o -> o.displayEdit());
+				break;
+			case MOVE :
+				break;
+			case PLAY :
+				applet.player.update();
+				break;
+			case SAVE :
+				break;
+			default :
+				break;
+		}
+		applet.player.display();
+
 		// View Viewport Editor
-		worldViewportEditor.updateEditor();
-		worldViewportEditor.displayEditor();
+//		worldViewportEditor.updateEditor(); // TODO
+//		worldViewportEditor.displayEditor(); // TODO
 	}
 
+	/**
+	 * Draw scene elements that are above the camera.
+	 */
 	public void drawUI() {
 
-		// GUI Slots
+		// 6 GUI Slots
 		if (tool != Tools.INVENTORY) {
 			for (int i = 0; i < 6; i++) {
 				// Display Slot
@@ -310,34 +290,27 @@ public class SceneMapEditor extends PScene {
 		} else {
 			image(icon_save, 90 + 48 * 3, 120);
 		}
-
-		// GUI Editor Object
-		if (tool == Tools.MODIFY) {
-			editorItem.update();
-			editorItem.display();
+		
+		switch (tool) {
+			case INVENTORY :
+				displayCreativeInventory();
+				break;
+			case MODIFY :
+				editorItem.update();
+				editorItem.display();
+				break;
+			case MOVE :
+				break;
+			case PLAY :
+				break;
+			case SAVE :
+				window_saveLevel.update();
+				window_saveLevel.display();
+				break;
+			default :
+				break;
 		}
-
-		// Display Inventory
-		if (tool == Tools.INVENTORY) {
-			displayCreativeInventory();
-		}
-
-		// Windows
-		if (tool == Tools.SAVE) {
-			window_saveLevel.update();
-			window_saveLevel.display();
-		}
-
-		// Move Tool
-		if (tool == Tools.MOVE) {
-			if (applet.mousePressed) {
-//				applet.originTargetX += applet.pmouseX - applet.getMouseX();
-//				applet.originTargetY += applet.pmouseY - applet.getMouseY();
-//				applet.originX = applet.originTargetX;
-//				applet.originY = applet.originTargetY;
-			}
-		}
-
+		
 		// Change tool;
 		if (tool != Tools.SAVE) {
 			if (applet.keyPressEvent) {
@@ -426,16 +399,15 @@ public class SceneMapEditor extends PScene {
 			index++;
 		}
 
-		
 		// Display ScrollBar
 		scrollBar.display();
 		scrollBar.update();
-		scroll_inventory = (int) PApplet.map(scrollBar.barLocation, 1, 0,  -getInventorySize() + applet.height - 8, 0);
-		
-		// Display Top Bar
-		applet.noStroke();
-		applet.fill(29, 33, 45);
-		applet.rect(applet.width / 2, 50, applet.width, 100);
+		scroll_inventory = (int) PApplet.map(scrollBar.barLocation, 1, 0, -getInventorySize() + applet.height - 8, 0);
+
+		// Display Top Bar TODO
+//		applet.noStroke();
+//		applet.fill(29, 33, 45);
+//		applet.rect(applet.width / 2, 50, applet.width, 100);
 
 		// Display Line Separator
 		applet.strokeWeight(4);
@@ -469,28 +441,15 @@ public class SceneMapEditor extends PScene {
 		editorItem.display();
 	}
 
-	private void displayGrid() {// world grid
-		applet.strokeWeight(1);
+	private void displayGrid() {// world edit grid
+		applet.strokeWeight(2);
 		applet.stroke(50);
-		int x = 0;
-		int y = 0;
-		int l = applet.width / (16 * 4) * applet.height / (16 * 4);
-		for (int i = 0; i < l; i++) {
-
-			x++;
-			if (i % applet.height / (16 * 4) == 0) {
-				y++;
-				x = 0;
-			}
-//			applet.line(x * (4 * 16) - (applet.originX % (16 * 4)) - ((4 * 16) / 2), 0,
-//					x * (4 * 16) - (applet.originX % (16 * 4)) - ((4 * 16) / 2), applet.height);
-//			applet.line(0, y * (4 * 16) - (applet.originY % (16 * 4)) - ((4 * 16) / 2), applet.width,
-//					y * (4 * 16) - (applet.originY % (16 * 4)) - ((4 * 16) / 2)); // todo
-			
-			applet.line(x * (4 * 16) - (0 % (16 * 4)) - ((4 * 16) / 2), 0,
-					x * (4 * 16) - (0 % (16 * 4)) - ((4 * 16) / 2), applet.height);
-			applet.line(0, y * (4 * 16) - (0 % (16 * 4)) - ((4 * 16) / 2), applet.width,
-					y * (4 * 16) - (0 % (16 * 4)) - ((4 * 16) / 2)); // todo
+		final int xOffset = 32; // to align with rectMode(CENTER)
+		final int yOffset = 32; // to align with rectMode(CENTER)
+		final int l = (applet.width * 4) / 2;
+		for (int i = -l; i < l; i += 64) {
+			applet.line(-l, i + yOffset, l, i + yOffset); // horizontal
+			applet.line(i + xOffset, -l, i + xOffset, l); // vertical
 		}
 	}
 
@@ -512,7 +471,8 @@ public class SceneMapEditor extends PScene {
 		} else {
 			if (tool == Tools.INVENTORY) {
 				scrollBar.mouseWheel(event);
-				scroll_inventory = (int) PApplet.map(scrollBar.barLocation, 1, 0, -getInventorySize() + applet.height - 8, 0);
+				scroll_inventory = (int) PApplet.map(scrollBar.barLocation, 1, 0,
+						-getInventorySize() + applet.height - 8, 0);
 			}
 		}
 	}

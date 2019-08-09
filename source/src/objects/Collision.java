@@ -5,17 +5,12 @@ import sidescroller.SideScroller;
 
 public class Collision extends EditableObject {
 
-	public PImage image;
-
-	public PImage editArrowX;
-	public PImage editArrowY;
-	public PImage editArrowXActive;
-	public PImage editArrowYActive;
+	private PImage image;
 
 	public String flag;
 
-	public float pixelOffsetX = 0;
-	public float pixelOffsetY = 0;
+	private float pixelOffsetX = 0;
+	private float pixelOffsetY = 0;
 
 	public Collision(SideScroller a) {
 		super(a);
@@ -35,7 +30,7 @@ public class Collision extends EditableObject {
 		this(a);
 
 		// Get From Game Graphics Image
-		pos = new PVector(round(x / 4) * 4, round(y / 4) * 4);
+		pos = new PVector(x, y);
 		width = w;
 		height = h;
 	}
@@ -45,7 +40,7 @@ public class Collision extends EditableObject {
 
 		// Get From Game Graphics Image
 		setGraphic(t);
-		pos = new PVector(round(x / 4) * 4, round(y / 4) * 4);
+		pos = new PVector(x, y);
 	}
 
 	public void display() {
@@ -62,11 +57,19 @@ public class Collision extends EditableObject {
 				applet.noFill();
 				applet.strokeWeight(1);
 				applet.stroke(0, 255, 200);
-				applet.rect(pos.x + pixelOffsetX, pos.y + pixelOffsetY, width,
-						height);
+				applet.rect(pos.x + pixelOffsetX, pos.y + pixelOffsetY, width, height);
 			}
 		} else {
 			applet.image(image, pos.x + pixelOffsetX, pos.y + pixelOffsetY);
+		}
+
+		if (SideScroller.DEBUG) {
+			applet.noStroke();
+			applet.fill(255);
+			applet.ellipse(pos.x, pos.y, 5, 5);
+			applet.noFill();
+			applet.stroke(50, 120, 255);
+			applet.rect(pos.x, pos.y, width, height);
 		}
 	}
 

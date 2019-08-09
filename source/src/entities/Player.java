@@ -40,6 +40,8 @@ public final class Player extends EditableObject {
 
 	public float speedX;
 	public float speedY;
+	
+	private static final int collisionRange = 145;
 
 	private int speedWalk;
 	private int speedJump;
@@ -250,7 +252,7 @@ public final class Player extends EditableObject {
 			applet.noFill();
 			applet.stroke(255, 0, 0);
 			applet.strokeWeight(1);
-			applet.ellipse(pos.x, pos.y, 400, 400);
+			applet.ellipse(pos.x, pos.y, collisionRange*2, collisionRange*2);
 		}
 
 		// All Collision Global Check
@@ -258,10 +260,14 @@ public final class Player extends EditableObject {
 			Collision collision = applet.collisions.get(i);
 
 			// In Player Range
-			if (PApplet.dist(pos.x, pos.y, collision.pos.x, collision.pos.y) < 200) {
+			if (PApplet.dist(pos.x, pos.y, collision.pos.x, collision.pos.y) < collisionRange) {
 
 				if (SideScroller.DEBUG) {
-					applet.rect(collision.pos.x, collision.pos.y, 20, 20);
+					applet.strokeWeight(2);
+					applet.rect(collision.pos.x, collision.pos.y, collision.width, collision.height);
+					applet.fill(255, 0, 0);
+					applet.ellipse(collision.pos.x, collision.pos.y, 5, 5);
+					applet.noFill();
 				}
 				if (collides(collision)) {
 					if (px + width / 2 < collision.pos.x + collision.width / 2) {
