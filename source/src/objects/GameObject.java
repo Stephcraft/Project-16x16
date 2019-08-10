@@ -15,7 +15,7 @@ public class GameObject extends EditableObject {
 	public AnimationComponent animation;
 
 	// Collision Component
-	public Collision collision;
+	public CollidableObject collision;
 
 	public PImage image;
 

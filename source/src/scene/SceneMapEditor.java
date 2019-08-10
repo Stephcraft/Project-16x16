@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 import objects.EditorItem;
-import objects.Collision;
-
+import objects.CollidableObject;
+import objects.EditableObject;
 import processing.core.*;
 import processing.event.MouseEvent;
 import projectiles.ProjectileObject;
@@ -54,7 +54,9 @@ public class SceneMapEditor extends PScene {
 
 	private ArrayList<String> inventory;
 
-	public boolean focusedOnObject; // mutex
+//	public boolean focusedOnObject; // mutex
+
+	public EditableObject focusedObject = null;
 
 	public boolean edit;
 
@@ -107,7 +109,7 @@ public class SceneMapEditor extends PScene {
 		scrollBar = new ScrollBarVertical(applet, scrollBarAnchor);
 
 		// Default Scene
-		applet.collisions.add(new Collision(applet, "METAL_WALK_MIDDLE:0", 0, 0));
+		applet.collidableObjects.add(new CollidableObject(applet, "METAL_WALK_MIDDLE:0", 0, 0));
 
 		// Default Tool
 		tool = Tools.MODIFY;
@@ -124,9 +126,12 @@ public class SceneMapEditor extends PScene {
 
 		applet.noStroke();
 		applet.fill(29, 33, 45);
-		
+
 		if (tool == Tools.MODIFY) {
 			displayGrid();
+			if (applet.mousePressEvent && focusedObject != null) {
+				focusedObject.updateEdit(); // enforce one item selected at once
+			}
 		}
 
 		// View Background Objects
@@ -143,20 +148,20 @@ public class SceneMapEditor extends PScene {
 			}
 		}
 
-		// View Collisions
-		for (int i = 0; i < applet.collisions.size(); i++) {
+		// View Collidable objects
+		for (int i = 0; i < applet.collidableObjects.size(); i++) {
 			if (tool == Tools.MODIFY) {
-				applet.collisions.get(i).updateEdit();
+				applet.collidableObjects.get(i).updateEdit();
 			}
 
-			applet.collisions.get(i).display();
+			applet.collidableObjects.get(i).display();
 
-			if (applet.collisions.get(i).focus && applet.keyPress(8) && applet.keyPressEvent) {
-				applet.collisions.remove(i);
+			if (applet.collidableObjects.get(i).focus && applet.keyPress(8) && applet.keyPressEvent) {
+				applet.collidableObjects.remove(i);
 				applet.keyPressEvent = false;
 			}
 		}
-		
+
 		// View Game Objects (player-interactable objects)
 		for (int i = 0; i < applet.gameObjects.size(); i++) {
 			if (tool == Tools.MODIFY) {
@@ -168,6 +173,18 @@ public class SceneMapEditor extends PScene {
 			}
 
 			applet.gameObjects.get(i).display();
+
+			if (SideScroller.DEBUG) {
+				applet.strokeWeight(2);
+				applet.noFill();
+				applet.stroke(255, 190, 200);
+				applet.rect(applet.gameObjects.get(i).pos.x, applet.gameObjects.get(i).pos.y,
+						applet.gameObjects.get(i).width, applet.gameObjects.get(i).height);
+				applet.noStroke();
+				applet.fill(255);
+				applet.ellipse(applet.gameObjects.get(i).pos.x, applet.gameObjects.get(i).pos.y, 5, 5);
+				applet.noFill();
+			}
 
 			// Delete
 			if (applet.gameObjects.get(i).focus && applet.keyPress(8) && applet.keyPressEvent) {
@@ -187,23 +204,21 @@ public class SceneMapEditor extends PScene {
 				o.display();
 			}
 		}
-		
+
 		switch (tool) {
-			case INVENTORY :
-				break;
 			case MODIFY :
 				applet.player.updateEdit();
 				applet.player.displayEdit();
 				editorItem.displayDestination();
-				applet.collisions.forEach(o -> o.displayEdit());
+				applet.collidableObjects.forEach(o -> o.displayEdit());
 				applet.backgroundObjects.forEach(o -> o.displayEdit());
 				applet.gameObjects.forEach(o -> o.displayEdit());
-				break;
-			case MOVE :
 				break;
 			case PLAY :
 				applet.player.update();
 				break;
+			case MOVE :
+			case INVENTORY :
 			case SAVE :
 				break;
 			default :
@@ -245,7 +260,7 @@ public class SceneMapEditor extends PScene {
 				}
 			}
 		}
-		
+
 		// GUI Icons
 		if (tool == Tools.MOVE || (util.hover(40, 120, 36, 36) && tool != Tools.SAVE && tool != Tools.INVENTORY)) {
 			if (util.hover(40, 120, 36, 36) && applet.mousePressEvent) {
@@ -290,7 +305,7 @@ public class SceneMapEditor extends PScene {
 		} else {
 			image(icon_save, 90 + 48 * 3, 120);
 		}
-		
+
 		switch (tool) {
 			case INVENTORY :
 				displayCreativeInventory();
@@ -310,7 +325,7 @@ public class SceneMapEditor extends PScene {
 			default :
 				break;
 		}
-		
+
 		// Change tool;
 		if (tool != Tools.SAVE) {
 			if (applet.keyPressEvent) {
@@ -326,7 +341,7 @@ public class SceneMapEditor extends PScene {
 				}
 				if (applet.keyPress(51)) {
 					tool = Tools.INVENTORY;
-					editorItem.setMode("ITEM");
+					editorItem.setMode("CREATE");
 					editorItem.focus = false;
 					scroll_inventory = 0;
 				}
@@ -446,7 +461,7 @@ public class SceneMapEditor extends PScene {
 		applet.stroke(50);
 		final int xOffset = 32; // to align with rectMode(CENTER)
 		final int yOffset = 32; // to align with rectMode(CENTER)
-		final int l = (applet.width * 4) / 2;
+		final int l = 6400;
 		for (int i = -l; i < l; i += 64) {
 			applet.line(-l, i + yOffset, l, i + yOffset); // horizontal
 			applet.line(i + xOffset, -l, i + xOffset, l); // vertical

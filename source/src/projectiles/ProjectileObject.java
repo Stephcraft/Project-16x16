@@ -3,7 +3,7 @@ package projectiles;
 import java.util.ArrayList;
 
 import components.AnimationComponent;
-import objects.Collision;
+import objects.CollidableObject;
 import processing.core.PImage;
 import processing.core.PVector;
 import sidescroller.PClass;
@@ -45,7 +45,7 @@ public class ProjectileObject extends PClass {
 	public void update() {
 	}
 
-	public boolean collides(Collision collision) {
+	public boolean collides(CollidableObject collision) {
 		return (pos.x + width / 2 > collision.pos.x - collision.width / 2
 				&& pos.x - width / 2 < collision.pos.x + collision.width / 2)
 				&& (pos.y + height / 2 > collision.pos.y - collision.height / 2

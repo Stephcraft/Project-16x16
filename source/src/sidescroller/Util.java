@@ -6,7 +6,7 @@ import java.io.OutputStreamWriter;
 import java.nio.charset.StandardCharsets;
 
 import objects.BackgroundObject;
-import objects.Collision;
+import objects.CollidableObject;
 import objects.GameObject;
 import processing.core.*;
 import processing.data.*;
@@ -170,7 +170,7 @@ public class Util {
 		JSONArray data = JSONArray.parse(scriptD);
 
 		// Clear Object Arrays
-		applet.collisions.clear();
+		applet.collidableObjects.clear();
 		applet.backgroundObjects.clear();
 
 		// Create Level
@@ -188,7 +188,7 @@ public class Util {
 			} else {
 				switch (type) {
 					case "COLLISION" :
-						Collision collision = new Collision(applet);
+						CollidableObject collision = new CollidableObject(applet);
 						try {
 							collision.setGraphic(item.getString("id"));
 						} catch (Exception e) {
@@ -199,7 +199,7 @@ public class Util {
 						collision.pos.y = item.getInt("y");
 
 						// Append To Level
-						applet.collisions.add(collision);
+						applet.collidableObjects.add(collision);
 						break;
 					case "BACKGROUND" :
 						BackgroundObject backgroundObject = new BackgroundObject(applet);
@@ -242,12 +242,12 @@ public class Util {
 		data.append(main);
 
 		// Add Collisions
-		for (int i = 0; i < applet.collisions.size(); i++) {
+		for (int i = 0; i < applet.collidableObjects.size(); i++) {
 			JSONObject item = new JSONObject();
-			item.setString("id", applet.collisions.get(i).id);
+			item.setString("id", applet.collidableObjects.get(i).id);
 			item.setString("type", "COLLISION");
-			item.setInt("x", (int) applet.collisions.get(i).pos.x);
-			item.setInt("y", (int) applet.collisions.get(i).pos.y);
+			item.setInt("x", (int) applet.collidableObjects.get(i).pos.x);
+			item.setInt("y", (int) applet.collidableObjects.get(i).pos.y);
 			data.append(item);
 		}
 
@@ -263,7 +263,7 @@ public class Util {
 
 		// Add Game Objects
 		for (int i = 0; i < applet.gameObjects.size(); i++) {
-			applet.collisions.remove(applet.gameObjects.get(i).collision);
+			applet.collidableObjects.remove(applet.gameObjects.get(i).collision);
 
 			JSONObject item = new JSONObject();
 			item.setString("id", applet.gameObjects.get(i).id);

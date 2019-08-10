@@ -40,17 +40,17 @@ public class EditorItem extends PClass {
 
 			if (applet.mouseReleaseEvent) {
 				focus = false;
-
+				
 				if (mode == "CREATE") {
 					PVector realPos = applet.camera.getDispToCoord(new PVector(applet.getMouseX(), applet.getMouseY())); // transform from screen mouse pos to game pos
 					// Create new instance from dragged icon
 					switch (type) {
 						case COLLISION :
-							Collision c = new Collision(applet, id, 0, 0);
+							CollidableObject c = new CollidableObject(applet, id, 0, 0);
 							c.pos.x = realPos.x;
 							c.pos.y = realPos.y;
 							c.focus();
-							applet.collisions.add(c);
+							applet.collidableObjects.add(c);
 							break;
 						case BACKGROUND :
 							BackgroundObject bObject = new BackgroundObject(applet, id, 0, 0);

@@ -12,7 +12,7 @@ public class MagicSourceObject extends GameObject {
 	public MagicSourceObject(SideScroller a) {
 		super(a);
 
-		type = "OBJECT";
+		type = type.OBJECT;
 		id = "MAGIC_SOURCE";
 
 		// Default image

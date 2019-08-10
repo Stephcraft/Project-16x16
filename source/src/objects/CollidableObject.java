@@ -3,7 +3,7 @@ package objects;
 import processing.core.*;
 import sidescroller.SideScroller;
 
-public class Collision extends EditableObject {
+public class CollidableObject extends EditableObject {
 
 	private PImage image;
 
@@ -12,21 +12,21 @@ public class Collision extends EditableObject {
 	private float pixelOffsetX = 0;
 	private float pixelOffsetY = 0;
 
-	public Collision(SideScroller a) {
+	public CollidableObject(SideScroller a) {
 		super(a);
 
 		flag = "";
-		type = "COLLISION";
+		type = type.COLLISION;
 		pos = new PVector(0, 0);
 	}
 
-	public Collision(SideScroller a, int w, int h, int x, int y, boolean ch) {
+	public CollidableObject(SideScroller a, int w, int h, int x, int y, boolean ch) {
 		this(a, w, h, x, y);
 
 		child = ch;
 	}
 
-	public Collision(SideScroller a, int w, int h, int x, int y) {
+	public CollidableObject(SideScroller a, int w, int h, int x, int y) {
 		this(a);
 
 		// Get From Game Graphics Image
@@ -35,7 +35,7 @@ public class Collision extends EditableObject {
 		height = h;
 	}
 
-	public Collision(SideScroller a, String t, int x, int y) {
+	public CollidableObject(SideScroller a, String t, int x, int y) {
 		this(a);
 
 		// Get From Game Graphics Image

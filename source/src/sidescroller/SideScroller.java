@@ -12,7 +12,7 @@ import javafx.scene.canvas.Canvas;
 import javafx.stage.Stage;
 
 import objects.BackgroundObject;
-import objects.Collision;
+import objects.CollidableObject;
 import objects.GameObject;
 
 import processing.core.PApplet;
@@ -66,7 +66,7 @@ public class SideScroller extends PApplet {
 	public Player player;
 
 	// World Objects
-	public ArrayList<Collision> collisions;
+	public ArrayList<CollidableObject> collidableObjects;
 	public ArrayList<BackgroundObject> backgroundObjects;
 	public ArrayList<GameObject> gameObjects;
 	public ArrayList<ProjectileObject> projectileObjects;
@@ -151,7 +151,7 @@ public class SideScroller extends PApplet {
 
 		// Create ArrayList
 		keys = new HashSet<Integer>();
-		collisions = new ArrayList<Collision>();
+		collidableObjects = new ArrayList<CollidableObject>();
 		backgroundObjects = new ArrayList<BackgroundObject>();
 		gameObjects = new ArrayList<GameObject>();
 		projectileObjects = new ArrayList<ProjectileObject>();
@@ -193,7 +193,6 @@ public class SideScroller extends PApplet {
 
 		// Load Options
 		Options.load();
-		Options.save();
 
 		// Create All Graphics
 		gameGraphics.load();
@@ -204,12 +203,9 @@ public class SideScroller extends PApplet {
 		// Create Player
 		player = new Player(this);
 		player.load(graphicsSheet);
-		player.pos.x = 0;
-		player.pos.y = -100;
+		player.pos.x = 0; // // TODO set to spawn loc
+		player.pos.y = -100; // // TODO set to spawn loc
 	}
-
-	public float fc = 0;
-	public float fc2 = 0;
 
 	/**
 	 * draw is called once per frame and is the game loop. Any update or displaying

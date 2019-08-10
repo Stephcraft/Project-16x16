@@ -18,7 +18,9 @@ public class EditableObject extends PClass {
 
 	// Image data
 	public String id;
-	public String type;
+	
+	enum type {COLLISION, BACKGROUND, OBJECT}
+	protected type type;
 
 	// Focus
 	public boolean focus;
@@ -112,21 +114,23 @@ public class EditableObject extends PClass {
 		}
 		
 		if (applet.mouseReleaseEvent) {
-			focusX = false;
-			focusY = false;
+			focusX = false; // defocus move arrows
+			focusY = false; // defocus move arrows
 			focusM = false;
+//			focus = false;
+//			scene.focusedOnObject = false;
 		}
 		
 		// Focus Event
 		if (applet.mousePressEvent) {
 			if (mouseHover()) { // Focus Enable
-				if (!scene.focusedOnObject) {
+				if (scene.focusedObject == null) { // TODO
 					focus = true;
-					scene.focusedOnObject = true;
+					scene.focusedObject = this;
 				}
 			} else {
-				if (!mouseHoverX() && !mouseHoverY() && focus) { // Focus Disable
-					scene.focusedOnObject = false;
+				if (focus && !mouseHoverX() && !mouseHoverY() ) { // Focus Disable
+					scene.focusedObject = null;
 					focus = false;
 					focusX = false;
 					focusY = false;
@@ -145,14 +149,14 @@ public class EditableObject extends PClass {
 					focusM = false;
 					editOffsetX = (int) pos.x + 100 - applet.getMouseX();
 					editOffsetY = (int) pos.y - applet.getMouseY();
-					scene.focusedOnObject = true;
+					scene.focusedObject = this;
 				} else if (mouseHoverY()) {
 					focusY = true;
 					focusX = false;
 					focusM = false;
 					editOffsetX = (int) pos.x - applet.getMouseX();
 					editOffsetY = (int) pos.y - 100 - applet.getMouseY();
-					scene.focusedOnObject = true;
+					scene.focusedObject = this;
 				} else if (mouseHover()) {
 					focusM = true;
 					editOffsetX = (int) pos.x - applet.getMouseX();
@@ -166,18 +170,18 @@ public class EditableObject extends PClass {
 
 					// Duplicate Instance
 					switch (type) {
-						case "COLLISION" :
-							applet.collisions.add(new Collision(applet, id, 0, 0));
-							applet.collisions.get(applet.collisions.size() - 1).focus = true;
-							applet.collisions.get(applet.collisions.size() - 1).focusX = focusX;
-							applet.collisions.get(applet.collisions.size() - 1).focusY = focusY;
-							applet.collisions.get(applet.collisions.size() - 1).pos.x = pos.x;
-							applet.collisions.get(applet.collisions.size() - 1).pos.y = pos.y;
-							applet.collisions.get(applet.collisions.size() - 1).editOffsetX = editOffsetX;
-							applet.collisions.get(applet.collisions.size() - 1).editOffsetY = editOffsetY;
+						case COLLISION :
+							applet.collidableObjects.add(new CollidableObject(applet, id, 0, 0));
+							applet.collidableObjects.get(applet.collidableObjects.size() - 1).focus = true;
+							applet.collidableObjects.get(applet.collidableObjects.size() - 1).focusX = focusX;
+							applet.collidableObjects.get(applet.collidableObjects.size() - 1).focusY = focusY;
+							applet.collidableObjects.get(applet.collidableObjects.size() - 1).pos.x = pos.x;
+							applet.collidableObjects.get(applet.collidableObjects.size() - 1).pos.y = pos.y;
+							applet.collidableObjects.get(applet.collidableObjects.size() - 1).editOffsetX = editOffsetX;
+							applet.collidableObjects.get(applet.collidableObjects.size() - 1).editOffsetY = editOffsetY;
 							applet.keyPressEvent = false;
 							break;
-						case "OBJECT" :
+						case OBJECT :
 							applet.gameObjects.add(applet.gameGraphics.getObjectClass(id));
 							applet.gameObjects.get(applet.gameObjects.size() - 1).focus = true;
 							applet.gameObjects.get(applet.gameObjects.size() - 1).focusX = focusX;
@@ -195,6 +199,8 @@ public class EditableObject extends PClass {
 							}
 
 							applet.keyPressEvent = false;
+							break;
+						default:
 							break;
 					}
 
@@ -244,7 +250,7 @@ public class EditableObject extends PClass {
 	}
 
 	private boolean mouseHover() {
-		if (applet.getMouseX() < 400 && applet.getMouseY() < 100) { // Over Inventory Bar
+		if (applet.mouseX < 400 && applet.mouseY < 100) { // Over Inventory Bar
 			return false;
 		}
 		return util.hover(pos.x, pos.y, width, height);

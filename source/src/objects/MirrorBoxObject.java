@@ -21,7 +21,7 @@ public class MirrorBoxObject extends GameObject {
 
 		direction = 0;
 
-		type = "OBJECT";
+		type = type.OBJECT;
 		id = "MIRROR_BOX";
 
 		// Default image
@@ -30,9 +30,9 @@ public class MirrorBoxObject extends GameObject {
 		width = 64;
 		height = 64;
 
-		collision = new Collision(applet, 64, 64, 0, 0, true);
+		collision = new CollidableObject(applet, 64, 64, 0, 0, true);
 		collision.flag = "TRANSPARENT_BULLET";
-		applet.collisions.add(collision);
+		applet.collidableObjects.add(collision);
 	}
 
 	@Override
