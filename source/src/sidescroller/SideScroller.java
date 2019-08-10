@@ -40,6 +40,8 @@ public class SideScroller extends PApplet {
 
 	public static final String LEVEL = "Assets/Storage/Game/Maps/gg-2.dat";
 	public static final boolean DEBUG = true;
+	public static final boolean SNAP = true; // snap objects to grid when moving; located here for ease of access
+	public static int snapSize;
 
 	// Image Resources
 	public PImage graphicsSheet;
@@ -126,6 +128,8 @@ public class SideScroller extends PApplet {
 	@Override
 	public void setup() {
 
+		snapSize = SNAP ? 32 : 1; // global snap step
+
 		noSmooth();
 
 		// Start Graphics
@@ -138,7 +142,7 @@ public class SideScroller extends PApplet {
 
 		// Setup DM
 		DM.setup(this); // what is this?
-		
+
 		AnimationComponent.applet = this;
 
 		// Create Option Class
@@ -430,7 +434,8 @@ public class SideScroller extends PApplet {
 		text("[" + player.animation.name + "]", width - ip, lineOffset * 2 + yOffset);
 		text("[" + round(player.animation.getFrame()) + " / " + player.animation.getAnimLength() + "]", width - ip,
 				lineOffset * 3 + yOffset);
-		text("[" + (player.flying ? "FLY" : player.attack ? "ATT" : "DASH") + "]", width - ip, lineOffset * 4 + yOffset);
+		text("[" + (player.flying ? "FLY" : player.attack ? "ATT" : "DASH") + "]", width - ip,
+				lineOffset * 4 + yOffset);
 		text("[" + camera.getCameraPosition() + "]", width - ip, lineOffset * 5 + yOffset);
 		text("[" + String.format("%.2f", camera.getZoomScale()) + "]", width - ip, lineOffset * 6 + yOffset);
 		text("[" + round(degrees(camera.getCameraRotation())) + "]", width - ip, lineOffset * 7 + yOffset);

@@ -131,6 +131,15 @@ public class Util {
 		return (applet.getMouseX() > x - w / 2 && applet.getMouseX() < x + w / 2 && applet.getMouseY() > y - h / 2
 				&& applet.getMouseY() < y + h / 2);
 	}
+	
+	/**
+	 * Rounds n to the nearest x.
+	 * @param n number to round
+	 * @param x 
+	 */
+	public static float roundToNearest(float n, float x) {
+		return Math.round(n/x)*x;
+	}
 
 	/**
 	 * Writes data to file.

@@ -5,6 +5,7 @@ import processing.core.PVector;
 import scene.SceneMapEditor;
 import sidescroller.PClass;
 import sidescroller.SideScroller;
+import sidescroller.Util;
 
 /**
  * Extends {@link PClass}.
@@ -18,8 +19,11 @@ public class EditableObject extends PClass {
 
 	// Image data
 	public String id;
-	
-	enum type {COLLISION, BACKGROUND, OBJECT}
+
+	enum type {
+		COLLISION, BACKGROUND, OBJECT
+	}
+
 	protected type type;
 
 	// Focus
@@ -112,24 +116,23 @@ public class EditableObject extends PClass {
 		if (child) {
 			return;
 		}
-		
+
 		if (applet.mouseReleaseEvent) {
 			focusX = false; // defocus move arrows
 			focusY = false; // defocus move arrows
 			focusM = false;
-//			focus = false;
-//			scene.focusedOnObject = false;
+			return;
 		}
-		
+
 		// Focus Event
 		if (applet.mousePressEvent) {
 			if (mouseHover()) { // Focus Enable
-				if (scene.focusedObject == null) { // TODO
+				if (scene.focusedObject == null) {
 					focus = true;
 					scene.focusedObject = this;
 				}
 			} else {
-				if (focus && !mouseHoverX() && !mouseHoverY() ) { // Focus Disable
+				if (focus && !mouseHoverX() && !mouseHoverY()) { // Focus Disable
 					scene.focusedObject = null;
 					focus = false;
 					focusX = false;
@@ -138,10 +141,8 @@ public class EditableObject extends PClass {
 				}
 			}
 		}
-
-		// When Focused
-		if (focus) {
-			// Focus Arrow Event
+		
+		if (focus) { // When Focused
 			if (applet.mousePressEvent) {
 				if (mouseHoverX()) {
 					focusX = true;
@@ -165,62 +166,55 @@ public class EditableObject extends PClass {
 			}
 
 			// Duplicate Object Shift
-			if (applet.mousePressed) {
-				if (applet.keyPressEvent && applet.keyPress(16)) {
-
-					// Duplicate Instance
+				if (applet.keyPressEvent && applet.keyPress(SideScroller.SHIFT)) {
+					EditableObject copy; // Duplicate Instance
 					switch (type) {
 						case COLLISION :
-							applet.collidableObjects.add(new CollidableObject(applet, id, 0, 0));
-							applet.collidableObjects.get(applet.collidableObjects.size() - 1).focus = true;
-							applet.collidableObjects.get(applet.collidableObjects.size() - 1).focusX = focusX;
-							applet.collidableObjects.get(applet.collidableObjects.size() - 1).focusY = focusY;
-							applet.collidableObjects.get(applet.collidableObjects.size() - 1).pos.x = pos.x;
-							applet.collidableObjects.get(applet.collidableObjects.size() - 1).pos.y = pos.y;
-							applet.collidableObjects.get(applet.collidableObjects.size() - 1).editOffsetX = editOffsetX;
-							applet.collidableObjects.get(applet.collidableObjects.size() - 1).editOffsetY = editOffsetY;
-							applet.keyPressEvent = false;
+							copy = new CollidableObject(applet, id, 0, 0);
+							copy.focus = true;
+							copy.focusX = focusX;
+							copy.focusY = focusY;
+							copy.pos = pos.copy();
+							copy.editOffsetX = editOffsetX;
+							copy.editOffsetY = editOffsetY;
+							applet.collidableObjects.add((CollidableObject) copy);
 							break;
 						case OBJECT :
-							applet.gameObjects.add(applet.gameGraphics.getObjectClass(id));
-							applet.gameObjects.get(applet.gameObjects.size() - 1).focus = true;
-							applet.gameObjects.get(applet.gameObjects.size() - 1).focusX = focusX;
-							applet.gameObjects.get(applet.gameObjects.size() - 1).focusY = focusY;
-							applet.gameObjects.get(applet.gameObjects.size() - 1).pos.x = pos.x;
-							applet.gameObjects.get(applet.gameObjects.size() - 1).pos.y = pos.y;
-							applet.gameObjects.get(applet.gameObjects.size() - 1).editOffsetX = editOffsetX;
-							applet.gameObjects.get(applet.gameObjects.size() - 1).editOffsetY = editOffsetY;
-
+							copy = applet.gameGraphics.getObjectClass(id);
+							copy.focus = true;
+							copy.focusX = focusX;
+							copy.focusY = focusY;
+							copy.pos.x = pos.x;
+							copy.pos.y = pos.y;
+							copy.editOffsetX = editOffsetX;
+							copy.editOffsetY = editOffsetY;
+							applet.gameObjects.add((GameObject) copy);
 							switch (id) {
 								case "MIRROR_BOX" :
 									((MirrorBoxObject) applet.gameObjects.get(applet.gameObjects.size()
 											- 1)).direction = ((MirrorBoxObject) this).direction;
 									break;
 							}
-
-							applet.keyPressEvent = false;
 							break;
-						default:
+						default :
 							break;
 					}
-
+					applet.keyPressEvent = false;
 					focus = false;
 					focusX = false;
 					focusY = false;
-
 				}
-			}
 
 			// Focus Movement
 			if (focusX) {
-				pos.x = round((applet.getMouseX() + editOffsetX - 100) / 4) * 4;
+				pos.x = Util.roundToNearest(applet.getMouseX() + editOffsetY - 100, SideScroller.snapSize);
 			}
 			if (focusY) {
-				pos.y = round((applet.getMouseY() + editOffsetY + 100) / 4) * 4;
+				pos.y = Util.roundToNearest(applet.getMouseY() + editOffsetY + 100, SideScroller.snapSize);
 			}
 			if (focusM) {
-				pos.x = round((applet.getMouseX() + editOffsetX) / 4) * 4;
-				pos.y = round((applet.getMouseY() + editOffsetY) / 4) * 4;
+				pos = new PVector(Util.roundToNearest(applet.getMouseX() + editOffsetX, SideScroller.snapSize),
+						Util.roundToNearest(applet.getMouseY() + editOffsetY, SideScroller.snapSize));
 			}
 		}
 	}

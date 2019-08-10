@@ -4,13 +4,14 @@ import processing.core.*;
 import sidescroller.GameGraphics.graphicsType;
 import sidescroller.PClass;
 import sidescroller.SideScroller;
+import sidescroller.Util;
 
 public class EditorItem extends PClass {
 
-	public PVector pos;
+	private PVector pos;
 	public boolean focus;
 
-	public PImage image;
+	private PImage image;
 
 	public String id;
 	public graphicsType type;
@@ -40,10 +41,14 @@ public class EditorItem extends PClass {
 
 			if (applet.mouseReleaseEvent) {
 				focus = false;
-				
+
 				if (mode == "CREATE") {
-					PVector realPos = applet.camera.getDispToCoord(new PVector(applet.getMouseX(), applet.getMouseY())); // transform from screen mouse pos to game pos
+					// transform from screen mouse pos to game pos
 					// Create new instance from dragged icon
+
+					PVector realPos = applet.camera
+							.getDispToCoord(new PVector(Util.roundToNearest(applet.getMouseX(), SideScroller.snapSize),
+									Util.roundToNearest(applet.getMouseY(), SideScroller.snapSize)));
 					switch (type) {
 						case COLLISION :
 							CollidableObject c = new CollidableObject(applet, id, 0, 0);
