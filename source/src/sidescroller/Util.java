@@ -131,14 +131,29 @@ public class Util {
 		return (applet.getMouseX() > x - w / 2 && applet.getMouseX() < x + w / 2 && applet.getMouseY() > y - h / 2
 				&& applet.getMouseY() < y + h / 2);
 	}
-	
+
 	/**
 	 * Rounds n to the nearest x.
+	 * 
 	 * @param n number to round
-	 * @param x 
+	 * @param x
 	 */
 	public static float roundToNearest(float n, float x) {
-		return Math.round(n/x)*x;
+		return Math.round(n / x) * x;
+	}
+
+	/**
+	 * Are two PVectors with range of each other? Faster than using
+	 * [{@link PApplet#dist(float, float, float, float) dist()} < range] since this
+	 * doesn't use square-roots.
+	 * 
+	 * @param a    PVector 1
+	 * @param b    PVector 2
+	 * @param dist Range to check
+	 * @return true if the PVectors are within range of each other.
+	 */
+	public static boolean fastInRange(PVector a, PVector b, int dist) {
+		return ((b.x - a.x) * (b.x - a.x)) + ((b.y - a.y) * (b.y - a.y)) < (dist * dist);
 	}
 
 	/**

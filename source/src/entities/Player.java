@@ -6,6 +6,7 @@ import sidescroller.GameGraphics;
 import sidescroller.Options;
 //import sidescroller.PClass;
 import sidescroller.SideScroller;
+import sidescroller.Util;
 
 import java.util.ArrayList;
 
@@ -40,7 +41,7 @@ public final class Player extends EditableObject {
 
 	public float speedX;
 	public float speedY;
-	
+
 	private static final int collisionRange = 145;
 
 	private int speedWalk;
@@ -252,16 +253,13 @@ public final class Player extends EditableObject {
 			applet.noFill();
 			applet.stroke(255, 0, 0);
 			applet.strokeWeight(1);
-			applet.ellipse(pos.x, pos.y, collisionRange*2, collisionRange*2);
+			applet.ellipse(pos.x, pos.y, collisionRange * 2, collisionRange * 2);
 		}
 
 		// All Collision Global Check
 		for (int i = 0; i < applet.collidableObjects.size(); i++) {
 			CollidableObject collision = applet.collidableObjects.get(i);
-
-			// In Player Range
-			if (PApplet.dist(pos.x, pos.y, collision.pos.x, collision.pos.y) < collisionRange) {
-
+            if (Util.fastInRange(pos, collision.pos, collisionRange)) { // In Player Range
 				if (SideScroller.DEBUG) {
 					applet.strokeWeight(2);
 					applet.rect(collision.pos.x, collision.pos.y, collision.width, collision.height);
