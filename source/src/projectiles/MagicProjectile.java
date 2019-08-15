@@ -1,6 +1,6 @@
 package projectiles;
 
-import objects.Collision;
+import objects.CollidableObject;
 import processing.core.PApplet;
 import processing.core.PVector;
 import sidescroller.SideScroller;
@@ -15,14 +15,8 @@ public class MagicProjectile extends ProjectileObject {
 		pos = new PVector(x, y);
 
 		direction = dir;
-
-		// Setup Animation
-		animation.frames = getAnimation("MAGIC::MOVE");
-		animation.loop = true;
-		animation.length = 8;
-		animation.rate = 4;
-		animation.frame = 0;
-		animation.start = 0;
+		
+		animation.changeAnimation(getAnimation("MAGIC::MOVE"), true, 4); // Setup Animation
 
 		speed = 10;
 
@@ -65,12 +59,12 @@ public class MagicProjectile extends ProjectileObject {
 
 	@Override
 	public void update() {
-		image = animation.animate(applet.frameCount, applet.deltaTime);
+		image = animation.animate();
 
 		// Destroy on collide
 		if (!hit) {
-			for (int i = 0; i < applet.collisions.size(); i++) {
-				Collision collision = applet.collisions.get(i);
+			for (int i = 0; i < applet.collidableObjects.size(); i++) {
+				CollidableObject collision = applet.collidableObjects.get(i);
 
 				if (collides(collision) && !collision.flag.equals("TRANSPARENT_BULLET")) {
 					hit = true;
@@ -90,15 +84,10 @@ public class MagicProjectile extends ProjectileObject {
 					}
 
 					// Setup Animation
-					animation.frames = getAnimation("MAGIC::IDLE");
-					animation.loop = true;
-					animation.length = 8;
-					animation.rate = 4;
-					animation.frame = 0;
-					animation.start = 0;
+					animation.changeAnimation(getAnimation("MAGIC::IDLE"), true, 4);
 
 					// Override Animation
-					image = animation.animate(applet.frameCount, applet.deltaTime);
+					image = animation.animate();
 
 				}
 			}
@@ -135,7 +124,7 @@ public class MagicProjectile extends ProjectileObject {
 		}
 	}
 
-	public void hit(Collision collision) {
+	public void hit(CollidableObject collision) {
 		hit = true;
 
 		width = 8 * 4;
@@ -153,14 +142,9 @@ public class MagicProjectile extends ProjectileObject {
 		}
 
 		// Setup Animation
-		animation.frames = getAnimation("MAGIC::IDLE");
-		animation.loop = true;
-		animation.length = 8;
-		animation.rate = 4;
-		animation.frame = 0;
-		animation.start = 0;
+		animation.changeAnimation(getAnimation("MAGIC::IDLE"), true, 4);
 
 		// Override Animation
-		image = animation.animate(applet.frameCount, applet.deltaTime);
+		image = animation.animate();
 	}
 }

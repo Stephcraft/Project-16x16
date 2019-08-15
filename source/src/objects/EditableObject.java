@@ -1,10 +1,11 @@
 package objects;
 
-import processing.core.PGraphics;
+import processing.core.PImage;
 import processing.core.PVector;
 import scene.SceneMapEditor;
 import sidescroller.PClass;
 import sidescroller.SideScroller;
+import sidescroller.Util;
 
 /**
  * Extends {@link PClass}.
@@ -18,27 +19,32 @@ public class EditableObject extends PClass {
 
 	// Image data
 	public String id;
-	public String type;
+
+	enum type {
+		COLLISION, BACKGROUND, OBJECT
+	}
+
+	protected type type;
 
 	// Focus
 	public boolean focus;
-	public boolean focusX;
-	public boolean focusY;
-	public boolean focusM;
+	protected boolean focusX;
+	protected boolean focusY;
+	private boolean focusM;
 
 	public boolean child;
 
 	// Arrows Graphics
-	public PGraphics editArrowX;
-	public PGraphics editArrowY;
-	public PGraphics editArrowXActive;
-	public PGraphics editArrowYActive;
+	private PImage editArrowX;
+	private PImage editArrowY;
+	private PImage editArrowXActive;
+	private PImage editArrowYActive;
 
 	// Map Editor Scene
-	public SceneMapEditor scene;
+	private SceneMapEditor scene;
 
-	int editOffsetX;
-	int editOffsetY;
+	protected int editOffsetX;
+	protected int editOffsetY;
 
 	public EditableObject(SideScroller a) {
 		super(a);
@@ -54,6 +60,10 @@ public class EditableObject extends PClass {
 		editArrowYActive = util.pg(applet.graphicsSheet.get(275, 284, 5, 6), 4);
 	}
 
+	/**
+	 * Draws position edit arrows and bounding box if the object is selected
+	 * (focused) in MODIFY mode.
+	 */
 	public void displayEdit() {
 		// When Focused
 		if (focus) {
@@ -81,26 +91,22 @@ public class EditableObject extends PClass {
 			// Axis X
 			if (focusX) {
 				applet.stroke(255, 213, 63);
-				applet.line(pos.x, pos.y, pos.x + 100,
-						pos.y);
+				applet.line(pos.x, pos.y, pos.x + 100, pos.y);
 				applet.image(editArrowXActive, pos.x + 100, pos.y);
 			} else {
 				applet.stroke(239, 64, 96);
-				applet.line(pos.x, pos.y, pos.x + 100,
-						pos.y);
+				applet.line(pos.x, pos.y, pos.x + 100, pos.y);
 				applet.image(editArrowX, pos.x + 100, pos.y);
 			}
 
 			// Axis Y
 			if (focusY) {
 				applet.stroke(255, 213, 63);
-				applet.line(pos.x, pos.y, pos.x,
-						pos.y - 100);
+				applet.line(pos.x, pos.y, pos.x, pos.y - 100);
 				applet.image(editArrowYActive, pos.x, pos.y - 100);
 			} else {
 				applet.stroke(185, 255, 99);
-				applet.line(pos.x, pos.y, pos.x,
-						pos.y - 100);
+				applet.line(pos.x, pos.y, pos.x, pos.y - 100);
 				applet.image(editArrowY, pos.x, pos.y - 100);
 			}
 		}
@@ -111,17 +117,23 @@ public class EditableObject extends PClass {
 			return;
 		}
 
+		if (applet.mouseReleaseEvent) {
+			focusX = false; // defocus move arrows
+			focusY = false; // defocus move arrows
+			focusM = false;
+			return;
+		}
+
 		// Focus Event
 		if (applet.mousePressEvent) {
-			if (mouseHover()) {
-				// Focus Enable
-				if (!scene.focusedOnObject) {
+			if (mouseHover()) { // Focus Enable
+				if (scene.focusedObject == null) {
 					focus = true;
-					scene.focusedOnObject = true;
+					scene.focusedObject = this;
 				}
 			} else {
-				// Focus Disable
-				if (!mouseHoverX() && !mouseHoverY()) {
+				if (focus && !mouseHoverX() && !mouseHoverY()) { // Focus Disable
+					scene.focusedObject = null;
 					focus = false;
 					focusX = false;
 					focusY = false;
@@ -129,16 +141,8 @@ public class EditableObject extends PClass {
 				}
 			}
 		}
-		if (applet.mouseReleaseEvent) {
-			focusX = false;
-			focusY = false;
-			focusM = false;
-		}
-
-		// When Focused
-		if (focus) {
-
-			// Focus Arrow Event
+		
+		if (focus) { // When Focused
 			if (applet.mousePressEvent) {
 				if (mouseHoverX()) {
 					focusX = true;
@@ -146,14 +150,14 @@ public class EditableObject extends PClass {
 					focusM = false;
 					editOffsetX = (int) pos.x + 100 - applet.getMouseX();
 					editOffsetY = (int) pos.y - applet.getMouseY();
-					scene.focusedOnObject = true;
+					scene.focusedObject = this;
 				} else if (mouseHoverY()) {
 					focusY = true;
 					focusX = false;
 					focusM = false;
 					editOffsetX = (int) pos.x - applet.getMouseX();
 					editOffsetY = (int) pos.y - 100 - applet.getMouseY();
-					scene.focusedOnObject = true;
+					scene.focusedObject = this;
 				} else if (mouseHover()) {
 					focusM = true;
 					editOffsetX = (int) pos.x - applet.getMouseX();
@@ -162,60 +166,55 @@ public class EditableObject extends PClass {
 			}
 
 			// Duplicate Object Shift
-			if (applet.mousePressed) {
-				if (applet.keyPressEvent && applet.keyPress(16)) {
-
-					// Duplicate Instance
+				if (applet.keyPressEvent && applet.keyPress(SideScroller.SHIFT)) {
+					EditableObject copy; // Duplicate Instance
 					switch (type) {
-						case "COLLISION" :
-							applet.collisions.add(new Collision(applet, id, 0, 0));
-							applet.collisions.get(applet.collisions.size() - 1).focus = true;
-							applet.collisions.get(applet.collisions.size() - 1).focusX = focusX;
-							applet.collisions.get(applet.collisions.size() - 1).focusY = focusY;
-							applet.collisions.get(applet.collisions.size() - 1).pos.x = pos.x;
-							applet.collisions.get(applet.collisions.size() - 1).pos.y = pos.y;
-							applet.collisions.get(applet.collisions.size() - 1).editOffsetX = editOffsetX;
-							applet.collisions.get(applet.collisions.size() - 1).editOffsetY = editOffsetY;
-							applet.keyPressEvent = false;
+						case COLLISION :
+							copy = new CollidableObject(applet, id, 0, 0);
+							copy.focus = true;
+							copy.focusX = focusX;
+							copy.focusY = focusY;
+							copy.pos = pos.copy();
+							copy.editOffsetX = editOffsetX;
+							copy.editOffsetY = editOffsetY;
+							applet.collidableObjects.add((CollidableObject) copy);
 							break;
-						case "OBJECT" :
-							applet.gameObjects.add(applet.gameGraphics.getObjectClass(id));
-							applet.gameObjects.get(applet.gameObjects.size() - 1).focus = true;
-							applet.gameObjects.get(applet.gameObjects.size() - 1).focusX = focusX;
-							applet.gameObjects.get(applet.gameObjects.size() - 1).focusY = focusY;
-							applet.gameObjects.get(applet.gameObjects.size() - 1).pos.x = pos.x;
-							applet.gameObjects.get(applet.gameObjects.size() - 1).pos.y = pos.y;
-							applet.gameObjects.get(applet.gameObjects.size() - 1).editOffsetX = editOffsetX;
-							applet.gameObjects.get(applet.gameObjects.size() - 1).editOffsetY = editOffsetY;
-
+						case OBJECT :
+							copy = applet.gameGraphics.getObjectClass(id);
+							copy.focus = true;
+							copy.focusX = focusX;
+							copy.focusY = focusY;
+							copy.pos.x = pos.x;
+							copy.pos.y = pos.y;
+							copy.editOffsetX = editOffsetX;
+							copy.editOffsetY = editOffsetY;
+							applet.gameObjects.add((GameObject) copy);
 							switch (id) {
 								case "MIRROR_BOX" :
 									((MirrorBoxObject) applet.gameObjects.get(applet.gameObjects.size()
 											- 1)).direction = ((MirrorBoxObject) this).direction;
 									break;
 							}
-
-							applet.keyPressEvent = false;
+							break;
+						default :
 							break;
 					}
-
+					applet.keyPressEvent = false;
 					focus = false;
 					focusX = false;
 					focusY = false;
-
 				}
-			}
 
 			// Focus Movement
 			if (focusX) {
-				pos.x = round((applet.getMouseX() + editOffsetX - 100) / 4) * 4;
+				pos.x = Util.roundToNearest(applet.getMouseX() + editOffsetY - 100, SideScroller.snapSize);
 			}
 			if (focusY) {
-				pos.y = round((applet.getMouseY() + editOffsetY + 100) / 4) * 4;
+				pos.y = Util.roundToNearest(applet.getMouseY() + editOffsetY + 100, SideScroller.snapSize);
 			}
 			if (focusM) {
-				pos.x = round((applet.getMouseX() + editOffsetX) / 4) * 4;
-				pos.y = round((applet.getMouseY() + editOffsetY) / 4) * 4;
+				pos = new PVector(Util.roundToNearest(applet.getMouseX() + editOffsetX, SideScroller.snapSize),
+						Util.roundToNearest(applet.getMouseY() + editOffsetY, SideScroller.snapSize));
 			}
 		}
 	}
@@ -224,27 +223,30 @@ public class EditableObject extends PClass {
 		focus = true;
 	}
 
-	// Utility
+	/**
+	 * Is mouse hovering the x-axis slider for the object?
+	 * 
+	 * @return boolean true if mouse hovering.
+	 */
 	private boolean mouseHoverX() {
-		return (applet.getMouseX() > pos.x + 100 - 6 * 4
-				&& applet.getMouseX() < pos.x + 100 + 6 * 4)
+		return (applet.getMouseX() > pos.x + 100 - 6 * 4 && applet.getMouseX() < pos.x + 100 + 6 * 4)
 				&& (applet.getMouseY() > pos.y - 5 * 4 && applet.getMouseY() < pos.y + 5 * 4);
 	}
 
+	/**
+	 * Is mouse hovering the y-axis slider for the object?
+	 * 
+	 * @return boolean true if mouse hovering.
+	 */
 	private boolean mouseHoverY() {
 		return (applet.getMouseX() > pos.x - 6 * 4 && applet.getMouseX() < pos.x + 6 * 4)
-				&& (applet.getMouseY() > pos.y - 100 - 5 * 4
-						&& applet.getMouseY() < pos.y - 100 + 5 * 4);
+				&& (applet.getMouseY() > pos.y - 100 - 5 * 4 && applet.getMouseY() < pos.y - 100 + 5 * 4);
 	}
 
 	private boolean mouseHover() {
-		if (applet.getMouseX() < 400 && applet.getMouseY() < 100) {
+		if (applet.mouseX < 400 && applet.mouseY < 100) { // Over Inventory Bar
 			return false;
-		} // On Inventory Bar
-
-		return (applet.getMouseX() > pos.x - width / 2
-				&& applet.getMouseX() < pos.x + width / 2)
-				&& (applet.getMouseY() > pos.y - height / 2
-						&& applet.getMouseY() < pos.y + height / 2);
+		}
+		return util.hover(pos.x, pos.y, width, height);
 	}
 }

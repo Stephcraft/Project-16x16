@@ -21,7 +21,7 @@ public class MirrorBoxObject extends GameObject {
 
 		direction = 0;
 
-		type = "OBJECT";
+		type = type.OBJECT;
 		id = "MIRROR_BOX";
 
 		// Default image
@@ -30,9 +30,9 @@ public class MirrorBoxObject extends GameObject {
 		width = 64;
 		height = 64;
 
-		collision = new Collision(applet, 64, 64, 0, 0, true);
+		collision = new CollidableObject(applet, 64, 64, 0, 0, true);
 		collision.flag = "TRANSPARENT_BULLET";
-		applet.collisions.add(collision);
+		applet.collidableObjects.add(collision);
 	}
 
 	@Override
@@ -68,7 +68,7 @@ public class MirrorBoxObject extends GameObject {
 	@Override
 	public void update() {
 		if (rotating) {
-			image = animation.animate(applet.frameCount, applet.deltaTime);
+			image = animation.animate();
 		}
 
 		collision.pos = pos;
@@ -82,14 +82,8 @@ public class MirrorBoxObject extends GameObject {
 
 					rotating = true;
 
-					// Setup Animation
-					animation.frames = applet.gameGraphics.getAnimation("MIRROR_BOX::ROTATE");
-					animation.loop = false;
-					animation.length = 7;
-					animation.rate = 1;
-					animation.frame = 0;
-					animation.start = 0;
-					animation.ended = false;
+					// Setup Animation					
+					animation.changeAnimation(applet.gameGraphics.getAnimation("MIRROR_BOX::ROTATE"), false, 1);
 
 					swing.activated = true;
 				}
