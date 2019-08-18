@@ -203,12 +203,17 @@ public final class Camera extends ZoomPan {
 	public void update() {
 		offset = new PVector(applet.width / 2, applet.height / 2);
 
+		if (zoom != zoomTarget) {
+			zoom = PApplet.lerp(zoom, zoomTarget, lerpSpeed);
+			if (PApplet.abs(zoom - zoomTarget) < 0.0025) { //
+				zoom = zoomTarget;
+			}
+		}
+
 		rotation = PApplet.lerp(rotation, rotationTarget, lerpSpeed);
-		zoom = PApplet.lerp(zoom, zoomTarget, lerpSpeed);
 		applet.translate(offset.x, offset.y);
 		applet.rotate(rotation + shakeRotationOffset);
 		applet.translate(-offset.x, -offset.y);
-
 		transform();
 
 		float scale = PApplet.lerp((float) getZoomScaleX(), zoom, lerpSpeed);
@@ -217,15 +222,15 @@ public final class Camera extends ZoomPan {
 
 		if (following && (((deadZoneScreen && !withinScreenDeadZone()) || ((deadZoneWorld && !withinWorldDeadZone()))
 				|| (!deadZoneScreen && !deadZoneWorld)))) {
-			setPanOffset(
-					PApplet.lerp(getPanOffset().x,
-							(-followObject.pos.x - followObjectOffset.x - shakeOffset.x + offset.x) * zoom, lerpSpeed),
+			setPanOffset(PApplet.lerp(getPanOffset().x,
+					((-followObject.pos.x - followObjectOffset.x - shakeOffset.x + offset.x) * zoom), lerpSpeed),
 					PApplet.lerp(getPanOffset().y,
-							(-followObject.pos.y - followObjectOffset.y - shakeOffset.y + offset.y) * zoom, lerpSpeed));
+							((-followObject.pos.y - followObjectOffset.y - shakeOffset.y + offset.y) * zoom),
+							lerpSpeed));
 		} else if (!following) {
 			setPanOffset(
-					PApplet.lerp(getPanOffset().x, (targetPosition.x - shakeOffset.x + offset.x) * zoom, lerpSpeed),
-					PApplet.lerp(getPanOffset().y, (targetPosition.y - shakeOffset.y + offset.y) * zoom, lerpSpeed));
+					PApplet.lerp(getPanOffset().x, ((targetPosition.x - shakeOffset.x + offset.x) * zoom), lerpSpeed),
+					PApplet.lerp(getPanOffset().y, ((targetPosition.y - shakeOffset.y + offset.y) * zoom), lerpSpeed));
 		}
 
 		if (trauma > 0) { // 400 and 0.35 seem suitable values
@@ -385,8 +390,8 @@ public final class Camera extends ZoomPan {
 	}
 
 	/**
-	 * Set camera rotation (the camera rotates around the camera position - not a world
-	 * position).
+	 * Set camera rotation (the camera rotates around the camera position - not a
+	 * world position).
 	 * 
 	 * @param angle Rotation angle (in radians)
 	 */
@@ -468,9 +473,10 @@ public final class Camera extends ZoomPan {
 		logicalPosition = PVector.sub(getPanOffset(), offset); // offset camera to center screen
 		return PApplet.round(-logicalPosition.x) + ", " + PApplet.round(-logicalPosition.y);
 	}
-	
+
 	/**
 	 * Returns clockwise rotation of the camera.
+	 * 
 	 * @return rotation (radians).
 	 */
 	public float getCameraRotation() {

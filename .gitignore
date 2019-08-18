@@ -24,3 +24,7 @@ source/.settings/
 source/.classpath
 /.classpath
 .classpath
+source/.idea
+source/Project-16x16.iml
+source/.project
+source/Assets/options.json

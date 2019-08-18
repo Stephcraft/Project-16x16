@@ -141,6 +141,16 @@ public class Util {
 	public static float roundToNearest(float n, float x) {
 		return Math.round(n / x) * x;
 	}
+	
+	/**
+	 * Round a float to 'n' decimal places.
+	 * @param n number to round
+	 * @param d number of decimal places
+	 * @return rounded float
+	 */
+	public static float roundToNPlaces(float n, int d) {
+		  return Float.parseFloat(String.format("%." + d + "f", n));
+		}
 
 	/**
 	 * Are two PVectors with range of each other? Faster than using
