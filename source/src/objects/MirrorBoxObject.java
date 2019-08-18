@@ -23,16 +23,19 @@ public class MirrorBoxObject extends GameObject {
 		super(a);
 
 		direction = 0;
-		type = "OBJECT";
+
+		type = type.OBJECT;
+
 		id = "MIRROR_BOX";
 		image = applet.gameGraphics.get("MIRROR_BOX");
 
 		width = BOX_W;
 		height = BOX_H;
 
-		collision = new Collision(applet, BOX_W, BOX_H, 0, 0, true);
+
+		collision = new CollidableObject(applet, BOX_W, BOX_H, 0, 0, true);
 		collision.flag = "TRANSPARENT_BULLET";
-		applet.collisions.add(collision);
+		applet.collidableObjects.add(collision);
 	}
 
 	public void display() {
@@ -53,9 +56,8 @@ public class MirrorBoxObject extends GameObject {
 	}
 
 	public void update() {
-		if (rotating)
-			image = animation.animate(applet.frameCount, applet.deltaTime);
-
+		if (rotating) 
+	      image = animation.animate();
 		collision.pos = pos;
 
 		// Change Mirror Box Axis
@@ -65,7 +67,11 @@ public class MirrorBoxObject extends GameObject {
 			if (collidesWithSwing(swing)) {
 				if (!swing.activated) {
 					rotating = true;
-					setAnimation();
+
+
+					// Setup Animation					
+					animation.changeAnimation(applet.gameGraphics.getAnimation("MIRROR_BOX::ROTATE"), false, 1);
+
 					swing.activated = true;
 				}
 			}
@@ -155,18 +161,6 @@ public class MirrorBoxObject extends GameObject {
 		applet.image(image, 0, 0);
 		applet.popMatrix();
 	}
-
-	public void setAnimation() {
-		// Setup Animation
-		animation.frames = applet.gameGraphics.getAnimation("MIRROR_BOX::ROTATE");
-		animation.loop = false;
-		animation.length = 7;
-		animation.rate = 1;
-		animation.frame = 0;
-		animation.start = 0;
-		animation.ended = false;
-	}
-
 	public void bounceProjectile(ProjectileObject projectile, int flyDir, int deflectDir, char axisSwitch) {
 		//Deflect the projectile based on how it hitting the mirror
 		if (projectile.direction == flyDir) {

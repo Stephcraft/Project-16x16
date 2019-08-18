@@ -2,78 +2,98 @@ package components;
 
 import java.util.ArrayList;
 
-import processing.core.PGraphics;
+import processing.core.PImage;
+import sidescroller.SideScroller;
 
 /**
  * The Animation Class
  */
 public class AnimationComponent {
-	public ArrayList<PGraphics> frames;
+	
+	public static SideScroller applet;
 
-	public float frame;
-	public int length;
-
-	public boolean loop;
-
-	public int sx;
-	public int sy;
-	public int swidth;
-	public int sheight;
-	public int cellCount;
-
-	public int rate;
-	public int start;
-
-	public int count;
-
+	private ArrayList<PImage> frames;
+	private boolean loop;
+	private int length;
+	private int rate;
+	private int start;
+	private int firstFrame;
+	private float currentFrame;
 	public String name;
-	public String pName;
-
 	public boolean ended;
 
-	public PGraphics image;
-
 	/**
-	 * This method controls the animation of elements
-	 * @param  frameCount The number of frames in the animation
-	 * @param  dt         The width of the frames
-	 * @return            PGraphics image
+	 * The most simple method to change current animation sequence.
+	 * 
+	 * @param frames PImage frame sequence.
+	 * @param loop   Whether the animation should loop.
+	 * @param rate   Every x frames the next frame is loaded.
 	 */
-	public PGraphics animate(int frameCount, float dt) {
-		try {
-			image = frames.get((int) frame);
-		} catch (Exception e) {
-			// PApplet.println("E : " + frame);
+	public void changeAnimation(ArrayList<PImage> frames, boolean loop, int rate) {
+		if (!frames.equals(this.frames) || ended) { // change animation only if it's a different one.
+			this.frames = frames;
+			this.loop = loop;
+			this.rate = rate;
+			length = frames.size() - 1;
+			start = 0;
+			currentFrame = start;
+			firstFrame = applet.frameCount;
 		}
-
-		if ((int) frame >= length) {
-			if (loop) {
-				frame = start;
-			} else {
-				frame = length;
-				ended = true;
-			}
-		} else {
-			if (frameCount % rate == 0) {
-				frame += dt;
-			}
-		}
-		return image;
 	}
 
 	/**
-	 * Extends the length of the animation
-	 * @param newLength The new length for the animation
+	 * A method to change current animation sequence. Can specify animation frame length.
+	 * @param frames PImage frame sequence.
+	 * @param loop   Whether the animation should loop.
+	 * @param rate   Every x frames the next frame is loaded.
+	 * @param length Set a custom anim length
 	 */
-	public void extendAnimation(int newLength) {
-		length = newLength;
+	public void changeAnimation(ArrayList<PImage> frames, boolean loop, int rate, int length) {
+		if (!frames.equals(this.frames) || ended) { // change animation only if it's a different one.
+			this.frames = frames;
+			this.loop = loop;
+			this.rate = rate;
+			this.length = length;
+			start = 0;
+			currentFrame = start;
+			firstFrame = applet.frameCount;
+		}
+	}
+
+	/**
+	 * This method controls the animation of elements (cycles through frames).
+	 * @return PImage image
+	 */
+	public PImage animate() {
+		
+		PImage frame = frames.get((int) currentFrame);
+
+		if ((applet.frameCount - firstFrame) % rate == 0) {
+			currentFrame += applet.deltaTime;
+			if (currentFrame > length) {
+				if (!loop) {
+					ended = true;
+				}
+				currentFrame = 0;
+			}
+		}
+		return frame;
 	}
 
 	/**
 	 * Retrieves the number of remaining frames
+	 * 
 	 * @return The number of remaining frames as an int
 	 */
 	public int remainingFrames() {
-		return (int) (length - frame);
+		return (int) (length - currentFrame);
+	}
+
+	public float getFrame() {
+		return currentFrame;
+	}
+	
+	public int getAnimLength() {
+		return length;
 	}
 }

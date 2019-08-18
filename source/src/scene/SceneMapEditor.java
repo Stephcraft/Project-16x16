@@ -1,13 +1,16 @@
 package scene;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 
 import objects.EditorItem;
-import objects.Collision;
-
+import objects.CollidableObject;
+import objects.EditableObject;
 import processing.core.*;
 import processing.event.MouseEvent;
+import projectiles.ProjectileObject;
 import scene.components.WorldViewportEditor;
+import sidescroller.GameGraphics.Graphic;
 import sidescroller.SideScroller;
 import ui.Anchor;
 import ui.ScrollBarVertical;
@@ -16,32 +19,32 @@ import windows.SaveLevelWindow;
 public class SceneMapEditor extends PScene {
 
 	// Graphics Slots
-	PGraphics slot;
-	PGraphics slotEditor;
+	private PImage slot;
+	private PImage slotEditor;
 
 	// Graphics Icon
-	PGraphics icon_eye;
-	PGraphics icon_arrow;
-	PGraphics icon_inventory;
-	PGraphics icon_play;
-	PGraphics icon_save;
-	PGraphics icon_eyeActive;
-	PGraphics icon_arrowActive;
-	PGraphics icon_inventoryActive;
-	PGraphics icon_playActive;
-	PGraphics icon_saveActive;
+	private PImage icon_eye;
+	private PImage icon_arrow;
+	private PImage icon_inventory;
+	private PImage icon_play;
+	private PImage icon_save;
+	private PImage icon_eyeActive;
+	private PImage icon_arrowActive;
+	private PImage icon_inventoryActive;
+	private PImage icon_playActive;
+	private PImage icon_saveActive;
 
 	// Windows
-	public SaveLevelWindow window_saveLevel;
+	private SaveLevelWindow window_saveLevel;
 
 	// Editor Item
-	public EditorItem editorItem;
+	private EditorItem editorItem;
 
 	// Editor Viewport
 	public WorldViewportEditor worldViewportEditor;
-	
+
 	// Scroll Bar
-	public ScrollBarVertical scrollBar;
+	private ScrollBarVertical scrollBar;
 
 	public enum Tools {
 		MOVE, MODIFY, INVENTORY, PLAY, SAVE,
@@ -49,13 +52,15 @@ public class SceneMapEditor extends PScene {
 
 	public Tools tool;
 
-	public ArrayList<String> inventory;
+	private ArrayList<String> inventory;
 
-	public boolean focusedOnObject;
+//	public boolean focusedOnObject; // mutex
+
+	public EditableObject focusedObject = null;
 
 	public boolean edit;
 
-	int scroll_inventory;
+	private int scroll_inventory;
 
 	public SceneMapEditor(SideScroller a) {
 		super(a);
@@ -76,7 +81,7 @@ public class SceneMapEditor extends PScene {
 		// Init Editor Components
 		editorItem = new EditorItem(applet);
 		worldViewportEditor = new WorldViewportEditor(applet);
-		
+
 		// Get Slots Graphics
 		slot = util.pg(applet.graphicsSheet.get(289, 256, 20, 21), 4);
 		slotEditor = util.pg(applet.graphicsSheet.get(310, 256, 20, 21), 4);
@@ -96,15 +101,15 @@ public class SceneMapEditor extends PScene {
 
 		// Init Window
 		window_saveLevel = new SaveLevelWindow(applet);
-		
+
 		// Init ScollBar
 		Anchor scrollBarAnchor = new Anchor(applet, -20, 150, 20, 50);
 		scrollBarAnchor.anchorOrigin = Anchor.AnchorOrigin.TopRight;
 		scrollBarAnchor.stretch = Anchor.Stretch.Vertical;
 		scrollBar = new ScrollBarVertical(applet, scrollBarAnchor);
-		
+
 		// Default Scene
-		applet.collisions.add(new Collision(applet, "METAL_WALK_MIDDLE:0", 0, 0));
+		applet.collidableObjects.add(new CollidableObject(applet, "METAL_WALK_MIDDLE:0", 0, 0));
 
 		// Default Tool
 		tool = Tools.MODIFY;
@@ -112,18 +117,22 @@ public class SceneMapEditor extends PScene {
 		util.loadLevel(SideScroller.LEVEL); // TODO change level
 	}
 
+	/**
+	 * Draw scene elements that are below (affected by) the camera.
+	 */
 	@Override
 	public void draw() {
 		background(29, 33, 45);
 
 		applet.noStroke();
 		applet.fill(29, 33, 45);
-//		applet.rect(applet.worldPosition.x, applet.worldPosition.y, applet.worldWidth,
-//				applet.worldHeight); // todo
 
-		displayGrid();
-
-		boolean objectFocus = false;
+		if (tool == Tools.MODIFY) {
+			displayGrid();
+			if (applet.mousePressEvent && focusedObject != null) {
+				focusedObject.updateEdit(); // enforce one item selected at once
+			}
+		}
 
 		// View Background Objects
 		for (int i = 0; i < applet.backgroundObjects.size(); i++) {
@@ -139,40 +148,24 @@ public class SceneMapEditor extends PScene {
 			}
 		}
 
-		// View Collisions
-		for (int i = 0; i < applet.collisions.size(); i++) {
+		// View Collidable objects
+		for (int i = 0; i < applet.collidableObjects.size(); i++) {
 			if (tool == Tools.MODIFY) {
-				applet.collisions.get(i).updateEdit();
-				if (applet.collisions.get(i).focus) {
-					objectFocus = true;
-				}
+				applet.collidableObjects.get(i).updateEdit();
 			}
 
-			applet.collisions.get(i).display();
+			applet.collidableObjects.get(i).display();
 
-			if (applet.collisions.get(i).focus && applet.keyPress(8) && applet.keyPressEvent) {
-				applet.collisions.remove(i);
+			if (applet.collidableObjects.get(i).focus && applet.keyPress(8) && applet.keyPressEvent) {
+				applet.collidableObjects.remove(i);
 				applet.keyPressEvent = false;
 			}
 		}
-		if (tool == Tools.MODIFY) {
-			if (!objectFocus) {
-				focusedOnObject = false;
 
-				// Loop for new Selection
-				for (int i = 0; i < applet.collisions.size(); i++) {
-					applet.collisions.get(i).updateEdit();
-				}
-			}
-		}
-
-		// View Game Objects
+		// View Game Objects (player-interactable objects)
 		for (int i = 0; i < applet.gameObjects.size(); i++) {
 			if (tool == Tools.MODIFY) {
 				applet.gameObjects.get(i).updateEdit();
-				if (applet.gameObjects.get(i).focus) {
-					objectFocus = true;
-				}
 			}
 
 			if (tool == Tools.PLAY) {
@@ -181,64 +174,76 @@ public class SceneMapEditor extends PScene {
 
 			applet.gameObjects.get(i).display();
 
+			if (SideScroller.DEBUG) {
+				applet.strokeWeight(2);
+				applet.noFill();
+				applet.stroke(255, 190, 200);
+				applet.rect(applet.gameObjects.get(i).pos.x, applet.gameObjects.get(i).pos.y,
+						applet.gameObjects.get(i).width, applet.gameObjects.get(i).height);
+				applet.noStroke();
+				applet.fill(255);
+				applet.ellipse(applet.gameObjects.get(i).pos.x, applet.gameObjects.get(i).pos.y, 5, 5);
+				applet.noFill();
+			}
+
 			// Delete
 			if (applet.gameObjects.get(i).focus && applet.keyPress(8) && applet.keyPressEvent) {
 				applet.gameObjects.remove(i);
 				applet.keyPressEvent = false;
 			}
 		}
-		
-		// Editor View
-		if (tool == Tools.MODIFY) {
-			for (int i = 0; i < applet.collisions.size(); i++) {
-				applet.collisions.get(i).displayEdit();
-			}
-			for (int i = 0; i < applet.backgroundObjects.size(); i++) {
-				applet.backgroundObjects.get(i).displayEdit();
-			}
-			for (int i = 0; i < applet.gameObjects.size(); i++) {
-				applet.gameObjects.get(i).displayEdit();
-			}
-		}
-
-		// Editor Object Destination
-		if (tool == Tools.MODIFY) {
-			editorItem.displayDestination();
-		}
 
 		// View Projectiles
-		for (int i = 0; i < applet.projectileObjects.size(); i++) {
-			applet.projectileObjects.get(i).update();
-			applet.projectileObjects.get(i).display();
+		Iterator<ProjectileObject> i = applet.projectileObjects.iterator();
+		while (i.hasNext()) {
+			ProjectileObject o = i.next();
+			if (applet.frameCount - o.spawnTime > 600) {
+				i.remove(); // kill projectile after 10s
+			} else {
+				o.update();
+				o.display();
+			}
 		}
 
-		// View Player
-		if (tool == Tools.PLAY) {
-			applet.player.update();
-			applet.player.display();
-		} else {
-			applet.player.display();
+		switch (tool) {
+			case MODIFY :
+				applet.player.updateEdit();
+				applet.player.displayEdit();
+				editorItem.displayDestination();
+				applet.collidableObjects.forEach(o -> o.displayEdit());
+				applet.backgroundObjects.forEach(o -> o.displayEdit());
+				applet.gameObjects.forEach(o -> o.displayEdit());
+				break;
+			case PLAY :
+				applet.player.update();
+				break;
+			case MOVE :
+			case INVENTORY :
+			case SAVE :
+				break;
+			default :
+				break;
 		}
-		if (tool == Tools.PLAY) {
-			applet.player.updateEdit();
-			applet.player.displayEdit();
-		}
-		
+		applet.player.display();
+
 		// View Viewport Editor
-		worldViewportEditor.updateEditor();
-		worldViewportEditor.displayEditor();
+//		worldViewportEditor.updateEditor(); // TODO
+//		worldViewportEditor.displayEditor(); // TODO
 	}
 
+	/**
+	 * Draw scene elements that are above the camera.
+	 */
 	public void drawUI() {
 
-		// GUI Slots
+		// 6 GUI Slots
 		if (tool != Tools.INVENTORY) {
 			for (int i = 0; i < 6; i++) {
 				// Display Slot
 				image(slot, 20 * 4 / 2 + 10 + i * (20 * 4 + 10), 20 * 4 / 2 + 10);
 
 				// Display Item
-				PGraphics img = applet.gameGraphics.get(inventory.get(i));
+				PImage img = applet.gameGraphics.get(inventory.get(i));
 				applet.image(img, 20 * 4 / 2 + 10 + i * (20 * 4 + 10), 20 * 4 / 2 + 10, img.width * (float) 0.5,
 						img.height * (float) 0.5);
 
@@ -255,7 +260,7 @@ public class SceneMapEditor extends PScene {
 				}
 			}
 		}
-		
+
 		// GUI Icons
 		if (tool == Tools.MOVE || (util.hover(40, 120, 36, 36) && tool != Tools.SAVE && tool != Tools.INVENTORY)) {
 			if (util.hover(40, 120, 36, 36) && applet.mousePressEvent) {
@@ -301,31 +306,24 @@ public class SceneMapEditor extends PScene {
 			image(icon_save, 90 + 48 * 3, 120);
 		}
 
-		// GUI Editor Object
-		if (tool == Tools.MODIFY) {
-			editorItem.update();
-			editorItem.display();
-		}
-
-		// Display Inventory
-		if (tool == Tools.INVENTORY) {
-			displayCreativeInventory();
-		}
-
-		// Windows
-		if (tool == Tools.SAVE) {
-			window_saveLevel.update();
-			window_saveLevel.display();
-		}
-
-		// Move Tool
-		if (tool == Tools.MOVE) {
-			if (applet.mousePressed) {
-//				applet.originTargetX += applet.pmouseX - applet.getMouseX();
-//				applet.originTargetY += applet.pmouseY - applet.getMouseY();
-//				applet.originX = applet.originTargetX;
-//				applet.originY = applet.originTargetY;
-			}
+		switch (tool) {
+			case INVENTORY :
+				displayCreativeInventory();
+				break;
+			case MODIFY :
+				editorItem.update();
+				editorItem.display();
+				break;
+			case MOVE :
+				break;
+			case PLAY :
+				break;
+			case SAVE :
+				window_saveLevel.update();
+				window_saveLevel.display();
+				break;
+			default :
+				break;
 		}
 
 		// Change tool;
@@ -343,7 +341,7 @@ public class SceneMapEditor extends PScene {
 				}
 				if (applet.keyPress(51)) {
 					tool = Tools.INVENTORY;
-					editorItem.setMode("ITEM");
+					editorItem.setMode("CREATE");
 					editorItem.focus = false;
 					scroll_inventory = 0;
 				}
@@ -383,16 +381,16 @@ public class SceneMapEditor extends PScene {
 		// Display Editor Mode Items
 		int x = 0;
 		int y = 1;
-		for (int i = 0; i < applet.gameGraphics.graphics.size(); i++) {
-			if (i % 6 == 0) {
+		int index = 0;
+		for (Graphic g : applet.gameGraphics.graphics.values()) {
+			if (index % 6 == 0) { // show 6 items per row
 				x = 0;
 				y++;
 			} else {
 				x++;
 			}
 			applet.image(slotEditor, 20 * 4 / 2 + 10 + x * (20 * 4 + 10), y * (20 * 4 + 10) + scroll_inventory);
-
-			PGraphics img = applet.gameGraphics.graphics.get(i).image;
+			PImage img = g.image;
 			if (img.width > 20 * 4 || img.height > 20 * 4) {
 				applet.image(img, 20 * 4 / 2 + 10 + x * (20 * 4 + 10), y * (20 * 4 + 10) + scroll_inventory,
 						img.width / 4, img.height / 4);
@@ -409,21 +407,22 @@ public class SceneMapEditor extends PScene {
 					if (applet.getMouseX() > xx - (20 * 4) / 2 && applet.getMouseX() < xx + (20 * 4) / 2
 							&& applet.getMouseY() > yy - (20 * 4) / 2 && applet.getMouseY() < yy + (20 * 4) / 2) {
 						editorItem.focus = true;
-						editorItem.setTile(applet.gameGraphics.graphics.get(i).name);
+						editorItem.setTile(g.name);
 					}
 				}
 			}
+			index++;
 		}
-		
+
 		// Display ScrollBar
 		scrollBar.display();
 		scrollBar.update();
-		scroll_inventory = (int) PApplet.map(scrollBar.barLocation, 1, 0,  -getInventorySize() + applet.height - 8, 0);
-		
-		// Display Top Bar
-		applet.noStroke();
-		applet.fill(29, 33, 45);
-		applet.rect(applet.width / 2, 50, applet.width, 100);
+		scroll_inventory = (int) PApplet.map(scrollBar.barLocation, 1, 0, -getInventorySize() + applet.height - 8, 0);
+
+		// Display Top Bar TODO
+//		applet.noStroke();
+//		applet.fill(29, 33, 45);
+//		applet.rect(applet.width / 2, 50, applet.width, 100);
 
 		// Display Line Separator
 		applet.strokeWeight(4);
@@ -436,7 +435,7 @@ public class SceneMapEditor extends PScene {
 			image(slot, 20 * 4 / 2 + 10 + i * (20 * 4 + 10), 20 * 4 / 2 + 10);
 
 			// Display Item
-			PGraphics img = applet.gameGraphics.get(inventory.get(i));
+			PImage img = applet.gameGraphics.get(inventory.get(i));
 			applet.image(img, 20 * 4 / 2 + 10 + i * (20 * 4 + 10), 20 * 4 / 2 + 10, img.width * (float) 0.5,
 					img.height * (float) 0.5);
 
@@ -457,28 +456,15 @@ public class SceneMapEditor extends PScene {
 		editorItem.display();
 	}
 
-	private void displayGrid() {// world grid
-		applet.strokeWeight(1);
+	private void displayGrid() {// world edit grid
+		applet.strokeWeight(2);
 		applet.stroke(50);
-		int x = 0;
-		int y = 0;
-		int l = applet.width / (16 * 4) * applet.height / (16 * 4);
-		for (int i = 0; i < l; i++) {
-
-			x++;
-			if (i % applet.height / (16 * 4) == 0) {
-				y++;
-				x = 0;
-			}
-//			applet.line(x * (4 * 16) - (applet.originX % (16 * 4)) - ((4 * 16) / 2), 0,
-//					x * (4 * 16) - (applet.originX % (16 * 4)) - ((4 * 16) / 2), applet.height);
-//			applet.line(0, y * (4 * 16) - (applet.originY % (16 * 4)) - ((4 * 16) / 2), applet.width,
-//					y * (4 * 16) - (applet.originY % (16 * 4)) - ((4 * 16) / 2)); // todo
-			
-			applet.line(x * (4 * 16) - (0 % (16 * 4)) - ((4 * 16) / 2), 0,
-					x * (4 * 16) - (0 % (16 * 4)) - ((4 * 16) / 2), applet.height);
-			applet.line(0, y * (4 * 16) - (0 % (16 * 4)) - ((4 * 16) / 2), applet.width,
-					y * (4 * 16) - (0 % (16 * 4)) - ((4 * 16) / 2)); // todo
+		final int xOffset = 32; // to align with rectMode(CENTER)
+		final int yOffset = 32; // to align with rectMode(CENTER)
+		final int l = 6400;
+		for (int i = -l; i < l; i += 64) {
+			applet.line(-l, i + yOffset, l, i + yOffset); // horizontal
+			applet.line(i + xOffset, -l, i + xOffset, l); // vertical
 		}
 	}
 
@@ -500,7 +486,8 @@ public class SceneMapEditor extends PScene {
 		} else {
 			if (tool == Tools.INVENTORY) {
 				scrollBar.mouseWheel(event);
-				scroll_inventory = (int) PApplet.map(scrollBar.barLocation, 1, 0, -getInventorySize() + applet.height - 8, 0);
+				scroll_inventory = (int) PApplet.map(scrollBar.barLocation, 1, 0,
+						-getInventorySize() + applet.height - 8, 0);
 			}
 		}
 	}

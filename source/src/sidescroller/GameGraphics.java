@@ -1,27 +1,35 @@
 package sidescroller;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import objects.GameObject;
 import objects.MagicSourceObject;
 import objects.MirrorBoxObject;
+
 import processing.core.*;
 
+/**
+ * Packages graphics from the {@link SideScroller#graphicsSheet sprite sheet}
+ * into sprites associated with an identifier.
+ */
 public class GameGraphics extends PClass {
 
-	public ArrayList<Graphic> graphics;
-	public ArrayList<AnimationGraphic> animations;
+	public HashMap<String, Graphic> graphics;
+	public HashMap<String, ArrayList<PImage>> animations;
+
+	public enum graphicsType {
+		COLLISION, BACKGROUND, OBJECT, ENTITY;
+	}
 
 	public GameGraphics(SideScroller a) {
 		super(a);
-
-		graphics = new ArrayList<Graphic>();
-		animations = new ArrayList<AnimationGraphic>();
+		graphics = new HashMap<String, Graphic>();
+		animations = new HashMap<String, ArrayList<PImage>>();
 	}
 
 	// Main Function To Load Graphics
 	public void load() {
-
 		// Collisions Graphics
 		gc("BOX", 360, 32, 16, 16);
 
@@ -122,37 +130,19 @@ public class GameGraphics extends PClass {
 		// ga("PLAYER::ATTACK", 392,168, 20,23, 7, "Y");
 	}
 
-	// Get PGraphics Form ID
-	public PGraphics get(String id) {
-		for (int i = 0; i < graphics.size(); i++) {
-			if (graphics.get(i).name.equals(id)) {
-				return graphics.get(i).image;
-			}
-		}
-		println("<SideScroller> Error while loading a null image, GameGraphics > get(String id)");
-		return null;
+	// Get PImage From ID
+	public PImage get(String id) {
+		return graphics.get(id).image;
 	}
 
-	// Get Type Form ID
-	public String getType(String id) {
-		for (int i = 0; i < graphics.size(); i++) {
-			if (graphics.get(i).name.equals(id)) {
-				return graphics.get(i).type;
-			}
-		}
-		println("<SideScroller> Error while loading a null image, GameGraphics > getType(String id)");
-		return null;
+	// Get Type From ID
+	public graphicsType getType(String id) {
+		return graphics.get(id).type;
 	}
 
-	// Get Animation PGraphics ArrayList
-	public ArrayList<PGraphics> getAnimation(String id) {
-		for (int i = 0; i < animations.size(); i++) {
-			if (animations.get(i).name.equals(id)) {
-				return animations.get(i).frames;
-			}
-		}
-		println("<SideScroller> Error while loading a null image, GameGraphics > getAnimation(String id)");
-		return null;
+	// Get Animation PImage ArrayList
+	public ArrayList<PImage> getAnimation(String id) {
+		return animations.get(id);
 	}
 
 	// Get Object Class From ID
@@ -171,89 +161,76 @@ public class GameGraphics extends PClass {
 		return obj;
 	}
 
-	public class Graphic {
-		public String name;
-		public String type;
-		public PGraphics image;
-
-		public Graphic(String n, String t, int x, int y, int w, int h, float s) {
-			name = n;
-			type = t;
-			image = util.pg(applet.graphicsSheet.get(x, y, w, h), s);
-		}
-	}
-
-	public class AnimationGraphic {
-		public String name;
-		public ArrayList<PGraphics> frames;
-
-		public AnimationGraphic(String n, ArrayList<PGraphics> f) {
-			name = n;
-			frames = f;
-		}
-	}
-
 	// Graphics Collision
-	private void gc(String n, int x, int y, int w, int h) {
-		graphics.add(new Graphic(n, "COLLISION", x, y, w, h, 4));
+	private void gc(String name, int x, int y, int w, int h) {
+		graphics.put(name, new Graphic(name, graphicsType.COLLISION, x, y, w, h, 4));
 	}
 
 	// Graphics Background
-	private void gb(String n, int x, int y, int w, int h) {
-		graphics.add(new Graphic(n, "BACKGROUND", x, y, w, h, 4));
+	private void gb(String name, int x, int y, int w, int h) {
+		graphics.put(name, new Graphic(name, graphicsType.BACKGROUND, x, y, w, h, 4));
 	}
 
 	// Graphics Entity
-	private void go(String n, int x, int y, int w, int h) {
-		graphics.add(new Graphic(n, "OBJECT", x, y, w, h, 4));
+	private void go(String name, int x, int y, int w, int h) {
+		graphics.put(name, new Graphic(name, graphicsType.OBJECT, x, y, w, h, 4));
 	}
 
-	// Graphics Entity
-	private void ge(String n, int x, int y, int w, int h) {
-		graphics.add(new Graphic(n, "ENTITY", x, y, w, h, 4));
+	// Graphics Entity - UNUSED
+	private void ge(String name, int x, int y, int w, int h) {
+		graphics.put(name, new Graphic(name, graphicsType.ENTITY, x, y, w, h, 4));
 	}
 
 	// Graphics Animation
-	private void ga(String n, int sx, int sy, int w, int h, int l) {
-		ArrayList<PGraphics> frames = new ArrayList<PGraphics>();
+	private void ga(String n, int sx, int sy, int w, int h, int length) {
+		ArrayList<PImage> frames = new ArrayList<PImage>();
 
-		for (int i = 0; i < l; i++) {
+		for (int i = 0; i < length; i++) {
 			frames.add(util.pg(applet.graphicsSheet.get(sx + (w * i), sy, w, h), 4));
 		}
-
-		animations.add(new AnimationGraphic(n, frames));
+		animations.put(n, frames);
 	}
 
 	// Graphics Animation Y
-	private void ga(String n, int sx, int sy, int w, int h, int l, String mode) {
-		ArrayList<PGraphics> frames = new ArrayList<PGraphics>();
-
-		for (int i = 0; i < l; i++) {
+	private void ga(String n, int sx, int sy, int w, int h, int length, String mode) {
+		ArrayList<PImage> frames = new ArrayList<PImage>();
+		for (int i = 0; i < length; i++) {
 			frames.add(util.pg(applet.graphicsSheet.get(sx, sy + (h * i), w, h), 4));
 		}
-
-		animations.add(new AnimationGraphic(n, frames));
+		animations.put(n, frames);
 	}
 
-	public ArrayList<PGraphics> ga(PImage src, int sx, int sy, int w, int h, int l) {
-		ArrayList<PGraphics> frames = new ArrayList<PGraphics>();
+	public ArrayList<PImage> ga(PImage src, int sx, int sy, int w, int h, int length) {
+		ArrayList<PImage> frames = new ArrayList<PImage>();
 
-		for (int i = 0; i < l; i++) {
+		for (int i = 0; i < length; i++) {
 			frames.add(util.pg(src.get(sx + (w * i), sy, w, h), 4));
 		}
 
 		return frames;
 	}
 
-	public PGraphics g(int x, int y, int w, int h) {
+	public PImage g(int x, int y, int w, int h) {
 		return util.pg(applet.graphicsSheet.get(x, y, w, h), 4);
 	}
 
-	public PGraphics g(int x, int y, int w, int h, float s) {
+	public PImage g(int x, int y, int w, int h, float s) {
 		return util.pg(applet.graphicsSheet.get(x, y, w, h), s);
 	}
 
-	public PGraphics g(PImage src, int x, int y, int w, int h, float s) {
+	public PImage g(PImage src, int x, int y, int w, int h, float s) {
 		return util.pg(src.get(x, y, w, h), s);
+	}
+
+	public class Graphic {
+		public String name;
+		public graphicsType type;
+		public PImage image;
+
+		public Graphic(String name, graphicsType type, int x, int y, int w, int h, float s) {
+			this.name = name;
+			this.type = type;
+			image = util.pg(applet.graphicsSheet.get(x, y, w, h), s);
+		}
 	}
 }

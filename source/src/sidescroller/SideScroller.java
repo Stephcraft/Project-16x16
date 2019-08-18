@@ -3,6 +3,7 @@ package sidescroller;
 import java.util.ArrayList;
 import java.util.HashSet;
 
+import components.AnimationComponent;
 import dm.core.DM;
 
 import entities.Player;
@@ -11,7 +12,7 @@ import javafx.scene.canvas.Canvas;
 import javafx.stage.Stage;
 
 import objects.BackgroundObject;
-import objects.Collision;
+import objects.CollidableObject;
 import objects.GameObject;
 
 import processing.core.PApplet;
@@ -39,6 +40,8 @@ public class SideScroller extends PApplet {
 
 	public static final String LEVEL = "Assets/Storage/Game/Maps/gg-2.dat";
 	public static final boolean DEBUG = true;
+	public static final boolean SNAP = true; // snap objects to grid when moving; located here for ease of access
+	public static int snapSize;
 
 	// Image Resources
 	public PImage graphicsSheet;
@@ -48,7 +51,7 @@ public class SideScroller extends PApplet {
 	public GameGraphics gameGraphics;
 
 	// Font Resources
-	public PFont font_pixel;
+	private PFont font_pixel;
 
 	// Options
 	public Options options;
@@ -65,7 +68,7 @@ public class SideScroller extends PApplet {
 	public Player player;
 
 	// World Objects
-	public ArrayList<Collision> collisions;
+	public ArrayList<CollidableObject> collidableObjects;
 	public ArrayList<BackgroundObject> backgroundObjects;
 	public ArrayList<GameObject> gameObjects;
 	public ArrayList<ProjectileObject> projectileObjects;
@@ -125,6 +128,8 @@ public class SideScroller extends PApplet {
 	@Override
 	public void setup() {
 
+		snapSize = SNAP ? 32 : 1; // global snap step
+
 		noSmooth();
 
 		// Start Graphics
@@ -138,17 +143,19 @@ public class SideScroller extends PApplet {
 		// Setup DM
 		DM.setup(this); // what is this?
 
+		AnimationComponent.applet = this;
+
 		// Create Option Class
 		options = new Options();
 
 		// Default frameRate
-		frameRate(60);
+		frameRate(Options.targetFrameRate);
 
 		deltaTime = 1;
 
 		// Create ArrayList
 		keys = new HashSet<Integer>();
-		collisions = new ArrayList<Collision>();
+		collidableObjects = new ArrayList<CollidableObject>();
 		backgroundObjects = new ArrayList<BackgroundObject>();
 		gameObjects = new ArrayList<GameObject>();
 		projectileObjects = new ArrayList<ProjectileObject>();
@@ -167,7 +174,8 @@ public class SideScroller extends PApplet {
 		camera.setMouseMask(CONTROL);
 		camera.setMinZoomScale(0.3);
 		camera.setMaxZoomScale(3);
-		// camera.setScreenDeadZone(new PVector(width * 0.25f, height * 0.25f), new PVector(width * 0.75f, height * 0.75f)); // example
+		// camera.setScreenDeadZone(new PVector(width * 0.25f, height * 0.25f), new
+		// PVector(width * 0.75f, height * 0.75f)); // example
 		camera.setWorldDeadZone(new PVector(50, 0), new PVector(width * 0.25f, height * 0.25f)); // example
 		camera.setFollowObject(player);
 	}
@@ -189,7 +197,6 @@ public class SideScroller extends PApplet {
 
 		// Load Options
 		Options.load();
-		Options.save();
 
 		// Create All Graphics
 		gameGraphics.load();
@@ -200,12 +207,9 @@ public class SideScroller extends PApplet {
 		// Create Player
 		player = new Player(this);
 		player.load(graphicsSheet);
-		player.pos.x = 0;
-		player.pos.y = -100;
+		player.pos.x = 0; // // TODO set to spawn loc
+		player.pos.y = -100; // // TODO set to spawn loc
 	}
-
-	public float fc = 0;
-	public float fc2 = 0;
 
 	/**
 	 * draw is called once per frame and is the game loop. Any update or displaying
@@ -213,11 +217,11 @@ public class SideScroller extends PApplet {
 	 */
 	@Override
 	public void draw() {
-		surface.setTitle("Sardonyx Prealpha - Frame Rate " + (int) frameRate);
+		surface.setTitle("Sardonyx Prealpha | " + mapEditor.tool.toString() + " | " + frameCount);
 
 		pushMatrix();
-		drawBelowCamera : { // drawn objects enclosed by pushMatrix() and popMatrix() are transformed by the
-							// camera.
+		drawBelowCamera: { // drawn objects enclosed by pushMatrix() and popMatrix() are transformed by the
+			// camera.
 			camera.update();
 			mousePosition = camera.getMouseCoord().copy();
 			mapEditor.draw(); // Handle Draw Scene Method - draws player, world, etc.
@@ -225,7 +229,7 @@ public class SideScroller extends PApplet {
 		}
 		popMatrix();
 
-		drawAboveCamera : { // Where HUD etc should be drawn
+		drawAboveCamera: { // Where HUD etc should be drawn
 			mousePosition = new PVector(mouseX, mouseY);
 			mapEditor.drawUI();
 
@@ -235,7 +239,7 @@ public class SideScroller extends PApplet {
 		}
 
 		// Update DeltaTime
-		if (frameRate < options.targetFrameRate - 20 && frameRate > options.targetFrameRate + 20) {
+		if (frameRate < Options.targetFrameRate - 20 && frameRate > Options.targetFrameRate + 20) {
 			deltaTime = DM.deltaTime;
 		} else {
 			deltaTime = 1;
@@ -246,7 +250,7 @@ public class SideScroller extends PApplet {
 		keyReleaseEvent = false;
 		mousePressEvent = false;
 		mouseReleaseEvent = false;
-		
+
 		rectMode(CENTER);
 
 		if (keys.contains(75)) { // K - for development
@@ -276,7 +280,7 @@ public class SideScroller extends PApplet {
 		keys.remove(event.getKeyCode());
 		keyReleaseEvent = true;
 
-		switch (event.getKey()) { // must be caps
+		switch (event.getKey()) { // must be ALL-CAPS
 			case 'Z' :
 				frameRate(2000);
 				break;
@@ -398,17 +402,18 @@ public class SideScroller extends PApplet {
 	public int getMouseY() {
 		return (int) mousePosition.y;
 	}
-	
+
 	private void displayDebugInfo() {
-		final int lineOffset = 15; // horizontal offset
-		final int yOffset = 0;
-		final int labelPadding = 250; // label -x offset (from screen width)
+		final int lineOffset = 12; // vertical offset
+		final int yOffset = 1;
+		final int labelPadding = 225; // label -x offset (from screen width)
+		final int ip = 1; // infoPadding -xoffset (from screen width)
 		fill(0, 50);
 		noStroke();
 		rectMode(CORNER);
 		rect(width - labelPadding, 0, labelPadding, yOffset + lineOffset * 10);
 		fill(255, 0, 0);
-		textSize(20);
+		textSize(18);
 
 		textAlign(LEFT, TOP);
 		text("Player Pos:", width - labelPadding, lineOffset * 0 + yOffset);
@@ -420,26 +425,28 @@ public class SideScroller extends PApplet {
 		text("Camera Zoom:", width - labelPadding, lineOffset * 6 + yOffset);
 		text("Camera Rot:", width - labelPadding, lineOffset * 7 + yOffset);
 		text("World Mouse:", width - labelPadding, lineOffset * 8 + yOffset);
-		text("Framerate:", width - labelPadding, lineOffset * 9 + yOffset);
+		text("Projectiles:", width - labelPadding, lineOffset * 9 + yOffset);
+		text("Framerate:", width - labelPadding, lineOffset * 10 + yOffset);
 
 		textAlign(RIGHT, TOP);
-		text("[" + round(player.pos.x) + ", " + round(player.pos.y) + "]", width, lineOffset * 0 + yOffset);
-		text("[" + player.speedX + ", " + player.speedY + "]", width, lineOffset * 1 + yOffset);
-		text("[" + player.animation.name + "]", width, lineOffset * 2 + yOffset);
-		text("[" + round(player.animation.frame) + " / " + player.animation.length + "]", width,
+		text("[" + round(player.pos.x) + ", " + round(player.pos.y) + "]", width - ip, lineOffset * 0 + yOffset);
+		text("[" + player.speedX + ", " + player.speedY + "]", width - ip, lineOffset * 1 + yOffset);
+		text("[" + player.animation.name + "]", width - ip, lineOffset * 2 + yOffset);
+		text("[" + round(player.animation.getFrame()) + " / " + player.animation.getAnimLength() + "]", width - ip,
 				lineOffset * 3 + yOffset);
-		text("[" + (player.flying ? "FLY" : player.attack ? "ATT" : "DASH") + "]", width,
+		text("[" + (player.flying ? "FLY" : player.attack ? "ATT" : "DASH") + "]", width - ip,
 				lineOffset * 4 + yOffset);
-		text("[" + camera.getCameraPosition() + "]", width, lineOffset * 5 + yOffset);
-		text("[" + String.format("%.2f", camera.getZoomScale()) + "]", width, lineOffset * 6 + yOffset);
-		text("[" + round(degrees(camera.getCameraRotation())) + "]", width, lineOffset * 7 + yOffset);
-		text("[" + round(camera.getMouseCoord().x) + ", " + round(camera.getMouseCoord().y) + "]", width,
+		text("[" + camera.getCameraPosition() + "]", width - ip, lineOffset * 5 + yOffset);
+		text("[" + String.format("%.2f", camera.getZoomScale()) + "]", width - ip, lineOffset * 6 + yOffset);
+		text("[" + round(degrees(camera.getCameraRotation())) + "]", width - ip, lineOffset * 7 + yOffset);
+		text("[" + round(camera.getMouseCoord().x) + ", " + round(camera.getMouseCoord().y) + "]", width - ip,
 				lineOffset * 8 + yOffset);
+		text("[" + projectileObjects.size() + "]", width - ip, lineOffset * 9 + yOffset);
 		if (frameRate >= 59.5) {
 			fill(0, 255, 0);
 		}
-		text("[" + round(frameRate) + "]", width, lineOffset * 9 + yOffset);
-}
+		text("[" + round(frameRate) + "]", width - ip, lineOffset * 10 + yOffset);
+	}
 
 	@Override
 	public void exit() {
@@ -448,6 +455,6 @@ public class SideScroller extends PApplet {
 
 	// Main
 	public static void main(String args[]) {
-		PApplet.main(new String[]{SideScroller.class.getName()});
+		PApplet.main(new String[] { SideScroller.class.getName() });
 	}
 }

@@ -1,6 +1,6 @@
 package projectiles;
 
-import objects.Collision;
+import objects.CollidableObject;
 import processing.core.PApplet;
 import processing.core.PVector;
 import sidescroller.SideScroller;
@@ -19,21 +19,17 @@ public class MagicProjectile extends ProjectileObject {
 		id = "MAGIC";
 		pos = new PVector(x, y);
 		direction = dir;
+
 		prevDirection = dir; // Used for tracking the prevDirection of the projectile
 		// Setup Animation
-		setAnimation("MAGIC::MOVE", 8, 4);
+		setAnimation("MAGIC::MOVE", 4);
 		speed = PROJECTILE_SPEED;
 		width = FLYING_PROJECTILE_W * SCALE;
 		height = FLYING_PROJECTILE_H * SCALE;
 	}
 
-	public void setAnimation(String anim, int animLength, int animRate) {
-		animation.frames = getAnimation(anim);
-		animation.loop = true;
-		animation.length = animLength;
-		animation.rate = animRate;
-		animation.frame = 0;
-		animation.start = 0;
+	public void setAnimation(String anim, int animRate) {
+		animation.changeAnimation(getAnimation(anim), true, animRate); // Setup Animation
 	}
 
 	public void display() {
@@ -55,12 +51,14 @@ public class MagicProjectile extends ProjectileObject {
 	}
 
 	public void update() {
-		image = animation.animate(applet.frameCount, applet.deltaTime);
+
+		image = animation.animate();
 		if (!hit) {
 			moveProjectile();
 			destroyProjectile();
 		}
 	}
+
 
 	public void destroyProjectile() {
 		for (int i = 0; i < applet.collisions.size(); i++) {
@@ -69,9 +67,9 @@ public class MagicProjectile extends ProjectileObject {
 				hit = true;
 				setWidthHeight(PROJECTILE_IDLE_SIZE * SCALE, PROJECTILE_IDLE_SIZE * SCALE);
 				checkCollision(collision);
-				setAnimation("MAGIC::IDLE", 8, 4);
+				setAnimation("MAGIC::IDLE", 4);
 				// Override Animation
-				image = animation.animate(applet.frameCount, applet.deltaTime);
+			  image = animation.animate();
 			}
 		}
 	}
@@ -97,11 +95,11 @@ public class MagicProjectile extends ProjectileObject {
 		}
 	}
 
-	public void hit(Collision collision) {
+	public void hit(CollidableObject collision) {
 		hit = true;
 		setWidthHeight(PROJECTILE_IDLE_SIZE * SCALE, PROJECTILE_IDLE_SIZE * SCALE);
 		checkCollision(collision);
-		setAnimation("MAGIC::IDLE", 8, 4);
+		setAnimation("MAGIC::IDLE", 4);
 		// Override Animation
 		image = animation.animate(applet.frameCount, applet.deltaTime);
 	}
@@ -129,6 +127,7 @@ public class MagicProjectile extends ProjectileObject {
 			pos.y = collision.pos.y + collision.height / 2 + height / 2;
 		}
 	}
+
 
 	public void setProjectile(float rotate) {
 		applet.pushMatrix();
