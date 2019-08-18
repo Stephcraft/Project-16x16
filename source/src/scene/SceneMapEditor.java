@@ -383,7 +383,7 @@ public class SceneMapEditor extends PScene {
 		int x = 0;
 		int y = 1;
 		int index = 0;
-		tileType[] tiles = {tileType.COLLISION, tileType.BACKGROUND};
+		tileType[] tiles = {tileType.COLLISION, tileType.BACKGROUND, tileType.OBJECT};
 		ArrayList<PImage> inventoryTiles = Tileset.getAllTiles(tiles);
 		for (PImage img : inventoryTiles) {
 			if (index % 6 == 0) { // show 6 items per row
@@ -473,7 +473,7 @@ public class SceneMapEditor extends PScene {
 	private float getInventorySize() {
 		int y = 1;
 
-		tileType[] tiles = {tileType.COLLISION, tileType.BACKGROUND};
+		tileType[] tiles = {tileType.COLLISION, tileType.BACKGROUND, tileType.OBJECT};
 		ArrayList<PImage> inventoryTiles = Tileset.getAllTiles(tiles);
 		for (int i = 0; i < inventoryTiles.size(); i++) {
 			if (i % 6 == 0) {
