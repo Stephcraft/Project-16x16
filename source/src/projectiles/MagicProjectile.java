@@ -61,8 +61,8 @@ public class MagicProjectile extends ProjectileObject {
 
 
 	public void destroyProjectile() {
-		for (int i = 0; i < applet.collisions.size(); i++) {
-			Collision collision = applet.collisions.get(i);
+		for (int i = 0; i < applet.collidableObjects.size(); i++) {
+			CollidableObject collision = applet.collidableObjects.get(i);
 			if (collides(collision) && !collision.flag.equals("TRANSPARENT_BULLET")) {
 				hit = true;
 				setWidthHeight(PROJECTILE_IDLE_SIZE * SCALE, PROJECTILE_IDLE_SIZE * SCALE);
@@ -101,7 +101,7 @@ public class MagicProjectile extends ProjectileObject {
 		checkCollision(collision);
 		setAnimation("MAGIC::IDLE", 4);
 		// Override Animation
-		image = animation.animate(applet.frameCount, applet.deltaTime);
+		image = animation.animate();
 	}
 
 	public void setWidthHeight(int w, int h) {
@@ -109,7 +109,7 @@ public class MagicProjectile extends ProjectileObject {
 		height = h;
 	}
 
-	public void checkCollision(Collision collision) {
+	public void checkCollision(CollidableObject collision) {
 		// LEFT
 		if (pos.x < collision.pos.x ) {
 			pos.x = collision.pos.x - collision.width / 2;
