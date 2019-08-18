@@ -8,6 +8,7 @@ import processing.core.PImage;
 import processing.core.PVector;
 import sidescroller.PClass;
 import sidescroller.SideScroller;
+import sidescroller.Tileset;
 
 public class ProjectileObject extends PClass {
 
@@ -53,7 +54,7 @@ public class ProjectileObject extends PClass {
 								+ collision.height / 2);
 	}
 
-	protected ArrayList<PImage> getAnimation(String id) {
-		return applet.gameGraphics.getAnimation(id);
+	protected ArrayList<PImage> getAnimation(String name) {
+		return Tileset.getAnimation(name);
 	}
 }

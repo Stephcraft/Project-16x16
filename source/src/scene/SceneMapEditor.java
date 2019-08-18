@@ -10,8 +10,9 @@ import processing.core.*;
 import processing.event.MouseEvent;
 import projectiles.ProjectileObject;
 import scene.components.WorldViewportEditor;
-import sidescroller.GameGraphics.Graphic;
 import sidescroller.SideScroller;
+import sidescroller.Tileset;
+import sidescroller.Tileset.tileType;
 import ui.Anchor;
 import ui.ScrollBarVertical;
 import windows.SaveLevelWindow;
@@ -243,7 +244,7 @@ public class SceneMapEditor extends PScene {
 				image(slot, 20 * 4 / 2 + 10 + i * (20 * 4 + 10), 20 * 4 / 2 + 10);
 
 				// Display Item
-				PImage img = applet.gameGraphics.get(inventory.get(i));
+				PImage img = Tileset.getTile(inventory.get(i));
 				applet.image(img, 20 * 4 / 2 + 10 + i * (20 * 4 + 10), 20 * 4 / 2 + 10, img.width * (float) 0.5,
 						img.height * (float) 0.5);
 
@@ -255,7 +256,7 @@ public class SceneMapEditor extends PScene {
 							&& applet.getMouseY() > y - (20 * 4) / 2 && applet.getMouseY() < y + (20 * 4) / 2) {
 						editorItem.focus = true;
 						editorItem.setTile(inventory.get(i));
-						editorItem.type = applet.gameGraphics.getType(inventory.get(i));
+						editorItem.type = Tileset.getTileType(inventory.get(i));
 					}
 				}
 			}
@@ -382,7 +383,9 @@ public class SceneMapEditor extends PScene {
 		int x = 0;
 		int y = 1;
 		int index = 0;
-		for (Graphic g : applet.gameGraphics.graphics.values()) {
+		tileType[] tiles = {tileType.COLLISION, tileType.BACKGROUND};
+		ArrayList<PImage> inventoryTiles = Tileset.getAllTiles(tiles);
+		for (PImage img : inventoryTiles) {
 			if (index % 6 == 0) { // show 6 items per row
 				x = 0;
 				y++;
@@ -390,7 +393,6 @@ public class SceneMapEditor extends PScene {
 				x++;
 			}
 			applet.image(slotEditor, 20 * 4 / 2 + 10 + x * (20 * 4 + 10), y * (20 * 4 + 10) + scroll_inventory);
-			PImage img = g.image;
 			if (img.width > 20 * 4 || img.height > 20 * 4) {
 				applet.image(img, 20 * 4 / 2 + 10 + x * (20 * 4 + 10), y * (20 * 4 + 10) + scroll_inventory,
 						img.width / 4, img.height / 4);
@@ -407,7 +409,7 @@ public class SceneMapEditor extends PScene {
 					if (applet.getMouseX() > xx - (20 * 4) / 2 && applet.getMouseX() < xx + (20 * 4) / 2
 							&& applet.getMouseY() > yy - (20 * 4) / 2 && applet.getMouseY() < yy + (20 * 4) / 2) {
 						editorItem.focus = true;
-						editorItem.setTile(g.name);
+						editorItem.setTile(Tileset.getTileName(Tileset.getTileId(img)));
 					}
 				}
 			}
@@ -435,7 +437,7 @@ public class SceneMapEditor extends PScene {
 			image(slot, 20 * 4 / 2 + 10 + i * (20 * 4 + 10), 20 * 4 / 2 + 10);
 
 			// Display Item
-			PImage img = applet.gameGraphics.get(inventory.get(i));
+			PImage img = Tileset.getTile(inventory.get(i));
 			applet.image(img, 20 * 4 / 2 + 10 + i * (20 * 4 + 10), 20 * 4 / 2 + 10, img.width * (float) 0.5,
 					img.height * (float) 0.5);
 
@@ -471,7 +473,9 @@ public class SceneMapEditor extends PScene {
 	private float getInventorySize() {
 		int y = 1;
 
-		for (int i = 0; i < applet.gameGraphics.graphics.size(); i++) {
+		tileType[] tiles = {tileType.COLLISION, tileType.BACKGROUND};
+		ArrayList<PImage> inventoryTiles = Tileset.getAllTiles(tiles);
+		for (int i = 0; i < inventoryTiles.size(); i++) {
 			if (i % 6 == 0) {
 				y++;
 			} else {

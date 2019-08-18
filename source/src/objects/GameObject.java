@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import components.AnimationComponent;
 import processing.core.PImage;
 import sidescroller.SideScroller;
+import sidescroller.Tileset;
 
 /**
  * Extends {@link EditableObject}.
@@ -33,15 +34,16 @@ public class GameObject extends EditableObject {
 	public void delete() {
 	}
 
-	protected ArrayList<PImage> getAnimation(String id) {
-		return applet.gameGraphics.getAnimation(id);
+	protected ArrayList<PImage> getAnimation(String name) {
+		return Tileset.getAnimation(name);
 	}
 
 	protected PImage g(int x, int y, int w, int h) {
-		return applet.gameGraphics.g(x, y, w, h);
+		return Tileset.getTile(x, y, w, h); 
 	}
-
-	protected PImage g(int x, int y, int w, int h, float s) {
-		return applet.gameGraphics.g(x, y, w, h, s);
+	
+	//TODO: not sure s (size) should still be here
+	protected PImage g(int x, int y, int w, int h, float s) { 
+		return Tileset.getTile(x, y, w, h); 
 	}
 }

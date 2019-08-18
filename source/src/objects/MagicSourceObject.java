@@ -3,6 +3,7 @@ package objects;
 import projectiles.MagicProjectile;
 import projectiles.Swing;
 import sidescroller.SideScroller;
+import sidescroller.Tileset;
 
 /**
  * Extends {@link GameObject}.
@@ -16,10 +17,10 @@ public class MagicSourceObject extends GameObject {
 		id = "MAGIC_SOURCE";
 
 		// Default image
-		image = applet.gameGraphics.get("MAGIC_SOURCE");
+		image = Tileset.getTile("MAGIC_SOURCE");
 
 		// Setup Animation		
-		animation.changeAnimation(applet.gameGraphics.ga(applet.magicSheet, 0, 0, 16, 16, 80), true, 6);
+		animation.changeAnimation(Tileset.getAnimation("MAGIC::IDLE"), true, 6); // TODO: add magicsheet to tileset
 
 		width = 48;
 		height = 48;

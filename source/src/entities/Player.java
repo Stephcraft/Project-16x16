@@ -2,10 +2,10 @@ package entities;
 
 import processing.core.*;
 import projectiles.Swing;
-import sidescroller.GameGraphics;
 import sidescroller.Options;
 //import sidescroller.PClass;
 import sidescroller.SideScroller;
+import sidescroller.Tileset;
 import sidescroller.Util;
 
 import java.util.ArrayList;
@@ -448,7 +448,7 @@ public final class Player extends EditableObject {
 	 * @param id the animation id
 	 * @return the animation being used.
 	 */
-	private ArrayList<PImage> getAnimation(String id) {
-		return applet.gameGraphics.getAnimation(id);
+	private ArrayList<PImage> getAnimation(String name) {
+		return Tileset.getAnimation(name);
 	}
 }
