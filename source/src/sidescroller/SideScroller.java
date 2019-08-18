@@ -50,9 +50,6 @@ public class SideScroller extends PApplet {
 	// Font Resources
 	private PFont font_pixel;
 
-	// Options
-	public Options options;
-
 	// Frame Rate
 	public float deltaTime;
 
@@ -141,9 +138,6 @@ public class SideScroller extends PApplet {
 		DM.setup(this); // what is this?
 
 		AnimationComponent.applet = this;
-
-		// Create Option Class
-		options = new Options();
 
 		// Default frameRate
 		frameRate(Options.targetFrameRate);
