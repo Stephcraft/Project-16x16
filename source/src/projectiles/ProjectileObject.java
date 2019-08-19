@@ -19,7 +19,7 @@ public class ProjectileObject extends PClass {
 	public PImage image;
 
 	public int direction;
-
+	public int prevDirection;
 	public int width;
 	public int height;
 	
