@@ -5,6 +5,7 @@ import projectiles.MagicProjectile;
 import projectiles.ProjectileObject;
 import projectiles.Swing;
 import sidescroller.SideScroller;
+import sidescroller.Tileset;
 
 public class MirrorBoxObject extends GameObject {
 
@@ -27,7 +28,7 @@ public class MirrorBoxObject extends GameObject {
 		type = type.OBJECT;
 
 		id = "MIRROR_BOX";
-		image = applet.gameGraphics.get("MIRROR_BOX");
+		image = Tileset.getTile("MIRROR_BOX");
 
 		width = BOX_W;
 		height = BOX_H;
@@ -70,7 +71,7 @@ public class MirrorBoxObject extends GameObject {
 
 
 					// Setup Animation					
-					animation.changeAnimation(applet.gameGraphics.getAnimation("MIRROR_BOX::ROTATE"), false, 1);
+					animation.changeAnimation(Tileset.getAnimation("MIRROR_BOX::ROTATE"), false, 1);
 
 					swing.activated = true;
 				}
@@ -96,16 +97,16 @@ public class MirrorBoxObject extends GameObject {
 	public void activateMirrorBox() {
 		if (!rotating) {
 			if (activated) {
-				image = applet.gameGraphics.g(352, 160, 16, 16);
+				image = Tileset.getTile(352, 160, 16, 16);  //TODO: add to tileset
 			} else {
-				image = applet.gameGraphics.get("MIRROR_BOX");
+				image = Tileset.getTile("MIRROR_BOX");
 			}
 		}
 	}
 
 	public void setMirrorDirection() {
 		if (animation.ended && rotating) {
-			image = applet.gameGraphics.get("MIRROR_BOX");
+			image = Tileset.getTile("MIRROR_BOX");
 			rotating = false;
 			direction = (direction + 1) % 4;// Allow rotation with the use of modulus
 		}

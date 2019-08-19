@@ -1,9 +1,10 @@
 package objects;
 
 import processing.core.*;
-import sidescroller.GameGraphics.graphicsType;
 import sidescroller.PClass;
 import sidescroller.SideScroller;
+import sidescroller.Tileset;
+import sidescroller.Tileset.tileType;
 import sidescroller.Util;
 
 public class EditorItem extends PClass {
@@ -14,7 +15,7 @@ public class EditorItem extends PClass {
 	private PImage image;
 
 	public String id;
-	public graphicsType type;
+	public tileType type;
 
 	private String mode;
 
@@ -65,7 +66,7 @@ public class EditorItem extends PClass {
 							applet.backgroundObjects.add(bObject);
 							break;
 						case OBJECT :
-							GameObject obj = applet.gameGraphics.getObjectClass(id);
+							GameObject obj = Tileset.getObjectClass(id);
 							obj.focus();
 							obj.pos.x = realPos.x;
 							obj.pos.y = realPos.y;
@@ -93,10 +94,10 @@ public class EditorItem extends PClass {
 		mode = m;
 	}
 
-	public void setTile(String t) {
-		image = applet.gameGraphics.get(t);
-		type = applet.gameGraphics.getType(t);
+	public void setTile(String name) {
+		image = Tileset.getTile(name);
+		type = Tileset.getTileType(name);
 
-		id = t;
+		id = name;
 	}
 }
