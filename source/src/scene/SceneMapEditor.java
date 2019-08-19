@@ -11,6 +11,8 @@ import scene.components.WorldViewportEditor;
 import sidescroller.SideScroller;
 import ui.Anchor;
 import ui.ScrollBarVertical;
+import ui.Tab;
+import windows.LoadLevelWindow;
 import windows.SaveLevelWindow;
 
 public class SceneMapEditor extends PScene {
@@ -33,6 +35,7 @@ public class SceneMapEditor extends PScene {
 
 	// Windows
 	public SaveLevelWindow window_saveLevel;
+	public LoadLevelWindow window_loadLevel;
 
 	// Editor Item
 	public EditorItem editorItem;
@@ -42,6 +45,9 @@ public class SceneMapEditor extends PScene {
 	
 	// Scroll Bar
 	public ScrollBarVertical scrollBar;
+	
+	//UI Tab
+	public Tab tab;
 
 	public enum Tools {
 		MOVE, MODIFY, INVENTORY, PLAY, SAVE,
@@ -96,12 +102,16 @@ public class SceneMapEditor extends PScene {
 
 		// Init Window
 		window_saveLevel = new SaveLevelWindow(applet);
+		window_loadLevel = new LoadLevelWindow(applet);
 		
 		// Init ScollBar
 		Anchor scrollBarAnchor = new Anchor(applet, -20, 150, 20, 50);
 		scrollBarAnchor.anchorOrigin = Anchor.AnchorOrigin.TopRight;
 		scrollBarAnchor.stretch = Anchor.Stretch.Vertical;
 		scrollBar = new ScrollBarVertical(applet, scrollBarAnchor);
+		
+		//Init Tab
+		tab = new Tab(applet, "");
 		
 		// Default Scene
 		applet.collisions.add(new Collision(applet, "METAL_WALK_MIDDLE:0", 0, 0));
@@ -313,14 +323,13 @@ public class SceneMapEditor extends PScene {
 		}
 
 		// Windows
-		if (tool == Tools.SAVE || !SideScroller.getRunning()) {
-			SideScroller.setRunning(false);
+		if(tool == Tools.SAVE) {
 			window_saveLevel.update();
 			window_saveLevel.display();
 		}
 
 		// Move Tool
-		if (tool == Tools.MOVE || !SideScroller.getRunning()) {
+		if (tool == Tools.MOVE) {
 			if (applet.mousePressed) {
 //				applet.originTargetX += applet.pmouseX - applet.getMouseX();
 //				applet.originTargetY += applet.pmouseY - applet.getMouseY();

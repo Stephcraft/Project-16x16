@@ -158,9 +158,12 @@ public class Util {
 		// Parse JSON
 		JSONArray data = JSONArray.parse(scriptD);
 
-		// Debug
-		// PApplet.println( scriptD );
-
+		/*
+		if(SideScroller.DEBUG) {
+			PApplet.println(scriptD);
+		}
+		*/
+		
 		// Clear Object Arrays
 		applet.collisions.clear();
 		applet.backgroundObjects.clear();

@@ -37,7 +37,7 @@ import scene.SceneMapEditor;
  */
 public class SideScroller extends PApplet {
 
-	public static final String LEVEL = "Assets/Storage/Game/Maps/gg-2.dat";
+	public static String LEVEL = "Assets/Storage/Game/Maps/gg-2.dat";
 	public static boolean DEBUG = true;
 	//Outer game loop: used to halt gamestate without stopping draw()
 	private static boolean running = true;
@@ -263,11 +263,6 @@ public class SideScroller extends PApplet {
 		running = state;
 	}
 	
-	//Return state of outer game loop
-	public static boolean getRunning() {
-		return(running);
-	}
-	
 	/**
 	 * keyPressed decides if the key that has been pressed is a valid key. if it is,
 	 * it is then added to the keys ArrayList, and the keyPressedEvent flag is set.
@@ -303,38 +298,36 @@ public class SideScroller extends PApplet {
 			}
 			break;
 		default :
-			if(running) {
-				switch (event.getKey()) { // must be caps
-					case 'Z' :
-						frameRate(2000);
-						break;
-					case 'X' :
-						frameRate(10);
-						break;
-					case 'V' :
-						camera.toggleDeadZone(); // for development
-						break;
-					case 'C' :
-						camera.setCameraPosition(camera.getMouseCoord()); // for development
-						break;
-					case 'F' :
-						camera.setFollowObject(player); // for development
-						camera.setZoomScale(1.0f); // for development
-						break;
-					case 'G' :
-						camera.shake(0.4f); // for development
-						break;
-					case 'H' :
-						//Debug view toggle
-						if(!DEBUG) {
-							DEBUG = true;
-						} else {
-							DEBUG = false;
-						}
-						camera.toggleDeadZone();
-						break;
-					default :
-				}
+			switch (event.getKey()) { // must be caps
+				case 'Z' :
+					frameRate(2000);
+					break;
+				case 'X' :
+					frameRate(10);
+					break;
+				case 'V' :
+					camera.toggleDeadZone(); // for development
+					break;
+				case 'C' :
+					camera.setCameraPosition(camera.getMouseCoord()); // for development
+					break;
+				case 'F' :
+					camera.setFollowObject(player); // for development
+					camera.setZoomScale(1.0f); // for development
+					break;
+				case 'G' :
+					camera.shake(0.4f); // for development
+					break;
+				case 'H' :
+					//Debug view toggle
+					if(!DEBUG) {
+						DEBUG = true;
+					} else {
+						DEBUG = false;
+					}
+					camera.toggleDeadZone();
+					break;
+				default :
 			}
 			break;
 		}

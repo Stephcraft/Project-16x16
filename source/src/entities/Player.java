@@ -171,228 +171,226 @@ public class Player extends EditableObject {
 	 * The update method handles updating the character. 
 	 */
 	public void update() {
-		if(SideScroller.getRunning()) {
-			image = animation.animate(applet.frameCount, applet.deltaTime);
-	
+		image = animation.animate(applet.frameCount, applet.deltaTime);
+
+		if (!dashing) {
+			speedY += gravity * applet.deltaTime;
+		} else {
+			speedY += gravity * applet.deltaTime * .5;
+		}
+
+		// Save Previous State
+		pSpeedX = speedX;
+		pSpeedY = speedY;
+
+		px = pos.x;
+		py = pos.y;
+
+		pflying = flying;
+		prevKey = applet.key;
+
+		// Move on the x axis
+		if (applet.keyPress(Options.moveRightKey) || applet.keyPress(68)) {
+			if (applet.keyPressEvent && !attack && !dashing) {
+				setAnimation("WALK");
+			}
 			if (!dashing) {
-				speedY += gravity * applet.deltaTime;
+				speedX = (speedWalk * applet.deltaTime);
 			} else {
-				speedY += gravity * applet.deltaTime * .5;
+				speedX = (float) (speedWalk * applet.deltaTime * 1.5);
 			}
-	
-			// Save Previous State
-			pSpeedX = speedX;
-			pSpeedY = speedY;
-	
-			px = pos.x;
-			py = pos.y;
-	
-			pflying = flying;
-			prevKey = applet.key;
-	
-			// Move on the x axis
-			if (applet.keyPress(Options.moveRightKey) || applet.keyPress(68)) {
-				if (applet.keyPressEvent && !attack && !dashing) {
-					setAnimation("WALK");
-				}
-				if (!dashing) {
-					speedX = (speedWalk * applet.deltaTime);
-				} else {
-					speedX = (float) (speedWalk * applet.deltaTime * 1.5);
-				}
-				direction = RIGHT;
-			} else if (applet.keyPress(Options.moveLeftKey) || applet.keyPress(65)) {
-				if (applet.keyPressEvent && !attack && !dashing) {
-					setAnimation("WALK");
-				}
-				if (!dashing) {
-					speedX = -speedWalk * applet.deltaTime;
-				} else {
-					speedX = (float) (-speedWalk * applet.deltaTime * 1.5);
-				}
-	
-				direction = LEFT;
-	
-			} else {
-				speedX = 0;
-			}
-			// Dash
-			if (applet.keyPress(Options.dashKey)) {
-				if (applet.keyPressEvent && !dashing) {
-					setAnimation("DASH");
-					dashing = true;
-				}
-			}
-	
-			// Move on the y axis
-			if (applet.keyPress(Options.jumpKey) || applet.keyPress(' ')) {
-				if (applet.keyPressEvent && !flying) { // && speedY == 0 && !flying
-					flying = true;
-					if (!dashing) {
-						speedY -= (int) (speedJump * applet.deltaTime);
-					} else {
-						speedY -= (float) (speedJump * applet.deltaTime * 1.2);
-					}
-	
-				}
-			}
-	
-			// Attack
-			if (applet.mousePressed && !attack) {
-				if (applet.mouseButton == LEFT) {
-					attack = true;
-					applet.camera.shake(0.3f); // todo remove
-					if (!dashing) {
-						setAnimation("ATTACK");
-					} else if (dashing) {
-						setAnimation("DASH_ATTACK");
-					}
-				}
-	
-				// Create Swing Projectile
-				swings.add(new Swing(applet, (int) pos.x, (int) pos.y, direction));
-			}
-	
-			// End Dash
-	
-			if (animation.name == "DASH" && animation.ended) {
-				dashing = false;
-				if (flying) {
-					speedY = 0;
-				}
+			direction = RIGHT;
+		} else if (applet.keyPress(Options.moveLeftKey) || applet.keyPress(65)) {
+			if (applet.keyPressEvent && !attack && !dashing) {
 				setAnimation("WALK");
 			}
-			// End Dash Attack
-			if (animation.name == "DASH_ATTACK" && animation.ended) {
-				dashing = false;
-				attack = false;
-				if (flying) {
-					speedY = 0;
+			if (!dashing) {
+				speedX = -speedWalk * applet.deltaTime;
+			} else {
+				speedX = (float) (-speedWalk * applet.deltaTime * 1.5);
+			}
+
+			direction = LEFT;
+
+		} else {
+			speedX = 0;
+		}
+		// Dash
+		if (applet.keyPress(Options.dashKey)) {
+			if (applet.keyPressEvent && !dashing) {
+				setAnimation("DASH");
+				dashing = true;
+			}
+		}
+
+		// Move on the y axis
+		if (applet.keyPress(Options.jumpKey) || applet.keyPress(' ')) {
+			if (applet.keyPressEvent && !flying) { // && speedY == 0 && !flying
+				flying = true;
+				if (!dashing) {
+					speedY -= (int) (speedJump * applet.deltaTime);
+				} else {
+					speedY -= (float) (speedJump * applet.deltaTime * 1.2);
 				}
+
+			}
+		}
+
+		// Attack
+		if (applet.mousePressed && !attack) {
+			if (applet.mouseButton == LEFT) {
+				attack = true;
+				applet.camera.shake(0.3f); // todo remove
+				if (!dashing) {
+					setAnimation("ATTACK");
+				} else if (dashing) {
+					setAnimation("DASH_ATTACK");
+				}
+			}
+
+			// Create Swing Projectile
+			swings.add(new Swing(applet, (int) pos.x, (int) pos.y, direction));
+		}
+
+		// End Dash
+
+		if (animation.name == "DASH" && animation.ended) {
+			dashing = false;
+			if (flying) {
+				speedY = 0;
+			}
+			setAnimation("WALK");
+		}
+		// End Dash Attack
+		if (animation.name == "DASH_ATTACK" && animation.ended) {
+			dashing = false;
+			attack = false;
+			if (flying) {
+				speedY = 0;
+			}
+			setAnimation("WALK");
+		}
+		// End Attack
+		if (animation.name == "ATTACK" && animation.ended) {
+			attack = false;
+			if (speedX != 0) {
 				setAnimation("WALK");
-			}
-			// End Attack
-			if (animation.name == "ATTACK" && animation.ended) {
-				attack = false;
-				if (speedX != 0) {
-					setAnimation("WALK");
-				} else if (speedX == 0) {
-					setAnimation("IDLE");
-				}
-			}
-			// boolean collides = false;
-	
-			if (SideScroller.DEBUG) {
-				applet.noFill();
-				applet.stroke(255, 0, 0);
-				applet.strokeWeight(1);
-				applet.ellipse(pos.x, pos.y , 400, 400);
-			}
-	
-			// All Collision Global Check
-			for (int i = 0; i < applet.collisions.size(); i++) {
-				Collision collision = applet.collisions.get(i);
-	
-				// In Player Range
-				if (PApplet.dist(pos.x, pos.y, collision.pos.x, collision.pos.y) < 200) {
-	
-					if (SideScroller.DEBUG) {
-						applet.rect(collision.pos.x, collision.pos.y , 20, 20);
-					}
-					if (collides(collision)) {
-						if (px + width / 2 < collision.pos.x + collision.width / 2) {
-							pos.x = collision.pos.x - collision.width / 2 - width / 2;
-						} else if (px - width / 2 > collision.pos.x - collision.width / 2
-								) { // +collision.width/2
-							pos.x = collision.pos.x + collision.width / 2 + width / 2;
-						}
-						if (dashing) {
-							dashing = false;
-							setAnimation("IDLE");
-						}
-	
-					}
-					if (collidesFuturX(collision)) {
-						if (px < collision.pos.x) {
-							speedX = 0;
-						} else if (px > collision.pos.x) {
-							speedX = 0;
-						}
-						if (dashing) {
-							dashing = false;
-							setAnimation("IDLE");
-						}
-					}
-					if (collidesFuturY(collision)) {
-						if (py  + height / 2 < collision.pos.y ) {
-							pos.y = collision.pos.y - collision.height / 2 - height / 2;
-							speedY = 0;
-							flying = false;
-						} else if (pos.y  > collision.pos.y ) {
-							pos.y = collision.pos.y + collision.height / 2 + height / 2;
-							speedY = 0;
-						}
-					}
-				}
-			}
-	
-			if (flying && !attack && !dashing) {
-				setAnimation("FALL");
-			}
-	
-			// On Ground Event
-			if (!flying && pflying && !attack && !dashing) {
-				setAnimation("SQUISH");
-				applet.camera.shake(0.4f); // todo remove
-			}
-	
-			// Idle Animation
-			if (speedX == 0 && speedY == 0 && !attack && !dashing && !flying && !pflying) {
+			} else if (speedX == 0) {
 				setAnimation("IDLE");
 			}
-	
-			if (animation.name == "SQUISH" && speedX != 0 && !attack) {
-				setAnimation("WALK");
-			}
-	
-			if (animation.name == "WALK" && speedX == 0 && !attack) {
-				setAnimation("IDLE");
-			}
-	
-			if (speedX == 0 && animation.name == "WALK" && attack) {
-				attack = false;
-			}
-	
-			if (dashing) {
-				if (speedY < -25) {
-					speedY = -25;
+		}
+		// boolean collides = false;
+
+		if (SideScroller.DEBUG) {
+			applet.noFill();
+			applet.stroke(255, 0, 0);
+			applet.strokeWeight(1);
+			applet.ellipse(pos.x, pos.y , 400, 400);
+		}
+
+		// All Collision Global Check
+		for (int i = 0; i < applet.collisions.size(); i++) {
+			Collision collision = applet.collisions.get(i);
+
+			// In Player Range
+			if (PApplet.dist(pos.x, pos.y, collision.pos.x, collision.pos.y) < 200) {
+
+				if (SideScroller.DEBUG) {
+					applet.rect(collision.pos.x, collision.pos.y , 20, 20);
+				}
+				if (collides(collision)) {
+					if (px + width / 2 < collision.pos.x + collision.width / 2) {
+						pos.x = collision.pos.x - collision.width / 2 - width / 2;
+					} else if (px - width / 2 > collision.pos.x - collision.width / 2
+							) { // +collision.width/2
+						pos.x = collision.pos.x + collision.width / 2 + width / 2;
+					}
+					if (dashing) {
+						dashing = false;
+						setAnimation("IDLE");
+					}
+
+				}
+				if (collidesFuturX(collision)) {
+					if (px < collision.pos.x) {
+						speedX = 0;
+					} else if (px > collision.pos.x) {
+						speedX = 0;
+					}
+					if (dashing) {
+						dashing = false;
+						setAnimation("IDLE");
+					}
+				}
+				if (collidesFuturY(collision)) {
+					if (py  + height / 2 < collision.pos.y ) {
+						pos.y = collision.pos.y - collision.height / 2 - height / 2;
+						speedY = 0;
+						flying = false;
+					} else if (pos.y  > collision.pos.y ) {
+						pos.y = collision.pos.y + collision.height / 2 + height / 2;
+						speedY = 0;
+					}
 				}
 			}
-			pos.x += speedX;
-			pos.y += speedY;
-	
-			// out of bounds check
-			if (pos.y > 2000) {
-				pos.y = 0;
-				pos.x = 50;
+		}
+
+		if (flying && !attack && !dashing) {
+			setAnimation("FALL");
+		}
+
+		// On Ground Event
+		if (!flying && pflying && !attack && !dashing) {
+			setAnimation("SQUISH");
+			applet.camera.shake(0.4f); // todo remove
+		}
+
+		// Idle Animation
+		if (speedX == 0 && speedY == 0 && !attack && !dashing && !flying && !pflying) {
+			setAnimation("IDLE");
+		}
+
+		if (animation.name == "SQUISH" && speedX != 0 && !attack) {
+			setAnimation("WALK");
+		}
+
+		if (animation.name == "WALK" && speedX == 0 && !attack) {
+			setAnimation("IDLE");
+		}
+
+		if (speedX == 0 && animation.name == "WALK" && attack) {
+			attack = false;
+		}
+
+		if (dashing) {
+			if (speedY < -25) {
+				speedY = -25;
 			}
-	
-			// Apply World Transformation
-	//		if (pos.x - width / 2 < applet.width / 2 - applet.screenX / 2) {
-	//			applet.originTargetX -= PApplet.abs(speedX - 5);
-	//		} else if (pos.x + width / 2 > applet.width / 2 + applet.screenX / 2) {
-	//			applet.originTargetX += PApplet.abs(speedX + 5);
-	//		}
-	//		if (pos.y  - height / 2 < applet.height / 2 - applet.screenY / 2) {
-	//			applet.originTargetY -= PApplet.abs(speedY - 5);
-	//		} else if (pos.y  + height / 2 > applet.height / 2 + applet.screenY / 2) {
-	//			applet.originTargetY += PApplet.abs(speedY + 5);
-	//		}
-	
-			// Update Swing Projectiles
-			for (int i = 0; i < swings.size(); i++) {
-				swings.get(i).update();
-			}
+		}
+		pos.x += speedX;
+		pos.y += speedY;
+
+		// out of bounds check
+		if (pos.y > 2000) {
+			pos.y = 0;
+			pos.x = 50;
+		}
+
+		// Apply World Transformation
+		//		if (pos.x - width / 2 < applet.width / 2 - applet.screenX / 2) {
+		//			applet.originTargetX -= PApplet.abs(speedX - 5);
+		//		} else if (pos.x + width / 2 > applet.width / 2 + applet.screenX / 2) {
+		//			applet.originTargetX += PApplet.abs(speedX + 5);
+		//		}
+		//		if (pos.y  - height / 2 < applet.height / 2 - applet.screenY / 2) {
+		//			applet.originTargetY -= PApplet.abs(speedY - 5);
+		//		} else if (pos.y  + height / 2 > applet.height / 2 + applet.screenY / 2) {
+		//			applet.originTargetY += PApplet.abs(speedY + 5);
+		//		}
+
+		// Update Swing Projectiles
+		for (int i = 0; i < swings.size(); i++) {
+			swings.get(i).update();
 		}
 	}
 	/**

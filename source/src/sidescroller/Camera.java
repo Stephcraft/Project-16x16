@@ -217,31 +217,28 @@ public final class Camera extends ZoomPan {
 		setZoomScaleX(scale);
 		setZoomScaleY(scale);
 
-		if(SideScroller.getRunning()) {
-			if (following && (((deadZoneScreen && !withinScreenDeadZone()) || ((deadZoneWorld && !withinWorldDeadZone()))
-					|| (!deadZoneScreen && !deadZoneWorld)))) {
-				setPanOffset(
-						PApplet.lerp(getPanOffset().x,
-								(-followObject.pos.x - followObjectOffset.x - shakeOffset.x + offset.x) * zoom, lerpSpeed),
-						PApplet.lerp(getPanOffset().y,
-								(-followObject.pos.y - followObjectOffset.y - shakeOffset.y + offset.y) * zoom, lerpSpeed));
-			} else if (!following) {
-				setPanOffset(
-						PApplet.lerp(getPanOffset().x, (targetPosition.x - shakeOffset.x + offset.x) * zoom, lerpSpeed),
-						PApplet.lerp(getPanOffset().y, (targetPosition.y - shakeOffset.y + offset.y) * zoom, lerpSpeed));
-			}
-	
-			if (trauma > 0) { // 400 and 0.35 seem suitable values
-				trauma -= traumaDecay;
-	
-				float x = (trauma * trauma) * applet.random(-1, 1) * 400;
-				float y = (trauma * trauma) * applet.random(-1, 1) * 400;
-				shakeOffset = new PVector(x, y);
-				shakeRotationOffset = (trauma * trauma) * applet.random(-1, 1) * 0.35f;
-				if (trauma == 0) {
-					shakeOffset = new PVector(0, 0);
-					shakeRotationOffset = 0;
-				}
+		if (following && (((deadZoneScreen && !withinScreenDeadZone()) || ((deadZoneWorld && !withinWorldDeadZone()))
+				|| (!deadZoneScreen && !deadZoneWorld)))) {
+			setPanOffset(
+					PApplet.lerp(getPanOffset().x,
+							(-followObject.pos.x - followObjectOffset.x - shakeOffset.x + offset.x) * zoom, lerpSpeed),
+					PApplet.lerp(getPanOffset().y,
+							(-followObject.pos.y - followObjectOffset.y - shakeOffset.y + offset.y) * zoom, lerpSpeed));
+		} else if (!following) {
+			setPanOffset(
+					PApplet.lerp(getPanOffset().x, (targetPosition.x - shakeOffset.x + offset.x) * zoom, lerpSpeed),
+					PApplet.lerp(getPanOffset().y, (targetPosition.y - shakeOffset.y + offset.y) * zoom, lerpSpeed));
+		}
+		if (trauma > 0) { // 400 and 0.35 seem suitable values
+			trauma -= traumaDecay;
+
+			float x = (trauma * trauma) * applet.random(-1, 1) * 400;
+			float y = (trauma * trauma) * applet.random(-1, 1) * 400;
+			shakeOffset = new PVector(x, y);
+			shakeRotationOffset = (trauma * trauma) * applet.random(-1, 1) * 0.35f;
+			if (trauma == 0) {
+				shakeOffset = new PVector(0, 0);
+				shakeRotationOffset = 0;
 			}
 		}
 	}
