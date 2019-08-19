@@ -11,7 +11,7 @@ public class BackgroundObject extends EditableObject {
 	public BackgroundObject(SideScroller a) {
 		super(a);
 
-		type = "BACKGROUND";
+		type = type.BACKGROUND;
 	}
 
 	public BackgroundObject(SideScroller a, String id) {
@@ -23,7 +23,7 @@ public class BackgroundObject extends EditableObject {
 	public BackgroundObject(SideScroller a, String id, int x, int y) {
 		this(a);
 
-		pos = new PVector(round(x / 4) * 4, round(y / 4) * 4);
+		pos = new PVector(x, y);
 		setGraphic(id);
 	}
 
@@ -39,6 +39,15 @@ public class BackgroundObject extends EditableObject {
 		}
 
 		applet.image(image, pos.x + pixelOffsetX, pos.y + pixelOffsetY);
+
+		if (SideScroller.DEBUG) {
+			applet.noStroke();
+			applet.fill(255);
+			applet.ellipse(pos.x, pos.y, 5, 5);
+			applet.noFill();
+			applet.stroke(50, 255, 120);
+			applet.rect(pos.x, pos.y, width, height);
+		}
 	}
 
 	public void update() {

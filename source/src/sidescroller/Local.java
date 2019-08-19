@@ -3,6 +3,9 @@ package sidescroller;
 import processing.core.PApplet;
 import processing.core.PGraphics;
 
+/**
+ * @deprecated (seemingly)
+ */
 public class Local {
 
 	public static PGraphics createEditorGrid(PApplet applet) {

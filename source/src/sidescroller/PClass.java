@@ -2,7 +2,6 @@ package sidescroller;
 
 import processing.core.PApplet;
 import processing.core.PConstants;
-import processing.core.PGraphics;
 import processing.core.PImage;
 
 import sidescroller.Util;
@@ -73,12 +72,12 @@ public class PClass {
 
 	/**
 	 * Sets the background image of the applet.
-	 * @param img The image to use as PGraphics
+	 * @param icon_eyeActive The image to use as PImage
 	 * @param x the x position for it
 	 * @param y the y position for it
 	 */
-	public void image(PGraphics img, float x, float y) {
-		applet.image(img, x, y);
+	public void image(PImage icon_eyeActive, float x, float y) {
+		applet.image(icon_eyeActive, x, y);
 	}
 
 	/**

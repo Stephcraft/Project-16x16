@@ -3,8 +3,8 @@ package projectiles;
 import java.util.ArrayList;
 
 import components.AnimationComponent;
-import objects.Collision;
-import processing.core.PGraphics;
+import objects.CollidableObject;
+import processing.core.PImage;
 import processing.core.PVector;
 import sidescroller.PClass;
 import sidescroller.SideScroller;
@@ -15,12 +15,14 @@ public class ProjectileObject extends PClass {
 
 	public PVector pos;
 
-	public PGraphics image;
+	public PImage image;
 
 	public int direction;
-
+	public int prevDirection;
 	public int width;
 	public int height;
+	
+	public int spawnTime;
 
 	public int speed;
 
@@ -33,7 +35,7 @@ public class ProjectileObject extends PClass {
 		super(a);
 
 		id = "";
-
+		spawnTime = applet.frameCount;
 		animation = new AnimationComponent();
 		pos = new PVector(0, 0);
 	}
@@ -43,7 +45,7 @@ public class ProjectileObject extends PClass {
 	public void update() {
 	}
 
-	public boolean collides(Collision collision) {
+	public boolean collides(CollidableObject collision) {
 		return (pos.x + width / 2 > collision.pos.x - collision.width / 2
 				&& pos.x - width / 2 < collision.pos.x + collision.width / 2)
 				&& (pos.y + height / 2 > collision.pos.y - collision.height / 2
@@ -51,7 +53,7 @@ public class ProjectileObject extends PClass {
 								+ collision.height / 2);
 	}
 
-	protected ArrayList<PGraphics> getAnimation(String id) {
+	protected ArrayList<PImage> getAnimation(String id) {
 		return applet.gameGraphics.getAnimation(id);
 	}
 }

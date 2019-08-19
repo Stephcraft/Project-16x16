@@ -2,6 +2,7 @@ package entities;
 
 import processing.core.*;
 import projectiles.Swing;
+<<<<<<< HEAD
 import scene.SceneMapEditor;
 import scene.SceneMapEditor.Tools;
 import sidescroller.Camera;
@@ -9,57 +10,75 @@ import sidescroller.Options;
 //import sidescroller.PClass;
 import sidescroller.SideScroller;
 import ui.Button;
+=======
+import sidescroller.GameGraphics;
+import sidescroller.Options;
+//import sidescroller.PClass;
+import sidescroller.SideScroller;
+import sidescroller.Util;
+>>>>>>> 8e06683883b2a9fd2c1131505557caca4d7ef9e6
 
 import java.util.ArrayList;
 
 import components.AnimationComponent;
-import objects.Collision;
+import objects.CollidableObject;
 import objects.EditableObject;
 
 /**
  * <h1>Player Class</h1>
  * <p>
  * This class handles the playable character. It covers controlling, animating,
- * displaying, and updating the character. 
+ * displaying, and updating the character.
  * </p>
  */
+<<<<<<< HEAD
 public class Player extends EditableObject {
 	public float px;
 	public float py;
 	public int damage;
+=======
+public final class Player extends EditableObject {
+>>>>>>> 8e06683883b2a9fd2c1131505557caca4d7ef9e6
 
-	public PGraphics image;
+	/**
+	 * Previous position.
+	 */
+	private float px;
+	private float py;
 
-	PGraphics lifeOn;
-	PGraphics lifeOff;
+	/**
+	 * Current player sprite
+	 */
+	private PImage image;
 
-	public float gravity;
+	private PImage lifeOn;
+	private PImage lifeOff;
 
-	public int prevKey;
+	private float gravity;
 
 	public float speedX;
 	public float speedY;
-	public float pSpeedX;
-	public float pSpeedY;
 
-	public int accX;
-	public int accY;
-	public int pAccX;
-	public int pAccY;
+	private static final int collisionRange = 145;
 
-	public int speedWalk;
-	public int speedJump;
+	private int speedWalk;
+	private int speedJump;
 
-	public int direction;
+	private int direction;
 
+<<<<<<< HEAD
 	public byte maxLife;
 	public byte lifeCapacity;
+=======
+	private int life;
+	private int lifeCapacity;
+>>>>>>> 8e06683883b2a9fd2c1131505557caca4d7ef9e6
 
 	public boolean flying;
-	public boolean pflying;
+	private boolean pflying;
 
 	public boolean attack;
-	public boolean dashing;
+	private boolean dashing;
 
 	// Player Projectile
 	public ArrayList<Swing> swings;
@@ -67,16 +86,17 @@ public class Player extends EditableObject {
 	// Animation Component
 	public AnimationComponent animation;
 
-	// Animation frames
-	public ArrayList<PGraphics> anim_squish;
-	public ArrayList<PGraphics> anim_idle;
-	public ArrayList<PGraphics> anim_walk;
-	public ArrayList<PGraphics> anim_attack;
-	public ArrayList<PGraphics> anim_shoot;
+	/**
+	 * Possible player actions/states
+	 */
+	private enum ACTIONS {
+		WALK, IDLE, SQUISH, FALL, ATTACK, DASH, DASH_ATTACK
+	}
 
 
 	/**
 	 * Constructor
+	 * 
 	 * @param a SideScroller game controller.
 	 */
 	public Player(SideScroller a) {
@@ -87,16 +107,6 @@ public class Player extends EditableObject {
 
 		animation = new AnimationComponent();
 		swings = new ArrayList<Swing>();
-
-		anim_squish = new ArrayList<PGraphics>();
-		anim_idle = new ArrayList<PGraphics>();
-		anim_walk = new ArrayList<PGraphics>();
-		anim_attack = applet.gameGraphics.getAnimation("PLAYER::WALK");
-		anim_shoot = new ArrayList<PGraphics>();
-
-		animation.length = 7;
-		animation.loop = true;
-		animation.rate = 6;
 
 		// Set life
 		lifeCapacity = 3;
@@ -114,6 +124,7 @@ public class Player extends EditableObject {
 
 	/**
 	 * load any needed assets.
+	 * 
 	 * @param sheet sprite sheet as PImage.
 	 */
 	public void load(PImage sheet) {
@@ -122,6 +133,7 @@ public class Player extends EditableObject {
 		lifeOn = util.pg(sheet.get(144, 256, 9, 9), 4);
 		lifeOff = util.pg(sheet.get(160, 256, 9, 9), 4);
 
+<<<<<<< HEAD
 		anim_walk.add(util.pg(sheet.get(0, 272, 14, 15), 4));
 		anim_walk.add(util.pg(sheet.get(14 * 1 + 2, 272, 14, 15), 4));
 		anim_walk.add(util.pg(sheet.get(14 * 2 + 4, 272, 14, 15), 4));
@@ -145,11 +157,14 @@ public class Player extends EditableObject {
 		animation.frames = anim_walk;
 
 		setAnimation("IDLE");
+=======
+		setAnimation(ACTIONS.IDLE);
+>>>>>>> 8e06683883b2a9fd2c1131505557caca4d7ef9e6
 	}
 
 	/**
-	 * The display method controls how to display the character to the screen
-	 * with what animation.
+	 * The display method controls how to display the character to the screen with
+	 * what animation.
 	 */
 	public void display() {
 
@@ -165,7 +180,7 @@ public class Player extends EditableObject {
 			applet.image(image, 0, 0);
 			applet.popMatrix();
 		} else {
-			applet.image(image, pos.x, pos.y );
+			applet.image(image, pos.x, pos.y);
 		}
 
 		if (SideScroller.DEBUG) {
@@ -177,10 +192,9 @@ public class Player extends EditableObject {
 	}
 
 	/**
-	 * The update method handles updating the character. 
+	 * The update method handles updating the character.
 	 */
 	public void update() {
-		image = animation.animate(applet.frameCount, applet.deltaTime);
 
 		if (!dashing) {
 			speedY += gravity * applet.deltaTime;
@@ -189,19 +203,14 @@ public class Player extends EditableObject {
 		}
 
 		// Save Previous State
-		pSpeedX = speedX;
-		pSpeedY = speedY;
-
 		px = pos.x;
 		py = pos.y;
-
 		pflying = flying;
-		prevKey = applet.key;
 
 		// Move on the x axis
 		if (applet.keyPress(Options.moveRightKey) || applet.keyPress(68)) {
 			if (applet.keyPressEvent && !attack && !dashing) {
-				setAnimation("WALK");
+				setAnimation(ACTIONS.WALK);
 			}
 			if (!dashing) {
 				speedX = (speedWalk * applet.deltaTime);
@@ -211,7 +220,7 @@ public class Player extends EditableObject {
 			direction = RIGHT;
 		} else if (applet.keyPress(Options.moveLeftKey) || applet.keyPress(65)) {
 			if (applet.keyPressEvent && !attack && !dashing) {
-				setAnimation("WALK");
+				setAnimation(ACTIONS.WALK);
 			}
 			if (!dashing) {
 				speedX = -speedWalk * applet.deltaTime;
@@ -227,7 +236,7 @@ public class Player extends EditableObject {
 		// Dash
 		if (applet.keyPress(Options.dashKey)) {
 			if (applet.keyPressEvent && !dashing) {
-				setAnimation("DASH");
+				setAnimation(ACTIONS.DASH);
 				dashing = true;
 			}
 		}
@@ -251,9 +260,9 @@ public class Player extends EditableObject {
 				attack = true;
 				applet.camera.shake(0.3f); // todo remove
 				if (!dashing) {
-					setAnimation("ATTACK");
+					setAnimation(ACTIONS.ATTACK);
 				} else if (dashing) {
-					setAnimation("DASH_ATTACK");
+					setAnimation(ACTIONS.DASH_ATTACK);
 				}
 			}
 
@@ -268,7 +277,7 @@ public class Player extends EditableObject {
 			if (flying) {
 				speedY = 0;
 			}
-			setAnimation("WALK");
+			setAnimation(ACTIONS.WALK);
 		}
 		// End Dash Attack
 		if (animation.name == "DASH_ATTACK" && animation.ended) {
@@ -277,15 +286,15 @@ public class Player extends EditableObject {
 			if (flying) {
 				speedY = 0;
 			}
-			setAnimation("WALK");
+			setAnimation(ACTIONS.WALK);
 		}
 		// End Attack
 		if (animation.name == "ATTACK" && animation.ended) {
 			attack = false;
 			if (speedX != 0) {
-				setAnimation("WALK");
+				setAnimation(ACTIONS.WALK);
 			} else if (speedX == 0) {
-				setAnimation("IDLE");
+				setAnimation(ACTIONS.IDLE);
 			}
 		}
 		// boolean collides = false;
@@ -294,29 +303,29 @@ public class Player extends EditableObject {
 			applet.noFill();
 			applet.stroke(255, 0, 0);
 			applet.strokeWeight(1);
-			applet.ellipse(pos.x, pos.y , 400, 400);
+			applet.ellipse(pos.x, pos.y, collisionRange * 2, collisionRange * 2);
 		}
 
 		// All Collision Global Check
-		for (int i = 0; i < applet.collisions.size(); i++) {
-			Collision collision = applet.collisions.get(i);
-
-			// In Player Range
-			if (PApplet.dist(pos.x, pos.y, collision.pos.x, collision.pos.y) < 200) {
-
+		for (int i = 0; i < applet.collidableObjects.size(); i++) {
+			CollidableObject collision = applet.collidableObjects.get(i);
+            if (Util.fastInRange(pos, collision.pos, collisionRange)) { // In Player Range
 				if (SideScroller.DEBUG) {
-					applet.rect(collision.pos.x, collision.pos.y , 20, 20);
+					applet.strokeWeight(2);
+					applet.rect(collision.pos.x, collision.pos.y, collision.width, collision.height);
+					applet.fill(255, 0, 0);
+					applet.ellipse(collision.pos.x, collision.pos.y, 5, 5);
+					applet.noFill();
 				}
 				if (collides(collision)) {
 					if (px + width / 2 < collision.pos.x + collision.width / 2) {
 						pos.x = collision.pos.x - collision.width / 2 - width / 2;
-					} else if (px - width / 2 > collision.pos.x - collision.width / 2
-							) { // +collision.width/2
+					} else if (px - width / 2 > collision.pos.x - collision.width / 2) { // +collision.width/2
 						pos.x = collision.pos.x + collision.width / 2 + width / 2;
 					}
 					if (dashing) {
 						dashing = false;
-						setAnimation("IDLE");
+						setAnimation(ACTIONS.IDLE);
 					}
 
 				}
@@ -328,15 +337,15 @@ public class Player extends EditableObject {
 					}
 					if (dashing) {
 						dashing = false;
-						setAnimation("IDLE");
+						setAnimation(ACTIONS.IDLE);
 					}
 				}
 				if (collidesFuturY(collision)) {
-					if (py  + height / 2 < collision.pos.y ) {
+					if (py + height / 2 < collision.pos.y) {
 						pos.y = collision.pos.y - collision.height / 2 - height / 2;
 						speedY = 0;
 						flying = false;
-					} else if (pos.y  > collision.pos.y ) {
+					} else if (pos.y > collision.pos.y) {
 						pos.y = collision.pos.y + collision.height / 2 + height / 2;
 						speedY = 0;
 					}
@@ -345,26 +354,26 @@ public class Player extends EditableObject {
 		}
 
 		if (flying && !attack && !dashing) {
-			setAnimation("FALL");
+			setAnimation(ACTIONS.FALL);
 		}
 
 		// On Ground Event
 		if (!flying && pflying && !attack && !dashing) {
-			setAnimation("SQUISH");
+			setAnimation(ACTIONS.SQUISH);
 			applet.camera.shake(0.4f); // todo remove
 		}
 
 		// Idle Animation
 		if (speedX == 0 && speedY == 0 && !attack && !dashing && !flying && !pflying) {
-			setAnimation("IDLE");
+			setAnimation(ACTIONS.IDLE);
 		}
 
 		if (animation.name == "SQUISH" && speedX != 0 && !attack) {
-			setAnimation("WALK");
+			setAnimation(ACTIONS.WALK);
 		}
 
 		if (animation.name == "WALK" && speedX == 0 && !attack) {
-			setAnimation("IDLE");
+			setAnimation(ACTIONS.IDLE);
 		}
 
 		if (speedX == 0 && animation.name == "WALK" && attack) {
@@ -381,10 +390,13 @@ public class Player extends EditableObject {
 
 		// out of bounds check
 		if (pos.y > 2000) {
-			pos.y = 0;
-			pos.x = 50;
+			pos.y = -100; // TODO set to spawn loc
+			pos.x = 0; // TODO set to spawn loc
+			speedX = 0;
+			speedY = 0;
 		}
 
+<<<<<<< HEAD
 		// Apply World Transformation
 		//		if (pos.x - width / 2 < applet.width / 2 - applet.screenX / 2) {
 		//			applet.originTargetX -= PApplet.abs(speedX - 5);
@@ -397,10 +409,13 @@ public class Player extends EditableObject {
 		//			applet.originTargetY += PApplet.abs(speedY + 5);
 		//		}
 
+=======
+>>>>>>> 8e06683883b2a9fd2c1131505557caca4d7ef9e6
 		// Update Swing Projectiles
 		for (int i = 0; i < swings.size(); i++) {
 			swings.get(i).update();
 		}
+		image = animation.animate();
 	}
 
 	/**
@@ -434,62 +449,90 @@ public class Player extends EditableObject {
 			}
 		}	
 	}
+
 	/**
 	 * 
-	 * Determines is the character has collided with an object of type Collision. 
+	 * Determines is the character has collided with an object of type Collision.
 	 * 
 	 * @param collision The other object
 	 * @return boolean if it has or has not collided with the object.
 	 */
-	public boolean collides(Collision collision) {
+	private boolean collides(CollidableObject collision) {
 		return (pos.x + width / 2 > collision.pos.x - collision.width / 2
 				&& pos.x - width / 2 < collision.pos.x + collision.width / 2)
+<<<<<<< HEAD
 				&& (pos.y  + height / 2 > collision.pos.y  - collision.height / 2
 						&& pos.y  - height / 2 < collision.pos.y 
 						+ collision.height / 2);
+=======
+				&& (pos.y + height / 2 > collision.pos.y - collision.height / 2
+						&& pos.y - height / 2 < collision.pos.y + collision.height / 2);
+>>>>>>> 8e06683883b2a9fd2c1131505557caca4d7ef9e6
 	}
 
-	// TODO: optimize these
-	public boolean collidesEqual(Collision collision) {
+	// TODO: optimize these (unused)
+	private boolean collidesEqual(CollidableObject collision) {
 		return (pos.x + width / 2 >= collision.pos.x - collision.width / 2
 				&& pos.x - width / 2 <= collision.pos.x + collision.width / 2)
+<<<<<<< HEAD
 				&& (pos.y  + height / 2 >= collision.pos.y  - collision.height / 2
 				&& pos.y  - height / 2 <= collision.pos.y 
 				+ collision.height / 2);
+=======
+				&& (pos.y + height / 2 >= collision.pos.y - collision.height / 2
+						&& pos.y - height / 2 <= collision.pos.y + collision.height / 2);
+>>>>>>> 8e06683883b2a9fd2c1131505557caca4d7ef9e6
 	}
 
-	public boolean collidesFutur(Collision collision) {
+	private boolean collidesFutur(CollidableObject collision) {
 		return (pos.x + speedX + width / 2 > collision.pos.x - collision.width / 2
 				&& pos.x + speedX - width / 2 < collision.pos.x + collision.width / 2)
+<<<<<<< HEAD
 				&& (pos.y  + speedY + height / 2 > collision.pos.y 
 						- collision.height / 2
 						&& pos.y  + speedY - height / 2 < collision.pos.y 
 						+ collision.height / 2);
+=======
+				&& (pos.y + speedY + height / 2 > collision.pos.y - collision.height / 2
+						&& pos.y + speedY - height / 2 < collision.pos.y + collision.height / 2);
+>>>>>>> 8e06683883b2a9fd2c1131505557caca4d7ef9e6
 	}
 
-	public boolean collidesFuturX(Collision collision) {
+	private boolean collidesFuturX(CollidableObject collision) {
 		return (pos.x + speedX + width / 2 > collision.pos.x - collision.width / 2
 				&& pos.x + speedX - width / 2 < collision.pos.x + collision.width / 2)
+<<<<<<< HEAD
 				&& (pos.y  + 0 + height / 2 > collision.pos.y  - collision.height / 2
 						&& pos.y  + 0 - height / 2 < collision.pos.y 
 						+ collision.height / 2);
+=======
+				&& (pos.y + 0 + height / 2 > collision.pos.y - collision.height / 2
+						&& pos.y + 0 - height / 2 < collision.pos.y + collision.height / 2);
+>>>>>>> 8e06683883b2a9fd2c1131505557caca4d7ef9e6
 	}
 
-	public boolean collidesFuturY(Collision collision) {
+	private boolean collidesFuturY(CollidableObject collision) {
 		return (pos.x + 0 + width / 2 > collision.pos.x - collision.width / 2
 				&& pos.x + 0 - width / 2 < collision.pos.x + collision.width / 2)
+<<<<<<< HEAD
 				&& (pos.y  + speedY + height / 2 > collision.pos.y 
 						- collision.height / 2
 						&& pos.y  + speedY - height / 2 < collision.pos.y 
 						+ collision.height / 2);
+=======
+				&& (pos.y + speedY + height / 2 > collision.pos.y - collision.height / 2
+						&& pos.y + speedY - height / 2 < collision.pos.y + collision.height / 2);
+>>>>>>> 8e06683883b2a9fd2c1131505557caca4d7ef9e6
 	}
 
 	/**
-	 * Sets the current animation for the Player to use
+	 * Sets the current animation sequence for the Player to use
+	 * 
 	 * @param anim the animation id
 	 */
-	private void setAnimation(String anim) {
+	private void setAnimation(ACTIONS anim) {
 		switch (anim) {
+<<<<<<< HEAD
 		case "WALK" :
 			animation.frames = getAnimation("PLAYER::WALK"); // anim_walk;
 			animation.loop = true;
@@ -545,18 +588,41 @@ public class Player extends EditableObject {
 			animation.rate = 4;
 			animation.frame = 0;
 			animation.start = 0;
+=======
+			case WALK :
+				animation.changeAnimation(getAnimation("PLAYER::WALK"), true, 6);
+				break;
+			case IDLE :
+				animation.changeAnimation(getAnimation("PLAYER::IDLE"), true, 20);
+				break;
+			case SQUISH :
+				animation.changeAnimation(getAnimation("PLAYER::SQUISH"), false, 4);
+				break;
+			case FALL :
+				animation.changeAnimation(getAnimation("PLAYER::SQUISH"), false, 6);
+				break;
+			case ATTACK :
+				animation.changeAnimation(getAnimation("PLAYER::ATTACK"), false, 4);
+				break;
+			case DASH :
+				animation.changeAnimation(getAnimation("PLAYER::SQUISH"), false, 6);
+				break;
+			case DASH_ATTACK :
+				animation.changeAnimation(getAnimation("PLAYER::ATTACK"), false, 4, 2 + animation.remainingFrames());
+				break;
+>>>>>>> 8e06683883b2a9fd2c1131505557caca4d7ef9e6
 		}
 		animation.ended = false;
-		animation.pName = animation.name;
-		animation.name = anim;
+		animation.name = anim.name();
 	}
 
 	/**
 	 * getter for the currently used animation.
+	 * 
 	 * @param id the animation id
 	 * @return the animation being used.
 	 */
-	private ArrayList<PGraphics> getAnimation(String id) {
+	private ArrayList<PImage> getAnimation(String id) {
 		return applet.gameGraphics.getAnimation(id);
 	}
 }
