@@ -3,6 +3,7 @@ package objects;
 import processing.core.PImage;
 import processing.core.PVector;
 import sidescroller.SideScroller;
+import sidescroller.Tileset;
 
 public class BackgroundObject extends EditableObject {
 
@@ -54,9 +55,9 @@ public class BackgroundObject extends EditableObject {
 
 	}
 
-	public void setGraphic(String _id) {
-		image = applet.gameGraphics.get(_id);
-		id = _id;
+	public void setGraphic(String name) {
+		image = Tileset.getTile(name);
+		id = name;
 		width = image.width;
 		height = image.height;
 	}

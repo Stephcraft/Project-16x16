@@ -5,6 +5,7 @@ import processing.core.PVector;
 import scene.SceneMapEditor;
 import sidescroller.PClass;
 import sidescroller.SideScroller;
+import sidescroller.Tileset;
 import sidescroller.Util;
 
 /**
@@ -180,7 +181,7 @@ public class EditableObject extends PClass {
 							applet.collidableObjects.add((CollidableObject) copy);
 							break;
 						case OBJECT :
-							copy = applet.gameGraphics.getObjectClass(id);
+							copy = Tileset.getObjectClass(id);
 							copy.focus = true;
 							copy.focusX = focusX;
 							copy.focusY = focusY;
