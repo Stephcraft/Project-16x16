@@ -167,6 +167,22 @@ public class Util {
 	}
 
 	/**
+	 * Calculates the angle between two PVectors where: East = 0; North = -1/2PI;
+	 * West = -PI; South = -3/2PI | 1/2PI
+	 * 
+	 * @param tail PVector Coordinate 1.
+	 * @param head PVector Coordinate 2.
+	 * @return float θ in radians.
+	 */
+	public static float angleBetween(PVector tail, PVector head) {
+		float a = PApplet.atan2(tail.y - head.y, tail.x - head.x);
+		if (a < 0) {
+			a += PConstants.TWO_PI;
+		}
+		return a;
+	}
+
+	/**
 	 * Writes data to file.
 	 * 
 	 * @param path    File location.
@@ -245,7 +261,7 @@ public class Util {
 						applet.backgroundObjects.add(backgroundObject);
 						break;
 					case "OBJECT" :
-						GameObject gameObject = applet.gameGraphics.getObjectClass(item.getString("id"));
+                        GameObject gameObject = applet.gameGraphics.getObjectClass(item.getString("id"));
 						gameObject.pos.x = item.getInt("x");
 						gameObject.pos.y = item.getInt("y");
 

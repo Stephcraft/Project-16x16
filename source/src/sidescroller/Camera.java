@@ -77,7 +77,7 @@ public final class Camera extends ZoomPan {
 	/**
 	 * Trauma is used internally to inform the magnitude of camera shake.
 	 */
-	private float trauma = 0, traumaDecay = 0.02f;
+	private float trauma = 0, traumaDecay = 0.015f;
 
 	/**
 	 * The most basic constructor. Initialises the camera at position (0, 0).
@@ -220,24 +220,25 @@ public final class Camera extends ZoomPan {
 		setZoomScaleX(scale);
 		setZoomScaleY(scale);
 
-		if (following && (((deadZoneScreen && !withinScreenDeadZone()) || ((deadZoneWorld && !withinWorldDeadZone()))
-				|| (!deadZoneScreen && !deadZoneWorld)))) {
-			setPanOffset(PApplet.lerp(getPanOffset().x,
-					((-followObject.pos.x - followObjectOffset.x - shakeOffset.x + offset.x) * zoom), lerpSpeed),
-					PApplet.lerp(getPanOffset().y,
-							((-followObject.pos.y - followObjectOffset.y - shakeOffset.y + offset.y) * zoom),
-							lerpSpeed));
+		if (following && ((deadZoneScreen && !withinScreenDeadZone()) || ((deadZoneWorld && !withinWorldDeadZone()))
+				|| (!deadZoneScreen && !deadZoneWorld))) {
+			setPanOffset(
+					PApplet.lerp(getPanOffset().x, ((-followObject.pos.x - followObjectOffset.x + offset.x) * zoom),
+							lerpSpeed) - shakeOffset.x,
+					PApplet.lerp(getPanOffset().y, ((-followObject.pos.y - followObjectOffset.y + offset.y) * zoom),
+							lerpSpeed) - shakeOffset.y);
 		} else if (!following) {
 			setPanOffset(
-					PApplet.lerp(getPanOffset().x, ((targetPosition.x - shakeOffset.x + offset.x) * zoom), lerpSpeed),
-					PApplet.lerp(getPanOffset().y, ((targetPosition.y - shakeOffset.y + offset.y) * zoom), lerpSpeed));
+					PApplet.lerp(getPanOffset().x, ((targetPosition.x + offset.x) * zoom), lerpSpeed) - shakeOffset.x,
+					PApplet.lerp(getPanOffset().y, ((targetPosition.y + offset.y) * zoom), lerpSpeed) - shakeOffset.y);
 		}
+		logicalPosition = PVector.mult(PVector.sub(getPanOffset(), offset), -1);
 
-		if (trauma > 0) { // 400 and 0.35 seem suitable values
+		if (trauma > 0) { // 50 and 0.35 seem suitable values
 			trauma -= traumaDecay;
 
-			float x = (trauma * trauma) * applet.random(-1, 1) * 400;
-			float y = (trauma * trauma) * applet.random(-1, 1) * 400;
+			float x = (trauma * trauma) * applet.random(-1, 1) * 50;
+			float y = (trauma * trauma) * applet.random(-1, 1) * 50;
 			shakeOffset = new PVector(x, y);
 			shakeRotationOffset = (trauma * trauma) * applet.random(-1, 1) * 0.35f;
 			if (trauma == 0) {
@@ -470,8 +471,7 @@ public final class Camera extends ZoomPan {
 	 *      centering and translation)
 	 */
 	public String getCameraPosition() {
-		logicalPosition = PVector.sub(getPanOffset(), offset); // offset camera to center screen
-		return PApplet.round(-logicalPosition.x) + ", " + PApplet.round(-logicalPosition.y);
+		return PApplet.round(logicalPosition.x) + ", " + PApplet.round(logicalPosition.y);
 	}
 
 	/**
@@ -484,20 +484,20 @@ public final class Camera extends ZoomPan {
 	}
 
 	/**
-	 * Return the world positon the mouse is over, accounting for camera rotation.
-	 * NOT WORKING FULLY. todo
+	 * Returns the world position the mouse is over, accounting for camera rotation
+	 * (uses polar coordinates). Overrides the {@link ZoomPan#getMouseCoord() parent
+	 * method}, since this does not account for camera rotation.
 	 * 
-	 * @return
-	 * @deprecated
+	 * @return World position the mouse is over.
 	 */
-	private PVector getRotationMouseCoord() { // return mouseCoord, acc
-		logicalPosition = PVector.sub(getPanOffset(), offset); // offset camera to center screen
-		PVector z = new PVector(getMouseCoord().x - logicalPosition.x, getMouseCoord().y + logicalPosition.y);
-		PVector n = new PVector(
-				(z.x * cos(rotation + shakeRotationOffset)) + (z.y * sin(rotation + shakeRotationOffset)),
-				z.x * sin(rotation + shakeRotationOffset) - z.y * cos(rotation + shakeRotationOffset));
-		n = new PVector((logicalPosition.x + n.x), -(logicalPosition.y + n.y));
-		return n;
+	@Override
+	public PVector getMouseCoord() {
+		final var theta = Util.angleBetween(super.getMouseCoord(), logicalPosition) - rotation;
+		final var eDist = PVector.dist(super.getMouseCoord(), logicalPosition);
+		final var xReal = logicalPosition.x + eDist * (cos(theta));
+		final var yReal = logicalPosition.y + eDist * (sin(theta));
+
+		return new PVector(xReal, yReal);
 	}
 
 }
