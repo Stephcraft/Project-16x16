@@ -19,6 +19,7 @@ public class Button extends PClass {
 	private boolean press;
 
 	private boolean blocked;
+	private boolean active;
 
 	/**
 	 * Constructor for Press
@@ -32,6 +33,7 @@ public class Button extends PClass {
 		height = 30;
 		x = 0;
 		y = 0;
+		active = false;
 	}
 
 	/**
@@ -40,18 +42,17 @@ public class Button extends PClass {
 	public void display() {
 		applet.strokeWeight(4);
 		
-		//May want to add a variable to set button as 'active': currently the 'blocked' section below mimics what should happen to an 'active' button
-		if(blocked) {
-			applet.stroke(175, 175, 175);
+		if(blocked && !active) {
+			applet.stroke(74, 81, 99);
 			applet.fill(47, 54, 73);
-		}
-		else if (focus) {
+		} else if (focus) {
 			applet.stroke(74, 81, 99);
 			applet.fill(47, 54, 73);
 		} else {
 			applet.stroke(47, 54, 73);
 			applet.fill(74, 81, 99);
 		}
+		applet.rectMode(CENTER);
 		applet.rect(x, y, width, height);
 
 		applet.fill(255);
@@ -108,6 +109,14 @@ public class Button extends PClass {
 		x = _x;
 		y = _y;
 	}
+	
+	public int getXPos() {
+		return x;
+	}
+	
+	public int getYPos() {
+		return y;
+	}
 
 	/**
 	 * Determin if the button is pressed
@@ -121,7 +130,15 @@ public class Button extends PClass {
 		return width;
 	}
 	
+	public int getHeight() {
+		return height;
+	}
+	
 	public void setBlocked(boolean block) {
 		blocked = block;
+	}
+	
+	public void setActive(boolean active) {
+		this.active = active;
 	}
 }

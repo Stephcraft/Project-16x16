@@ -15,7 +15,10 @@ import sidescroller.Tileset;
 import sidescroller.Tileset.tileType;
 import ui.Anchor;
 import ui.ScrollBarVertical;
+import ui.Tab;
+import windows.LoadTestWindow;
 import windows.SaveLevelWindow;
+import windows.TestWindow;
 
 public class SceneMapEditor extends PScene {
 
@@ -37,7 +40,13 @@ public class SceneMapEditor extends PScene {
 
 	// Windows
 	private SaveLevelWindow window_saveLevel;
+	private LoadTestWindow window_loadTest;
+	private TestWindow window_test;
 
+	//Tabs
+	private Tab windowTabs;
+	String tabTexts[] = new String[] {"load", "save", "long name"};
+	
 	// Editor Item
 	private EditorItem editorItem;
 
@@ -48,7 +57,7 @@ public class SceneMapEditor extends PScene {
 	private ScrollBarVertical scrollBar;
 
 	public enum Tools {
-		MOVE, MODIFY, INVENTORY, PLAY, SAVE,
+		MOVE, MODIFY, INVENTORY, PLAY, SAVE, LOAD, TEST,
 	}
 
 	public Tools tool;
@@ -102,6 +111,8 @@ public class SceneMapEditor extends PScene {
 
 		// Init Window
 		window_saveLevel = new SaveLevelWindow(applet);
+		window_loadTest = new LoadTestWindow(applet);
+		window_test = new TestWindow(applet);
 
 		// Init ScollBar
 		Anchor scrollBarAnchor = new Anchor(applet, -20, 150, 20, 50);
@@ -116,8 +127,12 @@ public class SceneMapEditor extends PScene {
 		tool = Tools.MODIFY;
 
 		util.loadLevel(SideScroller.LEVEL); // TODO change level
+		
+		windowTabs = new Tab(applet, tabTexts, 3);
+		windowTabs.setActiveButton(1);
+		windowTabs.moveActive(1);
 	}
-
+	
 	/**
 	 * Draw scene elements that are below (affected by) the camera.
 	 */
@@ -221,6 +236,8 @@ public class SceneMapEditor extends PScene {
 			case MOVE :
 			case INVENTORY :
 			case SAVE :
+			case LOAD :
+			case TEST :
 				break;
 			default :
 				break;
@@ -320,9 +337,43 @@ public class SceneMapEditor extends PScene {
 			case PLAY :
 				break;
 			case SAVE :
+				windowTabs.update();
+				windowTabs.display();
 				window_saveLevel.update();
 				window_saveLevel.display();
+				if(windowTabs.getButton(0).event()) {
+					windowTabs.moveActive(0);
+					tool = Tools.LOAD;
+				} else if(windowTabs.getButton(2).event()) {
+					windowTabs.moveActive(2);
+					tool = Tools.TEST;
+				}
 				break;
+			case LOAD :
+				windowTabs.update();
+				windowTabs.display();
+				window_loadTest.update();
+				window_loadTest.display();
+				if(windowTabs.getButton(1).event()) {
+					windowTabs.moveActive(1);
+					tool = Tools.SAVE;
+				} else if(windowTabs.getButton(2).event()) {
+					windowTabs.moveActive(2);
+					tool = Tools.TEST;
+				}
+				break;
+			case TEST :
+				windowTabs.update();
+				windowTabs.display();
+				window_test.update();
+				window_test.display();
+				if(windowTabs.getButton(1).event()) {
+					windowTabs.moveActive(1);
+					tool = Tools.SAVE;
+				} else if(windowTabs.getButton(0).event()) {
+					windowTabs.moveActive(0);
+					tool = Tools.LOAD;
+				}
 			default :
 				break;
 		}

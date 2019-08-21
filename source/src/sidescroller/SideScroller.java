@@ -234,7 +234,7 @@ public class SideScroller extends PApplet {
 		} else {
 			deltaTime = 1;
 		}
-
+		
 		// Reset Events
 		keyPressEvent = false;
 		keyReleaseEvent = false;
@@ -250,7 +250,7 @@ public class SideScroller extends PApplet {
 			camera.rotate(PI / 60);
 		}
 	}
-
+	
 	/**
 	 * keyPressed decides if the key that has been pressed is a valid key. if it is,
 	 * it is then added to the keys ArrayList, and the keyPressedEvent flag is set.

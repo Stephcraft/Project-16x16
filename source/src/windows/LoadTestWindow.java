@@ -3,14 +3,12 @@ package windows;
 import scene.SceneMapEditor;
 import sidescroller.PClass;
 import sidescroller.SideScroller;
-import ui.TextInputField;
 import ui.Button;
-import ui.Tab;
+import ui.TextInputField;
 
-public class SaveLevelWindow extends PClass {
-
+public class LoadTestWindow extends PClass{
 	TextInputField input;
-	Button pressSave;
+	Button pressLoad;
 	Button pressCancel;
 
 	String path = "Assets/Storage/Game/Maps/";
@@ -18,14 +16,14 @@ public class SaveLevelWindow extends PClass {
 	// Map Editor Scene
 	public SceneMapEditor scene;
 
-	public SaveLevelWindow(SideScroller a) {
+	public LoadTestWindow(SideScroller a) {
 		super(a);
 
 		scene = (SceneMapEditor) a.mapEditor;
 
-		pressSave = new Button(applet);
-		pressSave.setText("Save Level");
-		pressSave.setPosition(applet.width / 2, applet.height / 2 + 150);
+		pressLoad = new Button(applet);
+		pressLoad.setText("Load Level");
+		pressLoad.setPosition(applet.width / 2, applet.height / 2 + 150);
 
 		pressCancel = new Button(applet);
 		pressCancel.setText("Cancel");
@@ -52,7 +50,7 @@ public class SaveLevelWindow extends PClass {
 		applet.fill(255);
 		applet.textSize(30);
 		applet.textAlign(CENTER, CENTER);
-		applet.text("Save Level", applet.width / 2, applet.height / 2 - 200);
+		applet.text("Load Level", applet.width / 2, applet.height / 2 - 200);
 
 		applet.textSize(20);
 		applet.textAlign(LEFT, TOP);
@@ -62,7 +60,7 @@ public class SaveLevelWindow extends PClass {
 		input.display();
 
 		// Display Save Press
-		pressSave.display();
+		pressLoad.display();
 
 		// Display Cancel Press
 		pressCancel.display();
@@ -71,9 +69,9 @@ public class SaveLevelWindow extends PClass {
 	public void update() {
 		input.update();
 
-		pressSave.update();
-		if (pressSave.event()) {
-			util.saveLevel(path + input.getText() + ".dat");
+		pressLoad.update();
+		if (pressLoad.event()) {
+			//util.saveLevel(path + input.getText() + ".dat");
 			input.setText("");
 			scene.tool = SceneMapEditor.Tools.MOVE;
 		}
