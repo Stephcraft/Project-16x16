@@ -1,8 +1,9 @@
 package ui;
 
+import sidescroller.PClass;
 import sidescroller.SideScroller;
 
-public class Tab extends Button{
+public class Tab extends PClass{
 	private int tabCount;
 	private Button[] buttons;
 	
