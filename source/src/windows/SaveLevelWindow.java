@@ -5,12 +5,15 @@ import sidescroller.PClass;
 import sidescroller.SideScroller;
 import ui.TextInputField;
 import ui.Button;
+import ui.Tab;
 
 public class SaveLevelWindow extends PClass {
 
 	TextInputField input;
 	Button pressSave;
 	Button pressCancel;
+	Tab loadAndSave;
+	String[] tabTexts;
 
 	String path = "Assets/Storage/Game/Maps/";
 
@@ -33,6 +36,11 @@ public class SaveLevelWindow extends PClass {
 		input = new TextInputField(applet);
 		input.setPosition(applet.width / 2, applet.height / 2);
 		input.setWidth(300);
+		
+		String tabTexts[] = new String[] {"load", "save"};
+		
+		loadAndSave = new Tab(applet);
+		loadAndSave.setTab(2, applet, tabTexts);
 	}
 
 	public void display() {
@@ -65,6 +73,9 @@ public class SaveLevelWindow extends PClass {
 
 		// Display Cancel Press
 		pressCancel.display();
+		
+		//Display load/save tabs
+		loadAndSave.display();
 	}
 
 	public void update() {
@@ -81,6 +92,12 @@ public class SaveLevelWindow extends PClass {
 		if (pressCancel.event()) {
 			input.setText("");
 			scene.tool = SceneMapEditor.Tools.MOVE;
+		}
+		
+		loadAndSave.update();
+		loadAndSave.setBlockedButton(1, true);
+		if(loadAndSave.getButton(0).event()) {
+			//Display load window here
 		}
 	}
 }
