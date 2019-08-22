@@ -340,6 +340,7 @@ public class SceneMapEditor extends PScene {
 				if(windowTabs.getActiveButton() != 1) {
 					windowTabs.moveActive(1);
 				}
+				window_saveLevel.privacyDisplay();
 				windowTabs.update();
 				windowTabs.display();
 				window_saveLevel.update();
@@ -357,6 +358,7 @@ public class SceneMapEditor extends PScene {
 				if(windowTabs.getActiveButton() != 0) {
 					windowTabs.moveActive(0);
 				}
+				window_loadTest.privacyDisplay();
 				windowTabs.update();
 				windowTabs.display();
 				window_loadTest.update();
@@ -373,6 +375,7 @@ public class SceneMapEditor extends PScene {
 				if(windowTabs.getActiveButton() != 2) {
 					windowTabs.moveActive(2);
 				}
+				window_test.privacyDisplay();
 				windowTabs.update();
 				windowTabs.display();
 				window_test.update();

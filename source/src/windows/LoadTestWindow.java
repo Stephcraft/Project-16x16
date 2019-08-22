@@ -5,7 +5,7 @@ import sidescroller.PClass;
 import sidescroller.SideScroller;
 import ui.Button;
 import ui.TextInputField;
-
+//CAN BE IGNORED: ONLY A TESTING WINDOW
 public class LoadTestWindow extends PClass{
 	TextInputField input;
 	Button pressLoad;
@@ -34,12 +34,15 @@ public class LoadTestWindow extends PClass{
 		input.setWidth(300);
 	}
 
-	public void display() {
+	//Used to toggle the darkened background, use for buttons at the moment
+	public void privacyDisplay() {
 		// Display Privacy Area
 		applet.fill(0, 100);
 		applet.noStroke();
 		applet.rect(applet.width / 2, applet.height / 2, applet.width, applet.height);
-		
+	}
+	
+	public void display() {
 		// Display Window
 		applet.fill(29, 33, 45);
 		applet.stroke(47, 54, 73);

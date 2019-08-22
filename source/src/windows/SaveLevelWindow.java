@@ -36,12 +36,15 @@ public class SaveLevelWindow extends PClass {
 		input.setWidth(300);
 	}
 
-	public void display() {
+	//Used to toggle the darkened background, use for buttons at the moment
+	public void privacyDisplay() {
 		// Display Privacy Area
 		applet.fill(0, 100);
 		applet.noStroke();
 		applet.rect(applet.width / 2, applet.height / 2, applet.width, applet.height);
-		
+	}
+	
+	public void display() {
 		// Display Window
 		applet.fill(29, 33, 45);
 		applet.stroke(47, 54, 73);

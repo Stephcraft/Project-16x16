@@ -41,11 +41,7 @@ public class Button extends PClass {
 	 */
 	public void display() {
 		applet.strokeWeight(4);
-		
-		if(blocked && !active) {
-			applet.stroke(74, 81, 99);
-			applet.fill(47, 54, 73);
-		} else if (focus) {
+		if (focus) {
 			applet.stroke(74, 81, 99);
 			applet.fill(47, 54, 73);
 		} else {
