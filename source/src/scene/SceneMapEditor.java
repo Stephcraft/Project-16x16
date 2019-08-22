@@ -45,6 +45,7 @@ public class SceneMapEditor extends PScene {
 
 	//Tabs
 	private Tab windowTabs;
+	//Each button id corresponds with its string id: ex) load = 0, save = 1, etc.
 	String tabTexts[] = new String[] {"load", "save", "long name"};
 	
 	// Editor Item
@@ -57,7 +58,7 @@ public class SceneMapEditor extends PScene {
 	private ScrollBarVertical scrollBar;
 
 	public enum Tools {
-		MOVE, MODIFY, INVENTORY, PLAY, SAVE, LOAD, TEST,
+		MOVE, MODIFY, INVENTORY, PLAY, SAVE, LOADEXAMPLE, TEST,
 	}
 
 	public Tools tool;
@@ -129,8 +130,6 @@ public class SceneMapEditor extends PScene {
 		util.loadLevel(SideScroller.LEVEL); // TODO change level
 		
 		windowTabs = new Tab(applet, tabTexts, 3);
-		windowTabs.setActiveButton(1);
-		windowTabs.moveActive(1);
 	}
 	
 	/**
@@ -236,7 +235,7 @@ public class SceneMapEditor extends PScene {
 			case MOVE :
 			case INVENTORY :
 			case SAVE :
-			case LOAD :
+			case LOADEXAMPLE :
 			case TEST :
 				break;
 			default :
@@ -337,19 +336,27 @@ public class SceneMapEditor extends PScene {
 			case PLAY :
 				break;
 			case SAVE :
+				//The if statement below should be used in each window that includes a tab. switch the number to the id of the button it's checking for
+				if(windowTabs.getActiveButton() != 1) {
+					windowTabs.moveActive(1);
+				}
 				windowTabs.update();
 				windowTabs.display();
 				window_saveLevel.update();
 				window_saveLevel.display();
+				// This is an example of how to switch windows when another tab button is pressed.
 				if(windowTabs.getButton(0).event()) {
 					windowTabs.moveActive(0);
-					tool = Tools.LOAD;
+					tool = Tools.LOADEXAMPLE;
 				} else if(windowTabs.getButton(2).event()) {
 					windowTabs.moveActive(2);
 					tool = Tools.TEST;
 				}
 				break;
-			case LOAD :
+			case LOADEXAMPLE :
+				if(windowTabs.getActiveButton() != 0) {
+					windowTabs.moveActive(0);
+				}
 				windowTabs.update();
 				windowTabs.display();
 				window_loadTest.update();
@@ -363,17 +370,21 @@ public class SceneMapEditor extends PScene {
 				}
 				break;
 			case TEST :
+				if(windowTabs.getActiveButton() != 2) {
+					windowTabs.moveActive(2);
+				}
 				windowTabs.update();
 				windowTabs.display();
 				window_test.update();
 				window_test.display();
-				if(windowTabs.getButton(1).event()) {
+				if(windowTabs.getButton(0).event()) {
+					windowTabs.moveActive(0);
+					tool = Tools.LOADEXAMPLE;
+				} else if(windowTabs.getButton(1).event()) {
 					windowTabs.moveActive(1);
 					tool = Tools.SAVE;
-				} else if(windowTabs.getButton(0).event()) {
-					windowTabs.moveActive(0);
-					tool = Tools.LOAD;
 				}
+				break;
 			default :
 				break;
 		}

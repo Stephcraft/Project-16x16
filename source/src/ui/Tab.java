@@ -5,11 +5,11 @@ import sidescroller.SideScroller;
 
 public class Tab extends PClass{
 	
-	private int tabWidth = 0;
+	private int tabWidth = 400;
 	private int tabCount;
 	private Button[] buttons;
-	private int activeButton;
-	private int prevButton;
+	private int activeButton = 1;
+	private int prevButton = 1;
 	private int buttonDistance = 0;
 	private int movingIncrement = 0;
 	private double incrementSpeed;
@@ -24,13 +24,23 @@ public class Tab extends PClass{
 		for(int i = 0; i < tabCount; i++) {
 			buttons[i] = new Button(a);
 			buttons[i].setText(texts[i]);
-			tabWidth += (buttons[i].getWidth());
-			buttons[i].setPosition((applet.width / 2) + (i * 100), (applet.height / 2) - 275);
+			if(i == 0) {
+				buttons[i].setPosition((applet.width / 2) - 150, (applet.height / 2) - 275);
+			} else {
+				buttons[i].setPosition(buttons[i - 1].getXPos() + ((buttons[i - 1].getWidth() + buttons[i].getWidth()) / 2) + 5, (applet.height / 2) - 275);
+			}
 		}
 	}
 	
 	//Update all buttons the tab contains
 	public void update() {
+		for(int j = 0; j < tabCount; j++) {
+			if(j == 0) {
+				buttons[j].setPosition((applet.width / 2) - 150, (applet.height / 2) - 275);
+			} else {
+				buttons[j].setPosition(buttons[j - 1].getXPos() + ((buttons[j - 1].getWidth() + buttons[j].getWidth()) / 2) + 5, (applet.height / 2) - 275);
+			}
+		}
 		for(int i = 0; i < tabCount; i++) {
 			buttons[i].update();
 		}
@@ -49,19 +59,26 @@ public class Tab extends PClass{
 		displayActive();
 	}
 	
+	//Move active button to selected
 	public void moveActive(int index){
 		setPrevButton(activeButton);
 		setActiveButton(index);
 		buttonDistance = buttons[prevButton].getXPos() - buttons[activeButton].getXPos();
 	}
 	
+	//Selection animation between buttons
 	public void displayActive() {
 		applet.strokeWeight(5);
 		applet.stroke(200, 200, 200);
 		applet.fill(0, 100);
-		if(buttonDistance - movingIncrement == 0) {
+		if(buttonDistance == movingIncrement) {
+			applet.rectMode(CENTER);
 			applet.rect(buttons[activeButton].getXPos(), buttons[activeButton].getYPos(), buttons[activeButton].getWidth(), buttons[activeButton].getHeight());
-		} else if(buttonDistance - movingIncrement > 0) {
+			movingIncrement = 0;
+			buttonDistance = 0;
+			setIncrementSpeed(1);
+		} else if(buttonDistance >  movingIncrement) {
+			applet.rectMode(CENTER);
 			applet.rect(buttons[prevButton].getXPos() - movingIncrement, buttons[prevButton].getYPos(), buttons[prevButton].getWidth(), buttons[prevButton].getHeight());
 			movingIncrement += incrementSpeed;
 			setIncrementSpeed(movingIncrement);
@@ -70,7 +87,8 @@ public class Tab extends PClass{
 				buttonDistance = 0;
 				setIncrementSpeed(1);
 			}
-		} else if(-buttonDistance - movingIncrement > 0){
+		} else if(buttonDistance < movingIncrement){
+			applet.rectMode(CENTER);
 			applet.rect(buttons[prevButton].getXPos() + movingIncrement, buttons[prevButton].getYPos(), buttons[prevButton].getWidth(), buttons[prevButton].getHeight());
 			movingIncrement += incrementSpeed;
 			setIncrementSpeed(movingIncrement);
@@ -108,12 +126,24 @@ public class Tab extends PClass{
 		setBlockedButton(activeButton, true);
 	}
 	
+	//Set previous active button
 	public void setPrevButton(int index) {
 		prevButton = index;
 		setBlockedButton(prevButton, false);
 	}
 	
-	public void setIncrementSpeed(double speed) {
-		incrementSpeed = Math.pow(speed, .62);
+	//Set button's moving speed
+	public void setIncrementSpeed(int speed) {
+		incrementSpeed = (int) Math.pow(speed, .62);
+	}
+	
+	//Get current active button
+	public int getActiveButton() {
+		return activeButton;
+	}
+	
+	//Get previous active button
+	public int getPrevButton() {
+		return prevButton;
 	}
 }

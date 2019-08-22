@@ -69,6 +69,10 @@ public class SaveLevelWindow extends PClass {
 	}
 
 	public void update() {
+		pressSave.setPosition(applet.width / 2, applet.height / 2 + 150);
+		pressCancel.setPosition(applet.width / 2, applet.height / 2 + 200);
+		input.setPosition(applet.width / 2, applet.height / 2);
+		
 		input.update();
 
 		pressSave.update();
