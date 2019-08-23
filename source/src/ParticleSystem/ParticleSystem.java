@@ -2,9 +2,12 @@ package ParticleSystem;
 
 import java.util.ArrayList;
 
+import ParticleSystem.Emission.AreaEmission;
 import ParticleSystem.Emission.ParticleEmission;
 import ParticleSystem.Modifier.ParticleModifier;
+import processing.core.PApplet;
 import processing.core.PImage;
+import processing.core.PVector;
 import sidescroller.SideScroller;
 import sidescroller.Tileset;
 
@@ -16,31 +19,38 @@ public class ParticleSystem {
 	private PImage image;
 	
 	private ParticleEmission emission;
-	private ArrayList<Particle> particles;
+	private ArrayList<Particle> activeParticles;
+	private ArrayList<Particle> inactiveParticles;
 	private ArrayList<ParticleModifier> modifiers;
 	
-	public int spawnRate = 1;
-	public int spawnPerRate = 1;
-	public int limit = 100000;
-	private float lifeSpan;
-	
+	public int spawnRate;
+	public int spawnAmount;
+	public float lifespan;
 	public boolean spawn = true;
-	public boolean pause = false;
-	
-	public ParticleSystem(SideScroller applet, String imageName) {
+
+	public ParticleSystem(SideScroller applet, String imageName, PVector position, int spawnRate, int spawnAmount, float lifespan) {
 		this.applet = applet;
-		
 		image = Tileset.getTile(imageName);
+		emission = new AreaEmission(position, 0, 0, 0);
+		
+		this.spawnRate = spawnRate;
+		this.spawnAmount = spawnAmount;
+		this.lifespan = lifespan;
+
+		activeParticles = new ArrayList<Particle>();
+		inactiveParticles = new ArrayList<Particle>();
 		modifiers = new ArrayList<ParticleModifier>();
 	}
 	
-	public void addModifier(ParticleModifier modifier)
-	{
+	public void setEmission(ParticleEmission emission) {
+		this.emission = emission;
+	}
+	
+	public void addModifier(ParticleModifier modifier) {
 		modifiers.add(modifier);
 	}
 
-	public boolean removeModifier(ParticleModifier modifier)
-	{
+	public boolean removeModifier(ParticleModifier modifier) {
 		boolean hasModifier = modifiers.contains(modifier);
 		if (hasModifier)
 			modifiers.remove(modifier);
@@ -48,26 +58,11 @@ public class ParticleSystem {
 		return hasModifier;
 	}
 	
-	public void setEmission(ParticleEmission emission, float lifeSpan)
-	{
-		this.emission = emission;
-		this.lifeSpan = lifeSpan;
-	}
-	
-	public void simulate(int spawnRate, int spawnPerRate, ParticleEmission emission, float lifeSpan) {
-		
-		setEmission(emission, lifeSpan);
-		
-		this.spawnRate = spawnRate;
-		this.spawnPerRate = spawnPerRate;
-		particles = new ArrayList<Particle>();
-		limitParticles();
-	}
-	
 	public void preLoad() {
-		for(int i = 0; i < lifeSpan*FRAMERATE; i++) {
-			if (i % (FRAMERATE/spawnRate) == 0) {
-				ArrayList<Particle> newParticles = resetParticles(spawnPerRate);
+		for(int i = 0; i < lifespan*FRAMERATE; i++) {
+			if (nextTick(i)) {
+				ArrayList<Particle> newParticles = addParticles(spawnAmount);
+				
 				for(Particle particle : newParticles)
 					particle.preLoad(i);
 			}
@@ -75,84 +70,79 @@ public class ParticleSystem {
 	}
 	
 	public void run() {
-		if (!pause) {
-			limitParticles();
-			runParticles();
-		}
-		if (spawn && nextTick()) {
-			resetParticles(spawnPerRate);
-		}
+		runParticles();
+		
+		if (spawn && nextTick(applet.frameCount))
+			spawnParticles();
 	}
 
 	private void runParticles()
 	{
-		for(Particle particle : particles) {
+		ArrayList<Particle> deadParticles = new ArrayList<Particle>();
+		for(Particle particle : activeParticles) {
+			particle.run();
+			
 			for(ParticleModifier modifier : modifiers)
 				modifier.update(particle);
-			particle.run();
+			
+			if (particle.isDead())
+				deadParticles.add(particle);
 		}
+		activeParticles.removeAll(deadParticles);
+		inactiveParticles.addAll(deadParticles);
+	}
+	
+	private void spawnParticles() {
+		int amount = spawnAmount;
+		amount -= loopParticles(amount);
+		if (amount > 0)
+			addParticles(amount);
+	}
+	
+	private int loopParticles(int amount) {
+		ArrayList<Particle> particles = new ArrayList<Particle>();
+		for(Particle particle : inactiveParticles) {
+			if (particle.isDead()) {
+				respawnParticle(particle);
+				particles.add(particle);
+			}
+			if (particles.size() >= amount) break;
+		}
+		inactiveParticles.removeAll(particles);
+		activeParticles.addAll(particles);
+		return particles.size();
 	}
 	
 	private Particle addParticle() {
-		Particle newParticle = new Particle(applet, image);
-		particles.add(newParticle);
-		return newParticle;
-	}
-	
-	private void removeParticles(int amount) {
-		int count = 0;
-		ArrayList<Particle> temp = new ArrayList<Particle>();
-		for(Particle particle : particles) {
-			if (particle.isDead()) {
-				temp.add(particle);
-				count++;
-			}
-			if (count >= amount) break;
-		}
-		for(Particle particle : temp) {
-			particles.remove(particle);
-		}
-	}
-	
-	private void resetParticle(Particle particle) {
+		Particle particle = new Particle(applet, image);
 		emission.generateNew();
-		particle.spawn(emission, lifeSpan*FRAMERATE);
-	}
-	// Remove Extra Particles
-	private void limitParticles()
-	{
-		int limitDelta = particles.size() - limit;
-		if (limitDelta > 0)
-		{
-			removeParticles(limitDelta);
-		}
-	}
-
-	private ArrayList<Particle> resetParticles(int amount) {
-		int count = 0;
-		ArrayList<Particle> resetParticles = new ArrayList<Particle>();
-		for(Particle particle : particles)
-		{
-			if (particle.isDead())
-			{
-				resetParticle(particle);
-				resetParticles.add(particle);
-				count++;
-			}
-			if (count >= amount) return resetParticles;
-		}
-		int delta = amount - count;
-		for(int i = 0; i < delta; i++)
-		{
-			Particle particle = addParticle();
-			resetParticle(particle);
-			resetParticles.add(particle);
-		}	
+		particle.spawn(emission, lifespan*FRAMERATE);
 		
-		return resetParticles;
+		for(ParticleModifier modifier : modifiers)
+			modifier.onSpawn(particle);
+		
+		activeParticles.add(particle);
+		return particle;
 	}
 	
-	private boolean nextTick() {
-		return applet.frameCount % (FRAMERATE/spawnRate) == 0;
+	private ArrayList<Particle> addParticles(int amount) {
+		ArrayList<Particle> newParticles = new ArrayList<Particle>();
+		for(int i = 0; i < amount; i++) {
+			Particle particle = addParticle();
+			newParticles.add(particle);
+		}
+		return newParticles;
+	}
+	
+	private void respawnParticle(Particle particle) {
+		emission.generateNew();
+		particle.spawn(emission, lifespan*FRAMERATE);
+		
+		for(ParticleModifier modifier : modifiers)
+			modifier.onSpawn(particle);
+	}
+	
+	private boolean nextTick(int frameCount) {
+		return frameCount % (FRAMERATE/spawnRate) == 0;
 	}
 }

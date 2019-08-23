@@ -18,5 +18,10 @@ public class ParticleSizeModifier implements ParticleModifier {
 		float size = particle.getLifeSpanNormalized()*(startSize-endSize)+endSize;
 		particle.size = size;
 	}
-	
+
+	@Override
+	public void onSpawn(Particle particle) {
+		// TODO Auto-generated method stub
+		
+	}
 }

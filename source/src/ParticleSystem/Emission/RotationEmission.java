@@ -2,29 +2,34 @@ package ParticleSystem.Emission;
 
 import java.util.Random;
 
+import processing.core.PApplet;
 import processing.core.PVector;
 
-public class AreaEmission implements ParticleEmission {
+public class RotationEmission implements ParticleEmission {
 
 	private PVector position;
 	private float velocity;
 	private float acceleration;
 	private float spread;
+	private float div;
+	private float phi;
+	
 	
 	private PVector newPosition;
 	private PVector newVelocity;
 	private PVector newAcceleration;
 	
-	public AreaEmission(PVector position, float velocity, float acceleration, float spread) {
+	public RotationEmission(PVector position, float velocity, float acceleration, float spread, float div) {
 		this.position = position;
 		this.velocity = velocity;
 		this.acceleration = acceleration;
 		this.spread = spread;
+		this.div = div;
 	}
-	
+
 	@Override
 	public void generateNew() {
-		float phi = (float) (2*Math.PI*Math.random());
+		phi += div;
 		newPosition();
 		newVelocity(phi);
 		newAcceleration(phi);
@@ -49,7 +54,7 @@ public class AreaEmission implements ParticleEmission {
 		newAcceleration.x = (float) (acceleration*Math.cos(phi));
 		newAcceleration.y = (float) (acceleration*Math.sin(phi));
 	}
-	
+
 	@Override
 	public PVector getPosition() {
 		return newPosition;
@@ -64,4 +69,4 @@ public class AreaEmission implements ParticleEmission {
 	public PVector getAcceleration() {
 		return newAcceleration;
 	}
-} 
+}

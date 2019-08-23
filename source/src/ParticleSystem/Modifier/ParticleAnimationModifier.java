@@ -24,9 +24,12 @@ public class ParticleAnimationModifier implements ParticleModifier {
 		particle.image = getImage(particle.getFrameCount());
 	}
 	
-	private PImage getImage(int frameCount)
-	{
+	private PImage getImage(int frameCount) {
 		int id = (frameCount/rate) % images.size();
 		return images.get(id);
+	}
+
+	@Override
+	public void onSpawn(Particle particle) {
 	}
 }
