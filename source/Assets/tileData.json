@@ -83,7 +83,7 @@
 
     {"name": "MAGIC_SOURCE", "x": 0, "y": 31, "w": 16, "h": 16, "type": "OBJECT"},
     {"name": "MIRROR_BOX", "x": 21, "y": 10, "w": 16, "h": 16, "type": "OBJECT"},
-
+    
     {"name": "PlayerIdle1", "x": 0, "y": 16, "w": 16, "h": 16, "type": "ANIMATION"},
     {"name": "PlayerIdle2", "x": 1, "y": 16, "w": 16, "h": 16, "type": "ANIMATION"},
     {"name": "PlayerIdle3", "x": 2, "y": 16, "w": 16, "h": 16, "type": "ANIMATION"},
@@ -129,6 +129,8 @@
     {"name": "MagicMove7", "x": 15, "y": 29.75, "w": 40, "h": 15, "type": "ANIMATION"},
     {"name": "MagicMove8", "x": 17.5, "y": 29.75, "w": 40, "h": 15, "type": "ANIMATION"},
     {"name": "MagicMove9", "x": 20, "y": 29.75, "w": 40, "h": 15, "type": "ANIMATION"},
+
+    {"name": "MIRROR_BOX_HIT", "x": 22, "y": 10, "w": 16, "h": 16, "type": "ANIMATION"},
 
     {"name": "MirrorBoxRotate1", "x": 24.5, "y": 10.5, "w": 20, "h": 22, "type": "ANIMATION"},
     {"name": "MirrorBoxRotate2", "x": 24.5, "y": 11.875, "w": 20, "h": 22, "type": "ANIMATION"},
