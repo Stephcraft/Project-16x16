@@ -133,7 +133,7 @@ public final class Player extends EditableObject {
 			applet.image(image, pos.x, pos.y);
 		}
 
-		if (SideScroller.DEBUG) {
+		if (applet.debug) {
 			applet.strokeWeight(1);
 			applet.stroke(0, 255, 200);
 			applet.noFill();
@@ -249,7 +249,7 @@ public final class Player extends EditableObject {
 		}
 		// boolean collides = false;
 
-		if (SideScroller.DEBUG) {
+		if (applet.debug) {
 			applet.noFill();
 			applet.stroke(255, 0, 0);
 			applet.strokeWeight(1);
@@ -260,7 +260,7 @@ public final class Player extends EditableObject {
 		for (int i = 0; i < applet.collidableObjects.size(); i++) {
 			CollidableObject collision = applet.collidableObjects.get(i);
             if (Util.fastInRange(pos, collision.pos, collisionRange)) { // In Player Range
-				if (SideScroller.DEBUG) {
+				if (applet.debug) {
 					applet.strokeWeight(2);
 					applet.rect(collision.pos.x, collision.pos.y, collision.width, collision.height);
 					applet.fill(255, 0, 0);

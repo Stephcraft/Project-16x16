@@ -40,7 +40,7 @@ public class BackgroundObject extends EditableObject {
 
 		applet.image(image, pos.x + pixelOffsetX, pos.y + pixelOffsetY);
 
-		if (SideScroller.DEBUG) {
+		if (applet.debug) {
 			applet.noStroke();
 			applet.fill(255);
 			applet.ellipse(pos.x, pos.y, 5, 5);

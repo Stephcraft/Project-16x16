@@ -88,9 +88,6 @@ public final class Camera extends ZoomPan {
 		super(applet);
 		this.applet = applet;
 		targetPosition = new PVector(0, 0); // default position
-		if (SideScroller.DEBUG) {
-			applet.registerMethod("post", this);
-		}
 	}
 
 	/**
@@ -103,9 +100,6 @@ public final class Camera extends ZoomPan {
 		super(applet);
 		this.applet = applet;
 		targetPosition = new PVector(-startPosition.x, -startPosition.y);
-		if (SideScroller.DEBUG) {
-			applet.registerMethod("post", this);
-		}
 	}
 
 	/**
@@ -119,9 +113,6 @@ public final class Camera extends ZoomPan {
 		this.applet = applet;
 		this.followObject = followObject;
 		following = true;
-		if (SideScroller.DEBUG) {
-			applet.registerMethod("post", this);
-		}
 	}
 
 	/**
@@ -139,15 +130,10 @@ public final class Camera extends ZoomPan {
 		this.followObject = followObject;
 		following = true;
 		followObjectOffset = followOffset.copy();
-		if (SideScroller.DEBUG) {
-			applet.registerMethod("post", this);
-		}
 	}
 
 	/**
-	 * Draws camera debug info if {@link SideScroller#DEBUG DEBUG} is true. Bound to
-	 * the end of draw() loop using {@link PApplet#registerMethod(String, Object)
-	 * registerMethod()} - don't call this method manually!
+	 * Draws camera debug info.
 	 */
 	public void post() {
 		applet.noFill();
@@ -163,6 +149,7 @@ public final class Camera extends ZoomPan {
 		applet.line(applet.width / 2 - length * 2, applet.height / 2, applet.width / 2 + length * 2, applet.height / 2);
 		applet.popMatrix();
 		if (following) {
+			applet.rectMode(PApplet.CENTER);
 			applet.rect(getCoordToDisp(followObject.pos).x, getCoordToDisp(followObject.pos).y, length * 2, length * 2);
 			if (deadZoneScreen) {
 				applet.rectMode(PApplet.CORNER);

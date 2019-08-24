@@ -174,18 +174,6 @@ public class SceneMapEditor extends PScene {
 
 			applet.gameObjects.get(i).display();
 
-			if (SideScroller.DEBUG) {
-				applet.strokeWeight(2);
-				applet.noFill();
-				applet.stroke(255, 190, 200);
-				applet.rect(applet.gameObjects.get(i).pos.x, applet.gameObjects.get(i).pos.y,
-						applet.gameObjects.get(i).width, applet.gameObjects.get(i).height);
-				applet.noStroke();
-				applet.fill(255);
-				applet.ellipse(applet.gameObjects.get(i).pos.x, applet.gameObjects.get(i).pos.y, 5, 5);
-				applet.noFill();
-			}
-
 			// Delete
 			if (applet.gameObjects.get(i).focus && applet.keyPress(8) && applet.keyPressEvent) {
 				applet.gameObjects.remove(i);
@@ -229,6 +217,19 @@ public class SceneMapEditor extends PScene {
 		// View Viewport Editor
 //		worldViewportEditor.updateEditor(); // TODO
 //		worldViewportEditor.displayEditor(); // TODO
+	}
+
+	public void debug() {
+		for (CollidableObject o : applet.collidableObjects) {
+			applet.strokeWeight(2);
+			applet.noFill();
+			applet.stroke(255, 190, 200);
+			applet.rect(o.pos.x, o.pos.y, o.width, o.height);
+			applet.noStroke();
+			applet.fill(255);
+			applet.ellipse(o.pos.x, o.pos.y, 5, 5);
+			applet.noFill();
+		}
 	}
 
 	/**

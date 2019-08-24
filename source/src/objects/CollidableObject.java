@@ -53,7 +53,7 @@ public class CollidableObject extends EditableObject {
 		}
 
 		if (id == null) {
-			if (SideScroller.DEBUG) {
+			if (applet.debug) {
 				applet.noFill();
 				applet.strokeWeight(1);
 				applet.stroke(0, 255, 200);
@@ -63,7 +63,7 @@ public class CollidableObject extends EditableObject {
 			applet.image(image, pos.x + pixelOffsetX, pos.y + pixelOffsetY);
 		}
 
-		if (SideScroller.DEBUG) {
+		if (applet.debug) {
 			applet.noStroke();
 			applet.fill(255);
 			applet.ellipse(pos.x, pos.y, 5, 5);

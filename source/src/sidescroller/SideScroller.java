@@ -42,7 +42,7 @@ public class SideScroller extends PApplet {
 
 	// Game Dev
 	public static final String LEVEL = "Assets/Storage/Game/Maps/gg-2.dat";
-	public static final boolean DEBUG = true;
+	public boolean debug = true;
 	public static final boolean SNAP = true; // snap objects to grid when moving; located here for ease of access
 	public static int snapSize;
 
@@ -251,17 +251,20 @@ public class SideScroller extends PApplet {
 			// camera.
 			camera.update();
 			mousePosition = camera.getMouseCoord().copy();
+			if (debug) {
+				mapEditor.debug();
+				camera.postDebug();
+			}
 			mapEditor.draw(); // Handle Draw Scene Method - draws player, world, etc.
-			camera.postDebug(); // for development
 		}
 		popMatrix();
 
 		drawAboveCamera: { // Where HUD etc should be drawn
 			mousePosition = new PVector(mouseX, mouseY);
 			mapEditor.drawUI();
-
-			if (DEBUG) {
+			if (debug) {
 				displayDebugInfo();
+				camera.post();
 			}
 		}
 
@@ -341,6 +344,9 @@ public class SideScroller extends PApplet {
 						} else {
 							loop();
 						}
+						break;
+					case 9 : // TAB
+						debug = !debug;
 						break;
 					default :
 						break;
