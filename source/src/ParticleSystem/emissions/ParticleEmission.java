@@ -1,10 +1,14 @@
 package ParticleSystem.emissions;
 
+import java.util.function.Consumer;
+
+import ParticleSystem.Particle;
 import processing.core.PVector;
 
 public interface ParticleEmission {
-	public void generateNew();
-	public PVector getPosition();
-	public PVector getVelocity();
-	public PVector getAcceleration();
+	public Consumer<Particle> getConsumer();
+	
+	public void setPosition(PVector position);
+	
+	public ParticleEmission copy();
 }

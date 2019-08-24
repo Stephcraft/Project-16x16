@@ -1,150 +1,122 @@
 package ParticleSystem;
 
 import java.util.ArrayList;
+import java.util.function.Consumer;
 
 import ParticleSystem.emissions.*;
 import ParticleSystem.events.*;
-import processing.core.PApplet;
 import processing.core.PImage;
 import processing.core.PVector;
 import sidescroller.SideScroller;
 import sidescroller.Tileset;
 
+/**
+ * Particle System
+ * <p>
+ * To create a custom emission {@link ParticleEmission} can the position, velocity and acceleration for each particle.
+ * To create a custom Controller {@link ParticleEventListener} can control almost any part of the particle.
+ *
+ * @author petturtle
+ */
 public class ParticleSystem {
 
-	private static int FRAMERATE = 60;
+	public static final int FRAMERATE = 60;
 	
 	private SideScroller applet;
-	private PImage image;
+	public PImage image;
+	public ParticleEmission emission;
+	public Particles particles;
 	
-	private ParticleEmission emission;
-	private ArrayList<Particle> activeParticles;
-	private ArrayList<Particle> inactiveParticles;
-	private ArrayList<ParticleEventListener> listeners;
-	
+	private ArrayList<ParticleEventListener> listeners = new ArrayList<ParticleEventListener>();
 	
 	public int spawnRate;
 	public int spawnAmount;
 	public float lifespan;
 	public boolean spawn = true;
 
-	public ParticleSystem(SideScroller applet, String imageName, PVector position, int spawnRate, int spawnAmount, float lifespan) {
-		
+	/**
+     * Create a new particle system.
+     * Set emission with setEmission() for a different effect, default provided
+     * 
+     * @param applet 	   SideScroller
+     * @param imageName    particles image name
+     * @param spawnRate    How many times a second will particles be spawned
+     * @param spawnAmount  How many particles will be spawned
+     * @param lifespan     How long will the particle be displayed (seconds)
+     */
+	public ParticleSystem(SideScroller applet, String imageName, int spawnRate, int spawnAmount, float lifespan) {
+		this(applet, Tileset.getTile(imageName), spawnRate, spawnAmount, lifespan);
+	}
+	
+	/**
+     * Create a new particle system.
+     * Set emission with setEmission() for a different effect, default provided
+     * 
+     * @param applet 	   SideScroller
+     * @param image        image of particle
+     * @param spawnRate    How many times a second will particles be spawned
+     * @param spawnAmount  How many particles will be spawned
+     * @param lifespan     How long will the particle be displayed (seconds)
+     */
+	public ParticleSystem(SideScroller applet, PImage image, int spawnRate, int spawnAmount, float lifespan) {
 		this.applet = applet;
-		image = Tileset.getTile(imageName);
-		emission = new AreaEmission(position, 0, 0, 0);
-		
 		this.spawnRate = spawnRate;
 		this.spawnAmount = spawnAmount;
 		this.lifespan = lifespan;
-
-		activeParticles = new ArrayList<Particle>();
-		inactiveParticles = new ArrayList<Particle>();
-		listeners = new ArrayList<ParticleEventListener>();
+		this.image = image;
+		
+		emission = new AreaEmission(new PVector(0,0), 1, 1, 0);
+		particles = new Particles(this, applet);
+	}
+	
+	public void run() {
+		particles.run();
+	}
+	
+	public void preLoad() {
+		for(int i = 0; i < lifespan*FRAMERATE; i+=FRAMERATE/spawnRate)
+			for(int k = 0; k < spawnAmount; k++)
+					ParticlePreloadSystem.preload(i).accept(particles.newParticle());
+	}
+	
+	public ParticleSystem copy() {
+		ParticleSystem copy = new ParticleSystem(applet, image, spawnRate, spawnAmount, lifespan);
+		copy.setEmission(emission.copy());
+		for(ParticleEventListener mod : listeners)
+			copy.addEventListener(mod.copy());
+		return copy;
 	}
 	
 	public void setEmission(ParticleEmission emission) {
 		this.emission = emission;
 	}
 	
-	public void addEvent(ParticleEventListener modifier) {
+	public Consumer<Particle> getEmissionConsumer() {
+		return emission.getConsumer();
+	}
+	
+	public void addEventListener(ParticleEventListener modifier) {
+		modifier.onCreateEvent(this);
 		listeners.add(modifier);
 	}
 
-	public boolean removeEvent(ParticleEventListener modifier) {
-		boolean hasModifier = listeners.contains(modifier);
-		if (hasModifier)
-			listeners.remove(modifier);
-		
-		return hasModifier;
+	public boolean removeEventListener(ParticleEventListener modifier) {
+		return listeners.remove(modifier);
 	}
 	
-	public void preLoad() {
-		for(int i = 0; i < lifespan*FRAMERATE; i++) {
-			if (nextTick(i)) {
-				ArrayList<Particle> newParticles = addParticles(spawnAmount);
-				
-				for(Particle particle : newParticles)
-					particle.preLoad(i);
-			}
-		}
-	}
-	
-	public void run() {
-		runParticles();
-		
-		if (spawn && nextTick(applet.frameCount))
-			spawnParticles();
-		
+	public void onUpdateEvent() {
 		listeners.forEach(l -> l.onUpdateEvent());
 	}
-
-	private void runParticles()
-	{
-		ArrayList<Particle> deadParticles = new ArrayList<Particle>();
-		for(Particle p : activeParticles) {
-			p.run();
-			
-			listeners.forEach(l -> l.onParticleRunEvent(p));
-			
-			if (p.isDead()) {
-				deadParticles.add(p);
-				listeners.forEach(l -> l.onParticleDeathEvent(p));
-			}
-				
-		}
-		activeParticles.removeAll(deadParticles);
-		inactiveParticles.addAll(deadParticles);
+	
+	public void onParticleRunEvent(Particle particle) {
+		listeners.forEach(l -> l.onParticleRunEvent(particle));
 	}
 	
-	private void spawnParticles() {
-		int amount = spawnAmount;
-		amount -= loopParticles(amount);
-		if (amount > 0)
-			addParticles(amount);
-	}
-	
-	private int loopParticles(int amount) {
-		ArrayList<Particle> particles = new ArrayList<Particle>();
-		for(Particle particle : inactiveParticles) {
-			if (particle.isDead()) {
-				respawnParticle(particle);
-				particles.add(particle);
-			}
-			if (particles.size() >= amount) break;
-		}
-		inactiveParticles.removeAll(particles);
-		activeParticles.addAll(particles);
-		return particles.size();
-	}
-	
-	private Particle newParticle() {
-		Particle p = new Particle(applet, image);
-		emission.generateNew();
-		p.spawn(emission, lifespan*FRAMERATE);
-		
-		listeners.forEach(l -> l.onParticleSpawnEvent(p));
-		activeParticles.add(p);
-		return p;
-	}
-	
-	private ArrayList<Particle> addParticles(int amount) {
-		ArrayList<Particle> particles = new ArrayList<Particle>();
-		for(int i = 0; i < amount; i++) {
-			Particle p = newParticle();
-			particles.add(p);
-		}
-		return particles;
-	}
-	
-	private void respawnParticle(Particle particle) {
-		emission.generateNew();
-		particle.spawn(emission, lifespan*FRAMERATE);
-		
+	public void onParticleSpawnEvent(Particle particle) {
 		listeners.forEach(l -> l.onParticleSpawnEvent(particle));
 	}
 	
-	private boolean nextTick(int frameCount) {
-		return frameCount % (FRAMERATE/spawnRate) == 0;
+	public void onParticleDeathEvent(Particle particle) {
+		listeners.forEach(l -> l.onParticleDeathEvent(particle));
 	}
 }

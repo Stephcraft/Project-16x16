@@ -1,10 +1,20 @@
 package ParticleSystem.emissions;
 
 import java.util.Random;
+import java.util.function.Consumer;
 
-import processing.core.PApplet;
+import ParticleSystem.Particle;
 import processing.core.PVector;
 
+/**
+ * RotationEmission
+ * <p>
+ * A experimental emission (could change)
+ * Emits particles in a direction which increase for each particle.
+ * 0 is to the left, PI/2 is down.
+ *
+ * @author petturtle
+ */
 public class RotationEmission implements ParticleEmission {
 
 	private PVector position;
@@ -19,6 +29,15 @@ public class RotationEmission implements ParticleEmission {
 	private PVector newVelocity;
 	private PVector newAcceleration;
 	
+	/**
+     * Create a new RotationEmission.
+
+     * @param position 	   PVector position, set to a active entities PVector for the particle system to follow
+     * @param velocity     Start velocity of particle in facing direction.
+     * @param acceleration Start acceleration of particle in facing direction.
+     * @param spread	   Deviation from spawn position
+     * @param div		   Angle increase for each particle (radians)
+     */
 	public RotationEmission(PVector position, float velocity, float acceleration, float spread, float div) {
 		this.position = position;
 		this.velocity = velocity;
@@ -27,7 +46,6 @@ public class RotationEmission implements ParticleEmission {
 		this.div = div;
 	}
 
-	@Override
 	public void generateNew() {
 		phi += div;
 		newPosition();
@@ -56,17 +74,22 @@ public class RotationEmission implements ParticleEmission {
 	}
 
 	@Override
-	public PVector getPosition() {
-		return newPosition;
+	public Consumer<Particle> getConsumer() {
+		return p -> {
+			generateNew();
+			p.position = newPosition;
+			p.velocity = newVelocity;
+			p.acceleration = newAcceleration;
+		};
 	}
-
+	
 	@Override
-	public PVector getVelocity() {
-		return newVelocity;
+	public void setPosition(PVector position) {
+		this.position = position;
 	}
-
+	
 	@Override
-	public PVector getAcceleration() {
-		return newAcceleration;
+	public ParticleEmission copy() {
+		return new RotationEmission(position, velocity, acceleration, spread, div);
 	}
 }

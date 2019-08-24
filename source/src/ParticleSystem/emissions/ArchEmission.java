@@ -1,9 +1,19 @@
 package ParticleSystem.emissions;
 
 import java.util.Random;
+import java.util.function.Consumer;
 
+import ParticleSystem.Particle;
 import processing.core.PVector;
 
+/**
+ * Arch Emission
+ * <p>
+ * Emits particles in an arch given min and max angles (radians).
+ * 0 is to the left, PI/2 is down.
+ *
+ * @author petturtle
+ */
 public class ArchEmission implements ParticleEmission {
 
 	private PVector position;
@@ -17,6 +27,16 @@ public class ArchEmission implements ParticleEmission {
 	private PVector newVelocity;
 	private PVector newAcceleration;
 	
+	/**
+     * Create a new ArchEmission.
+
+     * @param position 	   PVector position, set to a active entities PVector for the particle system to follow
+     * @param velocity     Start velocity of particle in the arch direction;
+     * @param acceleration Start acceleration of particle in the arch direction;
+     * @param spread	   Deviation from spawn position
+     * @param minAngle	   minAngle (radians)
+     * @param maxAngle	   maxAngle (radians)
+     */
 	public ArchEmission(PVector position, float velocity, float acceleration, float spread, float minAngle, float maxAngle) {
 		this.position = position;
 		this.velocity = velocity;
@@ -26,7 +46,6 @@ public class ArchEmission implements ParticleEmission {
 		this.maxAngle = maxAngle;
 	}
 	
-	@Override
 	public void generateNew() {
 		Random ran = new Random();
 		float phi = ran.nextFloat()*(maxAngle-minAngle)+minAngle;
@@ -56,17 +75,22 @@ public class ArchEmission implements ParticleEmission {
 	}
 	
 	@Override
-	public PVector getPosition() {
-		return newPosition;
+	public Consumer<Particle> getConsumer() {
+		return p -> {
+			generateNew();
+			p.position = newPosition;
+			p.velocity = newVelocity;
+			p.acceleration = newAcceleration;
+		};
 	}
 
 	@Override
-	public PVector getVelocity() {
-		return newVelocity;
+	public void setPosition(PVector position) {
+		this.position = position;
 	}
 
 	@Override
-	public PVector getAcceleration() {
-		return newAcceleration;
+	public ParticleEmission copy() {
+		return new ArchEmission(position, velocity, acceleration, spread, minAngle, maxAngle);
 	}
 }

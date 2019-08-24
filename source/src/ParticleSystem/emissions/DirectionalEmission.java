@@ -1,9 +1,19 @@
 package ParticleSystem.emissions;
 
 import java.util.Random;
+import java.util.function.Consumer;
 
+import ParticleSystem.Particle;
 import processing.core.PVector;
 
+/**
+ * AreaEmission
+ * <p>
+ * Emits particles in a direction given angle (radians).
+ * 0 is to the left, PI/2 is down.
+ *
+ * @author petturtle
+ */
 public class DirectionalEmission implements ParticleEmission {
 
 	private PVector position;
@@ -16,6 +26,15 @@ public class DirectionalEmission implements ParticleEmission {
 	private PVector newVelocity;
 	private PVector newAcceleration;
 	
+	/**
+     * Create a new DirectionalEmission.
+
+     * @param position 	   PVector position, set to a active entities PVector for the particle system to follow
+     * @param velocity     Start velocity of particle in random direction;
+     * @param acceleration Start acceleration of particle in random direction;
+     * @param spread	   Deviation from spawn position
+     * @param angle		   direction angle (radians)
+     */
 	public DirectionalEmission(PVector position, float velocity, float acceleration, float spread, float angle) {
 		this.position = position;
 		this.velocity = velocity;
@@ -24,7 +43,6 @@ public class DirectionalEmission implements ParticleEmission {
 		this.angle = angle;
 	}
 	
-	@Override
 	public void generateNew() {
 		newPosition();
 		newVelocity();
@@ -53,17 +71,22 @@ public class DirectionalEmission implements ParticleEmission {
 	}
 	
 	@Override
-	public PVector getPosition() {
-		return newPosition;
+	public Consumer<Particle> getConsumer() {
+		return p -> {
+			generateNew();
+			p.position = newPosition;
+			p.velocity = newVelocity;
+			p.acceleration = newAcceleration;
+		};
 	}
-
+	
 	@Override
-	public PVector getVelocity() {
-		return newVelocity;
+	public void setPosition(PVector position) {
+		this.position = position;
 	}
-
+	
 	@Override
-	public PVector getAcceleration() {
-		return newAcceleration;
+	public ParticleEmission copy() {
+		return new  DirectionalEmission(position, velocity, acceleration, spread, angle);
 	}
 }

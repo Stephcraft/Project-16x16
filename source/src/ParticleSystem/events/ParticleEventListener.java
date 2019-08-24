@@ -1,8 +1,10 @@
 package ParticleSystem.events;
 
-import ParticleSystem.Particle;
+import ParticleSystem.*;
 
 public interface ParticleEventListener {
+	
+	default public void onCreateEvent(ParticleSystem particleSystem) {};
 	
 	default public void onUpdateEvent() {};
 	
@@ -11,4 +13,6 @@ public interface ParticleEventListener {
 	default public void onParticleSpawnEvent(Particle particle) {};
 	
 	default public void onParticleDeathEvent(Particle particle) {};
+	
+	public ParticleEventListener copy();
 }

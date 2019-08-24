@@ -1,9 +1,18 @@
 package ParticleSystem.emissions;
 
 import java.util.Random;
+import java.util.function.Consumer;
 
+import ParticleSystem.Particle;
 import processing.core.PVector;
 
+/**
+ * RectEmission
+ * <p>
+ * Spawns particles in a rect given center position, width, height.
+ *
+ * @author petturtle
+ */
 public class RectEmission implements ParticleEmission {
 
 	private PVector position;
@@ -16,6 +25,15 @@ public class RectEmission implements ParticleEmission {
 	private PVector newVelocity;
 	private PVector newAcceleration;
 	
+	/**
+     * Create a new AreaEmission.
+
+     * @param position 	   PVector center position, set to a active entities PVector for the particle system to follow
+     * @param velocity     Start velocity of particle in random direction;
+     * @param acceleration Start acceleration of particle in random direction;
+     * @param width		   width of rect
+     * @param height	   height of rect
+     */
 	public RectEmission(PVector position, float velocity, float acceleration, int width, int height) {
 		this.position = position;
 		this.velocity = velocity;
@@ -23,8 +41,7 @@ public class RectEmission implements ParticleEmission {
 		this.width = width;
 		this.height = height;
 	}
-	
-	@Override
+
 	public void generateNew() {
 		float phi = (float) (2*Math.PI*Math.random());
 		newPosition();
@@ -53,17 +70,22 @@ public class RectEmission implements ParticleEmission {
 	}
 	
 	@Override
-	public PVector getPosition() {
-		return newPosition;
+	public Consumer<Particle> getConsumer() {
+		return p -> {
+			generateNew();
+			p.position = newPosition;
+			p.velocity = newVelocity;
+			p.acceleration = newAcceleration;
+		};
 	}
-
+	
 	@Override
-	public PVector getVelocity() {
-		return newVelocity;
+	public void setPosition(PVector position) {
+		this.position = position;
 	}
-
+	
 	@Override
-	public PVector getAcceleration() {
-		return newAcceleration;
+	public ParticleEmission copy() {
+		return new  RectEmission(position, velocity, acceleration, width, height);
 	}
 }

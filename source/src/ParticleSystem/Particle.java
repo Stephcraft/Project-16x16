@@ -1,23 +1,31 @@
 package ParticleSystem;
 
-import ParticleSystem.emissions.*;
+import java.util.function.Consumer;
+
 import processing.core.PImage;
 import processing.core.PVector;
 import sidescroller.SideScroller;
 
+/**
+ * Particle
+ * <p>
+ * Can change any public variable on runtime.
+ *
+ * @author petturtle
+ */
 public class Particle {
 
+	private SideScroller applet;
+	
 	public PImage image;
 	public PVector position;
 	public PVector velocity;
 	public PVector acceleration;
+	
 	public float size = 40; //TODO: create better way to control
-	
-	private SideScroller applet;
-	
-	private float maxLifespan;
-	private float lifespan;
-	private int frameCount;
+	public float maxLifespan; // lifespan of particle when it was spawned
+	public float lifespan;
+	public int frameCount;
 	
 	public Particle (SideScroller applet, PImage image) {
 		this.applet = applet;
@@ -25,36 +33,9 @@ public class Particle {
 		frameCount = 0;
 	}
 	
-	public void spawn(ParticleEmission emission, float lifespan) {
-		position = emission.getPosition();
-		velocity = emission.getVelocity();
-		acceleration = emission.getAcceleration();
-		maxLifespan = lifespan;
-		this.lifespan = lifespan;
-	}
-	
-	public void preLoad(int frames) {
-		lifespan -= frames;
-		frameCount = frames;
-		if (isNotDead()) {
-			position.add(positionDeltaIntegral(frames));
-			velocity.add(acceleration.copy().mult(frames));
-		}
-	}
-	
-	public void run() {
-		if (isNotDead()) {
-			update();
-			draw();
-		}
-	}
-	
-	public float getLifeSpanNormalized() {
-		return lifespan/maxLifespan;
-	}
-	
-	public int getFrameCount() {
-		return frameCount;
+	public void spawn(Consumer<Particle> consumer, float lifespan) {
+		consumer.accept(this);
+		setLifespan(lifespan);
 	}
 	
 	public boolean isDead() {
@@ -64,8 +45,11 @@ public class Particle {
 			return false;
 	}
 	
-	public boolean isNotDead() {
-		return !isDead();
+	public void run() {
+		if (!isDead()) {
+			update();
+			draw();
+		}
 	}
 	
 	private void update() {
@@ -79,9 +63,9 @@ public class Particle {
 		applet.image(image, position.x, position.y, size, size);
 	}
 	
-	private PVector positionDeltaIntegral(int frames) {
-		float deltaX = (float) (position.x + velocity.x*frames + 0.5*acceleration.x*frames*frames);
-		float deltaY = (float) (position.y + velocity.y*frames + 0.5*acceleration.y*frames*frames);
-		return new PVector(deltaX, deltaY);
+	private void setLifespan(float lifespan)
+	{
+		maxLifespan = lifespan;
+		this.lifespan = lifespan;
 	}
 }
