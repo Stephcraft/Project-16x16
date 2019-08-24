@@ -1,15 +1,15 @@
-package ParticleSystem.Modifier;
+package ParticleSystem.events;
 
 import ParticleSystem.Particle;
 import ParticleSystem.ParticleSystem;
 
-public class ParticleNoLoopModifier implements ParticleModifier {
+public class ParticleNoLoop implements ParticleEventListener {
 
 	ParticleSystem particleSystem;
 	int spawnAmount;
 	int totalSpawned;
 	
-	public ParticleNoLoopModifier(ParticleSystem particleSystem, int spawnAmount) {
+	public ParticleNoLoop(ParticleSystem particleSystem, int spawnAmount) {
 		this.particleSystem = particleSystem;
 		this.spawnAmount = spawnAmount;
 		totalSpawned = 0;
@@ -21,11 +21,7 @@ public class ParticleNoLoopModifier implements ParticleModifier {
 	}
 	
 	@Override
-	public void update(Particle particle) {
-	}
-	
-	@Override
-	public void onSpawn(Particle particle) {
+	public void onParticleSpawnEvent(Particle particle) {
 		totalSpawned++;
 		if (totalSpawned >= spawnAmount)
 			disableSpawn();

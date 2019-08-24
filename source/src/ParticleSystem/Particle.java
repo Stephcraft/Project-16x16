@@ -1,6 +1,6 @@
 package ParticleSystem;
 
-import ParticleSystem.Emission.ParticleEmission;
+import ParticleSystem.emissions.*;
 import processing.core.PImage;
 import processing.core.PVector;
 import sidescroller.SideScroller;

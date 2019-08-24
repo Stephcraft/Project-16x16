@@ -1,4 +1,4 @@
-package ParticleSystem.Emission;
+package ParticleSystem.emissions;
 
 import java.util.Random;
 

@@ -1,53 +1,55 @@
-package ParticleSystem.Emission;
+package ParticleSystem.emissions;
 
 import java.util.Random;
 
 import processing.core.PVector;
 
-public class AreaEmission implements ParticleEmission {
+public class DirectionalEmission implements ParticleEmission {
 
 	private PVector position;
 	private float velocity;
 	private float acceleration;
 	private float spread;
+	private float angle;
 	
 	private PVector newPosition;
 	private PVector newVelocity;
 	private PVector newAcceleration;
 	
-	public AreaEmission(PVector position, float velocity, float acceleration, float spread) {
+	public DirectionalEmission(PVector position, float velocity, float acceleration, float spread, float angle) {
 		this.position = position;
 		this.velocity = velocity;
 		this.acceleration = acceleration;
 		this.spread = spread;
+		this.angle = angle;
 	}
 	
 	@Override
 	public void generateNew() {
-		float phi = (float) (2*Math.PI*Math.random());
 		newPosition();
-		newVelocity(phi);
-		newAcceleration(phi);
+		newVelocity();
+		newAcceleration();
 	}
 	
 	private void newPosition() {
 		PVector p = position.copy();
 		Random ran = new Random();
-		p.x += (ran.nextFloat()*spread*2f)-spread;
-		p.y += (ran.nextFloat()*spread*2f)-spread;
+		float offset = (ran.nextFloat()*spread*2f)-spread;
+		p.x += (float) (offset*Math.cos(angle+Math.PI/2));
+		p.y += (float) (offset*Math.sin(angle+Math.PI/2));
 		newPosition = p;
 	}
 
-	private void newVelocity(float phi) {
+	private void newVelocity() {
 		newVelocity = new PVector();
-		newVelocity.x = (float) (velocity*Math.cos(phi));
-		newVelocity.y = (float) (velocity*Math.sin(phi));
+		newVelocity.x = (float) (velocity*Math.cos(angle));
+		newVelocity.y = (float) (velocity*Math.sin(angle));
 	}
 
-	private void newAcceleration(float phi) {
+	private void newAcceleration() {
 		newAcceleration = new PVector();
-		newAcceleration.x = (float) (acceleration*Math.cos(phi));
-		newAcceleration.y = (float) (acceleration*Math.sin(phi));
+		newAcceleration.x = (float) (acceleration*Math.cos(angle));
+		newAcceleration.y = (float) (acceleration*Math.sin(angle));
 	}
 	
 	@Override
@@ -64,4 +66,4 @@ public class AreaEmission implements ParticleEmission {
 	public PVector getAcceleration() {
 		return newAcceleration;
 	}
-} 
+}
