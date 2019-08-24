@@ -458,8 +458,8 @@ public class SceneMapEditor extends PScene {
 	}
 
 	private void displayGrid() {// world edit grid
-		applet.strokeWeight(2);
-		applet.stroke(50);
+		applet.strokeWeight(1);
+		applet.stroke(0, 155, 155);
 		final int xOffset = 32; // to align with rectMode(CENTER)
 		final int yOffset = 32; // to align with rectMode(CENTER)
 		final int l = 6400;

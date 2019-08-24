@@ -237,7 +237,7 @@ public final class Camera extends ZoomPan {
 
 	/**
 	 * Debug info for worldDeadZone area (since it is part of the world, it cannot
-	 * be drawn above the camera and msut be called after).
+	 * be drawn above the camera and must be called after).
 	 */
 	public void postDebug() {
 		if (deadZoneWorld) {
