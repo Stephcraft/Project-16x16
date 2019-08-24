@@ -20,7 +20,8 @@ public class ParticleSystem {
 	private ParticleEmission emission;
 	private ArrayList<Particle> activeParticles;
 	private ArrayList<Particle> inactiveParticles;
-	private ArrayList<ParticleEventListener> events;
+	private ArrayList<ParticleEventListener> listeners;
+	
 	
 	public int spawnRate;
 	public int spawnAmount;
@@ -28,6 +29,7 @@ public class ParticleSystem {
 	public boolean spawn = true;
 
 	public ParticleSystem(SideScroller applet, String imageName, PVector position, int spawnRate, int spawnAmount, float lifespan) {
+		
 		this.applet = applet;
 		image = Tileset.getTile(imageName);
 		emission = new AreaEmission(position, 0, 0, 0);
@@ -38,7 +40,7 @@ public class ParticleSystem {
 
 		activeParticles = new ArrayList<Particle>();
 		inactiveParticles = new ArrayList<Particle>();
-		events = new ArrayList<ParticleEventListener>();
+		listeners = new ArrayList<ParticleEventListener>();
 	}
 	
 	public void setEmission(ParticleEmission emission) {
@@ -46,13 +48,13 @@ public class ParticleSystem {
 	}
 	
 	public void addEvent(ParticleEventListener modifier) {
-		events.add(modifier);
+		listeners.add(modifier);
 	}
 
 	public boolean removeEvent(ParticleEventListener modifier) {
-		boolean hasModifier = events.contains(modifier);
+		boolean hasModifier = listeners.contains(modifier);
 		if (hasModifier)
-			events.remove(modifier);
+			listeners.remove(modifier);
 		
 		return hasModifier;
 	}
@@ -71,26 +73,23 @@ public class ParticleSystem {
 	public void run() {
 		runParticles();
 		
-		for(ParticleEventListener event : events)
-			event.onupdateEvent();
-		
 		if (spawn && nextTick(applet.frameCount))
 			spawnParticles();
+		
+		listeners.forEach(l -> l.onUpdateEvent());
 	}
 
 	private void runParticles()
 	{
 		ArrayList<Particle> deadParticles = new ArrayList<Particle>();
-		for(Particle particle : activeParticles) {
-			particle.run();
+		for(Particle p : activeParticles) {
+			p.run();
 			
-			for(ParticleEventListener event : events)
-				event.onParticleRunEvent(particle);
+			listeners.forEach(l -> l.onParticleRunEvent(p));
 			
-			if (particle.isDead()) {
-				deadParticles.add(particle);
-				for(ParticleEventListener event : events)
-					event.onParticleDeathEvent(particle);
+			if (p.isDead()) {
+				deadParticles.add(p);
+				listeners.forEach(l -> l.onParticleDeathEvent(p));
 			}
 				
 		}
@@ -119,33 +118,30 @@ public class ParticleSystem {
 		return particles.size();
 	}
 	
-	private Particle addParticle() {
-		Particle particle = new Particle(applet, image);
+	private Particle newParticle() {
+		Particle p = new Particle(applet, image);
 		emission.generateNew();
-		particle.spawn(emission, lifespan*FRAMERATE);
+		p.spawn(emission, lifespan*FRAMERATE);
 		
-		for(ParticleEventListener event : events)
-			event.onParticleSpawnEvent(particle);
-		
-		activeParticles.add(particle);
-		return particle;
+		listeners.forEach(l -> l.onParticleSpawnEvent(p));
+		activeParticles.add(p);
+		return p;
 	}
 	
 	private ArrayList<Particle> addParticles(int amount) {
-		ArrayList<Particle> newParticles = new ArrayList<Particle>();
+		ArrayList<Particle> particles = new ArrayList<Particle>();
 		for(int i = 0; i < amount; i++) {
-			Particle particle = addParticle();
-			newParticles.add(particle);
+			Particle p = newParticle();
+			particles.add(p);
 		}
-		return newParticles;
+		return particles;
 	}
 	
 	private void respawnParticle(Particle particle) {
 		emission.generateNew();
 		particle.spawn(emission, lifespan*FRAMERATE);
 		
-		for(ParticleEventListener event : events)
-			event.onParticleSpawnEvent(particle);
+		listeners.forEach(l -> l.onParticleSpawnEvent(particle));
 	}
 	
 	private boolean nextTick(int frameCount) {

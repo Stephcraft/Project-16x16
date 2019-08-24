@@ -4,7 +4,7 @@ import ParticleSystem.Particle;
 
 public interface ParticleEventListener {
 	
-	default public void onupdateEvent() {};
+	default public void onUpdateEvent() {};
 	
 	default public void onParticleRunEvent(Particle particle) {};
 	

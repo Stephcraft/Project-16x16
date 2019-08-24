@@ -3,12 +3,12 @@ package ParticleSystem.events;
 import ParticleSystem.Particle;
 import processing.core.PApplet;
 
-public class ParticleSizeModifier implements ParticleEventListener {
+public class ParticleSizeController implements ParticleEventListener {
 
 	private float startSize;
 	private float endSize;
 	
-	public ParticleSizeModifier(float startSize, float endSize) {
+	public ParticleSizeController(float startSize, float endSize) {
 		this.startSize = startSize;
 		this.endSize = endSize;
 	}

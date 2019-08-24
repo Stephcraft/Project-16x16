@@ -3,11 +3,11 @@ package ParticleSystem.events;
 import ParticleSystem.Particle;
 import processing.core.PVector;
 
-public class ParticleAccelerationModifier implements ParticleEventListener {
+public class ParticleAccelerationController implements ParticleEventListener {
 
 	PVector acceleration;
 	
-	public ParticleAccelerationModifier(PVector acceleration) {
+	public ParticleAccelerationController(PVector acceleration) {
 		this.acceleration = acceleration;
 	}
 	

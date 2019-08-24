@@ -3,11 +3,11 @@ package ParticleSystem.events;
 import ParticleSystem.Particle;
 import processing.core.PVector;
 
-public class ParticalVelocityModifier implements ParticleEventListener {
+public class ParticalVelocityController implements ParticleEventListener {
 
 	PVector velocity;
 	
-	public ParticalVelocityModifier(PVector velocity) {
+	public ParticalVelocityController(PVector velocity) {
 		this.velocity = velocity;
 	}
 

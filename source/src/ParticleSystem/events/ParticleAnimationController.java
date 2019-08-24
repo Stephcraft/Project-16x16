@@ -7,16 +7,16 @@ import components.AnimationComponent;
 import processing.core.PImage;
 import sidescroller.Tileset;
 
-public class ParticleAnimation implements ParticleEventListener {
+public class ParticleAnimationController implements ParticleEventListener {
 
 	ArrayList<PImage> images;
 	
 	private int rate;
 	
-	public ParticleAnimation(String animationName, int rate)
+	public ParticleAnimationController(String animationName, int rate)
 	{
 		images = Tileset.getAnimation(animationName);
-		this.rate = 4;
+		this.rate = rate;
 	}
 	
 	@Override

@@ -3,13 +3,13 @@ package ParticleSystem.events;
 import ParticleSystem.Particle;
 import ParticleSystem.ParticleSystem;
 
-public class ParticleNoLoop implements ParticleEventListener {
+public class ParticleNoLoopController implements ParticleEventListener {
 
 	ParticleSystem particleSystem;
 	int spawnAmount;
 	int totalSpawned;
 	
-	public ParticleNoLoop(ParticleSystem particleSystem, int spawnAmount) {
+	public ParticleNoLoopController(ParticleSystem particleSystem, int spawnAmount) {
 		this.particleSystem = particleSystem;
 		this.spawnAmount = spawnAmount;
 		totalSpawned = 0;
