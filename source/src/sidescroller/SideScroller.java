@@ -39,7 +39,7 @@ import scene.SceneMapEditor;
 public class SideScroller extends PApplet {
 
 	public static final String LEVEL = "Assets/Storage/Game/Maps/gg-2.dat";
-	public static final boolean DEBUG = true;
+	public static boolean DEBUG = true;
 	public static final boolean SNAP = true; // snap objects to grid when moving; located here for ease of access
 	public static int snapSize;
 
@@ -212,8 +212,10 @@ public class SideScroller extends PApplet {
 			// camera.
 			camera.update();
 			mousePosition = camera.getMouseCoord().copy();
-			mapEditor.draw(); // Handle Draw Scene Method - draws player, world, etc.
-			camera.postDebug(); // for development
+			mapEditor.draw();// Handle Draw Scene Method - draws player, world, etc.
+			if(DEBUG) {
+				camera.postDebug();// for development
+			}
 		}
 		popMatrix();
 
@@ -232,7 +234,7 @@ public class SideScroller extends PApplet {
 		} else {
 			deltaTime = 1;
 		}
-
+		
 		// Reset Events
 		keyPressEvent = false;
 		keyReleaseEvent = false;
@@ -248,7 +250,7 @@ public class SideScroller extends PApplet {
 			camera.rotate(PI / 60);
 		}
 	}
-
+	
 	/**
 	 * keyPressed decides if the key that has been pressed is a valid key. if it is,
 	 * it is then added to the keys ArrayList, and the keyPressedEvent flag is set.
@@ -269,6 +271,14 @@ public class SideScroller extends PApplet {
 		keyReleaseEvent = true;
 
 		switch (event.getKey()) { // must be ALL-CAPS
+			case 'H' :
+				if(DEBUG) {
+					DEBUG = false;
+				} else {
+					DEBUG = true;
+				}
+				camera.toggleDeadZone();
+				break;
 			case 'Z' :
 				frameRate(2000);
 				break;
