@@ -1,0 +1,8 @@
+{
+  "attackKey": 40,
+  "targetFrameRate": 60,
+  "moveLeftKey": 37,
+  "dashKey": 16,
+  "moveRightKey": 39,
+  "jumpKey": 38
+}
