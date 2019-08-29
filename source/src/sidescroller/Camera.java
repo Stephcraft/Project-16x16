@@ -150,28 +150,30 @@ public final class Camera extends ZoomPan {
 	 * registerMethod()} - don't call this method manually!
 	 */
 	public void post() {
-		applet.noFill();
-		applet.stroke(0, 150, 255);
-		applet.strokeWeight(2);
-		final int length = 20;
-		applet.line(applet.width / 2 - length, applet.height / 2, applet.width / 2 + length, applet.height / 2);
-		applet.line(applet.width / 2, applet.height / 2 - length, applet.width / 2, applet.height / 2 + length);
-		applet.pushMatrix();
-		applet.translate(offset.x, offset.y);
-		applet.rotate(rotation);
-		applet.translate(-offset.x, -offset.y);
-		applet.line(applet.width / 2 - length * 2, applet.height / 2, applet.width / 2 + length * 2, applet.height / 2);
-		applet.popMatrix();
-		if (following) {
-			applet.rect(getCoordToDisp(followObject.pos).x, getCoordToDisp(followObject.pos).y, length * 2, length * 2);
-			if (deadZoneScreen) {
-				applet.rectMode(PApplet.CORNER);
-				applet.rect(deadZoneP1.x, deadZoneP1.y, deadZoneP2.x - deadZoneP1.x, deadZoneP2.y - deadZoneP1.y);
-				applet.rectMode(PApplet.CENTER);
+		if(SideScroller.DEBUG) {
+			applet.noFill();
+			applet.stroke(0, 150, 255);
+			applet.strokeWeight(2);
+			final int length = 20;
+			applet.line(applet.width / 2 - length, applet.height / 2, applet.width / 2 + length, applet.height / 2);
+			applet.line(applet.width / 2, applet.height / 2 - length, applet.width / 2, applet.height / 2 + length);
+			applet.pushMatrix();
+			applet.translate(offset.x, offset.y);
+			applet.rotate(rotation);
+			applet.translate(-offset.x, -offset.y);
+			applet.line(applet.width / 2 - length * 2, applet.height / 2, applet.width / 2 + length * 2, applet.height / 2);
+			applet.popMatrix();
+			if (following) {
+				applet.rect(getCoordToDisp(followObject.pos).x, getCoordToDisp(followObject.pos).y, length * 2, length * 2);
+				if (deadZoneScreen) {
+					applet.rectMode(PApplet.CORNER);
+					applet.rect(deadZoneP1.x, deadZoneP1.y, deadZoneP2.x - deadZoneP1.x, deadZoneP2.y - deadZoneP1.y);
+					applet.rectMode(PApplet.CENTER);
+				}
+			} else {
+				applet.rect(getCoordToDisp(PVector.mult(targetPosition, -1)).x,
+						getCoordToDisp(PVector.mult(targetPosition, -1)).y, length * 2, length * 2);
 			}
-		} else {
-			applet.rect(getCoordToDisp(PVector.mult(targetPosition, -1)).x,
-					getCoordToDisp(PVector.mult(targetPosition, -1)).y, length * 2, length * 2);
 		}
 	}
 
@@ -359,16 +361,21 @@ public final class Camera extends ZoomPan {
 	 * Toggles the most recently assigned deadzone inactive/active.
 	 */
 	public void toggleDeadZone() {
-		if (deadZoneP1 != null && deadZoneP2 != null) {
-			if (deadZoneTypeLast == 0) { // 0 is screen
-				deadZoneScreen = !deadZoneScreen;
-			}
-			if (deadZoneTypeLast == 1) { // 1 is world
-				deadZoneWorld = !deadZoneWorld;
-			}
+		if(SideScroller.DEBUG) {
+			if (deadZoneP1 != null && deadZoneP2 != null) {
+				if (deadZoneTypeLast == 0) { // 0 is screen
+					deadZoneScreen = !deadZoneScreen;
+				}
+				if (deadZoneTypeLast == 1) { // 1 is world
+					deadZoneWorld = !deadZoneWorld;
+				}
 
+			} else {
+				System.err.print("Specify a deadzone first");
+			}
 		} else {
-			System.err.print("Specify a deadzone first");
+			deadZoneScreen = false;
+			deadZoneWorld = false;
 		}
 	}
 
@@ -380,8 +387,10 @@ public final class Camera extends ZoomPan {
 	 * @see {@link ZoomPan#getDispToCoord(PVector) getDispToCoord()}
 	 */
 	public void setCameraPosition(PVector position) {
-		following = false;
-		this.targetPosition = new PVector(-position.x, -position.y);
+		if(SideScroller.DEBUG) {
+			following = false;
+			this.targetPosition = new PVector(-position.x, -position.y);
+		}
 	}
 
 	/**

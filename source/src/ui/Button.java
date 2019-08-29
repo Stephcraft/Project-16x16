@@ -18,7 +18,8 @@ public class Button extends PClass {
 	private boolean focus;
 	private boolean press;
 
-	public boolean blocked;
+	private boolean blocked;
+	private boolean active;
 
 	/**
 	 * Constructor for Press
@@ -27,15 +28,16 @@ public class Button extends PClass {
 	public Button(SideScroller a) {
 		super(a);
 
-		text = "Press me";
-		width = 0;
-		height = 0;
+		text = "";
+		width = (int) applet.textWidth(text) + 40;
+		height = 30;
 		x = 0;
 		y = 0;
+		active = false;
 	}
 
 	/**
-	 * Determins what to display for the button
+	 * Determines what to display for the button
 	 */
 	public void display() {
 		applet.strokeWeight(4);
@@ -46,6 +48,7 @@ public class Button extends PClass {
 			applet.stroke(47, 54, 73);
 			applet.fill(74, 81, 99);
 		}
+		applet.rectMode(CENTER);
 		applet.rect(x, y, width, height);
 
 		applet.fill(255);
@@ -73,10 +76,13 @@ public class Button extends PClass {
 	}
 
 	/**
-	 * Determins if the mouse is over the button
+	 * Determines if the mouse is over the button, will prevent click events if blocked is true
 	 * @return response as a boolean
 	 */
 	public boolean hover() {
+		if(blocked) {
+			return false;
+		}
 		return (applet.getMouseX() > x - width / 2 && applet.getMouseX() < x + width / 2 && applet.getMouseY() > y - height / 2
 				&& applet.getMouseY() < y + height / 2);
 	}
@@ -87,6 +93,7 @@ public class Button extends PClass {
 	 */
 	public void setText(String txt) {
 		text = txt;
+		width = (int) applet.textWidth(text) + 40;
 	}
 
 	/**
@@ -98,6 +105,14 @@ public class Button extends PClass {
 		x = _x;
 		y = _y;
 	}
+	
+	public int getXPos() {
+		return x;
+	}
+	
+	public int getYPos() {
+		return y;
+	}
 
 	/**
 	 * Determin if the button is pressed
@@ -105,5 +120,21 @@ public class Button extends PClass {
 	 */
 	public boolean event() {
 		return press;
+	}
+	
+	public int getWidth() {
+		return width;
+	}
+	
+	public int getHeight() {
+		return height;
+	}
+	
+	public void setBlocked(boolean block) {
+		blocked = block;
+	}
+	
+	public void setActive(boolean active) {
+		this.active = active;
 	}
 }

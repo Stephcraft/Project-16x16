@@ -15,7 +15,10 @@ import sidescroller.Tileset;
 import sidescroller.Tileset.tileType;
 import ui.Anchor;
 import ui.ScrollBarVertical;
+import ui.Tab;
+import windows.LoadTestWindow;
 import windows.SaveLevelWindow;
+import windows.TestWindow;
 
 public class SceneMapEditor extends PScene {
 
@@ -37,7 +40,14 @@ public class SceneMapEditor extends PScene {
 
 	// Windows
 	private SaveLevelWindow window_saveLevel;
+	private LoadTestWindow window_loadTest;
+	private TestWindow window_test;
 
+	//Tabs
+	private Tab windowTabs;
+	//Each button id corresponds with its string id: ex) load = 0, save = 1, etc.
+	String tabTexts[] = new String[] {"load", "save", "long name"};
+	
 	// Editor Item
 	private EditorItem editorItem;
 
@@ -48,7 +58,7 @@ public class SceneMapEditor extends PScene {
 	private ScrollBarVertical scrollBar;
 
 	public enum Tools {
-		MOVE, MODIFY, INVENTORY, PLAY, SAVE,
+		MOVE, MODIFY, INVENTORY, PLAY, SAVE, LOADEXAMPLE, TEST,
 	}
 
 	public Tools tool;
@@ -102,6 +112,8 @@ public class SceneMapEditor extends PScene {
 
 		// Init Window
 		window_saveLevel = new SaveLevelWindow(applet);
+		window_loadTest = new LoadTestWindow(applet);
+		window_test = new TestWindow(applet);
 
 		// Init ScollBar
 		Anchor scrollBarAnchor = new Anchor(applet, -20, 150, 20, 50);
@@ -116,8 +128,10 @@ public class SceneMapEditor extends PScene {
 		tool = Tools.MODIFY;
 
 		util.loadLevel(SideScroller.LEVEL); // TODO change level
+		
+		windowTabs = new Tab(applet, tabTexts, 3);
 	}
-
+	
 	/**
 	 * Draw scene elements that are below (affected by) the camera.
 	 */
@@ -221,6 +235,8 @@ public class SceneMapEditor extends PScene {
 			case MOVE :
 			case INVENTORY :
 			case SAVE :
+			case LOADEXAMPLE :
+			case TEST :
 				break;
 			default :
 				break;
@@ -320,8 +336,57 @@ public class SceneMapEditor extends PScene {
 			case PLAY :
 				break;
 			case SAVE :
+				//The if statement below should be used in each window that includes a tab. switch the number to the id of the button it's checking for
+				if(windowTabs.getActiveButton() != 1) {
+					windowTabs.moveActive(1);
+				}
+				window_saveLevel.privacyDisplay();
+				windowTabs.update();
+				windowTabs.display();
 				window_saveLevel.update();
 				window_saveLevel.display();
+				// This is an example of how to switch windows when another tab button is pressed.
+				if(windowTabs.getButton(0).event()) {
+					windowTabs.moveActive(0);
+					tool = Tools.LOADEXAMPLE;
+				} else if(windowTabs.getButton(2).event()) {
+					windowTabs.moveActive(2);
+					tool = Tools.TEST;
+				}
+				break;
+			case LOADEXAMPLE :
+				if(windowTabs.getActiveButton() != 0) {
+					windowTabs.moveActive(0);
+				}
+				window_loadTest.privacyDisplay();
+				windowTabs.update();
+				windowTabs.display();
+				window_loadTest.update();
+				window_loadTest.display();
+				if(windowTabs.getButton(1).event()) {
+					windowTabs.moveActive(1);
+					tool = Tools.SAVE;
+				} else if(windowTabs.getButton(2).event()) {
+					windowTabs.moveActive(2);
+					tool = Tools.TEST;
+				}
+				break;
+			case TEST :
+				if(windowTabs.getActiveButton() != 2) {
+					windowTabs.moveActive(2);
+				}
+				window_test.privacyDisplay();
+				windowTabs.update();
+				windowTabs.display();
+				window_test.update();
+				window_test.display();
+				if(windowTabs.getButton(0).event()) {
+					windowTabs.moveActive(0);
+					tool = Tools.LOADEXAMPLE;
+				} else if(windowTabs.getButton(1).event()) {
+					windowTabs.moveActive(1);
+					tool = Tools.SAVE;
+				}
 				break;
 			default :
 				break;
