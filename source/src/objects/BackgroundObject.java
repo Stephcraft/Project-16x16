@@ -3,6 +3,7 @@ package objects;
 import processing.core.PImage;
 import processing.core.PVector;
 import sidescroller.SideScroller;
+import sidescroller.SideScroller.debugType;
 
 public class BackgroundObject extends EditableObject {
 
@@ -40,7 +41,7 @@ public class BackgroundObject extends EditableObject {
 
 		applet.image(image, pos.x + pixelOffsetX, pos.y + pixelOffsetY);
 
-		if (applet.debug) {
+		if (applet.debug == debugType.ALL) {
 			applet.noStroke();
 			applet.fill(255);
 			applet.ellipse(pos.x, pos.y, 5, 5);

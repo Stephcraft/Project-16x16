@@ -42,14 +42,21 @@ public class SideScroller extends PApplet {
 
 	// Game Dev
 	public static final String LEVEL = "Assets/Storage/Game/Maps/gg-2.dat";
-	public boolean debug = true;
+	public enum debugType {
+		OFF, INFO_ONLY, ALL;
+		private static debugType[] vals = values();
+		public debugType next() {
+			return vals[(this.ordinal() + 1) % vals.length];
+		}
+	}
+	public debugType debug = debugType.ALL;
 	public static final boolean SNAP = true; // snap objects to grid when moving; located here for ease of access
 	public static int snapSize;
 
 	// Game Rendering
 	private final PVector windowSize = new PVector(1280, 720); // Game window size -- to be set via options
 	private final PVector gameResolution = new PVector(1280, 720); // Game rendering resolution -- to be set
-																		// via options
+																	// via options
 
 	// Image Resources
 	public PImage graphicsSheet;
@@ -251,7 +258,7 @@ public class SideScroller extends PApplet {
 			// camera.
 			camera.update();
 			mousePosition = camera.getMouseCoord().copy();
-			if (debug) {
+			if (debug == debugType.ALL) {
 				mapEditor.debug();
 				camera.postDebug();
 			}
@@ -262,9 +269,12 @@ public class SideScroller extends PApplet {
 		drawAboveCamera: { // Where HUD etc should be drawn
 			mousePosition = new PVector(mouseX, mouseY);
 			mapEditor.drawUI();
-			if (debug) {
-				displayDebugInfo();
+			if (debug == debugType.ALL) {
 				camera.post();
+				displayDebugInfo();
+			}
+			if (debug == debugType.INFO_ONLY) {
+				displayDebugInfo();
 			}
 		}
 
@@ -346,7 +356,7 @@ public class SideScroller extends PApplet {
 						}
 						break;
 					case 9 : // TAB
-						debug = !debug;
+						debug = debug.next();
 						break;
 					default :
 						break;
