@@ -26,7 +26,7 @@ public class Tab extends PClass{
 			if(i == 0) {
 				buttons[i].setPosition((applet.width / 2) - 155, (applet.height / 2) - 265);
 			} else {
-				buttons[i].setPosition(buttons[i - 1].getXPos() + ((buttons[i - 1].getWidth() + buttons[i].getWidth()) / 2), (applet.height / 2) - 265);
+				buttons[i].setPosition(buttons[i - 1].getX() + ((buttons[i - 1].getW() + buttons[i].getW()) / 2), (applet.height / 2) - 265);
 			}
 		}
 	}
@@ -37,7 +37,7 @@ public class Tab extends PClass{
 			if(j == 0) {
 				buttons[j].setPosition((applet.width / 2) - 155, (applet.height / 2) - 265);
 			} else {
-				buttons[j].setPosition(buttons[j - 1].getXPos() + ((buttons[j - 1].getWidth() + buttons[j].getWidth()) / 2), (applet.height / 2) - 265);
+				buttons[j].setPosition(buttons[j - 1].getX() + ((buttons[j - 1].getW() + buttons[j].getW()) / 2), (applet.height / 2) - 265);
 			}
 		}
 		for(int i = 0; i < tabCount; i++) {
@@ -58,7 +58,7 @@ public class Tab extends PClass{
 	public void moveActive(int index){
 		setPrevButton(activeButton);
 		setActiveButton(index);
-		buttonDistance = buttons[prevButton].getXPos() - buttons[activeButton].getXPos();
+		buttonDistance = buttons[prevButton].getX() - buttons[activeButton].getX();
 	}
 	
 	//Display inactive thick button edges without changing the actual stroke normal buttons use
@@ -69,7 +69,7 @@ public class Tab extends PClass{
 		for(int i = 0; i < tabCount; i++) {
 			if(activeButton != i) {
 				applet.rectMode(CENTER);
-				applet.rect(buttons[i].getXPos(), buttons[i].getYPos(), buttons[i].getWidth(), buttons[i].getHeight());
+				applet.rect(buttons[i].getX(), buttons[i].getY(), buttons[i].getW(), buttons[i].getH());
 			}
 		}
 	}
@@ -81,13 +81,13 @@ public class Tab extends PClass{
 		applet.fill(0, 0);
 		if(buttonDistance == movingIncrement) {
 			applet.rectMode(CENTER);
-			applet.rect(buttons[activeButton].getXPos(), buttons[activeButton].getYPos(), buttons[activeButton].getWidth(), buttons[activeButton].getHeight());
+			applet.rect(buttons[activeButton].getX(), buttons[activeButton].getY(), buttons[activeButton].getW(), buttons[activeButton].getH());
 			movingIncrement = 0;
 			buttonDistance = 0;
 			setIncrementSpeed(1);
 		} else if(buttonDistance >  movingIncrement) {
 			applet.rectMode(CENTER);
-			applet.rect(buttons[prevButton].getXPos() - movingIncrement, buttons[prevButton].getYPos(), buttons[prevButton].getWidth(), buttons[prevButton].getHeight());
+			applet.rect(buttons[prevButton].getX() - movingIncrement, buttons[prevButton].getY(), buttons[prevButton].getW(), buttons[prevButton].getH());
 			movingIncrement += incrementSpeed;
 			setIncrementSpeed(movingIncrement);
 			if(movingIncrement > buttonDistance) {
@@ -97,7 +97,7 @@ public class Tab extends PClass{
 			}
 		} else if(buttonDistance < movingIncrement){
 			applet.rectMode(CENTER);
-			applet.rect(buttons[prevButton].getXPos() + movingIncrement, buttons[prevButton].getYPos(), buttons[prevButton].getWidth(), buttons[prevButton].getHeight());
+			applet.rect(buttons[prevButton].getX() + movingIncrement, buttons[prevButton].getY(), buttons[prevButton].getW(), buttons[prevButton].getH());
 			movingIncrement += incrementSpeed;
 			setIncrementSpeed(movingIncrement);
 			if(movingIncrement > -buttonDistance) {

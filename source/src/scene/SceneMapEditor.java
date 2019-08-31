@@ -16,7 +16,7 @@ import sidescroller.Tileset.tileType;
 import ui.Anchor;
 import ui.ScrollBarVertical;
 import ui.Tab;
-import windows.LoadTestWindow;
+import windows.LoadLevelWindow;
 import windows.SaveLevelWindow;
 import windows.TestWindow;
 
@@ -40,14 +40,13 @@ public class SceneMapEditor extends PScene {
 
 	// Windows
 	private SaveLevelWindow window_saveLevel;
-	private LoadTestWindow window_loadTest;
 	private TestWindow window_test;
-
-	//Tabs
+	private LoadLevelWindow window_loadLevel;
+	// Tabs
 	private Tab windowTabs;
-	//Each button id corresponds with its string id: ex) load = 0, save = 1, etc.
-	String tabTexts[] = new String[] {"load", "save", "long name"};
-	
+	// Each button id corresponds with its string id: ex) load = 0, save = 1, etc.
+	String tabTexts[] = new String[] { "load", "save", "long name" };
+
 	// Editor Item
 	private EditorItem editorItem;
 
@@ -112,8 +111,8 @@ public class SceneMapEditor extends PScene {
 
 		// Init Window
 		window_saveLevel = new SaveLevelWindow(applet);
-		window_loadTest = new LoadTestWindow(applet);
 		window_test = new TestWindow(applet);
+		window_loadLevel = new LoadLevelWindow(applet);
 
 		// Init ScollBar
 		Anchor scrollBarAnchor = new Anchor(applet, -20, 150, 20, 50);
@@ -128,10 +127,10 @@ public class SceneMapEditor extends PScene {
 		tool = Tools.MODIFY;
 
 		util.loadLevel(SideScroller.LEVEL); // TODO change level
-		
+
 		windowTabs = new Tab(applet, tabTexts, 3);
 	}
-	
+
 	/**
 	 * Draw scene elements that are below (affected by) the camera.
 	 */
@@ -221,25 +220,25 @@ public class SceneMapEditor extends PScene {
 		}
 
 		switch (tool) {
-			case MODIFY :
-				applet.player.updateEdit();
-				applet.player.displayEdit();
-				editorItem.displayDestination();
-				applet.collidableObjects.forEach(o -> o.displayEdit());
-				applet.backgroundObjects.forEach(o -> o.displayEdit());
-				applet.gameObjects.forEach(o -> o.displayEdit());
-				break;
-			case PLAY :
-				applet.player.update();
-				break;
-			case MOVE :
-			case INVENTORY :
-			case SAVE :
-			case LOADEXAMPLE :
-			case TEST :
-				break;
-			default :
-				break;
+		case MODIFY:
+			applet.player.updateEdit();
+			applet.player.displayEdit();
+			editorItem.displayDestination();
+			applet.collidableObjects.forEach(o -> o.displayEdit());
+			applet.backgroundObjects.forEach(o -> o.displayEdit());
+			applet.gameObjects.forEach(o -> o.displayEdit());
+			break;
+		case PLAY:
+			applet.player.update();
+			break;
+		case MOVE:
+		case INVENTORY:
+		case SAVE:
+		case LOADEXAMPLE:
+		case TEST:
+			break;
+		default:
+			break;
 		}
 		applet.player.display();
 
@@ -324,72 +323,74 @@ public class SceneMapEditor extends PScene {
 		}
 
 		switch (tool) {
-			case INVENTORY :
-				displayCreativeInventory();
-				break;
-			case MODIFY :
-				editorItem.update();
-				editorItem.display();
-				break;
-			case MOVE :
-				break;
-			case PLAY :
-				break;
-			case SAVE :
-				//The if statement below should be used in each window that includes a tab. switch the number to the id of the button it's checking for
-				if(windowTabs.getActiveButton() != 1) {
-					windowTabs.moveActive(1);
-				}
-				window_saveLevel.privacyDisplay();
-				windowTabs.update();
-				windowTabs.display();
-				window_saveLevel.update();
-				window_saveLevel.display();
-				// This is an example of how to switch windows when another tab button is pressed.
-				if(windowTabs.getButton(0).event()) {
-					windowTabs.moveActive(0);
-					tool = Tools.LOADEXAMPLE;
-				} else if(windowTabs.getButton(2).event()) {
-					windowTabs.moveActive(2);
-					tool = Tools.TEST;
-				}
-				break;
-			case LOADEXAMPLE :
-				if(windowTabs.getActiveButton() != 0) {
-					windowTabs.moveActive(0);
-				}
-				window_loadTest.privacyDisplay();
-				windowTabs.update();
-				windowTabs.display();
-				window_loadTest.update();
-				window_loadTest.display();
-				if(windowTabs.getButton(1).event()) {
-					windowTabs.moveActive(1);
-					tool = Tools.SAVE;
-				} else if(windowTabs.getButton(2).event()) {
-					windowTabs.moveActive(2);
-					tool = Tools.TEST;
-				}
-				break;
-			case TEST :
-				if(windowTabs.getActiveButton() != 2) {
-					windowTabs.moveActive(2);
-				}
-				window_test.privacyDisplay();
-				windowTabs.update();
-				windowTabs.display();
-				window_test.update();
-				window_test.display();
-				if(windowTabs.getButton(0).event()) {
-					windowTabs.moveActive(0);
-					tool = Tools.LOADEXAMPLE;
-				} else if(windowTabs.getButton(1).event()) {
-					windowTabs.moveActive(1);
-					tool = Tools.SAVE;
-				}
-				break;
-			default :
-				break;
+		case INVENTORY:
+			displayCreativeInventory();
+			break;
+		case MODIFY:
+			editorItem.update();
+			editorItem.display();
+			break;
+		case MOVE:
+			break;
+		case PLAY:
+			break;
+		case SAVE:
+			// Save , Load
+			// The if statement below should be used in each window that includes a tab.
+			// switch the number to the id of the button it's checking for
+			if (windowTabs.getActiveButton() != 1) {
+				windowTabs.moveActive(1);
+			}
+			window_saveLevel.privacyDisplay();
+			windowTabs.update();
+			windowTabs.display();
+			window_saveLevel.update();
+			window_saveLevel.display();
+			// This is an example of how to switch windows when another tab button is
+			// pressed.
+			if (windowTabs.getButton(0).event()) {
+				windowTabs.moveActive(0);
+				tool = Tools.LOADEXAMPLE;
+			} else if (windowTabs.getButton(2).event()) {
+				windowTabs.moveActive(2);
+				tool = Tools.TEST;
+			}
+			break;
+		case LOADEXAMPLE:
+			if (windowTabs.getActiveButton() != 0) {
+				windowTabs.moveActive(0);
+			}
+			windowTabs.update();
+			windowTabs.display();
+			window_loadLevel.display();
+			window_loadLevel.update();
+			if (windowTabs.getButton(1).event()) {
+				windowTabs.moveActive(1);
+				tool = Tools.SAVE;
+			} else if (windowTabs.getButton(2).event()) {
+				windowTabs.moveActive(2);
+				tool = Tools.TEST;
+			}
+			break;
+		case TEST:
+			if (windowTabs.getActiveButton() != 2) {
+				windowTabs.moveActive(2);
+			}
+			window_test.privacyDisplay();
+			windowTabs.update();
+			windowTabs.display();
+			window_test.update();
+			window_test.display();
+			if (windowTabs.getButton(0).event()) {
+				windowTabs.moveActive(0);
+				tool = Tools.LOADEXAMPLE;
+			} else if (windowTabs.getButton(1).event()) {
+				windowTabs.moveActive(1);
+				tool = Tools.SAVE;
+			}
+			break;
+		default:
+			break;
 		}
 
 		// Change tool;
@@ -448,7 +449,7 @@ public class SceneMapEditor extends PScene {
 		int x = 0;
 		int y = 1;
 		int index = 0;
-		tileType[] tiles = {tileType.COLLISION, tileType.BACKGROUND, tileType.OBJECT};
+		tileType[] tiles = { tileType.COLLISION, tileType.BACKGROUND, tileType.OBJECT };
 		ArrayList<PImage> inventoryTiles = Tileset.getAllTiles(tiles);
 		for (PImage img : inventoryTiles) {
 			if (index % 6 == 0) { // show 6 items per row
@@ -538,7 +539,7 @@ public class SceneMapEditor extends PScene {
 	private float getInventorySize() {
 		int y = 1;
 
-		tileType[] tiles = {tileType.COLLISION, tileType.BACKGROUND, tileType.OBJECT};
+		tileType[] tiles = { tileType.COLLISION, tileType.BACKGROUND, tileType.OBJECT };
 		ArrayList<PImage> inventoryTiles = Tileset.getAllTiles(tiles);
 		for (int i = 0; i < inventoryTiles.size(); i++) {
 			if (i % 6 == 0) {
