@@ -97,7 +97,7 @@ public class MirrorBoxObject extends GameObject {
 	public void activateMirrorBox() {
 		if (!rotating) {
 			if (activated) {
-				image = Tileset.getTile(352, 160, 16, 16);  //TODO: add to tileset
+				image = Tileset.getTile("MIRROR_BOX_HIT");
 			} else {
 				image = Tileset.getTile("MIRROR_BOX");
 			}
