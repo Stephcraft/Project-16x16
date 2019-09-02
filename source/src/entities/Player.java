@@ -2,11 +2,20 @@ package entities;
 
 import processing.core.*;
 import projectiles.Swing;
+import scene.SceneMapEditor;
+import scene.SceneMapEditor.Tools;
+import sidescroller.Camera;
 import sidescroller.Options;
 //import sidescroller.PClass;
 import sidescroller.SideScroller;
-import sidescroller.Tileset;
+import ui.Button;
+
+import sidescroller.GameGraphics;
+import sidescroller.Options;
+//import sidescroller.PClass;
+import sidescroller.SideScroller;
 import sidescroller.Util;
+
 
 import java.util.ArrayList;
 
@@ -21,7 +30,14 @@ import objects.EditableObject;
  * displaying, and updating the character.
  * </p>
  */
+
+public class Player extends EditableObject {
+	public float px;
+	public float py;
+	public int damage;
+
 public final class Player extends EditableObject {
+
 
 	/**
 	 * Previous position.
@@ -49,8 +65,13 @@ public final class Player extends EditableObject {
 
 	private int direction;
 
+
+	public byte maxLife;
+	public byte lifeCapacity;
+
 	private int life;
 	private int lifeCapacity;
+
 
 	public boolean flying;
 	private boolean pflying;
@@ -71,6 +92,7 @@ public final class Player extends EditableObject {
 		WALK, IDLE, SQUISH, FALL, ATTACK, DASH, DASH_ATTACK
 	}
 
+
 	/**
 	 * Constructor
 	 * 
@@ -87,7 +109,7 @@ public final class Player extends EditableObject {
 
 		// Set life
 		lifeCapacity = 3;
-		life = lifeCapacity;
+		maxLife = lifeCapacity;
 
 		speedWalk = 10;
 		speedJump = 25; // 20
@@ -96,6 +118,7 @@ public final class Player extends EditableObject {
 		height = 16 * 4;
 
 		flying = true;
+
 	}
 
 	/**
@@ -109,7 +132,32 @@ public final class Player extends EditableObject {
 		lifeOn = util.pg(sheet.get(144, 256, 9, 9), 4);
 		lifeOff = util.pg(sheet.get(160, 256, 9, 9), 4);
 
+
+		anim_walk.add(util.pg(sheet.get(0, 272, 14, 15), 4));
+		anim_walk.add(util.pg(sheet.get(14 * 1 + 2, 272, 14, 15), 4));
+		anim_walk.add(util.pg(sheet.get(14 * 2 + 4, 272, 14, 15), 4));
+		anim_walk.add(util.pg(sheet.get(14 * 3 + 6, 272, 14, 15), 4));
+		anim_walk.add(util.pg(sheet.get(14 * 4 + 8, 272, 15, 15), 4));
+		anim_walk.add(util.pg(sheet.get(14 * 5 + 10, 272, 15, 15), 4));
+		anim_walk.add(util.pg(sheet.get(14 * 6 + 12, 272, 15, 15), 4));
+		anim_walk.add(util.pg(sheet.get(14 * 7 + 14, 272, 14, 15), 4));
+		anim_walk.add(util.pg(sheet.get(14 * 7 + 14, 272, 14, 15), 4));
+
+
+		anim_squish.add(util.pg(sheet.get(0, 258, 14, 14), 4));
+		anim_squish.add(util.pg(sheet.get(14 * 1 + 2, 258, 14, 14), 4));
+		anim_squish.add(util.pg(sheet.get(14 * 2 + 4, 258, 14, 14), 4));
+		anim_squish.add(util.pg(sheet.get(14 * 3 + 6, 258, 14, 14), 4));
+		anim_squish.add(util.pg(sheet.get(14 * 4 + 8, 258, 15, 14), 4));
+		anim_squish.add(util.pg(sheet.get(14 * 5 + 10, 258, 15, 14), 4));
+		anim_squish.add(util.pg(sheet.get(14 * 6 + 12, 258, 15, 14), 4));
+		anim_squish.add(util.pg(sheet.get(14 * 7 + 14, 258, 14, 14), 4));
+
+		animation.frames = anim_walk;
+
+		setAnimation("IDLE");
 		setAnimation(ACTIONS.IDLE);
+
 	}
 
 	/**
@@ -346,6 +394,20 @@ public final class Player extends EditableObject {
 			speedY = 0;
 		}
 
+
+		// Apply World Transformation
+		//		if (pos.x - width / 2 < applet.width / 2 - applet.screenX / 2) {
+		//			applet.originTargetX -= PApplet.abs(speedX - 5);
+		//		} else if (pos.x + width / 2 > applet.width / 2 + applet.screenX / 2) {
+		//			applet.originTargetX += PApplet.abs(speedX + 5);
+		//		}
+		//		if (pos.y  - height / 2 < applet.height / 2 - applet.screenY / 2) {
+		//			applet.originTargetY -= PApplet.abs(speedY - 5);
+		//		} else if (pos.y  + height / 2 > applet.height / 2 + applet.screenY / 2) {
+		//			applet.originTargetY += PApplet.abs(speedY + 5);
+		//		}
+
+
 		// Update Swing Projectiles
 		for (int i = 0; i < swings.size(); i++) {
 			swings.get(i).update();
@@ -357,13 +419,32 @@ public final class Player extends EditableObject {
 	 * Displays life capacity as long as the character has health.
 	 */
 	public void displayLife() {
-		for (int i = 0; i < lifeCapacity; i++) {
-			if (i <= life) {
-				applet.image(lifeOn, 30 + i * 50, 30);
-			} else {
-				applet.image(lifeOff, 30 + i * 50, 30);
+		if(SceneMapEditor.tool == Tools.PLAY) {
+	
+			int lastIconCoordinate = maxLife * 40;
+
+			if(lifeCapacity >= 0) {
+
+				for (byte i = 0; i < maxLife; i++) {
+
+					if(lifeCapacity >= maxLife){
+						image(lifeOn, 30 + 40 * i, 120);
+						maxLife = lifeCapacity;
+
+					} else if(lifeCapacity < maxLife) { 
+						image(lifeOn, 30 + 40 * i, 120);
+
+						for(byte j = 0; j < (maxLife- lifeCapacity); j++) {
+							image(lifeOff, 30 + (lastIconCoordinate - ((j+1)* 40)) , 120);
+						}
+					}
+				}
+			}else {
+				//TODO display player death animation --> Player death when life reaches 0
+				lifeCapacity = 3;
+				maxLife = lifeCapacity;
 			}
-		}
+		}	
 	}
 
 	/**
@@ -376,37 +457,67 @@ public final class Player extends EditableObject {
 	private boolean collides(CollidableObject collision) {
 		return (pos.x + width / 2 > collision.pos.x - collision.width / 2
 				&& pos.x - width / 2 < collision.pos.x + collision.width / 2)
+				&& (pos.y  + height / 2 > collision.pos.y  - collision.height / 2
+						&& pos.y  - height / 2 < collision.pos.y 
+						+ collision.height / 2);
+
 				&& (pos.y + height / 2 > collision.pos.y - collision.height / 2
 						&& pos.y - height / 2 < collision.pos.y + collision.height / 2);
+
 	}
 
 	// TODO: optimize these (unused)
 	private boolean collidesEqual(CollidableObject collision) {
 		return (pos.x + width / 2 >= collision.pos.x - collision.width / 2
 				&& pos.x - width / 2 <= collision.pos.x + collision.width / 2)
+
+				&& (pos.y  + height / 2 >= collision.pos.y  - collision.height / 2
+				&& pos.y  - height / 2 <= collision.pos.y 
+				+ collision.height / 2);
+
 				&& (pos.y + height / 2 >= collision.pos.y - collision.height / 2
 						&& pos.y - height / 2 <= collision.pos.y + collision.height / 2);
+
 	}
 
 	private boolean collidesFutur(CollidableObject collision) {
 		return (pos.x + speedX + width / 2 > collision.pos.x - collision.width / 2
 				&& pos.x + speedX - width / 2 < collision.pos.x + collision.width / 2)
+
+				&& (pos.y  + speedY + height / 2 > collision.pos.y 
+						- collision.height / 2
+						&& pos.y  + speedY - height / 2 < collision.pos.y 
+						+ collision.height / 2);
+
 				&& (pos.y + speedY + height / 2 > collision.pos.y - collision.height / 2
 						&& pos.y + speedY - height / 2 < collision.pos.y + collision.height / 2);
+
 	}
 
 	private boolean collidesFuturX(CollidableObject collision) {
 		return (pos.x + speedX + width / 2 > collision.pos.x - collision.width / 2
 				&& pos.x + speedX - width / 2 < collision.pos.x + collision.width / 2)
+
+				&& (pos.y  + 0 + height / 2 > collision.pos.y  - collision.height / 2
+						&& pos.y  + 0 - height / 2 < collision.pos.y 
+						+ collision.height / 2);
+
 				&& (pos.y + 0 + height / 2 > collision.pos.y - collision.height / 2
 						&& pos.y + 0 - height / 2 < collision.pos.y + collision.height / 2);
+
 	}
 
 	private boolean collidesFuturY(CollidableObject collision) {
 		return (pos.x + 0 + width / 2 > collision.pos.x - collision.width / 2
 				&& pos.x + 0 - width / 2 < collision.pos.x + collision.width / 2)
+
+				&& (pos.y  + speedY + height / 2 > collision.pos.y 
+						- collision.height / 2
+						&& pos.y  + speedY - height / 2 < collision.pos.y 
+						+ collision.height / 2);
 				&& (pos.y + speedY + height / 2 > collision.pos.y - collision.height / 2
 						&& pos.y + speedY - height / 2 < collision.pos.y + collision.height / 2);
+
 	}
 
 	/**
@@ -416,6 +527,63 @@ public final class Player extends EditableObject {
 	 */
 	private void setAnimation(ACTIONS anim) {
 		switch (anim) {
+
+		case "WALK" :
+			animation.frames = getAnimation("PLAYER::WALK"); // anim_walk;
+			animation.loop = true;
+			animation.length = 7;
+			animation.rate = 6; // 6
+			animation.frame = 0;
+			animation.start = 0;
+			break;
+		case "IDLE" :
+			animation.frames = getAnimation("PLAYER::IDLE"); // anim_squish;
+			animation.loop = true;
+			animation.length = 3;
+			animation.rate = 20;
+			animation.frame = 0;
+			animation.start = 0;
+			break;
+		case "SQUISH" :
+			animation.frames = getAnimation("PLAYER::SQUISH"); // anim_squish;
+			animation.loop = false;
+			animation.length = 5; // 7
+			animation.rate = 4;
+			animation.frame = 0; // 3
+			animation.start = 0; // 3
+			break;
+		case "FALL" :
+			animation.frames = anim_squish;
+			animation.loop = false;
+			animation.length = 0;
+			animation.rate = 6;
+			animation.frame = 0;
+			animation.start = 0;
+			break;
+		case "ATTACK" :
+			animation.frames = getAnimation("PLAYER::ATTACK");
+			animation.loop = false;
+			animation.length = 3;
+			animation.rate = 4;
+			animation.frame = 0;
+			animation.start = 0;
+			break;
+		case "DASH" :
+			animation.frames = getAnimation("PLAYER::SQUISH");
+			animation.loop = false;
+			animation.length = 4;
+			animation.rate = 6;
+			animation.frame = 0;
+			animation.start = 0;
+			break;
+		case "DASH_ATTACK" :
+			animation.frames = getAnimation("PLAYER::ATTACK");
+			animation.loop = false;
+			animation.length = 2 + animation.remainingFrames();
+			animation.rate = 4;
+			animation.frame = 0;
+			animation.start = 0;
+
 			case WALK :
 				animation.changeAnimation(getAnimation("PLAYER::WALK"), true, 6);
 				break;
@@ -437,6 +605,7 @@ public final class Player extends EditableObject {
 			case DASH_ATTACK :
 				animation.changeAnimation(getAnimation("PLAYER::ATTACK"), false, 4, 2 + animation.remainingFrames());
 				break;
+
 		}
 		animation.ended = false;
 		animation.name = anim.name();
@@ -448,7 +617,7 @@ public final class Player extends EditableObject {
 	 * @param id the animation id
 	 * @return the animation being used.
 	 */
-	private ArrayList<PImage> getAnimation(String name) {
-		return Tileset.getAnimation(name);
+	private ArrayList<PImage> getAnimation(String id) {
+		return applet.gameGraphics.getAnimation(id);
 	}
 }

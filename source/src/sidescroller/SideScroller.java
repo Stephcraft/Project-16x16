@@ -7,7 +7,6 @@ import components.AnimationComponent;
 import dm.core.DM;
 
 import entities.Player;
-
 import javafx.scene.canvas.Canvas;
 import javafx.stage.Stage;
 
@@ -28,6 +27,7 @@ import projectiles.ProjectileObject;
 
 import scene.PScene;
 import scene.SceneMapEditor;
+import scene.SceneMapEditor.Tools;
 
 /**
  * <h1>SideScroller Class</h1>
@@ -39,7 +39,7 @@ import scene.SceneMapEditor;
 public class SideScroller extends PApplet {
 
 	public static final String LEVEL = "Assets/Storage/Game/Maps/gg-2.dat";
-	public static boolean DEBUG = true;
+	public static final boolean DEBUG = true;
 	public static final boolean SNAP = true; // snap objects to grid when moving; located here for ease of access
 	public static int snapSize;
 
@@ -47,8 +47,14 @@ public class SideScroller extends PApplet {
 	public PImage graphicsSheet;
 	public PImage magicSheet;
 
+	// Main Resource
+	public GameGraphics gameGraphics;
+
 	// Font Resources
 	private PFont font_pixel;
+
+	// Options
+	public Options options;
 
 	// Frame Rate
 	public float deltaTime;
@@ -77,6 +83,7 @@ public class SideScroller extends PApplet {
 	// Camera Variables
 	public Camera camera;
 	private PVector mousePosition;
+	
 
 	// Expose JavaFX nodes
 	private PSurfaceFX surface;
@@ -88,7 +95,7 @@ public class SideScroller extends PApplet {
 	 */
 	@Override
 	public void settings() {
-		size(1280, 720, FX2D);
+		size(displayWidth, displayHeight, FX2D);
 	}
 
 	/**
@@ -107,6 +114,7 @@ public class SideScroller extends PApplet {
 	 * default function with a working technique. Cannot be placed in
 	 * {@link #settings()}, like it normally would be.
 	 */
+
 	@Override
 	public void noSmooth() {
 		try {
@@ -114,6 +122,7 @@ public class SideScroller extends PApplet {
 		} catch (java.lang.NoSuchMethodError e) {
 		}
 	}
+
 
 	/**
 	 * setup is called once at the beginning of the game. Most variables will be
@@ -139,6 +148,9 @@ public class SideScroller extends PApplet {
 
 		AnimationComponent.applet = this;
 
+		// Create Option Class
+		options = new Options();
+
 		// Default frameRate
 		frameRate(Options.targetFrameRate);
 
@@ -150,6 +162,9 @@ public class SideScroller extends PApplet {
 		backgroundObjects = new ArrayList<BackgroundObject>();
 		gameObjects = new ArrayList<GameObject>();
 		projectileObjects = new ArrayList<ProjectileObject>();
+
+		// Create Game Graphics
+		gameGraphics = new GameGraphics(this);
 
 		// Create scene
 		mapEditor = new SceneMapEditor(this);
@@ -187,7 +202,7 @@ public class SideScroller extends PApplet {
 		Options.load();
 
 		// Create All Graphics
-		Tileset.load(this);
+		gameGraphics.load();
 
 		// Set Scene
 		setScene("MAPEDITOR");
@@ -212,16 +227,15 @@ public class SideScroller extends PApplet {
 			// camera.
 			camera.update();
 			mousePosition = camera.getMouseCoord().copy();
-			mapEditor.draw();// Handle Draw Scene Method - draws player, world, etc.
-			if(DEBUG) {
-				camera.postDebug();// for development
-			}
+			mapEditor.draw(); // Handle Draw Scene Method - draws player, world, etc.
+			//camera.postDebug(); // for development
 		}
 		popMatrix();
 
 		drawAboveCamera: { // Where HUD etc should be drawn
 			mousePosition = new PVector(mouseX, mouseY);
 			mapEditor.drawUI();
+			player.displayLife();
 
 			if (DEBUG) {
 				displayDebugInfo();
@@ -234,7 +248,7 @@ public class SideScroller extends PApplet {
 		} else {
 			deltaTime = 1;
 		}
-		
+
 		// Reset Events
 		keyPressEvent = false;
 		keyReleaseEvent = false;
@@ -244,13 +258,17 @@ public class SideScroller extends PApplet {
 		rectMode(CENTER);
 
 		if (keys.contains(75)) { // K - for development
+			if(SceneMapEditor.tool == Tools.PLAY) {
 			camera.rotate(-PI / 60);
+			}
 		}
 		if (keys.contains(76)) { // L - for development
+			if(SceneMapEditor.tool == Tools.PLAY) {
 			camera.rotate(PI / 60);
+			}
 		}
 	}
-	
+
 	/**
 	 * keyPressed decides if the key that has been pressed is a valid key. if it is,
 	 * it is then added to the keys ArrayList, and the keyPressedEvent flag is set.
@@ -264,23 +282,65 @@ public class SideScroller extends PApplet {
 	/**
 	 * keyReleased decides if the key pressed is valid and if it is then removes it
 	 * from the keys ArrayList and keyReleaseEvent flag is set.
+	 * Here for development
 	 */
 	@Override
 	public void keyReleased(KeyEvent event) {
 		keys.remove(event.getKeyCode());
 		keyReleaseEvent = true;
+		
+		switch (event.getKey()) { // must be caps
+		case 'X':
+			frameRate(10); //slow down
+			break;
+		case 'R':
+			frameRate(60); //reset framerate
+			break;
+		case 'V':
+			if(SceneMapEditor.tool == Tools.PLAY) {
+			camera.toggleDeadZone();
+			}// for development
+			break;
+		case 'C':
+			if(SceneMapEditor.tool == Tools.PLAY) {
+			camera.setCameraPosition(camera.getMouseCoord()); // for development
+			}
+			break;
+		case 'F':
+			if(SceneMapEditor.tool == Tools.PLAY) {
+			camera.setFollowObject(player); // for development
+			camera.setZoomScale(1.0f); // for development
+			}
+			break;
+		case 'G':
+			if(SceneMapEditor.tool == Tools.PLAY) {
+			camera.shake(0.4f); // for development
+			}
+			break;
+		case 'H':
+			if(SceneMapEditor.tool == Tools.PLAY && player.lifeCapacity <= 10) {
+			player.lifeCapacity += 1;
+			}
+			break;
+		case 'I':
+			if(SceneMapEditor.tool == Tools.PLAY) {
+			player.lifeCapacity -= 1;
+			}
+			break;	
+		default:
+			switch (event.getKeyCode()) { // non-character keys
+			case 122: // F11
+				noLoop();
+				final PSurfaceFX FXSurface = (PSurfaceFX) surface;
+				final Canvas canvas = (Canvas) FXSurface.getNative();
+				final Stage stage = (Stage) canvas.getScene().getWindow();
+				stage.setFullScreen(!stage.isFullScreen());
+				loop();
 
 		switch (event.getKey()) { // must be ALL-CAPS
-			case 'H' :
-				if(DEBUG) {
-					DEBUG = false;
-				} else {
-					DEBUG = true;
-				}
-				camera.toggleDeadZone();
-				break;
 			case 'Z' :
 				frameRate(2000);
+
 				break;
 			case 'X' :
 				frameRate(10);
