@@ -4,8 +4,7 @@ import sidescroller.PClass;
 import sidescroller.SideScroller;
 
 /**
- * The Press Class extends PClass
- * A button for the player to click
+ * The Press Class extends PClass A button for the player to click
  */
 public class Button extends PClass {
 
@@ -17,46 +16,37 @@ public class Button extends PClass {
 
 	private boolean focus;
 	private boolean press;
+	public boolean blocked;
 
-	private boolean blocked;
-	private boolean active;
+	int colorValues[];
 
 	/**
 	 * Constructor for Press
-	 * @param  a Reference to Game
+	 * 
+	 * @param a Reference to Game
 	 */
 	public Button(SideScroller a) {
 		super(a);
-
-		text = "";
-		width = (int) applet.textWidth(text) + 40;
-		height = 30;
+		text = "Press me";
+		width = 0;
+		height = 0;
 		x = 0;
 		y = 0;
-		active = false;
+		colorValues = new int[6];
+		defaultColors();
 	}
 
 	/**
-	 * Determines what to display for the button
+	 * Determins what to display for the button
 	 */
 	public void display() {
 		applet.strokeWeight(4);
-		if (focus) {
-			applet.stroke(74, 81, 99);
-			applet.fill(47, 54, 73);
-		} else {
-			applet.stroke(47, 54, 73);
-			applet.fill(74, 81, 99);
-		}
-		applet.rectMode(CENTER);
-		applet.rect(x, y, width, height);
-
-		applet.fill(255);
-		applet.textAlign(CENTER, CENTER);
-		applet.textSize(20);
-		applet.text(text, x, y);
-		width = (int) applet.textWidth(text) + 40;
-		height = 30;
+		displayColors();
+		applet.pushMatrix();
+		displayTextColors();
+		applet.popMatrix();
+		intW();
+		intH();
 	}
 
 	/**
@@ -75,66 +65,130 @@ public class Button extends PClass {
 		}
 	}
 
+	public void updateOnPress() {
+		press = false;
+		if (applet.mousePressEvent) {
+			focus = hover();
+		} else if (applet.mouseReleaseEvent && hover()) {
+			press = true;
+		}
+	}
+
+	private void displayColors() {
+		if (focus) {
+			applet.stroke(colorValues[2]);
+			applet.fill(colorValues[3]);
+		} else {
+			applet.stroke(colorValues[0]);
+			applet.fill(colorValues[1]);
+		}
+		applet.rect(x, y, width, height);
+	}
+
+	public void displayTextColors() {
+		if (focus) {
+			applet.fill(colorValues[5]);
+		} else {
+			applet.fill(colorValues[4]);
+		}
+		applet.textAlign(CENTER, CENTER);
+		applet.textSize(20);
+		applet.text(text, x, y);
+	}
+
+	private void defaultColors() {
+		colorValues[0] = applet.color(74, 81, 99);// When not pressed stroke
+		colorValues[1] = applet.color(47, 54, 73);// When not pressed fill
+		colorValues[2] = applet.color(47, 54, 73);// When pressed stroke
+		colorValues[3] = applet.color(74, 81, 99);// When pressed fill
+		colorValues[4] = applet.color(255);// Text color
+		colorValues[5] = applet.color(255);
+	}
+
+	public void setColorsNotPress(int colorValue1, int colorValue2) {
+		colorValues[0] = applet.color(colorValue1);
+		colorValues[1] = applet.color(colorValue2);
+	}
+
+	public void setColorsPress(int colorValue1, int colorValue2) {
+		colorValues[2] = applet.color(colorValue1);
+		colorValues[3] = applet.color(colorValue2);
+	}
+
+	public void setTextColorNotPressed(int colorValue) {
+		colorValues[4] = applet.color(colorValue);
+	}
+
+	public void setTextColorPressed(int colorValue) {
+		colorValues[5] = applet.color(colorValue);
+	}
+
 	/**
-	 * Determines if the mouse is over the button, will prevent click events if blocked is true
+	 * Determins if the mouse is over the button
+	 * 
 	 * @return response as a boolean
 	 */
 	public boolean hover() {
-		if(blocked) {
-			return false;
-		}
-		return (applet.getMouseX() > x - width / 2 && applet.getMouseX() < x + width / 2 && applet.getMouseY() > y - height / 2
-				&& applet.getMouseY() < y + height / 2);
+		return (applet.getMouseX() > x - width / 2 && applet.getMouseX() < x + width / 2
+				&& applet.getMouseY() > y - height / 2 && applet.getMouseY() < y + height / 2);
 	}
 
 	/**
 	 * Sets the text for the button
+	 * 
 	 * @param txt the new text for the button
 	 */
 	public void setText(String txt) {
 		text = txt;
-		width = (int) applet.textWidth(text) + 40;
+	}
+
+	public String getText() {
+		return text;
 	}
 
 	/**
 	 * Sets the position for the button
+	 * 
 	 * @param _x the new x component
 	 * @param _y the new y component
 	 */
+	public void intW() {
+		width = (int) applet.textWidth(text) + 40;
+	}
+
+	public void intH() {
+		height = 30;
+	}
+
 	public void setPosition(int _x, int _y) {
 		x = _x;
 		y = _y;
 	}
-	
-	public int getXPos() {
+	public void setBlocked(boolean blocked) {
+		this.blocked = blocked;
+	}
+	public int getX() {
 		return x;
 	}
-	
-	public int getYPos() {
+
+	public int getY() {
 		return y;
+	}
+
+	public int getW() {
+		return width;
+	}
+
+	public int getH() {
+		return height;
 	}
 
 	/**
 	 * Determin if the button is pressed
+	 * 
 	 * @return response as a boolean
 	 */
 	public boolean event() {
 		return press;
-	}
-	
-	public int getWidth() {
-		return width;
-	}
-	
-	public int getHeight() {
-		return height;
-	}
-	
-	public void setBlocked(boolean block) {
-		blocked = block;
-	}
-	
-	public void setActive(boolean active) {
-		this.active = active;
 	}
 }
