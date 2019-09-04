@@ -39,7 +39,7 @@ import scene.SceneMapEditor;
 public class SideScroller extends PApplet {
 
 	public static final String LEVEL = "Assets/Storage/Game/Maps/gg-2.dat";
-	public static final boolean DEBUG = true;
+	public static boolean DEBUG = true;
 	public static final boolean SNAP = true; // snap objects to grid when moving; located here for ease of access
 	public static int snapSize;
 
@@ -212,8 +212,10 @@ public class SideScroller extends PApplet {
 			// camera.
 			camera.update();
 			mousePosition = camera.getMouseCoord().copy();
-			mapEditor.draw(); // Handle Draw Scene Method - draws player, world, etc.
-			camera.postDebug(); // for development
+			mapEditor.draw();// Handle Draw Scene Method - draws player, world, etc.
+			if (DEBUG) {
+				camera.postDebug();// for development
+			}
 		}
 		popMatrix();
 
@@ -269,42 +271,50 @@ public class SideScroller extends PApplet {
 		keyReleaseEvent = true;
 
 		switch (event.getKey()) { // must be ALL-CAPS
-			case 'Z' :
-				frameRate(2000);
+		case 'H':
+			if (DEBUG) {
+				DEBUG = false;
+			} else {
+				DEBUG = true;
+			}
+			camera.toggleDeadZone();
+			break;
+		case 'Z':
+			frameRate(2000);
+			break;
+		case 'X':
+			frameRate(10);
+			break;
+		case 'V':
+			camera.toggleDeadZone(); // for development
+			break;
+		case 'C':
+			camera.setCameraPosition(camera.getMouseCoord()); // for development
+			break;
+		case 'F':
+			camera.setFollowObject(player); // for development
+			camera.setZoomScale(1.0f); // for development
+			break;
+		case 'G':
+			camera.shake(0.4f); // for development
+			break;
+		default:
+			switch (event.getKeyCode()) { // non-character keys
+			case 122: // F11
+				noLoop();
+				stage.setFullScreen(!stage.isFullScreen());
+				loop();
 				break;
-			case 'X' :
-				frameRate(10);
-				break;
-			case 'V' :
-				camera.toggleDeadZone(); // for development
-				break;
-			case 'C' :
-				camera.setCameraPosition(camera.getMouseCoord()); // for development
-				break;
-			case 'F' :
-				camera.setFollowObject(player); // for development
-				camera.setZoomScale(1.0f); // for development
-				break;
-			case 'G' :
-				camera.shake(0.4f); // for development
-				break;
-			default :
-				switch (event.getKeyCode()) { // non-character keys
-					case 122 : // F11
-						noLoop();
-						stage.setFullScreen(!stage.isFullScreen());
-						loop();
-						break;
-					case 27 : // ESC - Pause menu here
-						if (looping) {
-							noLoop();
-						} else {
-							loop();
-						}
-						break;
-					default :
-						break;
+			case 27: // ESC - Pause menu here
+				if (looping) {
+					noLoop();
+				} else {
+					loop();
 				}
+				break;
+			default:
+				break;
+			}
 		}
 	}
 
