@@ -1,8 +1,10 @@
 package objects;
 
+import jdk.tools.jlink.internal.TaskHelper.Option.Processing;
 import projectiles.MagicProjectile;
 import projectiles.Swing;
 import sidescroller.SideScroller;
+import sidescroller.Tileset;
 
 /**
  * Extends {@link GameObject}.
@@ -16,10 +18,10 @@ public class MagicSourceObject extends GameObject {
 		id = "MAGIC_SOURCE";
 
 		// Default image
-		image = applet.gameGraphics.get("MAGIC_SOURCE");
+		image = Tileset.getTile("MAGIC_SOURCE");
 
 		// Setup Animation		
-		animation.changeAnimation(applet.gameGraphics.ga(applet.magicSheet, 0, 0, 16, 16, 80), true, 6);
+		animation.changeAnimation(Tileset.getAnimation("MAGIC::IDLE"), true, 6); // TODO: add magicsheet to tileset
 
 		width = 48;
 		height = 48;
@@ -31,7 +33,12 @@ public class MagicSourceObject extends GameObject {
 	public void display() {
 		applet.image(image, pos.x, pos.y);
 	}
-
+	
+	//oldMillis is used to calculate the difference in time between shots.
+	//shotDelay denotes the "fire rate" of the MagicSource in milliseconds.
+	int oldMillis = 0;
+	int shotDelay = 500;
+	
 	@Override
 	public void update() {
 		image = animation.animate();
@@ -42,10 +49,15 @@ public class MagicSourceObject extends GameObject {
 
 			if (collidesWithSwing(swing)) {
 				if (!swing.activated) {
-					applet.projectileObjects
+					
+					if(applet.millis() > oldMillis + shotDelay) {
+						oldMillis = applet.millis();
+						
+						applet.projectileObjects
 							.add(new MagicProjectile(applet, (int) pos.x, (int) pos.y, swing.direction));
 
-					swing.activated = true;
+						swing.activated = true;
+					}
 				}
 			}
 		}

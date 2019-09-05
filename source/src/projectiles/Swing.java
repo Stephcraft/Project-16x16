@@ -3,6 +3,7 @@ package projectiles;
 import components.AnimationComponent;
 import processing.core.PVector;
 import sidescroller.SideScroller;
+import sidescroller.Tileset;
 
 public class Swing extends ProjectileObject { // PClass
 
@@ -29,7 +30,7 @@ public class Swing extends ProjectileObject { // PClass
 		height = 9 * 4;
 
 		// Setup Animation
-		animation.changeAnimation(applet.gameGraphics.ga(applet.graphicsSheet, 65, 292, 28, 9, 4), false, 4);
+		animation.changeAnimation(Tileset.getAnimation("Swing"), false, 4);
 	}
 
 	@Override

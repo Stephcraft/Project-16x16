@@ -42,6 +42,7 @@ public class SideScroller extends PApplet {
 
 	// Game Dev
 	public static final String LEVEL = "Assets/Storage/Game/Maps/gg-2.dat";
+
 	public enum debugType {
 		OFF, INFO_ONLY, ALL;
 		private static debugType[] vals = values();
@@ -50,6 +51,7 @@ public class SideScroller extends PApplet {
 		}
 	}
 	public debugType debug = debugType.ALL;
+  
 	public static final boolean SNAP = true; // snap objects to grid when moving; located here for ease of access
 	public static int snapSize;
 
@@ -62,14 +64,8 @@ public class SideScroller extends PApplet {
 	public PImage graphicsSheet;
 	public PImage magicSheet;
 
-	// Main Resource
-	public GameGraphics gameGraphics;
-
 	// Font Resources
 	private PFont font_pixel;
-
-	// Options
-	public Options options;
 
 	// Frame Rate
 	public float deltaTime;
@@ -180,9 +176,6 @@ public class SideScroller extends PApplet {
 
 		AnimationComponent.applet = this;
 
-		// Create Option Class
-		options = new Options();
-
 		// Default frameRate
 		frameRate(Options.targetFrameRate);
 
@@ -194,9 +187,6 @@ public class SideScroller extends PApplet {
 		backgroundObjects = new ArrayList<BackgroundObject>();
 		gameObjects = new ArrayList<GameObject>();
 		projectileObjects = new ArrayList<ProjectileObject>();
-
-		// Create Game Graphics
-		gameGraphics = new GameGraphics(this);
 
 		// Create scene
 		mapEditor = new SceneMapEditor(this);
@@ -233,7 +223,7 @@ public class SideScroller extends PApplet {
 		Options.load();
 
 		// Create All Graphics
-		gameGraphics.load();
+		Tileset.load(this);
 
 		// Set Scene
 		setScene("MAPEDITOR");

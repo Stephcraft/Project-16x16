@@ -136,6 +136,7 @@ public final class Camera extends ZoomPan {
 	 * Draws camera debug info.
 	 */
 	public void post() {
+
 		applet.noFill();
 		applet.stroke(0, 150, 255);
 		applet.strokeWeight(2);
@@ -156,9 +157,6 @@ public final class Camera extends ZoomPan {
 				applet.rect(deadZoneP1.x, deadZoneP1.y, deadZoneP2.x - deadZoneP1.x, deadZoneP2.y - deadZoneP1.y);
 				applet.rectMode(PApplet.CENTER);
 			}
-		} else {
-			applet.rect(getCoordToDisp(PVector.mult(targetPosition, -1)).x,
-					getCoordToDisp(PVector.mult(targetPosition, -1)).y, length * 2, length * 2);
 		}
 	}
 
@@ -352,16 +350,21 @@ public final class Camera extends ZoomPan {
 	 * Toggles the most recently assigned deadzone inactive/active.
 	 */
 	public void toggleDeadZone() {
-		if (deadZoneP1 != null && deadZoneP2 != null) {
-			if (deadZoneTypeLast == 0) { // 0 is screen
-				deadZoneScreen = !deadZoneScreen;
-			}
-			if (deadZoneTypeLast == 1) { // 1 is world
-				deadZoneWorld = !deadZoneWorld;
-			}
+		if(SideScroller.DEBUG) {
+			if (deadZoneP1 != null && deadZoneP2 != null) {
+				if (deadZoneTypeLast == 0) { // 0 is screen
+					deadZoneScreen = !deadZoneScreen;
+				}
+				if (deadZoneTypeLast == 1) { // 1 is world
+					deadZoneWorld = !deadZoneWorld;
+				}
 
+			} else {
+				System.err.print("Specify a deadzone first");
+			}
 		} else {
-			System.err.print("Specify a deadzone first");
+			deadZoneScreen = false;
+			deadZoneWorld = false;
 		}
 	}
 
@@ -373,8 +376,10 @@ public final class Camera extends ZoomPan {
 	 * @see {@link ZoomPan#getDispToCoord(PVector) getDispToCoord()}
 	 */
 	public void setCameraPosition(PVector position) {
-		following = false;
-		this.targetPosition = new PVector(-position.x, -position.y);
+		if(SideScroller.DEBUG) {
+			following = false;
+			this.targetPosition = new PVector(-position.x, -position.y);
+		}
 	}
 
 	/**

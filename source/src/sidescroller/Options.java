@@ -30,9 +30,8 @@ public class Options {
 			attackKey = json.getInt("attackKey", attackKey);
 			dashKey = json.getInt("dashKey", dashKey);
 			targetFrameRate = json.getInt("targetFrameRate", targetFrameRate);
-		} catch (Exception e)
-		{
-			
+		} catch (Exception e) {
+			save();
 		}
 	}
 	
