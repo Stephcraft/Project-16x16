@@ -23,7 +23,7 @@ public class Anchor {
 	public int localWidth = 0;
 	public int localHeight = 0;
 	
-	public AnchorOrigin anchorOrigin = AnchorOrigin.Center;
+	public AnchorOrigin anchorOrigin = AnchorOrigin.TopLeft;
 	public Stretch stretch = Stretch.None;
 	public int rectMode = PApplet.CORNER;
 	
