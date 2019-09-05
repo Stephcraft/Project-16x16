@@ -214,5 +214,10 @@ public class Anchor {
 		return(app.mouseX > X() && app.mouseX < X() + Width() 
 		    && app.mouseY > Y() && app.mouseY < Y() + Height());
 	}
+	
+	public void debugMode() {
+		app.stroke(255,0,0);
+		app.noFill();
+		app.rect(X(), Y(), Width(), Height());
 	}
 }
