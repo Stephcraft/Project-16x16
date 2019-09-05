@@ -42,12 +42,12 @@ public class ScrollBarHorizontal extends PClass {
 		app.noStroke();
 		app.fill(100, 100);
 		app.rectMode(anchor.rectMode);
-		app.rect(anchor.globalX(), anchor.globalY(), anchor.globalWidth(), anchor.globalHeight());
+		app.rect(anchor.X(), anchor.Y(), anchor.Width(), anchor.Height());
 		
 		// DisplayLocationBar
 		app.fill(100);
-		barAnchor.localX = (int) PApplet.map(barLocation, 0, 1, 0, anchor.globalWidth() - barAnchor.localWidth);
-		app.rect(barAnchor.globalX(), barAnchor.globalY(), anchor.localWidth, anchor.globalHeight());
+		barAnchor.localX = (int) PApplet.map(barLocation, 0, 1, 0, anchor.Width() - barAnchor.localWidth);
+		app.rect(barAnchor.X(), barAnchor.Y(), anchor.localWidth, anchor.Height());
 	}
 	
 	public void update() {
@@ -59,7 +59,7 @@ public class ScrollBarHorizontal extends PClass {
 		}
 		if (barSelected)
 		{
-			barLocation = (float) PApplet.map(applet.mouseX, anchor.globalX() + anchor.globalWidth() - (barAnchor.localWidth/2), anchor.globalX() + (barAnchor.localWidth/2), 1, 0);
+			barLocation = (float) PApplet.map(applet.mouseX, anchor.X() + anchor.Width() - (barAnchor.localWidth/2), anchor.X() + (barAnchor.localWidth/2), 1, 0);
 			barLocation = util.clamp(barLocation, 0, 1);
 		}
 	}

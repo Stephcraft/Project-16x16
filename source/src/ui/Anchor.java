@@ -89,7 +89,7 @@ public class Anchor {
 	
 	// Position
 	
-	public int globalX()
+	public int X()
 	{
 		int value = 0;
 		switch(anchorOrigin)
@@ -114,7 +114,7 @@ public class Anchor {
 		return value;
 	}
 	
-	public int globalY()
+	public int Y()
 	{
 		int value = 0;
 		switch(anchorOrigin)
@@ -141,16 +141,16 @@ public class Anchor {
 	
 	// Stretch
 	
-	public int globalWidth()
+	public int Width()
 	{
 		int value = 0;
 		switch(stretch)
 		{
 			case Horizontal:
-				value = frameGlobalWidth() - globalX();
+				value = frameGlobalWidth() - X();
 				break;
 			case InverseHorizontal:
-				value = globalX() - frameGlobalWidth();;
+				value = X() - frameGlobalWidth();;
 				break;
 			case Vertical: case InverseVertical:
 				value = localWidth;
@@ -162,7 +162,7 @@ public class Anchor {
 		return value;
 	}
 	
-	public int globalHeight()
+	public int Height()
 	{
 		int value = 0;
 		switch(stretch)
@@ -171,10 +171,10 @@ public class Anchor {
 				value = localHeight;
 				break;
 			case Vertical:
-				value = frameGlobalHeight() - globalY();
+				value = frameGlobalHeight() - Y();
 				break;
 			case InverseVertical:
-				value = globalY() - frameGlobalHeight();
+				value = Y() - frameGlobalHeight();
 				break;
 			case None:
 				value = localHeight;
@@ -187,31 +187,32 @@ public class Anchor {
 	
 	public int frameGlobalX()
 	{
-		if (hasContainer()) return frame.globalX();
+		if (hasContainer()) return frame.X();
 		else 				return 0;
 	}
 	
 	public int frameGlobalY()
 	{
-		if (hasContainer()) return frame.globalY();
+		if (hasContainer()) return frame.Y();
 		else 				return 0;
 	}
 	
 	public int frameGlobalWidth()
 	{
-		if (hasContainer()) return frame.globalWidth();
+		if (hasContainer()) return frame.Width();
 		else 				return app.width;
 	}
 	
 	public int frameGlobalHeight()
 	{
-		if (hasContainer()) return frame.globalHeight();
+		if (hasContainer()) return frame.Height();
 		else				return app.height;
 	}
 	
 	// is mouse over anchor
 	public boolean hover() {
-		return(app.mouseX > globalX() && app.mouseX < globalX() + globalWidth() 
-		    && app.mouseY > globalY() && app.mouseY < globalY() + globalHeight());
+		return(app.mouseX > X() && app.mouseX < X() + Width() 
+		    && app.mouseY > Y() && app.mouseY < Y() + Height());
+	}
 	}
 }
