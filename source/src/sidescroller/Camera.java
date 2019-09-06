@@ -350,21 +350,16 @@ public final class Camera extends ZoomPan {
 	 * Toggles the most recently assigned deadzone inactive/active.
 	 */
 	public void toggleDeadZone() {
-		if(SideScroller.DEBUG) {
-			if (deadZoneP1 != null && deadZoneP2 != null) {
-				if (deadZoneTypeLast == 0) { // 0 is screen
-					deadZoneScreen = !deadZoneScreen;
-				}
-				if (deadZoneTypeLast == 1) { // 1 is world
-					deadZoneWorld = !deadZoneWorld;
-				}
-
-			} else {
-				System.err.print("Specify a deadzone first");
+		if (deadZoneP1 != null && deadZoneP2 != null) {
+			if (deadZoneTypeLast == 0) { // 0 is screen
+				deadZoneScreen = !deadZoneScreen;
 			}
+			if (deadZoneTypeLast == 1) { // 1 is world
+				deadZoneWorld = !deadZoneWorld;
+			}
+
 		} else {
-			deadZoneScreen = false;
-			deadZoneWorld = false;
+			System.err.print("Specify a deadzone first");
 		}
 	}
 
@@ -376,10 +371,8 @@ public final class Camera extends ZoomPan {
 	 * @see {@link ZoomPan#getDispToCoord(PVector) getDispToCoord()}
 	 */
 	public void setCameraPosition(PVector position) {
-		if(SideScroller.DEBUG) {
-			following = false;
-			this.targetPosition = new PVector(-position.x, -position.y);
-		}
+		following = false;
+		this.targetPosition = new PVector(-position.x, -position.y);
 	}
 
 	/**
