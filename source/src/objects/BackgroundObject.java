@@ -41,15 +41,6 @@ public class BackgroundObject extends EditableObject {
 		}
 
 		applet.image(image, pos.x + pixelOffsetX, pos.y + pixelOffsetY);
-
-		if (applet.debug == debugType.ALL) {
-			applet.noStroke();
-			applet.fill(255);
-			applet.ellipse(pos.x, pos.y, 5, 5);
-			applet.noFill();
-			applet.stroke(50, 255, 120);
-			applet.rect(pos.x, pos.y, width, height);
-		}
 	}
 
 	public void update() {

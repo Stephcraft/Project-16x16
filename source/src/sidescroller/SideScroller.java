@@ -44,7 +44,7 @@ public class SideScroller extends PApplet {
 	public static final String LEVEL = "Assets/Storage/Game/Maps/gg-2.dat";
 
 	public enum debugType {
-		OFF, INFO_ONLY, ALL;
+		OFF, ALL, INFO_ONLY;
 		private static debugType[] vals = values();
 		public debugType next() {
 			return vals[(this.ordinal() + 1) % vals.length];
@@ -248,11 +248,12 @@ public class SideScroller extends PApplet {
 			// camera.
 			camera.update();
 			mousePosition = camera.getMouseCoord().copy();
+			mapEditor.drawMap(); // Handle Draw Scene Method - draws world, etc.
 			if (debug == debugType.ALL) {
 				mapEditor.debug();
 				camera.postDebug();
 			}
-			mapEditor.draw(); // Handle Draw Scene Method - draws player, world, etc.
+			mapEditor.drawPlayer(); // draws player
 		}
 		popMatrix();
 

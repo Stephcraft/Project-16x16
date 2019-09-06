@@ -81,7 +81,7 @@ public final class Player extends EditableObject {
 		super(a);
 
 		pos = new PVector(100, 300);
-		gravity = 2;
+		gravity = 1;
 
 		animation = new AnimationComponent();
 		swings = new ArrayList<Swing>();
@@ -90,8 +90,8 @@ public final class Player extends EditableObject {
 		lifeCapacity = 3;
 		life = lifeCapacity;
 
-		speedWalk = 10;
-		speedJump = 25; // 20
+		speedWalk = 7;
+		speedJump = 18; // 20
 
 		width = 14 * 4;
 		height = 16 * 4;
@@ -310,7 +310,7 @@ public final class Player extends EditableObject {
 		// On Ground Event
 		if (!flying && pflying && !attack && !dashing) {
 			setAnimation(ACTIONS.SQUISH);
-			applet.camera.shake(0.4f); // todo remove
+			applet.camera.shake(0.2f); // TODO consider removing
 		}
 
 		// Idle Animation
