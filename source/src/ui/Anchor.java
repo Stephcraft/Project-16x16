@@ -1,6 +1,7 @@
 package ui;
 
 import processing.core.PApplet;
+import sidescroller.SideScroller;
 
 public class Anchor {
 	
@@ -25,9 +26,8 @@ public class Anchor {
 	
 	public AnchorOrigin anchorOrigin = AnchorOrigin.TopLeft;
 	public Stretch stretch = Stretch.None;
-	public int rectMode = PApplet.CORNER;
 	
-	private PApplet app;
+	private SideScroller applet;
 	private Anchor frame = null;
 	
 	//TODO: add rectmode support
@@ -38,9 +38,9 @@ public class Anchor {
 		this.frame = anchor;
 	}
 	
-	public Anchor(PApplet applet, int x, int y, int width, int height)
+	public Anchor(SideScroller applet, int x, int y, int width, int height)
 	{
-		this.app = applet;
+		this.applet = applet;
 		this.localX = x;
 		this.localY = y;
 		this.localWidth = width;
@@ -49,22 +49,22 @@ public class Anchor {
 	
 	public Anchor copy()
 	{
-		Anchor anchor = new Anchor(app, localX, localY, localWidth, localHeight);
+		Anchor anchor = new Anchor(applet, localX, localY, localWidth, localHeight);
 		
 		return anchor;
 	}
 	
 	// PApplet
 	
-	public PApplet getPApplet()
+	public SideScroller getPApplet()
 	{
 		if (hasContainer())	return frame.getPApplet();
-		else				return app;
+		else				return applet;
 	}
 	
-	public void setPApplet(PApplet app)
+	public void setPApplet(SideScroller applet)
 	{
-		this.app = app;
+		this.applet = applet;
 	}
 	
 	
@@ -84,7 +84,7 @@ public class Anchor {
 	public void setContainer(Anchor anchor)
 	{
 		frame = anchor;
-		app = anchor.getPApplet();
+		applet = anchor.getPApplet();
 	}
 	
 	// Position
@@ -200,19 +200,19 @@ public class Anchor {
 	public int frameGlobalWidth()
 	{
 		if (hasContainer()) return frame.Width();
-		else 				return app.width;
+		else 				return applet.width;
 	}
 	
 	public int frameGlobalHeight()
 	{
 		if (hasContainer()) return frame.Height();
-		else				return app.height;
+		else				return applet.height;
 	}
 	
 	// is mouse over anchor
 	public boolean hover() {
-		return(app.mouseX > X() && app.mouseX < X() + Width() 
-		    && app.mouseY > Y() && app.mouseY < Y() + Height());
+		return(applet.mouseX > X() && applet.mouseX < X() + Width() 
+		    && applet.mouseY > Y() && applet.mouseY < Y() + Height());
 	}
 	
 	public void debugMode() {
