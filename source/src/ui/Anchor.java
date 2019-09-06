@@ -216,8 +216,10 @@ public class Anchor {
 	}
 	
 	public void debugMode() {
-		app.stroke(255,0,0);
-		app.noFill();
-		app.rect(X(), Y(), Width(), Height());
+		applet.stroke(255,0,0);
+		applet.noFill();
+		applet.rectMode(applet.CORNER);
+		applet.rect(X(), Y(), Width(), Height());
+		applet.rectMode(applet.CENTER);
 	}
 }
