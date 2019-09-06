@@ -115,10 +115,11 @@ public class SceneMapEditor extends PScene {
 		window_loadLevel = new LoadLevelWindow(applet);
 
 		// Init ScollBar
-		Anchor scrollBarAnchor = new Anchor(applet, -20, 150, 20, 50);
+		Anchor scrollBarAnchor = new Anchor(applet, -20, 102, 20, 50);
 		scrollBarAnchor.anchorOrigin = Anchor.AnchorOrigin.TopRight;
 		scrollBarAnchor.stretch = Anchor.Stretch.Vertical;
-		scrollBar = new ScrollBarVertical(applet, scrollBarAnchor);
+		scrollBar = new ScrollBarVertical(scrollBarAnchor);
+		scrollBar.setBarRatio(0.8f);
 
 		// Default Scene
 		applet.collidableObjects.add(new CollidableObject(applet, "METAL_WALK_MIDDLE:0", 0, 0));
