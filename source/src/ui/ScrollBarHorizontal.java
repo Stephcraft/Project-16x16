@@ -60,6 +60,9 @@ public float barLocation = 0f; // between 0-1
 		}
 	}
 	
+	public void setBarRatio(float value) {
+		barAnchor.localWidth = (int) (value * container.Width());
+	}
 	
 	public void mouseWheel(MouseEvent event) {
 		barLocation += event.getCount() * 0.1;

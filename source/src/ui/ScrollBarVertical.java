@@ -57,6 +57,9 @@ public class ScrollBarVertical extends PClass {
 		}
 	}
 	
+	public void setBarRatio(float value) {
+		barAnchor.localHeight = (int) (value * container.Height());
+	}
 	
 	public void mouseWheel(MouseEvent event) {
 		barLocation += event.getCount() * 0.1;
