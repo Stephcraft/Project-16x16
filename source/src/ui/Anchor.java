@@ -32,14 +32,12 @@ public class Anchor {
 	
 	//TODO: add rectmode support
 	
-	public Anchor(Anchor anchor, int x, int y, int width, int height)
-	{
+	public Anchor(Anchor anchor, int x, int y, int width, int height) {
 		this(anchor.getPApplet(), x, y, width, height);
 		this.frame = anchor;
 	}
 	
-	public Anchor(SideScroller applet, int x, int y, int width, int height)
-	{
+	public Anchor(SideScroller applet, int x, int y, int width, int height) {
 		this.applet = applet;
 		this.localX = x;
 		this.localY = y;
@@ -47,8 +45,7 @@ public class Anchor {
 		this.localHeight = height;
 	}
 	
-	public Anchor copy()
-	{
+	public Anchor copy() {
 		Anchor anchor = new Anchor(applet, localX, localY, localWidth, localHeight);
 		
 		return anchor;
@@ -56,41 +53,35 @@ public class Anchor {
 	
 	// PApplet
 	
-	public SideScroller getPApplet()
-	{
+	public SideScroller getPApplet(){
 		if (hasContainer())	return frame.getPApplet();
 		else				return applet;
 	}
 	
-	public void setPApplet(SideScroller applet)
-	{
+	public void setPApplet(SideScroller applet) {
 		this.applet = applet;
 	}
 	
 	
 	// Container
 	
-	public boolean hasContainer()
-	{
+	public boolean hasContainer() {
 		return frame != null;
 	}
 	
-	public Anchor getContainer()
-	{
+	public Anchor getContainer() {
 		if (hasContainer()) return frame;
 		else 				return null;
 	}
 	
-	public void setContainer(Anchor anchor)
-	{
+	public void setContainer(Anchor anchor) {
 		frame = anchor;
 		applet = anchor.getPApplet();
 	}
 	
 	// Position
 	
-	public int X()
-	{
+	public int X() {
 		int value = 0;
 		switch(anchorOrigin)
 		{
@@ -114,8 +105,7 @@ public class Anchor {
 		return value;
 	}
 	
-	public int Y()
-	{
+	public int Y() {
 		int value = 0;
 		switch(anchorOrigin)
 		{
@@ -141,8 +131,7 @@ public class Anchor {
 	
 	// Stretch
 	
-	public int Width()
-	{
+	public int Width() {
 		int value = 0;
 		switch(stretch)
 		{
@@ -162,8 +151,7 @@ public class Anchor {
 		return value;
 	}
 	
-	public int Height()
-	{
+	public int Height() {
 		int value = 0;
 		switch(stretch)
 		{
@@ -185,26 +173,22 @@ public class Anchor {
 	
 	// Container Variables
 	
-	public int frameGlobalX()
-	{
+	public int frameGlobalX() {
 		if (hasContainer()) return frame.X();
 		else 				return 0;
 	}
 	
-	public int frameGlobalY()
-	{
+	public int frameGlobalY() {
 		if (hasContainer()) return frame.Y();
 		else 				return 0;
 	}
 	
-	public int frameGlobalWidth()
-	{
+	public int frameGlobalWidth() {
 		if (hasContainer()) return frame.Width();
 		else 				return applet.width;
 	}
 	
-	public int frameGlobalHeight()
-	{
+	public int frameGlobalHeight() {
 		if (hasContainer()) return frame.Height();
 		else				return applet.height;
 	}
