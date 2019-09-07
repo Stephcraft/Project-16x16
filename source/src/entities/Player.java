@@ -7,6 +7,7 @@ import sidescroller.Options;
 import sidescroller.SideScroller;
 import sidescroller.Tileset;
 import sidescroller.Util;
+import sidescroller.SideScroller.debugType;
 
 import java.util.ArrayList;
 
@@ -80,7 +81,7 @@ public final class Player extends EditableObject {
 		super(a);
 
 		pos = new PVector(100, 300);
-		gravity = 2;
+		gravity = 1;
 
 		animation = new AnimationComponent();
 		swings = new ArrayList<Swing>();
@@ -89,8 +90,8 @@ public final class Player extends EditableObject {
 		lifeCapacity = 3;
 		life = lifeCapacity;
 
-		speedWalk = 10;
-		speedJump = 25; // 20
+		speedWalk = 7;
+		speedJump = 18; // 20
 
 		width = 14 * 4;
 		height = 16 * 4;
@@ -133,7 +134,7 @@ public final class Player extends EditableObject {
 			applet.image(image, pos.x, pos.y);
 		}
 
-		if (SideScroller.DEBUG) {
+		if (applet.debug == debugType.ALL) {
 			applet.strokeWeight(1);
 			applet.stroke(0, 255, 200);
 			applet.noFill();
@@ -208,7 +209,6 @@ public final class Player extends EditableObject {
 		if (applet.mousePressed && !attack) {
 			if (applet.mouseButton == LEFT) {
 				attack = true;
-				applet.camera.shake(0.3f); // todo remove
 				if (!dashing) {
 					setAnimation(ACTIONS.ATTACK);
 				} else if (dashing) {
@@ -249,7 +249,7 @@ public final class Player extends EditableObject {
 		}
 		// boolean collides = false;
 
-		if (SideScroller.DEBUG) {
+		if (applet.debug == debugType.ALL) {
 			applet.noFill();
 			applet.stroke(255, 0, 0);
 			applet.strokeWeight(1);
@@ -260,7 +260,7 @@ public final class Player extends EditableObject {
 		for (int i = 0; i < applet.collidableObjects.size(); i++) {
 			CollidableObject collision = applet.collidableObjects.get(i);
             if (Util.fastInRange(pos, collision.pos, collisionRange)) { // In Player Range
-				if (SideScroller.DEBUG) {
+				if (applet.debug == debugType.ALL) {
 					applet.strokeWeight(2);
 					applet.rect(collision.pos.x, collision.pos.y, collision.width, collision.height);
 					applet.fill(255, 0, 0);
@@ -310,7 +310,7 @@ public final class Player extends EditableObject {
 		// On Ground Event
 		if (!flying && pflying && !attack && !dashing) {
 			setAnimation(ACTIONS.SQUISH);
-			applet.camera.shake(0.4f); // todo remove
+			applet.camera.shake(0.2f); // TODO consider removing
 		}
 
 		// Idle Animation

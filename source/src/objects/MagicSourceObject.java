@@ -1,6 +1,5 @@
 package objects;
 
-import jdk.tools.jlink.internal.TaskHelper.Option.Processing;
 import projectiles.MagicProjectile;
 import projectiles.Swing;
 import sidescroller.SideScroller;

@@ -9,6 +9,8 @@ import ui.List;
 import ui.ScrollBarVertical;
 
 import java.io.File;
+import java.io.FileFilter;
+import java.util.Arrays;
 
 import processing.core.PApplet;
 
@@ -26,7 +28,15 @@ public class LoadLevelWindow extends PClass {
 		scene = (SceneMapEditor) a.mapEditor;
 
 		f = new File(path);
-		list = new List(a, f.list(), 30);
+		File[] files = f.listFiles(new FileFilter() {
+			@Override
+			public boolean accept(File pathname) {
+				String name = pathname.getName().toLowerCase();
+				return name.endsWith(".dat") && pathname.isFile();
+			}
+		});
+		
+		list = new List(a, Arrays.stream(files).map(File::getName).toArray(String[]::new), 30);
 		list.setSizeH(200);
 		list.setPosition(applet.width / 2, 325);
 		list.setConfirmButton("Confirm", applet.width / 2, 500);

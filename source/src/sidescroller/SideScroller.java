@@ -8,7 +8,9 @@ import dm.core.DM;
 
 import entities.Player;
 
+import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
+import javafx.scene.transform.Scale;
 import javafx.stage.Stage;
 
 import objects.BackgroundObject;
@@ -38,10 +40,25 @@ import scene.SceneMapEditor;
  */
 public class SideScroller extends PApplet {
 
+	// Game Dev
 	public static final String LEVEL = "Assets/Storage/Game/Maps/gg-2.dat";
-	public static boolean DEBUG = true;
+
+	public enum debugType {
+		OFF, ALL, INFO_ONLY;
+		private static debugType[] vals = values();
+		public debugType next() {
+			return vals[(this.ordinal() + 1) % vals.length];
+		}
+	}
+	public debugType debug = debugType.ALL;
+  
 	public static final boolean SNAP = true; // snap objects to grid when moving; located here for ease of access
 	public static int snapSize;
+
+	// Game Rendering
+	private final PVector windowSize = new PVector(1280, 720); // Game window size -- to be set via options
+	private final PVector gameResolution = new PVector(1280, 720); // Game rendering resolution -- to be set
+																	// via options
 
 	// Image Resources
 	public PImage graphicsSheet;
@@ -79,8 +96,23 @@ public class SideScroller extends PApplet {
 	private PVector mousePosition;
 
 	// Expose JavaFX nodes
+	/**
+	 * Processing's JavaFX surface. Extends and wraps a JavaFX {@link #canvas}.
+	 */
 	private PSurfaceFX surface;
+	/**
+	 * JavaFX Canvas - an image that can be drawn on using a set of graphics
+	 * commands. A node of the {@link #scene}.
+	 */
 	private Canvas canvas;
+	/**
+	 * JavaFX Scene. Embedded in the {@link #stage} - the container for all other
+	 * content (JavaFX nodes).
+	 */
+	protected Scene scene;
+	/**
+	 * JavaFX Stage - the top level JavaFX container (titlebar, etc.).
+	 */
 	private Stage stage;
 
 	/**
@@ -88,7 +120,7 @@ public class SideScroller extends PApplet {
 	 */
 	@Override
 	public void settings() {
-		size(1280, 720, FX2D);
+		size((int) windowSize.x, (int) windowSize.y, FX2D);
 	}
 
 	/**
@@ -98,7 +130,12 @@ public class SideScroller extends PApplet {
 	protected PSurface initSurface() {
 		surface = (PSurfaceFX) super.initSurface();
 		canvas = (Canvas) surface.getNative();
+		canvas.widthProperty().unbind(); // used for scaling
+		canvas.heightProperty().unbind(); // used for scaling
+		scene = canvas.getScene();
 		stage = (Stage) canvas.getScene().getWindow();
+		stage.setResizable(false); // prevent abitrary user resize
+		stage.setFullScreenExitHint(""); // disable fullscreen toggle hint
 		return surface;
 	}
 
@@ -162,10 +199,9 @@ public class SideScroller extends PApplet {
 		camera.setMouseMask(CONTROL);
 		camera.setMinZoomScale(0.3);
 		camera.setMaxZoomScale(3);
-		// camera.setScreenDeadZone(new PVector(width * 0.25f, height * 0.25f), new
-		// PVector(width * 0.75f, height * 0.75f)); // example
-		camera.setWorldDeadZone(new PVector(50, 0), new PVector(width * 0.25f, height * 0.25f)); // example
 		camera.setFollowObject(player);
+
+		scaleResolution();
 	}
 
 	/**
@@ -212,18 +248,23 @@ public class SideScroller extends PApplet {
 			// camera.
 			camera.update();
 			mousePosition = camera.getMouseCoord().copy();
-			mapEditor.draw();// Handle Draw Scene Method - draws player, world, etc.
-			if (DEBUG) {
-				camera.postDebug();// for development
+			mapEditor.drawMap(); // Handle Draw Scene Method - draws world, etc.
+			if (debug == debugType.ALL) {
+				mapEditor.debug();
+				camera.postDebug();
 			}
+			mapEditor.drawPlayer(); // draws player
 		}
 		popMatrix();
 
 		drawAboveCamera: { // Where HUD etc should be drawn
 			mousePosition = new PVector(mouseX, mouseY);
 			mapEditor.drawUI();
-
-			if (DEBUG) {
+			if (debug == debugType.ALL) {
+				camera.post();
+				displayDebugInfo();
+			}
+			if (debug == debugType.INFO_ONLY) {
 				displayDebugInfo();
 			}
 		}
@@ -271,50 +312,46 @@ public class SideScroller extends PApplet {
 		keyReleaseEvent = true;
 
 		switch (event.getKey()) { // must be ALL-CAPS
-		case 'H':
-			if (DEBUG) {
-				DEBUG = false;
-			} else {
-				DEBUG = true;
-			}
-			camera.toggleDeadZone();
-			break;
-		case 'Z':
-			frameRate(2000);
-			break;
-		case 'X':
-			frameRate(10);
-			break;
-		case 'V':
-			camera.toggleDeadZone(); // for development
-			break;
-		case 'C':
-			camera.setCameraPosition(camera.getMouseCoord()); // for development
-			break;
-		case 'F':
-			camera.setFollowObject(player); // for development
-			camera.setZoomScale(1.0f); // for development
-			break;
-		case 'G':
-			camera.shake(0.4f); // for development
-			break;
-		default:
-			switch (event.getKeyCode()) { // non-character keys
-			case 122: // F11
-				noLoop();
-				stage.setFullScreen(!stage.isFullScreen());
-				loop();
+			case 'Z' :
+				frameRate(5000);
 				break;
-			case 27: // ESC - Pause menu here
-				if (looping) {
-					noLoop();
-				} else {
-					loop();
+			case 'X' :
+				frameRate(20);
+				break;
+			case 'V' :
+				camera.toggleDeadZone(); // for development
+				break;
+			case 'C' :
+				camera.setCameraPosition(camera.getMouseCoord()); // for development
+				break;
+			case 'F' :
+				camera.setFollowObject(player); // for development
+				camera.setZoomScale(1.0f); // for development
+				break;
+			case 'G' :
+				camera.shake(0.4f); // for development
+				break;
+			default :
+				switch (event.getKeyCode()) { // non-character keys
+					case 122 : // F11
+						noLoop();
+						stage.setFullScreen(!stage.isFullScreen());
+						scaleResolution();
+						loop();
+						break;
+					case 27 : // ESC - Pause menu here
+						if (looping) {
+							noLoop();
+						} else {
+							loop();
+						}
+						break;
+					case 9 : // TAB
+						debug = debug.next();
+						break;
+					default :
+						break;
 				}
-				break;
-			default:
-				break;
-			}
 		}
 	}
 
@@ -401,6 +438,26 @@ public class SideScroller extends PApplet {
 		return (int) mousePosition.y;
 	}
 
+	/**
+	 * Scales the game rendering (as defined by gameResolution) to fill the current
+	 * stage size. <b>Should be called whenever stage size or game resolution is
+	 * changed</b> - currently called only when toggling fullscreen mode.
+	 */
+	private void scaleResolution() {
+		canvas.getTransforms().clear();
+		canvas.setTranslateX(-scene.getWidth() / 2 + gameResolution.x / 2); // recenters after scale
+		canvas.setTranslateY(-scene.getHeight() / 2 + gameResolution.y / 2); // recenters after scale
+		if (!(scene.getWidth() == gameResolution.x && scene.getHeight() == gameResolution.y)) {
+			canvas.setWidth(gameResolution.x);
+			canvas.setHeight(gameResolution.y);
+			width = (int) gameResolution.x;
+			height = (int) gameResolution.y;
+			final double scaleX = scene.getWidth() / gameResolution.x;
+			final double scaleY = scene.getHeight() / gameResolution.y;
+			canvas.getTransforms().setAll(new Scale(scaleX, scaleY)); // scale canvas
+		}
+	}
+
 	private void displayDebugInfo() {
 		final int lineOffset = 12; // vertical offset
 		final int yOffset = 1;
@@ -409,7 +466,7 @@ public class SideScroller extends PApplet {
 		fill(0, 50);
 		noStroke();
 		rectMode(CORNER);
-		rect(width - labelPadding, 0, labelPadding, yOffset + lineOffset * 10);
+		rect(width - labelPadding, 0, labelPadding, yOffset + lineOffset * 11);
 		fill(255, 0, 0);
 		textSize(18);
 
