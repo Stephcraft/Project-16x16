@@ -141,6 +141,16 @@ public class Util {
 	public static float roundToNearest(float n, float x) {
 		return Math.round(n / x) * x;
 	}
+	
+	/**
+	 * Round a float to 'n' decimal places.
+	 * @param n number to round
+	 * @param d number of decimal places
+	 * @return rounded float
+	 */
+	public static float roundToNPlaces(float n, int d) {
+		  return Float.parseFloat(String.format("%." + d + "f", n));
+		}
 
 	/**
 	 * Are two PVectors with range of each other? Faster than using
@@ -154,6 +164,22 @@ public class Util {
 	 */
 	public static boolean fastInRange(PVector a, PVector b, int dist) {
 		return ((b.x - a.x) * (b.x - a.x)) + ((b.y - a.y) * (b.y - a.y)) < (dist * dist);
+	}
+
+	/**
+	 * Calculates the angle between two PVectors where: East = 0; North = -1/2PI;
+	 * West = -PI; South = -3/2PI | 1/2PI
+	 * 
+	 * @param tail PVector Coordinate 1.
+	 * @param head PVector Coordinate 2.
+	 * @return float θ in radians.
+	 */
+	public static float angleBetween(PVector tail, PVector head) {
+		float a = PApplet.atan2(tail.y - head.y, tail.x - head.x);
+		if (a < 0) {
+			a += PConstants.TWO_PI;
+		}
+		return a;
 	}
 
 	/**

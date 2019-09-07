@@ -77,7 +77,7 @@ public final class Camera extends ZoomPan {
 	/**
 	 * Trauma is used internally to inform the magnitude of camera shake.
 	 */
-	private float trauma = 0, traumaDecay = 0.02f;
+	private float trauma = 0, traumaDecay = 0.015f;
 
 	/**
 	 * The most basic constructor. Initialises the camera at position (0, 0).
@@ -88,9 +88,6 @@ public final class Camera extends ZoomPan {
 		super(applet);
 		this.applet = applet;
 		targetPosition = new PVector(0, 0); // default position
-		if (SideScroller.DEBUG) {
-			applet.registerMethod("post", this);
-		}
 	}
 
 	/**
@@ -103,9 +100,6 @@ public final class Camera extends ZoomPan {
 		super(applet);
 		this.applet = applet;
 		targetPosition = new PVector(-startPosition.x, -startPosition.y);
-		if (SideScroller.DEBUG) {
-			applet.registerMethod("post", this);
-		}
 	}
 
 	/**
@@ -119,9 +113,6 @@ public final class Camera extends ZoomPan {
 		this.applet = applet;
 		this.followObject = followObject;
 		following = true;
-		if (SideScroller.DEBUG) {
-			applet.registerMethod("post", this);
-		}
 	}
 
 	/**
@@ -139,40 +130,32 @@ public final class Camera extends ZoomPan {
 		this.followObject = followObject;
 		following = true;
 		followObjectOffset = followOffset.copy();
-		if (SideScroller.DEBUG) {
-			applet.registerMethod("post", this);
-		}
 	}
 
 	/**
-	 * Draws camera debug info if {@link SideScroller#DEBUG DEBUG} is true. Bound to
-	 * the end of draw() loop using {@link PApplet#registerMethod(String, Object)
-	 * registerMethod()} - don't call this method manually!
+	 * Draws camera debug info.
 	 */
 	public void post() {
-		if(SideScroller.DEBUG) {
-			applet.noFill();
-			applet.stroke(0, 150, 255);
-			applet.strokeWeight(2);
-			final int length = 20;
-			applet.line(applet.width / 2 - length, applet.height / 2, applet.width / 2 + length, applet.height / 2);
-			applet.line(applet.width / 2, applet.height / 2 - length, applet.width / 2, applet.height / 2 + length);
-			applet.pushMatrix();
-			applet.translate(offset.x, offset.y);
-			applet.rotate(rotation);
-			applet.translate(-offset.x, -offset.y);
-			applet.line(applet.width / 2 - length * 2, applet.height / 2, applet.width / 2 + length * 2, applet.height / 2);
-			applet.popMatrix();
-			if (following) {
-				applet.rect(getCoordToDisp(followObject.pos).x, getCoordToDisp(followObject.pos).y, length * 2, length * 2);
-				if (deadZoneScreen) {
-					applet.rectMode(PApplet.CORNER);
-					applet.rect(deadZoneP1.x, deadZoneP1.y, deadZoneP2.x - deadZoneP1.x, deadZoneP2.y - deadZoneP1.y);
-					applet.rectMode(PApplet.CENTER);
-				}
-			} else {
-				applet.rect(getCoordToDisp(PVector.mult(targetPosition, -1)).x,
-						getCoordToDisp(PVector.mult(targetPosition, -1)).y, length * 2, length * 2);
+
+		applet.noFill();
+		applet.stroke(0, 150, 255);
+		applet.strokeWeight(2);
+		final int length = 20;
+		applet.line(applet.width / 2 - length, applet.height / 2, applet.width / 2 + length, applet.height / 2);
+		applet.line(applet.width / 2, applet.height / 2 - length, applet.width / 2, applet.height / 2 + length);
+		applet.pushMatrix();
+		applet.translate(offset.x, offset.y);
+		applet.rotate(rotation);
+		applet.translate(-offset.x, -offset.y);
+		applet.line(applet.width / 2 - length * 2, applet.height / 2, applet.width / 2 + length * 2, applet.height / 2);
+		applet.popMatrix();
+		if (following) {
+			applet.rectMode(PApplet.CENTER);
+			applet.rect(getCoordToDisp(followObject.pos).x, getCoordToDisp(followObject.pos).y, length * 2, length * 2);
+			if (deadZoneScreen) {
+				applet.rectMode(PApplet.CORNER);
+				applet.rect(deadZoneP1.x, deadZoneP1.y, deadZoneP2.x - deadZoneP1.x, deadZoneP2.y - deadZoneP1.y);
+				applet.rectMode(PApplet.CENTER);
 			}
 		}
 	}
@@ -205,36 +188,42 @@ public final class Camera extends ZoomPan {
 	public void update() {
 		offset = new PVector(applet.width / 2, applet.height / 2);
 
+		if (zoom != zoomTarget) {
+			zoom = PApplet.lerp(zoom, zoomTarget, lerpSpeed);
+			if (PApplet.abs(zoom - zoomTarget) < 0.0025) { //
+				zoom = zoomTarget;
+			}
+		}
+
 		rotation = PApplet.lerp(rotation, rotationTarget, lerpSpeed);
-		zoom = PApplet.lerp(zoom, zoomTarget, lerpSpeed);
 		applet.translate(offset.x, offset.y);
 		applet.rotate(rotation + shakeRotationOffset);
 		applet.translate(-offset.x, -offset.y);
-
 		transform();
 
 		float scale = PApplet.lerp((float) getZoomScaleX(), zoom, lerpSpeed);
 		setZoomScaleX(scale);
 		setZoomScaleY(scale);
 
-		if (following && (((deadZoneScreen && !withinScreenDeadZone()) || ((deadZoneWorld && !withinWorldDeadZone()))
-				|| (!deadZoneScreen && !deadZoneWorld)))) {
+		if (following && ((deadZoneScreen && !withinScreenDeadZone()) || ((deadZoneWorld && !withinWorldDeadZone()))
+				|| (!deadZoneScreen && !deadZoneWorld))) {
 			setPanOffset(
-					PApplet.lerp(getPanOffset().x,
-							(-followObject.pos.x - followObjectOffset.x - shakeOffset.x + offset.x) * zoom, lerpSpeed),
-					PApplet.lerp(getPanOffset().y,
-							(-followObject.pos.y - followObjectOffset.y - shakeOffset.y + offset.y) * zoom, lerpSpeed));
+					PApplet.lerp(getPanOffset().x, ((-followObject.pos.x - followObjectOffset.x + offset.x) * zoom),
+							lerpSpeed) - shakeOffset.x,
+					PApplet.lerp(getPanOffset().y, ((-followObject.pos.y - followObjectOffset.y + offset.y) * zoom),
+							lerpSpeed) - shakeOffset.y);
 		} else if (!following) {
 			setPanOffset(
-					PApplet.lerp(getPanOffset().x, (targetPosition.x - shakeOffset.x + offset.x) * zoom, lerpSpeed),
-					PApplet.lerp(getPanOffset().y, (targetPosition.y - shakeOffset.y + offset.y) * zoom, lerpSpeed));
+					PApplet.lerp(getPanOffset().x, ((targetPosition.x + offset.x) * zoom), lerpSpeed) - shakeOffset.x,
+					PApplet.lerp(getPanOffset().y, ((targetPosition.y + offset.y) * zoom), lerpSpeed) - shakeOffset.y);
 		}
+		logicalPosition = PVector.mult(PVector.sub(getPanOffset(), offset), -1);
 
-		if (trauma > 0) { // 400 and 0.35 seem suitable values
+		if (trauma > 0) { // 50 and 0.35 seem suitable values
 			trauma -= traumaDecay;
 
-			float x = (trauma * trauma) * applet.random(-1, 1) * 400;
-			float y = (trauma * trauma) * applet.random(-1, 1) * 400;
+			float x = (trauma * trauma) * applet.random(-1, 1) * 50;
+			float y = (trauma * trauma) * applet.random(-1, 1) * 50;
 			shakeOffset = new PVector(x, y);
 			shakeRotationOffset = (trauma * trauma) * applet.random(-1, 1) * 0.35f;
 			if (trauma == 0) {
@@ -246,7 +235,7 @@ public final class Camera extends ZoomPan {
 
 	/**
 	 * Debug info for worldDeadZone area (since it is part of the world, it cannot
-	 * be drawn above the camera and msut be called after).
+	 * be drawn above the camera and must be called after).
 	 */
 	public void postDebug() {
 		if (deadZoneWorld) {
@@ -361,21 +350,16 @@ public final class Camera extends ZoomPan {
 	 * Toggles the most recently assigned deadzone inactive/active.
 	 */
 	public void toggleDeadZone() {
-		if(SideScroller.DEBUG) {
-			if (deadZoneP1 != null && deadZoneP2 != null) {
-				if (deadZoneTypeLast == 0) { // 0 is screen
-					deadZoneScreen = !deadZoneScreen;
-				}
-				if (deadZoneTypeLast == 1) { // 1 is world
-					deadZoneWorld = !deadZoneWorld;
-				}
-
-			} else {
-				System.err.print("Specify a deadzone first");
+		if (deadZoneP1 != null && deadZoneP2 != null) {
+			if (deadZoneTypeLast == 0) { // 0 is screen
+				deadZoneScreen = !deadZoneScreen;
 			}
+			if (deadZoneTypeLast == 1) { // 1 is world
+				deadZoneWorld = !deadZoneWorld;
+			}
+
 		} else {
-			deadZoneScreen = false;
-			deadZoneWorld = false;
+			System.err.print("Specify a deadzone first");
 		}
 	}
 
@@ -387,15 +371,13 @@ public final class Camera extends ZoomPan {
 	 * @see {@link ZoomPan#getDispToCoord(PVector) getDispToCoord()}
 	 */
 	public void setCameraPosition(PVector position) {
-		if(SideScroller.DEBUG) {
-			following = false;
-			this.targetPosition = new PVector(-position.x, -position.y);
-		}
+		following = false;
+		this.targetPosition = new PVector(-position.x, -position.y);
 	}
 
 	/**
-	 * Set camera rotation (the camera rotates around the camera position - not a world
-	 * position).
+	 * Set camera rotation (the camera rotates around the camera position - not a
+	 * world position).
 	 * 
 	 * @param angle Rotation angle (in radians)
 	 */
@@ -474,12 +456,12 @@ public final class Camera extends ZoomPan {
 	 *      centering and translation)
 	 */
 	public String getCameraPosition() {
-		logicalPosition = PVector.sub(getPanOffset(), offset); // offset camera to center screen
-		return PApplet.round(-logicalPosition.x) + ", " + PApplet.round(-logicalPosition.y);
+		return PApplet.round(logicalPosition.x) + ", " + PApplet.round(logicalPosition.y);
 	}
-	
+
 	/**
 	 * Returns clockwise rotation of the camera.
+	 * 
 	 * @return rotation (radians).
 	 */
 	public float getCameraRotation() {
@@ -487,20 +469,20 @@ public final class Camera extends ZoomPan {
 	}
 
 	/**
-	 * Return the world positon the mouse is over, accounting for camera rotation.
-	 * NOT WORKING FULLY. todo
+	 * Returns the world position the mouse is over, accounting for camera rotation
+	 * (uses polar coordinates). Overrides the {@link ZoomPan#getMouseCoord() parent
+	 * method}, since this does not account for camera rotation.
 	 * 
-	 * @return
-	 * @deprecated
+	 * @return World position the mouse is over.
 	 */
-	private PVector getRotationMouseCoord() { // return mouseCoord, acc
-		logicalPosition = PVector.sub(getPanOffset(), offset); // offset camera to center screen
-		PVector z = new PVector(getMouseCoord().x - logicalPosition.x, getMouseCoord().y + logicalPosition.y);
-		PVector n = new PVector(
-				(z.x * cos(rotation + shakeRotationOffset)) + (z.y * sin(rotation + shakeRotationOffset)),
-				z.x * sin(rotation + shakeRotationOffset) - z.y * cos(rotation + shakeRotationOffset));
-		n = new PVector((logicalPosition.x + n.x), -(logicalPosition.y + n.y));
-		return n;
+	@Override
+	public PVector getMouseCoord() {
+		final var theta = Util.angleBetween(super.getMouseCoord(), logicalPosition) - rotation;
+		final var eDist = PVector.dist(super.getMouseCoord(), logicalPosition);
+		final var xReal = logicalPosition.x + eDist * (cos(theta));
+		final var yReal = logicalPosition.y + eDist * (sin(theta));
+
+		return new PVector(xReal, yReal);
 	}
 
 }

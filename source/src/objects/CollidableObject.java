@@ -2,7 +2,9 @@ package objects;
 
 import processing.core.*;
 import sidescroller.SideScroller;
+import sidescroller.SideScroller.debugType;
 import sidescroller.Tileset;
+
 
 public class CollidableObject extends EditableObject {
 
@@ -54,7 +56,7 @@ public class CollidableObject extends EditableObject {
 		}
 
 		if (id == null) {
-			if (SideScroller.DEBUG) {
+			if (applet.debug == debugType.ALL) {
 				applet.noFill();
 				applet.strokeWeight(1);
 				applet.stroke(0, 255, 200);
@@ -62,15 +64,6 @@ public class CollidableObject extends EditableObject {
 			}
 		} else {
 			applet.image(image, pos.x + pixelOffsetX, pos.y + pixelOffsetY);
-		}
-
-		if (SideScroller.DEBUG) {
-			applet.noStroke();
-			applet.fill(255);
-			applet.ellipse(pos.x, pos.y, 5, 5);
-			applet.noFill();
-			applet.stroke(50, 120, 255);
-			applet.rect(pos.x, pos.y, width, height);
 		}
 	}
 

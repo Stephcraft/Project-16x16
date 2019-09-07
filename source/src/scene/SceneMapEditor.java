@@ -135,8 +135,7 @@ public class SceneMapEditor extends PScene {
 	/**
 	 * Draw scene elements that are below (affected by) the camera.
 	 */
-	@Override
-	public void draw() {
+	public void drawMap() {
 		background(29, 33, 45);
 
 		applet.noStroke();
@@ -189,18 +188,6 @@ public class SceneMapEditor extends PScene {
 
 			applet.gameObjects.get(i).display();
 
-			if (SideScroller.DEBUG) {
-				applet.strokeWeight(2);
-				applet.noFill();
-				applet.stroke(255, 190, 200);
-				applet.rect(applet.gameObjects.get(i).pos.x, applet.gameObjects.get(i).pos.y,
-						applet.gameObjects.get(i).width, applet.gameObjects.get(i).height);
-				applet.noStroke();
-				applet.fill(255);
-				applet.ellipse(applet.gameObjects.get(i).pos.x, applet.gameObjects.get(i).pos.y, 5, 5);
-				applet.noFill();
-			}
-
 			// Delete
 			if (applet.gameObjects.get(i).focus && applet.keyPress(8) && applet.keyPressEvent) {
 				applet.gameObjects.remove(i);
@@ -221,31 +208,44 @@ public class SceneMapEditor extends PScene {
 		}
 
 		switch (tool) {
-		case MODIFY:
-			applet.player.updateEdit();
-			applet.player.displayEdit();
-			editorItem.displayDestination();
-			applet.collidableObjects.forEach(o -> o.displayEdit());
-			applet.backgroundObjects.forEach(o -> o.displayEdit());
-			applet.gameObjects.forEach(o -> o.displayEdit());
-			break;
-		case PLAY:
-			applet.player.update();
-			break;
-		case MOVE:
-		case INVENTORY:
-		case SAVE:
-		case LOADEXAMPLE:
-		case TEST:
-			break;
-		default:
-			break;
+			case MODIFY :
+				editorItem.displayDestination();
+				applet.collidableObjects.forEach(o -> o.displayEdit());
+				applet.backgroundObjects.forEach(o -> o.displayEdit());
+				applet.gameObjects.forEach(o -> o.displayEdit());
+				break;
+			case PLAY :
+			case MOVE :
+			case INVENTORY :
+			case SAVE :
+			case LOADEXAMPLE :
+			case TEST :
+			default :
+				break;
+		}
+	}
+	
+	/**
+	 * Draws and updates the player.
+	 */
+	public void drawPlayer() {
+		switch (tool) {
+			case MODIFY :
+				applet.player.updateEdit();
+				applet.player.displayEdit();
+				break;
+			case PLAY :
+				applet.player.update();
+				break;
+			case MOVE :
+			case INVENTORY :
+			case SAVE :
+			case LOADEXAMPLE :
+			case TEST :
+			default :
+				break;
 		}
 		applet.player.display();
-
-		// View Viewport Editor
-//		worldViewportEditor.updateEditor(); // TODO
-//		worldViewportEditor.displayEditor(); // TODO
 	}
 
 	/**
@@ -439,6 +439,29 @@ public class SceneMapEditor extends PScene {
 		}
 	}
 
+	/**
+	 * Display boundaries of all world objects. 
+	 */
+	public void debug() {
+        applet.strokeWeight(2);
+        applet.noFill();
+        
+        applet.stroke(50, 255, 120);
+        applet.backgroundObjects.forEach(o -> applet.rect(o.pos.x, o.pos.y, o.width, o.height));
+
+        applet.stroke(255, 190, 200);
+        applet.gameObjects.forEach(o -> applet.rect(o.pos.x, o.pos.y, o.width, o.height));
+        
+        applet.stroke(50, 120, 255);
+        applet.collidableObjects.forEach(o -> applet.rect(o.pos.x, o.pos.y, o.width, o.height));
+        
+        applet.noStroke();
+        applet.fill(255);
+        applet.collidableObjects.forEach(o -> applet.ellipse(o.pos.x, o.pos.y, 5, 5));
+        applet.gameObjects.forEach(o -> applet.ellipse(o.pos.x, o.pos.y, 5, 5));
+        applet.backgroundObjects.forEach(o -> applet.ellipse(o.pos.x, o.pos.y, 5, 5));
+	}
+	
 	private void displayCreativeInventory() {// complete creative inventory
 
 		// Display Background
@@ -526,8 +549,8 @@ public class SceneMapEditor extends PScene {
 	}
 
 	private void displayGrid() {// world edit grid
-		applet.strokeWeight(2);
-		applet.stroke(50);
+		applet.strokeWeight(1);
+		applet.stroke(0, 155, 155);
 		final int xOffset = 32; // to align with rectMode(CENTER)
 		final int yOffset = 32; // to align with rectMode(CENTER)
 		final int l = 6400;
