@@ -94,6 +94,32 @@ public class Util {
 		tempImage.updatePixels();
 		return pg(tempImage).get();
 	}
+	
+	public PImage resizeImage(PImage img, float scl) {
+		  PGraphics pg = applet.createGraphics((int)(img.width*scl), (int)(img.height*scl));
+		  
+		  pg.beginDraw();
+		    pg.clear();
+		    pg.scale( scl, scl );
+		    pg.image(img,0,0);
+		  pg.endDraw();
+		  
+		  return pg;
+	}
+	
+	public PImage rotateImage(PImage img, float angle) {
+		  PGraphics pg = applet.createGraphics((int)(img.width*1.5), (int)(img.height*1.5));
+		  
+		  pg.beginDraw();
+		    pg.clear();
+		    pg.imageMode(PApplet.CENTER);
+		    pg.translate(pg.width/2, pg.height/2);
+		    pg.rotate( angle );
+		    pg.image(img,0,0);
+		  pg.endDraw();
+		  
+		  return pg;
+	}
 
 	public float clamp(float val, float min, float max) {
 		if (val < min) {
