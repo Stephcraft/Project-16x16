@@ -23,6 +23,8 @@ public class Particle {
 	public PVector acceleration;
 	
 	public float size = 40; //TODO: create better way to control
+	public boolean useCustomeSize = false;
+	
 	public float maxLifespan; // lifespan of particle when it was spawned
 	public float lifespan;
 	public int frameCount;
@@ -60,7 +62,10 @@ public class Particle {
 	}
 	
 	private void draw() {
-		applet.image(image, position.x, position.y, size, size);
+		if (useCustomeSize)
+			applet.image(image, position.x, position.y, size, size);
+		else
+			applet.image(image, position.x, position.y);
 	}
 	
 	private void setLifespan(float lifespan)
