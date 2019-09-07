@@ -84,6 +84,8 @@
     {"name": "MAGIC_SOURCE", "x": 0, "y": 31, "w": 16, "h": 16, "type": "OBJECT"},
     {"name": "MIRROR_BOX", "x": 21, "y": 10, "w": 16, "h": 16, "type": "OBJECT"},
     
+    {"name": "Particle", "x": 13, "y": 16, "w": 16, "h": 16, "type": "ANIMATION"},
+
     {"name": "PlayerIdle1", "x": 0, "y": 16, "w": 16, "h": 16, "type": "ANIMATION"},
     {"name": "PlayerIdle2", "x": 1, "y": 16, "w": 16, "h": 16, "type": "ANIMATION"},
     {"name": "PlayerIdle3", "x": 2, "y": 16, "w": 16, "h": 16, "type": "ANIMATION"},

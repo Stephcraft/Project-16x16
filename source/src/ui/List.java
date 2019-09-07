@@ -60,7 +60,7 @@ public class List extends PClass {
 		scrollBar.display();
 		scrollBar.update();
 		applet.popMatrix();
-		scrollPass = (int) PApplet.map(scrollBar.barLocation, 1, 0, -elements.length + applet.height, 0);
+		scrollPass = (int) PApplet.map(scrollBar.barLocation, 1, 0, elements.length*30, 0);
 	}
 
 	private void displayListArea() {
@@ -70,10 +70,9 @@ public class List extends PClass {
 	}
 
 	private void loadScrollBar() {
-		Anchor scrollBarAnchorP = new Anchor(applet, x + h , applet.height / 2, 20, 60);
-		scrollBarAnchorP.anchorOrigin = Anchor.AnchorOrigin.TopLeft;
-		scrollBarAnchorP.stretch = Anchor.Stretch.Vertical;
-		scrollBar = new ScrollBarVertical(applet, scrollBarAnchorP);
+		Anchor scrollBarAnchor = new Anchor(applet, x+w/2, y-h/2-COVER_H/2, 20, h+COVER_H);
+		scrollBar = new ScrollBarVertical(scrollBarAnchor);
+		scrollBar.setBarRatio(0.5f);
 	}
 
 	public void update() {
@@ -88,7 +87,6 @@ public class List extends PClass {
 				System.out.println(getElement);
 			}
 		}
-
 	}
 
 	public void displayElements() {

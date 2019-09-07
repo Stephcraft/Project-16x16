@@ -15,9 +15,7 @@ import sidescroller.Tileset;
  */
 public class ParticleAnimationController implements ParticleEventListener {
 
-	String name;
-	ArrayList<PImage> images;
-	
+	private ArrayList<PImage> images;
 	private int rate;
 	
 	/**
@@ -26,10 +24,18 @@ public class ParticleAnimationController implements ParticleEventListener {
 	 * @param animationName animation name
 	 * @param rate 			animation speed, high value = slow speed
 	 */
-	public ParticleAnimationController(String animationName, int rate)
-	{
-		name = animationName;
-		images = Tileset.getAnimation(animationName);
+	public ParticleAnimationController(String animationName, int rate) {
+		this(Tileset.getAnimation(animationName), rate);
+	}
+	
+	/**
+	 * Add animation to particle
+	 *
+	 * @param animationName animation ArrayList
+	 * @param rate 			animation speed, high value = slow speed
+	 */
+	public ParticleAnimationController(ArrayList<PImage> images, int rate){
+		this.images = images;
 		this.rate = rate;
 	}
 	
@@ -40,7 +46,7 @@ public class ParticleAnimationController implements ParticleEventListener {
 	
 	@Override
 	public ParticleEventListener copy() {
-		return new ParticleAnimationController(name, rate);
+		return new ParticleAnimationController(images, rate);
 	}
 	
 	private PImage getImage(int frameCount) {

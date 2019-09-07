@@ -1,6 +1,7 @@
 package ui;
 
 import processing.core.PApplet;
+import sidescroller.SideScroller;
 
 public class Anchor {
 	
@@ -23,74 +24,64 @@ public class Anchor {
 	public int localWidth = 0;
 	public int localHeight = 0;
 	
-	public AnchorOrigin anchorOrigin = AnchorOrigin.Center;
+	public AnchorOrigin anchorOrigin = AnchorOrigin.TopLeft;
 	public Stretch stretch = Stretch.None;
-	public int rectMode = PApplet.CORNER;
 	
-	private PApplet app;
+	private SideScroller applet;
 	private Anchor frame = null;
 	
 	//TODO: add rectmode support
 	
-	public Anchor(Anchor anchor, int x, int y, int width, int height)
-	{
+	public Anchor(Anchor anchor, int x, int y, int width, int height) {
 		this(anchor.getPApplet(), x, y, width, height);
 		this.frame = anchor;
 	}
 	
-	public Anchor(PApplet applet, int x, int y, int width, int height)
-	{
-		this.app = applet;
+	public Anchor(SideScroller applet, int x, int y, int width, int height) {
+		this.applet = applet;
 		this.localX = x;
 		this.localY = y;
 		this.localWidth = width;
 		this.localHeight = height;
 	}
 	
-	public Anchor copy()
-	{
-		Anchor anchor = new Anchor(app, localX, localY, localWidth, localHeight);
+	public Anchor copy() {
+		Anchor anchor = new Anchor(applet, localX, localY, localWidth, localHeight);
 		
 		return anchor;
 	}
 	
 	// PApplet
 	
-	public PApplet getPApplet()
-	{
+	public SideScroller getPApplet(){
 		if (hasContainer())	return frame.getPApplet();
-		else				return app;
+		else				return applet;
 	}
 	
-	public void setPApplet(PApplet app)
-	{
-		this.app = app;
+	public void setPApplet(SideScroller applet) {
+		this.applet = applet;
 	}
 	
 	
 	// Container
 	
-	public boolean hasContainer()
-	{
+	public boolean hasContainer() {
 		return frame != null;
 	}
 	
-	public Anchor getContainer()
-	{
+	public Anchor getContainer() {
 		if (hasContainer()) return frame;
 		else 				return null;
 	}
 	
-	public void setContainer(Anchor anchor)
-	{
+	public void setContainer(Anchor anchor) {
 		frame = anchor;
-		app = anchor.getPApplet();
+		applet = anchor.getPApplet();
 	}
 	
 	// Position
 	
-	public int globalX()
-	{
+	public int X() {
 		int value = 0;
 		switch(anchorOrigin)
 		{
@@ -114,8 +105,7 @@ public class Anchor {
 		return value;
 	}
 	
-	public int globalY()
-	{
+	public int Y() {
 		int value = 0;
 		switch(anchorOrigin)
 		{
@@ -141,16 +131,15 @@ public class Anchor {
 	
 	// Stretch
 	
-	public int globalWidth()
-	{
+	public int Width() {
 		int value = 0;
 		switch(stretch)
 		{
 			case Horizontal:
-				value = frameGlobalWidth() - globalX();
+				value = frameGlobalWidth() - X();
 				break;
 			case InverseHorizontal:
-				value = globalX() - frameGlobalWidth();;
+				value = X() - frameGlobalWidth();;
 				break;
 			case Vertical: case InverseVertical:
 				value = localWidth;
@@ -162,8 +151,7 @@ public class Anchor {
 		return value;
 	}
 	
-	public int globalHeight()
-	{
+	public int Height() {
 		int value = 0;
 		switch(stretch)
 		{
@@ -171,10 +159,10 @@ public class Anchor {
 				value = localHeight;
 				break;
 			case Vertical:
-				value = frameGlobalHeight() - globalY();
+				value = frameGlobalHeight() - Y();
 				break;
 			case InverseVertical:
-				value = globalY() - frameGlobalHeight();
+				value = Y() - frameGlobalHeight();
 				break;
 			case None:
 				value = localHeight;
@@ -185,33 +173,37 @@ public class Anchor {
 	
 	// Container Variables
 	
-	public int frameGlobalX()
-	{
-		if (hasContainer()) return frame.globalX();
+	public int frameGlobalX() {
+		if (hasContainer()) return frame.X();
 		else 				return 0;
 	}
 	
-	public int frameGlobalY()
-	{
-		if (hasContainer()) return frame.globalY();
+	public int frameGlobalY() {
+		if (hasContainer()) return frame.Y();
 		else 				return 0;
 	}
 	
-	public int frameGlobalWidth()
-	{
-		if (hasContainer()) return frame.globalWidth();
-		else 				return app.width;
+	public int frameGlobalWidth() {
+		if (hasContainer()) return frame.Width();
+		else 				return applet.width;
 	}
 	
-	public int frameGlobalHeight()
-	{
-		if (hasContainer()) return frame.globalHeight();
-		else				return app.height;
+	public int frameGlobalHeight() {
+		if (hasContainer()) return frame.Height();
+		else				return applet.height;
 	}
 	
 	// is mouse over anchor
 	public boolean hover() {
-		return(app.mouseX > globalX() && app.mouseX < globalX() + globalWidth() 
-		    && app.mouseY > globalY() && app.mouseY < globalY() + globalHeight());
+		return(applet.mouseX > X() && applet.mouseX < X() + Width() 
+		    && applet.mouseY > Y() && applet.mouseY < Y() + Height());
+	}
+	
+	public void debugMode() {
+		applet.stroke(255,0,0);
+		applet.noFill();
+		applet.rectMode(applet.CORNER);
+		applet.rect(X(), Y(), Width(), Height());
+		applet.rectMode(applet.CENTER);
 	}
 }
