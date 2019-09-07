@@ -4,7 +4,6 @@ import java.util.ArrayList;
 
 import ParticleSystem.Particle;
 import ParticleSystem.ParticleSystem;
-import processing.core.PApplet;
 
 /**
  * Particle Child Controller

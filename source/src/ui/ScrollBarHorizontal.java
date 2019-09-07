@@ -5,7 +5,6 @@ import ui.Anchor.AnchorOrigin;
 import processing.core.*;
 import processing.event.MouseEvent;
 import sidescroller.PClass;
-import sidescroller.SideScroller;
 
 /**
  * Horizontal ScrollBar

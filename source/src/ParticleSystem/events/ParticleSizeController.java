@@ -24,6 +24,11 @@ public class ParticleSizeController implements ParticleEventListener {
 	}
 	
 	@Override
+	public void onParticleSpawnEvent(Particle p) {
+		p.useCustomeSize = true;
+	};
+	
+	@Override
 	public void onParticleRunEvent(Particle p) {	
 		float size = p.lifespan/p.maxLifespan*(startSize-endSize)+endSize;
 		p.size = size;
