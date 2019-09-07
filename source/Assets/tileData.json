@@ -81,10 +81,8 @@
     {"name": "BIG_TUBE:7", "x": 12, "y": 9, "w": 16, "h": 16, "type": "BACKGROUND"},
     {"name": "BIG_TUBE:8", "x": 11, "y": 9, "w": 16, "h": 16, "type": "BACKGROUND"},
 
-    {"name": "MAGIC_SOURCE", "x": 0, "y": 31, "w": 16, "h": 16, "type": "OBJECT"},
     {"name": "MIRROR_BOX", "x": 21, "y": 10, "w": 16, "h": 16, "type": "OBJECT"},
-    
-    {"name": "Particle", "x": 13, "y": 16, "w": 16, "h": 16, "type": "ANIMATION"},
+    {"name": "MAGIC_SOURCE", "x": 13, "y": 16, "w": 16, "h": 16, "type": "OBJECT"},
 
     {"name": "PlayerIdle1", "x": 0, "y": 16, "w": 16, "h": 16, "type": "ANIMATION"},
     {"name": "PlayerIdle2", "x": 1, "y": 16, "w": 16, "h": 16, "type": "ANIMATION"},
@@ -110,28 +108,7 @@
     {"name": "Swing2", "x": 5.8125, "y": 18.25, "w": 28, "h": 9, "type": "ANIMATION"},
     {"name": "Swing3", "x": 7.5625, "y": 18.25, "w": 28, "h": 9, "type": "ANIMATION"},
     {"name": "Swing4", "x": 8.3125, "y": 18.25, "w": 28, "h": 9, "type": "ANIMATION"},
-
-    {"name": "MagicIdle1", "x": 0, "y": 27.9375, "w": 11, "h": 9, "type": "ANIMATION"},
-    {"name": "MagicIdle2", "x": 0.6875, "y": 27.9375, "w": 11, "h": 9, "type": "ANIMATION"},
-    {"name": "MagicIdle3", "x": 1.375, "y": 27.9375, "w": 11, "h": 9, "type": "ANIMATION"},
-    {"name": "MagicIdle4", "x": 2.0625, "y": 27.9375, "w": 11, "h": 9, "type": "ANIMATION"},
-    {"name": "MagicIdle5", "x": 2.75, "y": 27.9375, "w": 11, "h": 9, "type": "ANIMATION"},
-    {"name": "MagicIdle6", "x": 3.4375, "y": 27.9375, "w": 11, "h": 9, "type": "ANIMATION"},
-    {"name": "MagicIdle7", "x": 4.125, "y": 27.9375, "w": 11, "h": 9, "type": "ANIMATION"},
-    {"name": "MagicIdle8", "x": 4.8125, "y": 27.9375, "w": 11, "h": 9, "type": "ANIMATION"},
-    {"name": "MagicIdle9", "x": 5.5, "y": 27.9375, "w": 11, "h": 9, "type": "ANIMATION"},
-    {"name": "MagicIdle10", "x": 6.1875, "y": 27.9375, "w": 11, "h": 9, "type": "ANIMATION"},
-
-    {"name": "MagicMove1", "x": 0, "y": 29.75, "w": 40, "h": 15, "type": "ANIMATION"},
-    {"name": "MagicMove2", "x": 2.5, "y": 29.75, "w": 40, "h": 15, "type": "ANIMATION"},
-    {"name": "MagicMove3", "x": 5, "y": 29.75, "w": 40, "h": 15, "type": "ANIMATION"},
-    {"name": "MagicMove4", "x": 7.5, "y": 29.75, "w": 40, "h": 15, "type": "ANIMATION"},
-    {"name": "MagicMove5", "x": 10, "y": 29.75, "w": 40, "h": 15, "type": "ANIMATION"},
-    {"name": "MagicMove6", "x": 12.5, "y": 29.75, "w": 40, "h": 15, "type": "ANIMATION"},
-    {"name": "MagicMove7", "x": 15, "y": 29.75, "w": 40, "h": 15, "type": "ANIMATION"},
-    {"name": "MagicMove8", "x": 17.5, "y": 29.75, "w": 40, "h": 15, "type": "ANIMATION"},
-    {"name": "MagicMove9", "x": 20, "y": 29.75, "w": 40, "h": 15, "type": "ANIMATION"},
-
+    
     {"name": "MIRROR_BOX_HIT", "x": 22, "y": 10, "w": 16, "h": 16, "type": "ANIMATION"},
 
     {"name": "MirrorBoxRotate1", "x": 24.5, "y": 10.5, "w": 20, "h": 22, "type": "ANIMATION"},
@@ -162,14 +139,6 @@
     {
       "name": "Swing",
       "tileRef": [{ "name": "Swing1"}, {"name": "Swing2"}, {"name": "Swing3"}, {"name": "Swing4"} ]
-    },
-    {
-      "name": "MAGIC::IDLE",
-      "tileRef": [{ "name": "MagicIdle1"}, {"name": "MagicIdle2"}, {"name": "MagicIdle3"}, {"name": "MagicIdle4"}, {"name": "MagicIdle5"}, {"name": "MagicIdle6"}, {"name": "MagicIdle7"}, {"name": "MagicIdle8"}, {"name": "MagicIdle9"}, {"name": "MagicIdle10"} ]
-    },
-    {
-      "name": "MAGIC::MOVE",
-      "tileRef": [{ "name": "MagicMove1"}, {"name": "MagicMove2"}, {"name": "MagicMove3"}, {"name": "MagicMove4"}, {"name": "MagicMove5"}, {"name": "MagicMove6"}, {"name": "MagicMove7"}, {"name": "MagicMove8"}, {"name": "MagicMove9"} ]
     },
     {
       "name": "MIRROR_BOX::ROTATE",
