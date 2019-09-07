@@ -1,5 +1,12 @@
 package objects;
 
+import java.util.ArrayList;
+
+import ParticleSystem.ParticleSystem;
+import ParticleSystem.emissions.AreaEmission;
+import ParticleSystem.events.ParticleAnimationController;
+import processing.core.PApplet;
+import processing.core.PImage;
 import projectiles.MagicProjectile;
 import projectiles.Swing;
 import sidescroller.SideScroller;
@@ -10,18 +17,22 @@ import sidescroller.Tileset;
  */
 public class MagicSourceObject extends GameObject {
 
+	private static ArrayList<PImage> particleAnimation;
+	private ParticleSystem trail;
+
 	public MagicSourceObject(SideScroller a) {
 		super(a);
 
 		type = type.OBJECT;
 		id = "MAGIC_SOURCE";
 
-		// Default image
-		image = Tileset.getTile("MAGIC_SOURCE");
-
-		// Setup Animation		
-		animation.changeAnimation(Tileset.getAnimation("MAGIC::IDLE"), true, 6); // TODO: add magicsheet to tileset
-
+		if (particleAnimation == null)
+			setParticleAnimation(a);
+		
+		trail = new ParticleSystem(a, image, 5, 1, 0.4f);
+		trail.setEmission(new AreaEmission(pos, 1f, -0.01f, 5));
+		trail.addEventListener(new ParticleAnimationController(particleAnimation, -1));
+		
 		width = 48;
 		height = 48;
 
@@ -30,7 +41,7 @@ public class MagicSourceObject extends GameObject {
 
 	@Override
 	public void display() {
-		applet.image(image, pos.x, pos.y);
+		trail.run();
 	}
 	
 	//oldMillis is used to calculate the difference in time between shots.
@@ -40,8 +51,6 @@ public class MagicSourceObject extends GameObject {
 	
 	@Override
 	public void update() {
-		image = animation.animate();
-
 		// Create new Magic Projectiles
 		for (int i = 0; i < applet.player.swings.size(); i++) {
 			Swing swing = applet.player.swings.get(i);
@@ -76,5 +85,17 @@ public class MagicSourceObject extends GameObject {
 						- height / 2
 						&& applet.player.pos.y - applet.player.height / 2 < pos.y
 								+ height / 2);
+	}
+	
+	private void setParticleAnimation(SideScroller a) {
+		particleAnimation = new ArrayList<PImage>();
+		PImage image = Tileset.getTile("Particle");
+		float scale = 0.12f;
+		float angle = PApplet.radians(11);
+		while(scale > 0.025f) {
+			particleAnimation.add(util.pg(util.resizeImage(util.rotateImage(image, angle), scale),4));
+			angle += PApplet.radians(PApplet.radians(11));
+			scale -= Math.random() * 0.03;
+		}
 	}
 }
