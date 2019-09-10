@@ -16,9 +16,8 @@ import sidescroller.Util;
  * them easier to call.
  * </p>
  */
-public class PClass {
+public abstract class PClass {
 	public SideScroller applet;
-	public Util util;
 
 	public static final int CENTER = PConstants.CENTER;
 	public static final int CORNER = PConstants.CORNER;
@@ -41,7 +40,6 @@ public class PClass {
 	 */
 	public PClass(SideScroller a) {
 		applet = a;
-		util = new Util(a);
 	}
 
 	/**

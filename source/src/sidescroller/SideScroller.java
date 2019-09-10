@@ -73,8 +73,6 @@ public class SideScroller extends PApplet {
 	// Scenes
 	public SceneMapEditor mapEditor;
 
-	Util util = new Util(this);
-
 	// Player
 	public Player player;
 
@@ -114,12 +112,13 @@ public class SideScroller extends PApplet {
 	 * JavaFX Stage - the top level JavaFX container (titlebar, etc.).
 	 */
 	private Stage stage;
-
+	
 	/**
 	 * controls how processing handles the window
 	 */
 	@Override
 	public void settings() {
+		Util.assignApplet(this);
 		size((int) windowSize.x, (int) windowSize.y, FX2D);
 	}
 

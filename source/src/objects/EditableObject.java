@@ -55,10 +55,10 @@ public class EditableObject extends PClass {
 		scene = (SceneMapEditor) a.mapEditor;
 
 		// Get Edit Arrows
-		editArrowX = util.pg(applet.graphicsSheet.get(268, 278, 6, 5), 4);
-		editArrowY = util.pg(applet.graphicsSheet.get(275, 278, 5, 6), 4);
-		editArrowXActive = util.pg(applet.graphicsSheet.get(268, 284, 6, 5), 4);
-		editArrowYActive = util.pg(applet.graphicsSheet.get(275, 284, 5, 6), 4);
+		editArrowX = Util.pg(applet.graphicsSheet.get(268, 278, 6, 5), 4);
+		editArrowY = Util.pg(applet.graphicsSheet.get(275, 278, 5, 6), 4);
+		editArrowXActive = Util.pg(applet.graphicsSheet.get(268, 284, 6, 5), 4);
+		editArrowYActive = Util.pg(applet.graphicsSheet.get(275, 284, 5, 6), 4);
 	}
 
 	/**
@@ -248,6 +248,6 @@ public class EditableObject extends PClass {
 		if (applet.mouseX < 400 && applet.mouseY < 100) { // Over Inventory Bar
 			return false;
 		}
-		return util.hover(pos.x, pos.y, width, height);
+		return Util.hover(pos.x, pos.y, width, height);
 	}
 }

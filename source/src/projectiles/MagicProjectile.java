@@ -26,7 +26,6 @@ public class MagicProjectile extends ProjectileObject {
 	
 	public MagicProjectile(SideScroller a, int x, int y, int dir) {
 		super(a);
-		util = new Util(a);
 		
 		id = "MAGIC";
 		pos = new PVector(x, y);
@@ -109,7 +108,7 @@ public class MagicProjectile extends ProjectileObject {
 		float scale = 0.12f;
 		float angle = PApplet.radians(11);
 		while(scale > 0.025f) {
-			particleAnimation.add(util.pg(util.resizeImage(util.rotateImage(image.copy(), angle), scale),4));
+			particleAnimation.add(Util.pg(Util.resizeImage(Util.rotateImage(image.copy(), angle), scale),4));
 			angle += PApplet.radians(PApplet.radians(11));
 			scale -= Math.random() * 0.03;
 		}
