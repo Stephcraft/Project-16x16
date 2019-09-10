@@ -177,7 +177,7 @@ public class SideScroller extends PApplet {
 		game = new GameplayScene(this);
 		currentScene = game;
 		game.setup();
-		menu = new MainMenu(); // TODO
+		menu = new MainMenu(this); // TODO
 		
 		// Camera
 		camera = new Camera(this);
@@ -326,11 +326,7 @@ public class SideScroller extends PApplet {
 						loop();
 						break;
 					case 27 : // ESC - Pause menu here
-						if (looping) {
-							noLoop();
-						} else {
-							loop();
-						}
+						currentScene = currentScene == menu ? game : menu; // TODO
 						break;
 					case 9 : // TAB
 						debug = debug.next();

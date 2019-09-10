@@ -3,6 +3,12 @@ package scene;
 import sidescroller.PClass;
 import sidescroller.SideScroller;
 
+/**
+ * TODO (possibly): methods to be called when activated & de-activated.
+ * 
+ * @author micycle1
+ *
+ */
 public abstract class PScene extends PClass {
 
 	public PScene(SideScroller a) {

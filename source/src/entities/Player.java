@@ -25,8 +25,6 @@ import objects.EditableObject;
  */
 public final class Player extends EditableObject {
 	
-//	private GameplayScene g;
-
 	/**
 	 * Previous position.
 	 */
