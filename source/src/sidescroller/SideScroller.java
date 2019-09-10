@@ -46,12 +46,14 @@ public class SideScroller extends PApplet {
 	public enum debugType {
 		OFF, ALL, INFO_ONLY;
 		private static debugType[] vals = values();
+
 		public debugType next() {
 			return vals[(this.ordinal() + 1) % vals.length];
 		}
 	}
+
 	public debugType debug = debugType.ALL;
-  
+
 	public static final boolean SNAP = true; // snap objects to grid when moving; located here for ease of access
 	public static int snapSize;
 
@@ -240,33 +242,15 @@ public class SideScroller extends PApplet {
 	 */
 	@Override
 	public void draw() {
+
 		surface.setTitle("Sardonyx Prealpha | " + mapEditor.tool.toString() + " | " + frameCount);
 
-		pushMatrix();
-		drawBelowCamera: { // drawn objects enclosed by pushMatrix() and popMatrix() are transformed by the
-			// camera.
-			camera.update();
-			mousePosition = camera.getMouseCoord().copy();
-			mapEditor.drawMap(); // Handle Draw Scene Method - draws world, etc.
-			if (debug == debugType.ALL) {
-				mapEditor.debug();
-				camera.postDebug();
-			}
-			mapEditor.drawPlayer(); // draws player
-		}
-		popMatrix();
-
-		drawAboveCamera: { // Where HUD etc should be drawn
-			mousePosition = new PVector(mouseX, mouseY);
-			mapEditor.drawUI();
-			if (debug == debugType.ALL) {
-				camera.post();
-				displayDebugInfo();
-			}
-			if (debug == debugType.INFO_ONLY) {
-				displayDebugInfo();
-			}
-		}
+		camera.hook();
+		drawBelowCamera();
+		camera.release();
+		drawAboveCamera();
+		
+		rectMode(CENTER);
 
 		// Update DeltaTime
 		if (frameRate < Options.targetFrameRate - 20 && frameRate > Options.targetFrameRate + 20) {
@@ -280,14 +264,43 @@ public class SideScroller extends PApplet {
 		keyReleaseEvent = false;
 		mousePressEvent = false;
 		mouseReleaseEvent = false;
+	}
 
-		rectMode(CENTER);
-
-		if (keys.contains(75)) { // K - for development
-			camera.rotate(-PI / 60);
+	/**
+	 * Any Processing drawing enclosed in {@link #drawBelowCamera()} will be
+	 * affected (zoomed, panned, rotated) by the camera. Called in {@link #draw()},
+	 * before {@link #drawAboveCamera()}.
+	 * 
+	 * @see #drawAboveCamera()
+	 * @see {@link Camera#hook()}
+	 */
+	private void drawBelowCamera() {
+		mousePosition = camera.getMouseCoord().copy();
+		mapEditor.drawMap(); // Handle Draw Scene Method - draws world, etc.
+		if (debug == debugType.ALL) {
+			mapEditor.debug();
+			camera.postDebug();
 		}
-		if (keys.contains(76)) { // L - for development
-			camera.rotate(PI / 60);
+		mapEditor.drawPlayer(); // draws player
+	}
+
+	/**
+	 * Any Processing drawing enclosed in {@link #drawAboveCamera()} will not
+	 * be affected (zoomed, panned, rotated) by the camera. Called in
+	 * {@link #draw()}, after {@link #drawBelowCamera()}.
+	 * 
+	 * @see #drawBelowCamera()
+	 * @see {@link Camera#release()}
+	 */
+	private void drawAboveCamera() {
+		mousePosition = new PVector(mouseX, mouseY);
+		mapEditor.drawUI();
+		if (debug == debugType.ALL) {
+			camera.post();
+			displayDebugInfo();
+		}
+		if (debug == debugType.INFO_ONLY) {
+			displayDebugInfo();
 		}
 	}
 

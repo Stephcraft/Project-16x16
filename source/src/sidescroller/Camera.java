@@ -161,31 +161,40 @@ public final class Camera extends ZoomPan {
 	}
 
 	/**
-	 * Updates the camera - this method is the heart of the {@link Camera} class.
+	 * Hooks the camera to the PApplet; anything drawn in Processing after hook() is
+	 * called will be affected by the camera.
 	 * <p>
 	 * If you wish for the entire sketch to be affected by the camera, you can call
 	 * this method in the first line of the {@link SideScroller#Draw draw()} method.
 	 * This results in all subsequent drawing being affected by the camera.
 	 * Occasionally though there may be a need to have some display activity that is
-	 * independent of the camera.
-	 * <p>
-	 * Two approaches can be taken for camera-independent drawing. The first
-	 * approach is to place the camera-independent instructions before calling the
-	 * this method. The camera-dependent drawing should then be placed after calling
-	 * run().
-	 * <p>
-	 * The second approach is useful for legends, annotations and 'heads-up
-	 * displays' where some graphics need to be overlaid on top of the zoomed
-	 * graphics. This can be achieved by using {@link PApplet#pushMatrix()
-	 * pushMatrix()} to store a copy of the screen transformations prior to the
-	 * camera, perform the camera transformation and drawing, then restore the
-	 * original transformation with {@link PApplet#popMatrix() popMatrix()} before
-	 * drawing the unzoomed legend/annotation - this is approach currently used in
-	 * {@link SideScroller#draw()}.
+	 * independent of the camera -- see {@link #release()}.
+	 * 
+	 * @see #release()
+	 */
+	public void hook() {
+		applet.pushMatrix();
+		update();
+	}
+
+	/**
+	 * Releases the {@link #hook()}; anything drawn in Processing after release() is
+	 * called will not be affected by the camera. Call this to display legends,
+	 * annotations and 'heads-up displays', or any other graphics that need to be
+	 * overlaid on top of the zoomed graphics.
+	 * 
+	 * @see #hook()
+	 */
+	public void release() {
+		applet.popMatrix();
+	}
+
+	/**
+	 * Updates the camera - this method is the heart of the {@link Camera} class.
 	 * 
 	 * @see {@linkplain ZoomPan#transform() transform()}
 	 */
-	public void update() {
+	private void update() {
 		offset = new PVector(applet.width / 2, applet.height / 2);
 
 		if (zoom != zoomTarget) {
