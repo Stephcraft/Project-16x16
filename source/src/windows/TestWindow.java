@@ -1,6 +1,6 @@
 package windows;
 
-import scene.SceneMapEditor;
+import scene.GameplayScene;
 import sidescroller.PClass;
 import sidescroller.SideScroller;
 import ui.Button;
@@ -14,12 +14,12 @@ public class TestWindow extends PClass{
 	String path = "Assets/Storage/Game/Maps/";
 
 	// Map Editor Scene
-	public SceneMapEditor scene;
+	public GameplayScene scene;
 
 	public TestWindow(SideScroller a) {
 		super(a);
 
-		scene = (SceneMapEditor) a.mapEditor;
+		scene = (GameplayScene) a.currentScene;
 
 		pressLoad = new Button(applet);
 		pressLoad.setText("Test Window");
@@ -79,13 +79,13 @@ public class TestWindow extends PClass{
 		if (pressLoad.event()) {
 			//util.saveLevel(path + input.getText() + ".dat");
 			input.setText("");
-			scene.tool = SceneMapEditor.Tools.MOVE;
+			scene.tool = GameplayScene.Tools.MOVE;
 		}
 
 		pressCancel.update();
 		if (pressCancel.event()) {
 			input.setText("");
-			scene.tool = SceneMapEditor.Tools.MOVE;
+			scene.tool = GameplayScene.Tools.MOVE;
 		}
 	}
 }

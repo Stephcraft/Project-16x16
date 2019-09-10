@@ -4,6 +4,7 @@ import processing.core.PApplet;
 import projectiles.MagicProjectile;
 import projectiles.ProjectileObject;
 import projectiles.Swing;
+import scene.GameplayScene;
 import sidescroller.SideScroller;
 import sidescroller.Tileset;
 
@@ -20,8 +21,8 @@ public class MirrorBoxObject extends GameObject {
 	final int BOX_W = 64;
 	final int BOX_H = 64;
 
-	public MirrorBoxObject(SideScroller a) {
-		super(a);
+	public MirrorBoxObject(SideScroller a, GameplayScene g) {
+		super(a, g);
 
 		direction = 0;
 
@@ -33,10 +34,9 @@ public class MirrorBoxObject extends GameObject {
 		width = BOX_W;
 		height = BOX_H;
 
-
-		collision = new CollidableObject(applet, BOX_W, BOX_H, 0, 0, true);
+		collision = new CollidableObject(applet, g, BOX_W, BOX_H, 0, 0, true);
 		collision.flag = "TRANSPARENT_BULLET";
-		applet.collidableObjects.add(collision);
+		g.collidableObjects.add(collision);
 	}
 
 	public void display() {
@@ -62,8 +62,8 @@ public class MirrorBoxObject extends GameObject {
 		collision.pos = pos;
 
 		// Change Mirror Box Axis
-		for (int i = 0; i < applet.player.swings.size(); i++) {
-			Swing swing = applet.player.swings.get(i);
+		for (int i = 0; i < gameScene.getPlayer().swings.size(); i++) {
+			Swing swing = gameScene.getPlayer().swings.get(i);
 
 			if (collidesWithSwing(swing)) {
 				if (!swing.activated) {
@@ -79,8 +79,8 @@ public class MirrorBoxObject extends GameObject {
 		}
 
 		// Reflect Magic Projectile
-		for (int i = 0; i < applet.projectileObjects.size(); i++) {
-			ProjectileObject projectile = applet.projectileObjects.get(i);
+		for (int i = 0; i < gameScene.projectileObjects.size(); i++) {
+			ProjectileObject projectile = gameScene.projectileObjects.get(i);
 
 			activated = false;
 			if (projectile.id.equals("MAGIC")) {

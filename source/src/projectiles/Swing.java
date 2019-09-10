@@ -2,6 +2,7 @@ package projectiles;
 
 import components.AnimationComponent;
 import processing.core.PVector;
+import scene.GameplayScene;
 import sidescroller.SideScroller;
 import sidescroller.Tileset;
 
@@ -11,8 +12,8 @@ public class Swing extends ProjectileObject { // PClass
 
 	public boolean activated;
 
-	public Swing(SideScroller a, int x, int y, int dir) {
-		super(a);
+	public Swing(SideScroller a, GameplayScene g, int x, int y, int dir) {
+		super(a, g);
 		animation = new AnimationComponent();
 
 		direction = dir;
@@ -57,7 +58,7 @@ public class Swing extends ProjectileObject { // PClass
 		image = animation.animate();
 
 		if (animation.ended) {
-			applet.player.swings.remove(this);
+			gameScene.getPlayer().swings.remove(this);
 		}
 	}
 }

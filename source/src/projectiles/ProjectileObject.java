@@ -4,13 +4,15 @@ import java.util.ArrayList;
 
 import components.AnimationComponent;
 import objects.CollidableObject;
+import objects.EditableObject;
 import processing.core.PImage;
 import processing.core.PVector;
+import scene.GameplayScene;
 import sidescroller.PClass;
 import sidescroller.SideScroller;
 import sidescroller.Tileset;
 
-public class ProjectileObject extends PClass {
+public class ProjectileObject extends EditableObject {
 
 	public AnimationComponent animation;
 
@@ -32,8 +34,8 @@ public class ProjectileObject extends PClass {
 
 	public boolean hit;
 
-	public ProjectileObject(SideScroller a) {
-		super(a);
+	public ProjectileObject(SideScroller a, GameplayScene g) {
+		super(a, g);
 
 		id = "";
 		spawnTime = applet.frameCount;

@@ -18,11 +18,9 @@ import processing.data.JSONArray;
 import processing.data.JSONObject;
 
 import scene.PScene;
-import scene.SceneMapEditor;
+import scene.GameplayScene;
 
 public final class Util {
-
-	private static final boolean encrypt = true; // encrypt saving TODO dev options
 
 	private static SideScroller applet;
 
@@ -254,138 +252,21 @@ public final class Util {
 		return condition;
 	}
 
-	// Game
-	public static void loadLevel(String path) { // TODO save camera position/settings.
-		String[] script = applet.loadStrings(path);
-		String scriptD = decrypt(PApplet.join(script, "\n"));
-
-		// Parse JSON
-		JSONArray data = JSONArray.parse(scriptD);
-
-		// Clear Object Arrays
-		applet.collidableObjects.clear();
-		applet.backgroundObjects.clear();
-
-		// Create Level
-		for (int i = 0; i < data.size(); i++) {
-			JSONObject item = data.getJSONObject(i);
-
-			String type = item.getString("type");
-
-			// Read Main
-			if (i == 0) {
-				if (PScene.name == "MAPEDITOR") {
-					((SceneMapEditor) applet.mapEditor).worldViewportEditor.setSize();
-				}
-			} else {
-				switch (type) {
-					case "COLLISION" :
-						CollidableObject collision = new CollidableObject(applet);
-						try {
-							collision.setGraphic(item.getString("id"));
-						} catch (Exception e) {
-							collision.width = 64;
-							collision.height = 64;
-						}
-						collision.pos.x = item.getInt("x");
-						collision.pos.y = item.getInt("y");
-
-						// Append To Level
-						applet.collidableObjects.add(collision);
-						break;
-					case "BACKGROUND" :
-						BackgroundObject backgroundObject = new BackgroundObject(applet);
-						backgroundObject.setGraphic(item.getString("id"));
-						backgroundObject.pos.x = item.getInt("x");
-						backgroundObject.pos.y = item.getInt("y");
-
-						// Append To Level
-						applet.backgroundObjects.add(backgroundObject);
-						break;
-					case "OBJECT" :
-						GameObject gameObject = Tileset.getObjectClass(item.getString("id"));
-						gameObject.pos.x = item.getInt("x");
-						gameObject.pos.y = item.getInt("y");
-
-						// Append To Level
-						applet.gameObjects.add(gameObject);
-						break;
-				}
-			}
-		}
-	}
-
-	/**
-	 * Saves the level (background, game and collideable objects), encrypting the
-	 * output.
-	 * 
-	 * @param path Save location path.
-	 */
-	public static void saveLevel(String path) {
-		JSONArray data = new JSONArray();
-
-		// MAIN
-		JSONObject main = new JSONObject();
-		main.setString("title", "undefined");
-		main.setString("creator", "undefined");
-		main.setString("version", "alpha 1.0.0");
-
-		// Add Main
-		data.append(main);
-
-		// Add Collisions
-		for (int i = 0; i < applet.collidableObjects.size(); i++) {
-			JSONObject item = new JSONObject();
-			item.setString("id", applet.collidableObjects.get(i).id);
-			item.setString("type", "COLLISION");
-			item.setInt("x", (int) applet.collidableObjects.get(i).pos.x);
-			item.setInt("y", (int) applet.collidableObjects.get(i).pos.y);
-			data.append(item);
-		}
-
-		// Add Background Objects
-		for (int i = 0; i < applet.backgroundObjects.size(); i++) {
-			JSONObject item = new JSONObject();
-			item.setString("id", applet.backgroundObjects.get(i).id);
-			item.setString("type", "BACKGROUND");
-			item.setInt("x", (int) applet.backgroundObjects.get(i).pos.x);
-			item.setInt("y", (int) applet.backgroundObjects.get(i).pos.y);
-			data.append(item);
-		}
-
-		// Add Game Objects
-		for (int i = 0; i < applet.gameObjects.size(); i++) {
-			applet.collidableObjects.remove(applet.gameObjects.get(i).collision);
-
-			JSONObject item = new JSONObject();
-			item.setString("id", applet.gameObjects.get(i).id);
-			item.setString("type", "OBJECT");
-			item.setInt("x", (int) applet.gameObjects.get(i).pos.x);
-			item.setInt("y", (int) applet.gameObjects.get(i).pos.y);
-			data.append(item);
-		}
-
-		// Save Level
-		saveFile(path, encrypt(data.toString()));
-	}
-
 	/**
 	 * Encrypts str (JSON) for output.
 	 * 
 	 * @param str
 	 * @return
 	 */
-	private static String encrypt(String str) {
-		if (encrypt) {
-			String output = "";
-			for (int i = 0; i < str.length(); i++) {
-				int k = PApplet.parseInt(str.charAt(i));
-				k = (k * 8) - 115; // Encrypt Key
-				output += PApplet.parseChar(k);
-			}
-			return output;
+	public static String encrypt(String str) {
+		String output = "";
+		for (int i = 0; i < str.length(); i++) {
+			int k = PApplet.parseInt(str.charAt(i));
+			k = (k * 8) - 115; // Encrypt Key
+			output += PApplet.parseChar(k);
 		}
-		return str;
+		return output;
+
 	}
 
 	/**
@@ -394,7 +275,7 @@ public final class Util {
 	 * @param str
 	 * @return
 	 */
-	private static String decrypt(String str) {
+	public static String decrypt(String str) {
 		String output = "";
 		for (int i = 0; i < str.length(); i++) {
 			int k = PApplet.parseInt(str.charAt(i));

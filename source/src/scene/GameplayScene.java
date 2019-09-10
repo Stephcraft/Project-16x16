@@ -3,10 +3,15 @@ package scene;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+import entities.Player;
 import objects.EditorItem;
+import objects.GameObject;
+import objects.BackgroundObject;
 import objects.CollidableObject;
 import objects.EditableObject;
 import processing.core.*;
+import processing.data.JSONArray;
+import processing.data.JSONObject;
 import processing.event.MouseEvent;
 import projectiles.ProjectileObject;
 import scene.components.WorldViewportEditor;
@@ -21,7 +26,10 @@ import windows.LoadLevelWindow;
 import windows.SaveLevelWindow;
 import windows.TestWindow;
 
-public class SceneMapEditor extends PScene {
+/**
+ * Gameplay Scene. Both the level editor and gameplay.
+ */
+public class GameplayScene extends PScene {
 
 	// Graphics Slots
 	private PImage slot;
@@ -39,10 +47,17 @@ public class SceneMapEditor extends PScene {
 	private PImage icon_playActive;
 	private PImage icon_saveActive;
 
+	// Game World Objects
+	public ArrayList<CollidableObject> collidableObjects;
+	public ArrayList<BackgroundObject> backgroundObjects;
+	public ArrayList<GameObject> gameObjects;
+	public ArrayList<ProjectileObject> projectileObjects;
+
 	// Windows
 	private SaveLevelWindow window_saveLevel;
 	private TestWindow window_test;
 	private LoadLevelWindow window_loadLevel;
+
 	// Tabs
 	private Tab windowTabs;
 	// Each button id corresponds with its string id: ex) load = 0, save = 1, etc.
@@ -73,12 +88,20 @@ public class SceneMapEditor extends PScene {
 
 	private int scroll_inventory;
 
-	public SceneMapEditor(SideScroller a) {
+	private Player player;
+
+	public GameplayScene(SideScroller a) {
 		super(a);
 	}
 
 	@Override
 	public void setup() {
+
+		// Init Game World Objects Arrays
+		collidableObjects = new ArrayList<CollidableObject>();
+		backgroundObjects = new ArrayList<BackgroundObject>();
+		gameObjects = new ArrayList<GameObject>();
+		projectileObjects = new ArrayList<ProjectileObject>();
 
 		// Create Inventory
 		inventory = new ArrayList<String>();
@@ -90,30 +113,30 @@ public class SceneMapEditor extends PScene {
 		inventory.add("WEED_WALK_MIDDLE:5");
 
 		// Init Editor Components
-		editorItem = new EditorItem(applet);
+		editorItem = new EditorItem(applet, this);
 		worldViewportEditor = new WorldViewportEditor(applet);
 
 		// Get Slots Graphics
-		slot = Util.pg(applet.graphicsSheet.get(289, 256, 20, 21), 4);
-		slotEditor = Util.pg(applet.graphicsSheet.get(310, 256, 20, 21), 4);
+		slot = Util.pg(SideScroller.graphicsSheet.get(289, 256, 20, 21), 4);
+		slotEditor = Util.pg(SideScroller.graphicsSheet.get(310, 256, 20, 21), 4);
 
 		// Get Icon Graphics
-		icon_eye = Util.pg(applet.graphicsSheet.get(267, 302, 11, 8), 4);
-		icon_arrow = Util.pg(applet.graphicsSheet.get(279, 301, 9, 9), 4);
-		icon_inventory = Util.pg(applet.graphicsSheet.get(289, 301, 9, 9), 4);
-		icon_play = Util.pg(applet.graphicsSheet.get(298, 301, 9, 9), 4);
-		icon_save = Util.pg(applet.graphicsSheet.get(307, 301, 9, 9), 4);
+		icon_eye = Util.pg(SideScroller.graphicsSheet.get(267, 302, 11, 8), 4);
+		icon_arrow = Util.pg(SideScroller.graphicsSheet.get(279, 301, 9, 9), 4);
+		icon_inventory = Util.pg(SideScroller.graphicsSheet.get(289, 301, 9, 9), 4);
+		icon_play = Util.pg(SideScroller.graphicsSheet.get(298, 301, 9, 9), 4);
+		icon_save = Util.pg(SideScroller.graphicsSheet.get(307, 301, 9, 9), 4);
 
-		icon_eyeActive = Util.pg(applet.graphicsSheet.get(267, 292, 11, 8), 4);
-		icon_arrowActive = Util.pg(applet.graphicsSheet.get(279, 291, 9, 9), 4);
-		icon_inventoryActive = Util.pg(applet.graphicsSheet.get(289, 291, 9, 9), 4);
-		icon_playActive = Util.pg(applet.graphicsSheet.get(298, 291, 9, 9), 4);
-		icon_saveActive = Util.pg(applet.graphicsSheet.get(307, 291, 9, 9), 4);
+		icon_eyeActive = Util.pg(SideScroller.graphicsSheet.get(267, 292, 11, 8), 4);
+		icon_arrowActive = Util.pg(SideScroller.graphicsSheet.get(279, 291, 9, 9), 4);
+		icon_inventoryActive = Util.pg(SideScroller.graphicsSheet.get(289, 291, 9, 9), 4);
+		icon_playActive = Util.pg(SideScroller.graphicsSheet.get(298, 291, 9, 9), 4);
+		icon_saveActive = Util.pg(SideScroller.graphicsSheet.get(307, 291, 9, 9), 4);
 
 		// Init Window
-		window_saveLevel = new SaveLevelWindow(applet);
+		window_saveLevel = new SaveLevelWindow(applet, this);
 		window_test = new TestWindow(applet);
-		window_loadLevel = new LoadLevelWindow(applet);
+		window_loadLevel = new LoadLevelWindow(applet, this);
 
 		// Init ScollBar
 		Anchor scrollBarAnchor = new Anchor(applet, -20, 102, 20, 50);
@@ -123,12 +146,18 @@ public class SceneMapEditor extends PScene {
 		scrollBar.setBarRatio(0.8f);
 
 		// Default Scene
-		applet.collidableObjects.add(new CollidableObject(applet, "METAL_WALK_MIDDLE:0", 0, 0));
+		collidableObjects.add(new CollidableObject(applet, this, "METAL_WALK_MIDDLE:0", 0, 0));
 
 		// Default Tool
 		tool = Tools.MODIFY;
 
-		Util.loadLevel(SideScroller.LEVEL); // TODO change level
+		// Init Player
+		player = new Player(applet, this);
+		player.load(SideScroller.graphicsSheet);
+		player.pos.x = 0; // // TODO set to spawn loc
+		player.pos.y = -100; // // TODO set to spawn loc
+
+		loadLevel(SideScroller.LEVEL); // TODO change level
 
 		windowTabs = new Tab(applet, tabTexts, 3);
 	}
@@ -136,7 +165,7 @@ public class SceneMapEditor extends PScene {
 	/**
 	 * Draw scene elements that are below (affected by) the camera.
 	 */
-	public void drawMap() {
+	public void draw() {
 		background(29, 33, 45);
 
 		applet.noStroke();
@@ -150,54 +179,54 @@ public class SceneMapEditor extends PScene {
 		}
 
 		// View Background Objects
-		for (int i = 0; i < applet.backgroundObjects.size(); i++) {
+		for (int i = 0; i < backgroundObjects.size(); i++) {
 			if (tool == Tools.MODIFY) {
-				applet.backgroundObjects.get(i).updateEdit();
+				backgroundObjects.get(i).updateEdit();
 			}
 
-			applet.backgroundObjects.get(i).display();
+			backgroundObjects.get(i).display();
 
-			if (applet.backgroundObjects.get(i).focus && applet.keyPress(8) && applet.keyPressEvent) {
-				applet.backgroundObjects.remove(i);
+			if (backgroundObjects.get(i).focus && applet.keyPress(8) && applet.keyPressEvent) {
+				backgroundObjects.remove(i);
 				applet.keyPressEvent = false;
 			}
 		}
 
 		// View Collidable objects
-		for (int i = 0; i < applet.collidableObjects.size(); i++) {
+		for (int i = 0; i < collidableObjects.size(); i++) {
 			if (tool == Tools.MODIFY) {
-				applet.collidableObjects.get(i).updateEdit();
+				collidableObjects.get(i).updateEdit();
 			}
 
-			applet.collidableObjects.get(i).display();
+			collidableObjects.get(i).display();
 
-			if (applet.collidableObjects.get(i).focus && applet.keyPress(8) && applet.keyPressEvent) {
-				applet.collidableObjects.remove(i);
+			if (collidableObjects.get(i).focus && applet.keyPress(8) && applet.keyPressEvent) {
+				collidableObjects.remove(i);
 				applet.keyPressEvent = false;
 			}
 		}
 
 		// View Game Objects (player-interactable objects)
-		for (int i = 0; i < applet.gameObjects.size(); i++) {
+		for (int i = 0; i < gameObjects.size(); i++) {
 			if (tool == Tools.MODIFY) {
-				applet.gameObjects.get(i).updateEdit();
+				gameObjects.get(i).updateEdit();
 			}
 
 			if (tool == Tools.PLAY) {
-				applet.gameObjects.get(i).update();
+				gameObjects.get(i).update();
 			}
 
-			applet.gameObjects.get(i).display();
+			gameObjects.get(i).display();
 
 			// Delete
-			if (applet.gameObjects.get(i).focus && applet.keyPress(8) && applet.keyPressEvent) {
-				applet.gameObjects.remove(i);
+			if (gameObjects.get(i).focus && applet.keyPress(8) && applet.keyPressEvent) {
+				gameObjects.remove(i);
 				applet.keyPressEvent = false;
 			}
 		}
 
 		// View Projectiles
-		Iterator<ProjectileObject> i = applet.projectileObjects.iterator();
+		Iterator<ProjectileObject> i = projectileObjects.iterator();
 		while (i.hasNext()) {
 			ProjectileObject o = i.next();
 			if (applet.frameCount - o.spawnTime > 600) {
@@ -211,9 +240,9 @@ public class SceneMapEditor extends PScene {
 		switch (tool) {
 			case MODIFY :
 				editorItem.displayDestination();
-				applet.collidableObjects.forEach(o -> o.displayEdit());
-				applet.backgroundObjects.forEach(o -> o.displayEdit());
-				applet.gameObjects.forEach(o -> o.displayEdit());
+				collidableObjects.forEach(o -> o.displayEdit());
+				backgroundObjects.forEach(o -> o.displayEdit());
+				gameObjects.forEach(o -> o.displayEdit());
 				break;
 			case PLAY :
 			case MOVE :
@@ -224,19 +253,20 @@ public class SceneMapEditor extends PScene {
 			default :
 				break;
 		}
+		drawPlayer();
 	}
-	
+
 	/**
 	 * Draws and updates the player.
 	 */
-	public void drawPlayer() {
+	private void drawPlayer() {
 		switch (tool) {
 			case MODIFY :
-				applet.player.updateEdit();
-				applet.player.displayEdit();
+				player.updateEdit();
+				player.displayEdit();
 				break;
 			case PLAY :
-				applet.player.update();
+				player.update();
 				break;
 			case MOVE :
 			case INVENTORY :
@@ -246,7 +276,7 @@ public class SceneMapEditor extends PScene {
 			default :
 				break;
 		}
-		applet.player.display();
+		player.display();
 	}
 
 	/**
@@ -325,74 +355,74 @@ public class SceneMapEditor extends PScene {
 		}
 
 		switch (tool) {
-		case INVENTORY:
-			displayCreativeInventory();
-			break;
-		case MODIFY:
-			editorItem.update();
-			editorItem.display();
-			break;
-		case MOVE:
-			break;
-		case PLAY:
-			break;
-		case SAVE:
-			// Save , Load
-			// The if statement below should be used in each window that includes a tab.
-			// switch the number to the id of the button it's checking for
-			if (windowTabs.getActiveButton() != 1) {
-				windowTabs.moveActive(1);
-			}
-			window_saveLevel.privacyDisplay();
-			windowTabs.update();
-			windowTabs.display();
-			window_saveLevel.update();
-			window_saveLevel.display();
-			// This is an example of how to switch windows when another tab button is
-			// pressed.
-			if (windowTabs.getButton(0).event()) {
-				windowTabs.moveActive(0);
-				tool = Tools.LOADEXAMPLE;
-			} else if (windowTabs.getButton(2).event()) {
-				windowTabs.moveActive(2);
-				tool = Tools.TEST;
-			}
-			break;
-		case LOADEXAMPLE:
-			if (windowTabs.getActiveButton() != 0) {
-				windowTabs.moveActive(0);
-			}
-			windowTabs.update();
-			windowTabs.display();
-			window_loadLevel.display();
-			window_loadLevel.update();
-			if (windowTabs.getButton(1).event()) {
-				windowTabs.moveActive(1);
-				tool = Tools.SAVE;
-			} else if (windowTabs.getButton(2).event()) {
-				windowTabs.moveActive(2);
-				tool = Tools.TEST;
-			}
-			break;
-		case TEST:
-			if (windowTabs.getActiveButton() != 2) {
-				windowTabs.moveActive(2);
-			}
-			window_test.privacyDisplay();
-			windowTabs.update();
-			windowTabs.display();
-			window_test.update();
-			window_test.display();
-			if (windowTabs.getButton(0).event()) {
-				windowTabs.moveActive(0);
-				tool = Tools.LOADEXAMPLE;
-			} else if (windowTabs.getButton(1).event()) {
-				windowTabs.moveActive(1);
-				tool = Tools.SAVE;
-			}
-			break;
-		default:
-			break;
+			case INVENTORY :
+				displayCreativeInventory();
+				break;
+			case MODIFY :
+				editorItem.update();
+				editorItem.display();
+				break;
+			case MOVE :
+				break;
+			case PLAY :
+				break;
+			case SAVE :
+				// Save , Load
+				// The if statement below should be used in each window that includes a tab.
+				// switch the number to the id of the button it's checking for
+				if (windowTabs.getActiveButton() != 1) {
+					windowTabs.moveActive(1);
+				}
+				window_saveLevel.privacyDisplay();
+				windowTabs.update();
+				windowTabs.display();
+				window_saveLevel.update();
+				window_saveLevel.display();
+				// This is an example of how to switch windows when another tab button is
+				// pressed.
+				if (windowTabs.getButton(0).event()) {
+					windowTabs.moveActive(0);
+					tool = Tools.LOADEXAMPLE;
+				} else if (windowTabs.getButton(2).event()) {
+					windowTabs.moveActive(2);
+					tool = Tools.TEST;
+				}
+				break;
+			case LOADEXAMPLE :
+				if (windowTabs.getActiveButton() != 0) {
+					windowTabs.moveActive(0);
+				}
+				windowTabs.update();
+				windowTabs.display();
+				window_loadLevel.display();
+				window_loadLevel.update();
+				if (windowTabs.getButton(1).event()) {
+					windowTabs.moveActive(1);
+					tool = Tools.SAVE;
+				} else if (windowTabs.getButton(2).event()) {
+					windowTabs.moveActive(2);
+					tool = Tools.TEST;
+				}
+				break;
+			case TEST :
+				if (windowTabs.getActiveButton() != 2) {
+					windowTabs.moveActive(2);
+				}
+				window_test.privacyDisplay();
+				windowTabs.update();
+				windowTabs.display();
+				window_test.update();
+				window_test.display();
+				if (windowTabs.getButton(0).event()) {
+					windowTabs.moveActive(0);
+					tool = Tools.LOADEXAMPLE;
+				} else if (windowTabs.getButton(1).event()) {
+					windowTabs.moveActive(1);
+					tool = Tools.SAVE;
+				}
+				break;
+			default :
+				break;
 		}
 
 		// Change tool;
@@ -441,28 +471,32 @@ public class SceneMapEditor extends PScene {
 	}
 
 	/**
-	 * Display boundaries of all world objects. 
+	 * Display boundaries of all world objects.
 	 */
 	public void debug() {
-        applet.strokeWeight(2);
-        applet.noFill();
-        
-        applet.stroke(50, 255, 120);
-        applet.backgroundObjects.forEach(o -> applet.rect(o.pos.x, o.pos.y, o.width, o.height));
+		applet.strokeWeight(2);
+		applet.noFill();
 
-        applet.stroke(255, 190, 200);
-        applet.gameObjects.forEach(o -> applet.rect(o.pos.x, o.pos.y, o.width, o.height));
-        
-        applet.stroke(50, 120, 255);
-        applet.collidableObjects.forEach(o -> applet.rect(o.pos.x, o.pos.y, o.width, o.height));
-        
-        applet.noStroke();
-        applet.fill(255);
-        applet.collidableObjects.forEach(o -> applet.ellipse(o.pos.x, o.pos.y, 5, 5));
-        applet.gameObjects.forEach(o -> applet.ellipse(o.pos.x, o.pos.y, 5, 5));
-        applet.backgroundObjects.forEach(o -> applet.ellipse(o.pos.x, o.pos.y, 5, 5));
+		applet.stroke(50, 255, 120);
+		backgroundObjects.forEach(o -> applet.rect(o.pos.x, o.pos.y, o.width, o.height));
+
+		applet.stroke(255, 190, 200);
+		gameObjects.forEach(o -> applet.rect(o.pos.x, o.pos.y, o.width, o.height));
+
+		applet.stroke(50, 120, 255);
+		collidableObjects.forEach(o -> applet.rect(o.pos.x, o.pos.y, o.width, o.height));
+
+		applet.noStroke();
+		applet.fill(255);
+		collidableObjects.forEach(o -> applet.ellipse(o.pos.x, o.pos.y, 5, 5));
+		gameObjects.forEach(o -> applet.ellipse(o.pos.x, o.pos.y, 5, 5));
+		backgroundObjects.forEach(o -> applet.ellipse(o.pos.x, o.pos.y, 5, 5));
 	}
-	
+
+	public Player getPlayer() {
+		return player;
+	}
+
 	private void displayCreativeInventory() {// complete creative inventory
 
 		// Display Background
@@ -575,7 +609,6 @@ public class SceneMapEditor extends PScene {
 		return 20 * 4 + 10 + y * (20 * 4 + 10);
 	}
 
-	@Override
 	public void mouseWheel(MouseEvent event) {
 		if (event.isShiftDown()) {
 		} else {
@@ -583,6 +616,120 @@ public class SceneMapEditor extends PScene {
 				scrollBar.mouseWheel(event);
 				scroll_inventory = (int) PApplet.map(scrollBar.barLocation, 1, 0,
 						-getInventorySize() + applet.height - 8, 0);
+			}
+		}
+	}
+
+	/**
+	 * Saves the level (background, game and collideable objects), encrypting the
+	 * output.
+	 * 
+	 * @param path Save location path.
+	 */
+	public void saveLevel(String path) {
+		JSONArray data = new JSONArray();
+
+		// MAIN
+		JSONObject main = new JSONObject();
+		main.setString("title", "undefined");
+		main.setString("creator", "undefined");
+		main.setString("version", "alpha 1.0.0");
+
+		// Add Main
+		data.append(main);
+
+		// Add Collisions
+		for (int i = 0; i < collidableObjects.size(); i++) {
+			JSONObject item = new JSONObject();
+			item.setString("id", collidableObjects.get(i).id);
+			item.setString("type", "COLLISION");
+			item.setInt("x", (int) collidableObjects.get(i).pos.x);
+			item.setInt("y", (int) collidableObjects.get(i).pos.y);
+			data.append(item);
+		}
+
+		// Add Background Objects
+		for (int i = 0; i < backgroundObjects.size(); i++) {
+			JSONObject item = new JSONObject();
+			item.setString("id", backgroundObjects.get(i).id);
+			item.setString("type", "BACKGROUND");
+			item.setInt("x", (int) backgroundObjects.get(i).pos.x);
+			item.setInt("y", (int) backgroundObjects.get(i).pos.y);
+			data.append(item);
+		}
+
+		// Add Game Objects
+		for (int i = 0; i < gameObjects.size(); i++) {
+			collidableObjects.remove(gameObjects.get(i).collision);
+
+			JSONObject item = new JSONObject();
+			item.setString("id", gameObjects.get(i).id);
+			item.setString("type", "OBJECT");
+			item.setInt("x", (int) gameObjects.get(i).pos.x);
+			item.setInt("y", (int) gameObjects.get(i).pos.y);
+			data.append(item);
+		}
+
+		// Save Level
+		Util.saveFile(path, Util.encrypt(data.toString()));
+	}
+
+	public void loadLevel(String path) { // TODO save camera position/settings.
+		String[] script = applet.loadStrings(path);
+		String scriptD = Util.decrypt(PApplet.join(script, "\n"));
+
+		// Parse JSON
+		JSONArray data = JSONArray.parse(scriptD);
+
+		// Clear Object Arrays
+		collidableObjects.clear();
+		backgroundObjects.clear();
+
+		// Create Level
+		for (int i = 0; i < data.size(); i++) {
+			JSONObject item = data.getJSONObject(i);
+
+			String type = item.getString("type");
+
+			// Read Main
+			if (i == 0) {
+				if (applet.currentScene instanceof GameplayScene) {
+					((GameplayScene) applet.currentScene).worldViewportEditor.setSize();
+				}
+			} else {
+				switch (type) {
+					case "COLLISION" :
+						CollidableObject collision = new CollidableObject(applet, this);
+						try {
+							collision.setGraphic(item.getString("id"));
+						} catch (Exception e) {
+							collision.width = 64;
+							collision.height = 64;
+						}
+						collision.pos.x = item.getInt("x");
+						collision.pos.y = item.getInt("y");
+
+						// Append To Level
+						collidableObjects.add(collision);
+						break;
+					case "BACKGROUND" :
+						BackgroundObject backgroundObject = new BackgroundObject(applet, this);
+						backgroundObject.setGraphic(item.getString("id"));
+						backgroundObject.pos.x = item.getInt("x");
+						backgroundObject.pos.y = item.getInt("y");
+
+						// Append To Level
+						backgroundObjects.add(backgroundObject);
+						break;
+					case "OBJECT" :
+						GameObject gameObject = Tileset.getObjectClass(item.getString("id"));
+						gameObject.pos.x = item.getInt("x");
+						gameObject.pos.y = item.getInt("y");
+
+						// Append To Level
+						gameObjects.add(gameObject);
+						break;
+				}
 			}
 		}
 	}

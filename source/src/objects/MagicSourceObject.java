@@ -9,6 +9,7 @@ import processing.core.PApplet;
 import processing.core.PImage;
 import projectiles.MagicProjectile;
 import projectiles.Swing;
+import scene.GameplayScene;
 import sidescroller.SideScroller;
 import sidescroller.Tileset;
 import sidescroller.Util;
@@ -21,8 +22,8 @@ public class MagicSourceObject extends GameObject {
 	private static ArrayList<PImage> particleAnimation;
 	private ParticleSystem trail;
 
-	public MagicSourceObject(SideScroller a) {
-		super(a);
+	public MagicSourceObject(SideScroller a, GameplayScene g) {
+		super(a, g);
 
 		type = type.OBJECT;
 		id = "MAGIC_SOURCE";
@@ -53,8 +54,8 @@ public class MagicSourceObject extends GameObject {
 	@Override
 	public void update() {
 		// Create new Magic Projectiles
-		for (int i = 0; i < applet.player.swings.size(); i++) {
-			Swing swing = applet.player.swings.get(i);
+		for (int i = 0; i < gameScene.getPlayer().swings.size(); i++) {
+			Swing swing = gameScene.getPlayer().swings.get(i);
 
 			if (collidesWithSwing(swing)) {
 				if (!swing.activated) {
@@ -62,8 +63,8 @@ public class MagicSourceObject extends GameObject {
 					if(applet.millis() > oldMillis + shotDelay) {
 						oldMillis = applet.millis();
 						
-						applet.projectileObjects
-							.add(new MagicProjectile(applet, (int) pos.x, (int) pos.y, swing.direction));
+						gameScene.projectileObjects
+							.add(new MagicProjectile(applet, gameScene, (int) pos.x, (int) pos.y, swing.direction));
 
 						swing.activated = true;
 					}
@@ -80,11 +81,11 @@ public class MagicSourceObject extends GameObject {
 	}
 
 	public boolean collidesWithPlayer() {
-		return (applet.player.pos.x + applet.player.width / 2 > pos.x - width / 2
-				&& applet.player.pos.x - applet.player.width / 2 < pos.x + width / 2)
-				&& (applet.player.pos.y + applet.player.height / 2 > pos.y
+		return (gameScene.getPlayer().pos.x + gameScene.getPlayer().width / 2 > pos.x - width / 2
+				&& gameScene.getPlayer().pos.x - gameScene.getPlayer().width / 2 < pos.x + width / 2)
+				&& (gameScene.getPlayer().pos.y + gameScene.getPlayer().height / 2 > pos.y
 						- height / 2
-						&& applet.player.pos.y - applet.player.height / 2 < pos.y
+						&& gameScene.getPlayer().pos.y - gameScene.getPlayer().height / 2 < pos.y
 								+ height / 2);
 	}
 	
