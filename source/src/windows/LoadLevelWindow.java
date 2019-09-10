@@ -3,6 +3,7 @@ package windows;
 import scene.SceneMapEditor;
 import sidescroller.PClass;
 import sidescroller.SideScroller;
+import sidescroller.Util;
 import ui.Anchor;
 import ui.Button;
 import ui.List;
@@ -74,7 +75,7 @@ public class LoadLevelWindow extends PClass {
 
 	public void confirmButton() {
 		if (list.getConfirmPress() && !list.getElement().isEmpty()) {
-			util.loadLevel(path + list.getElement());
+			Util.loadLevel(path + list.getElement());
 			list.resetElement();
 			scene.tool = SceneMapEditor.Tools.MOVE;
 		} else if (list.getConfirmPress() && list.getElement().isEmpty())

@@ -13,6 +13,7 @@ import scene.components.WorldViewportEditor;
 import sidescroller.SideScroller;
 import sidescroller.Tileset;
 import sidescroller.Tileset.tileType;
+import sidescroller.Util;
 import ui.Anchor;
 import ui.ScrollBarVertical;
 import ui.Tab;
@@ -93,21 +94,21 @@ public class SceneMapEditor extends PScene {
 		worldViewportEditor = new WorldViewportEditor(applet);
 
 		// Get Slots Graphics
-		slot = util.pg(applet.graphicsSheet.get(289, 256, 20, 21), 4);
-		slotEditor = util.pg(applet.graphicsSheet.get(310, 256, 20, 21), 4);
+		slot = Util.pg(applet.graphicsSheet.get(289, 256, 20, 21), 4);
+		slotEditor = Util.pg(applet.graphicsSheet.get(310, 256, 20, 21), 4);
 
 		// Get Icon Graphics
-		icon_eye = util.pg(applet.graphicsSheet.get(267, 302, 11, 8), 4);
-		icon_arrow = util.pg(applet.graphicsSheet.get(279, 301, 9, 9), 4);
-		icon_inventory = util.pg(applet.graphicsSheet.get(289, 301, 9, 9), 4);
-		icon_play = util.pg(applet.graphicsSheet.get(298, 301, 9, 9), 4);
-		icon_save = util.pg(applet.graphicsSheet.get(307, 301, 9, 9), 4);
+		icon_eye = Util.pg(applet.graphicsSheet.get(267, 302, 11, 8), 4);
+		icon_arrow = Util.pg(applet.graphicsSheet.get(279, 301, 9, 9), 4);
+		icon_inventory = Util.pg(applet.graphicsSheet.get(289, 301, 9, 9), 4);
+		icon_play = Util.pg(applet.graphicsSheet.get(298, 301, 9, 9), 4);
+		icon_save = Util.pg(applet.graphicsSheet.get(307, 301, 9, 9), 4);
 
-		icon_eyeActive = util.pg(applet.graphicsSheet.get(267, 292, 11, 8), 4);
-		icon_arrowActive = util.pg(applet.graphicsSheet.get(279, 291, 9, 9), 4);
-		icon_inventoryActive = util.pg(applet.graphicsSheet.get(289, 291, 9, 9), 4);
-		icon_playActive = util.pg(applet.graphicsSheet.get(298, 291, 9, 9), 4);
-		icon_saveActive = util.pg(applet.graphicsSheet.get(307, 291, 9, 9), 4);
+		icon_eyeActive = Util.pg(applet.graphicsSheet.get(267, 292, 11, 8), 4);
+		icon_arrowActive = Util.pg(applet.graphicsSheet.get(279, 291, 9, 9), 4);
+		icon_inventoryActive = Util.pg(applet.graphicsSheet.get(289, 291, 9, 9), 4);
+		icon_playActive = Util.pg(applet.graphicsSheet.get(298, 291, 9, 9), 4);
+		icon_saveActive = Util.pg(applet.graphicsSheet.get(307, 291, 9, 9), 4);
 
 		// Init Window
 		window_saveLevel = new SaveLevelWindow(applet);
@@ -127,7 +128,7 @@ public class SceneMapEditor extends PScene {
 		// Default Tool
 		tool = Tools.MODIFY;
 
-		util.loadLevel(SideScroller.LEVEL); // TODO change level
+		Util.loadLevel(SideScroller.LEVEL); // TODO change level
 
 		windowTabs = new Tab(applet, tabTexts, 3);
 	}
@@ -279,16 +280,16 @@ public class SceneMapEditor extends PScene {
 		}
 
 		// GUI Icons
-		if (tool == Tools.MOVE || (util.hover(40, 120, 36, 36) && tool != Tools.SAVE && tool != Tools.INVENTORY)) {
-			if (util.hover(40, 120, 36, 36) && applet.mousePressEvent) {
+		if (tool == Tools.MOVE || (Util.hover(40, 120, 36, 36) && tool != Tools.SAVE && tool != Tools.INVENTORY)) {
+			if (Util.hover(40, 120, 36, 36) && applet.mousePressEvent) {
 				tool = Tools.MOVE;
 			}
 			image(icon_eyeActive, 40, 120);
 		} else {
 			image(icon_eye, 40, 120);
 		}
-		if (tool == Tools.MODIFY || (util.hover(90, 120, 36, 36) && tool != Tools.SAVE && tool != Tools.INVENTORY)) {
-			if (util.hover(90, 120, 36, 36) && applet.mousePressEvent) {
+		if (tool == Tools.MODIFY || (Util.hover(90, 120, 36, 36) && tool != Tools.SAVE && tool != Tools.INVENTORY)) {
+			if (Util.hover(90, 120, 36, 36) && applet.mousePressEvent) {
 				tool = Tools.MODIFY;
 			}
 			image(icon_arrowActive, 90, 120);
@@ -296,8 +297,8 @@ public class SceneMapEditor extends PScene {
 			image(icon_arrow, 90, 120);
 		}
 		if (tool == Tools.INVENTORY
-				|| (util.hover(90 + 48, 120, 36, 36) && tool != Tools.SAVE && tool != Tools.INVENTORY)) {
-			if (util.hover(90 + 48, 120, 36, 36) && applet.mousePressEvent) {
+				|| (Util.hover(90 + 48, 120, 36, 36) && tool != Tools.SAVE && tool != Tools.INVENTORY)) {
+			if (Util.hover(90 + 48, 120, 36, 36) && applet.mousePressEvent) {
 				tool = Tools.INVENTORY;
 			}
 			image(icon_inventoryActive, 90 + 48, 120);
@@ -305,8 +306,8 @@ public class SceneMapEditor extends PScene {
 			image(icon_inventory, 90 + 48, 120);
 		}
 		if (tool == Tools.PLAY
-				|| (util.hover(90 + 48 * 2, 120, 36, 36) && tool != Tools.SAVE && tool != Tools.INVENTORY)) {
-			if (util.hover(90 + 48 * 2, 120, 36, 36) && applet.mousePressEvent) {
+				|| (Util.hover(90 + 48 * 2, 120, 36, 36) && tool != Tools.SAVE && tool != Tools.INVENTORY)) {
+			if (Util.hover(90 + 48 * 2, 120, 36, 36) && applet.mousePressEvent) {
 				tool = Tools.PLAY;
 			}
 			image(icon_playActive, 90 + 48 * 2, 120);
@@ -314,8 +315,8 @@ public class SceneMapEditor extends PScene {
 			image(icon_play, 90 + 48 * 2, 120);
 		}
 		if (tool == Tools.SAVE
-				|| (util.hover(90 + 48 * 3, 120, 36, 36) && tool != Tools.SAVE && tool != Tools.INVENTORY)) {
-			if (util.hover(90 + 48 * 3, 120, 36, 36) && applet.mousePressEvent) {
+				|| (Util.hover(90 + 48 * 3, 120, 36, 36) && tool != Tools.SAVE && tool != Tools.INVENTORY)) {
+			if (Util.hover(90 + 48 * 3, 120, 36, 36) && applet.mousePressEvent) {
 				tool = Tools.SAVE;
 			}
 			image(icon_saveActive, 90 + 48 * 3, 120);

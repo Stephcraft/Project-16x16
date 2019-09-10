@@ -5,6 +5,7 @@ import ui.Anchor.AnchorOrigin;
 import processing.core.*;
 import processing.event.MouseEvent;
 import sidescroller.PClass;
+import sidescroller.Util;
 
 /**
  * Horizontal ScrollBar
@@ -55,7 +56,7 @@ public float barLocation = 0f; // between 0-1
 		if (barSelected)
 		{
 			barLocation = (float) PApplet.map(applet.mouseX, container.X() + container.Width() - (barAnchor.localWidth/2), container.X() + (barAnchor.localWidth/2), 1, 0);
-			barLocation = util.clamp(barLocation, 0, 1);
+			barLocation = Util.clamp(barLocation, 0, 1);
 		}
 	}
 	
@@ -65,6 +66,6 @@ public float barLocation = 0f; // between 0-1
 	
 	public void mouseWheel(MouseEvent event) {
 		barLocation += event.getCount() * 0.1;
-		barLocation = util.clamp(barLocation, 0, 1);
+		barLocation = Util.clamp(barLocation, 0, 1);
 	}
 }

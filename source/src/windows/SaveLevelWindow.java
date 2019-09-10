@@ -3,6 +3,7 @@ package windows;
 import scene.SceneMapEditor;
 import sidescroller.PClass;
 import sidescroller.SideScroller;
+import sidescroller.Util;
 import ui.TextInputField;
 import ui.Button;
 import ui.Tab;
@@ -80,7 +81,7 @@ public class SaveLevelWindow extends PClass {
 
 		pressSave.update();
 		if (pressSave.event()) {
-			util.saveLevel(path + input.getText() + ".dat");
+			Util.saveLevel(path + input.getText() + ".dat");
 			input.setText("");
 			scene.tool = SceneMapEditor.Tools.MOVE;
 		}

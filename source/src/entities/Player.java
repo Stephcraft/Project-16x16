@@ -105,10 +105,10 @@ public final class Player extends EditableObject {
 	 * @param sheet sprite sheet as PImage.
 	 */
 	public void load(PImage sheet) {
-		image = util.pg(sheet.get(0, 258, 14, 14), 4);
+		image = Util.pg(sheet.get(0, 258, 14, 14), 4);
 
-		lifeOn = util.pg(sheet.get(144, 256, 9, 9), 4);
-		lifeOff = util.pg(sheet.get(160, 256, 9, 9), 4);
+		lifeOn = Util.pg(sheet.get(144, 256, 9, 9), 4);
+		lifeOff = Util.pg(sheet.get(160, 256, 9, 9), 4);
 
 		setAnimation(ACTIONS.IDLE);
 	}

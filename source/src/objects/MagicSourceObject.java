@@ -11,6 +11,7 @@ import projectiles.MagicProjectile;
 import projectiles.Swing;
 import sidescroller.SideScroller;
 import sidescroller.Tileset;
+import sidescroller.Util;
 
 /**
  * Extends {@link GameObject}.
@@ -93,7 +94,7 @@ public class MagicSourceObject extends GameObject {
 		float scale = 0.12f;
 		float angle = PApplet.radians(11);
 		while(scale > 0.025f) {
-			particleAnimation.add(util.pg(util.resizeImage(util.rotateImage(image.copy(), angle), scale),4));
+			particleAnimation.add(Util.pg(Util.resizeImage(Util.rotateImage(image.copy(), angle), scale),4));
 			angle += PApplet.radians(PApplet.radians(11));
 			scale -= Math.random() * 0.03;
 		}
