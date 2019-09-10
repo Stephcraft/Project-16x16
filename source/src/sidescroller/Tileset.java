@@ -10,10 +10,12 @@ import processing.core.PApplet;
 import processing.core.PGraphics;
 import processing.core.PImage;
 import processing.data.JSONObject;
+import scene.GameplayScene;
 import processing.data.JSONArray;
 
 /**
  * Tileset is a static class that loads and provides PImages
+ * TODO deprecate SideScroller.graphicsSheet and uses thereof.
  */
 public class Tileset {
 
@@ -47,12 +49,13 @@ public class Tileset {
 		return getTile(getTileId(name));
 	}
 	
-	public static PImage getTile(int index){
-		if (loadedTiles.size() > index)
+	public static PImage getTile(int index) {
+		if (loadedTiles.size() > index) {
 			return loadedTiles.get(index);
-		
-		PApplet.println("<Tileset> Error while loading, null index reference to tile ( "+index+" ) >");
-		return loadedTiles.get(0);
+		} else {
+			PApplet.println("<Tileset> Error while loading, null index reference to tile ( " + index + " ) >");
+			return null; // TODO return placeholder?
+		}
 	}
 	
 	public static PImage getTile(int x, int y, int w, int h)
@@ -147,12 +150,12 @@ public class Tileset {
 		return images;
 	}
 	
-	public static GameObject getObjectClass(String name) {
+	public static GameObject getObjectClass(String name) { // TODO unsafe casts
 		if (name.equals("MAGIC_SOURCE"))
-			return new MagicSourceObject(applet);
+			return new MagicSourceObject(applet, (GameplayScene) applet.currentScene);
 		if (name.equals("MIRROR_BOX"))
-			return new MirrorBoxObject(applet);
-		return new GameObject(applet);
+			return new MirrorBoxObject(applet, (GameplayScene) applet.currentScene);
+		return new GameObject(applet, (GameplayScene) applet.currentScene);
 	}
 	
 	private static void loadJSON() {
