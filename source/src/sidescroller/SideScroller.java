@@ -65,10 +65,14 @@ public class SideScroller extends PApplet {
 	public float deltaTime;
 
 	// Scenes
+	/**
+	 * Use {@link #swapScene(PScene)} to change the scene-- don't reassign this
+	 * variable directly!
+	 */
 	public PScene currentScene;
 	private MainMenu menu; // TODO
 	private GameplayScene game;
-	
+
 	// Events
 	private HashSet<Integer> keys;
 	public boolean keyPressEvent;
@@ -169,16 +173,15 @@ public class SideScroller extends PApplet {
 
 		// Create ArrayList
 		keys = new HashSet<Integer>();
-		
+
 		// Main Load
 		load();
-		
+
 		// Create scene
 		game = new GameplayScene(this);
-		currentScene = game;
-		game.setup();
 		menu = new MainMenu(this); // TODO
-		
+		swapScene(game);
+
 		// Camera
 		camera = new Camera(this);
 		camera.setMouseMask(CONTROL);
@@ -190,8 +193,7 @@ public class SideScroller extends PApplet {
 	}
 
 	/**
-	 * This is where any needed assets will be loaded.
-	 * TODO move to Tileset class
+	 * This is where any needed assets will be loaded. TODO move to Tileset class
 	 */
 	private void load() {
 		Tileset.load(this);
@@ -209,6 +211,14 @@ public class SideScroller extends PApplet {
 		Options.load();
 
 		// Create All Graphics
+	}
+
+	public void swapScene(PScene newScene) {
+		if (currentScene != null) {
+			currentScene.switchFrom();
+		}
+		currentScene = newScene;
+		currentScene.switchTo();
 	}
 
 	/**
@@ -281,6 +291,8 @@ public class SideScroller extends PApplet {
 	/**
 	 * keyPressed decides if the key that has been pressed is a valid key. if it is,
 	 * it is then added to the keys ArrayList, and the keyPressedEvent flag is set.
+	 * 
+	 * FOR GLOBAL KEYS ONLY
 	 */
 	@Override
 	public void keyPressed(KeyEvent event) {
@@ -291,6 +303,8 @@ public class SideScroller extends PApplet {
 	/**
 	 * keyReleased decides if the key pressed is valid and if it is then removes it
 	 * from the keys ArrayList and keyReleaseEvent flag is set.
+	 * 
+	 * FOR GLOBAL KEYS ONLY
 	 */
 	@Override
 	public void keyReleased(KeyEvent event) {
@@ -326,7 +340,7 @@ public class SideScroller extends PApplet {
 						loop();
 						break;
 					case 27 : // ESC - Pause menu here
-						currentScene = currentScene == menu ? game : menu; // TODO
+						swapScene(currentScene == menu ? game : menu);
 						break;
 					case 9 : // TAB
 						debug = debug.next();

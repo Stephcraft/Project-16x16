@@ -1,5 +1,7 @@
 package objects;
 
+import java.lang.reflect.Constructor;
+
 import processing.core.PImage;
 import processing.core.PVector;
 import scene.GameplayScene;
@@ -181,15 +183,22 @@ public class EditableObject extends PClass {
 							gameScene.collidableObjects.add((CollidableObject) copy);
 							break;
 						case OBJECT :
-							copy = Tileset.getObjectClass(id);
-							copy.focus = true;
-							copy.focusX = focusX;
-							copy.focusY = focusY;
-							copy.pos.x = pos.x;
-							copy.pos.y = pos.y;
-							copy.editOffsetX = editOffsetX;
-							copy.editOffsetY = editOffsetY;
-							gameScene.gameObjects.add((GameObject) copy);
+							try {
+								Class<? extends GameObject> gameObjectClass = Tileset.getObjectClass(id);
+								Constructor<?> ctor = gameObjectClass.getDeclaredConstructors()[0];
+								copy = (GameObject) ctor.newInstance(new Object[] { applet, this });
+								copy.focus = true;
+								copy.focusX = focusX;
+								copy.focusY = focusY;
+								copy.pos.x = pos.x;
+								copy.pos.y = pos.y;
+								copy.editOffsetX = editOffsetX;
+								copy.editOffsetY = editOffsetY;
+								gameScene.gameObjects.add((GameObject) copy);
+								break;
+							} catch (Exception e) {
+								e.printStackTrace();
+							}							
 							switch (id) {
 								case "MIRROR_BOX" :
 									((MirrorBoxObject) gameScene.gameObjects.get(gameScene.gameObjects.size()

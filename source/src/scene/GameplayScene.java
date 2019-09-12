@@ -1,5 +1,6 @@
 package scene;
 
+import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.Iterator;
 
@@ -92,10 +93,10 @@ public class GameplayScene extends PScene {
 
 	public GameplayScene(SideScroller a) {
 		super(a);
+		setup();
 	}
 
-	@Override
-	public void setup() {
+	private void setup() {
 
 		// Init Game World Objects Arrays
 		collidableObjects = new ArrayList<CollidableObject>();
@@ -709,8 +710,7 @@ public class GameplayScene extends PScene {
 						collision.pos.x = item.getInt("x");
 						collision.pos.y = item.getInt("y");
 
-						// Append To Level
-						collidableObjects.add(collision);
+						collidableObjects.add(collision); // Append To Level
 						break;
 					case "BACKGROUND" :
 						BackgroundObject backgroundObject = new BackgroundObject(applet, this);
@@ -718,16 +718,21 @@ public class GameplayScene extends PScene {
 						backgroundObject.pos.x = item.getInt("x");
 						backgroundObject.pos.y = item.getInt("y");
 
-						// Append To Level
-						backgroundObjects.add(backgroundObject);
+						backgroundObjects.add(backgroundObject); // Append To Level
 						break;
 					case "OBJECT" :
-						GameObject gameObject = Tileset.getObjectClass(item.getString("id"));
-						gameObject.pos.x = item.getInt("x");
-						gameObject.pos.y = item.getInt("y");
+						try {
+							Class<? extends GameObject> gameObjectClass = Tileset.getObjectClass(item.getString("id"));
+							Constructor<?> ctor = gameObjectClass.getDeclaredConstructors()[0];
+							GameObject gameObject = (GameObject) ctor.newInstance(new Object[] { applet, this });
+							gameObject.pos.x = item.getInt("x");
+							gameObject.pos.y = item.getInt("y");
 
-						// Append To Level
-						gameObjects.add(gameObject);
+							gameObjects.add(gameObject); // Append To Level
+							break;
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
 						break;
 				}
 			}
