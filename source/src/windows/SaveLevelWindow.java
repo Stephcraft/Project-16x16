@@ -1,8 +1,9 @@
 package windows;
 
-import scene.SceneMapEditor;
+import scene.GameplayScene;
 import sidescroller.PClass;
 import sidescroller.SideScroller;
+import sidescroller.Util;
 import ui.TextInputField;
 import ui.Button;
 import ui.Tab;
@@ -16,12 +17,13 @@ public class SaveLevelWindow extends PClass {
 	String path = "Assets/Storage/Game/Maps/";
 
 	// Map Editor Scene
-	public SceneMapEditor scene;
+	public GameplayScene scene;
 
-	public SaveLevelWindow(SideScroller a) {
+	public SaveLevelWindow(SideScroller a, GameplayScene scene) {
+		
 		super(a);
 
-		scene = (SceneMapEditor) a.mapEditor;
+		this.scene = scene; 
 
 		pressSave = new Button(applet);
 		pressSave.setText("Save Level");
@@ -80,15 +82,15 @@ public class SaveLevelWindow extends PClass {
 
 		pressSave.update();
 		if (pressSave.event()) {
-			util.saveLevel(path + input.getText() + ".dat");
+			scene.saveLevel(path + input.getText() + ".dat");
 			input.setText("");
-			scene.tool = SceneMapEditor.Tools.MOVE;
+			scene.tool = GameplayScene.Tools.MOVE;
 		}
 
 		pressCancel.update();
 		if (pressCancel.event()) {
 			input.setText("");
-			scene.tool = SceneMapEditor.Tools.MOVE;
+			scene.tool = GameplayScene.Tools.MOVE;
 		}
 	}
 }

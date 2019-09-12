@@ -1,21 +1,14 @@
 package sidescroller;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 
 import components.AnimationComponent;
 import dm.core.DM;
 
-import entities.Player;
-
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.transform.Scale;
 import javafx.stage.Stage;
-
-import objects.BackgroundObject;
-import objects.CollidableObject;
-import objects.GameObject;
 
 import processing.core.PApplet;
 import processing.core.PFont;
@@ -26,10 +19,9 @@ import processing.event.KeyEvent;
 import processing.event.MouseEvent;
 import processing.javafx.PSurfaceFX;
 
-import projectiles.ProjectileObject;
-
 import scene.PScene;
-import scene.SceneMapEditor;
+import scene.GameplayScene;
+import scene.MainMenu;
 
 /**
  * <h1>SideScroller Class</h1>
@@ -46,12 +38,14 @@ public class SideScroller extends PApplet {
 	public enum debugType {
 		OFF, ALL, INFO_ONLY;
 		private static debugType[] vals = values();
+
 		public debugType next() {
 			return vals[(this.ordinal() + 1) % vals.length];
 		}
 	}
+
 	public debugType debug = debugType.ALL;
-  
+
 	public static final boolean SNAP = true; // snap objects to grid when moving; located here for ease of access
 	public static int snapSize;
 
@@ -61,29 +55,20 @@ public class SideScroller extends PApplet {
 																	// via options
 
 	// Image Resources
-	public PImage graphicsSheet;
-	public PImage magicSheet;
+	public static PImage graphicsSheet;
+	public static PImage magicSheet;
 
 	// Font Resources
-	private PFont font_pixel;
+	private static PFont font_pixel;
 
 	// Frame Rate
 	public float deltaTime;
 
 	// Scenes
-	public SceneMapEditor mapEditor;
-
-	Util util = new Util(this);
-
-	// Player
-	public Player player;
-
-	// World Objects
-	public ArrayList<CollidableObject> collidableObjects;
-	public ArrayList<BackgroundObject> backgroundObjects;
-	public ArrayList<GameObject> gameObjects;
-	public ArrayList<ProjectileObject> projectileObjects;
-
+	public PScene currentScene;
+	private MainMenu menu; // TODO
+	private GameplayScene game;
+	
 	// Events
 	private HashSet<Integer> keys;
 	public boolean keyPressEvent;
@@ -120,6 +105,7 @@ public class SideScroller extends PApplet {
 	 */
 	@Override
 	public void settings() {
+		Util.assignApplet(this);
 		size((int) windowSize.x, (int) windowSize.y, FX2D);
 	}
 
@@ -183,32 +169,32 @@ public class SideScroller extends PApplet {
 
 		// Create ArrayList
 		keys = new HashSet<Integer>();
-		collidableObjects = new ArrayList<CollidableObject>();
-		backgroundObjects = new ArrayList<BackgroundObject>();
-		gameObjects = new ArrayList<GameObject>();
-		projectileObjects = new ArrayList<ProjectileObject>();
-
-		// Create scene
-		mapEditor = new SceneMapEditor(this);
-
+		
 		// Main Load
 		load();
-
+		
+		// Create scene
+		game = new GameplayScene(this);
+		currentScene = game;
+		game.setup();
+		menu = new MainMenu(this); // TODO
+		
 		// Camera
 		camera = new Camera(this);
 		camera.setMouseMask(CONTROL);
 		camera.setMinZoomScale(0.3);
 		camera.setMaxZoomScale(3);
-		camera.setFollowObject(player);
+		camera.setFollowObject(game.getPlayer());
 
 		scaleResolution();
 	}
 
 	/**
 	 * This is where any needed assets will be loaded.
+	 * TODO move to Tileset class
 	 */
 	private void load() {
-
+		Tileset.load(this);
 		// Load Font
 		font_pixel = loadFont("Assets/Font/font-pixel-48.vlw");
 
@@ -223,16 +209,6 @@ public class SideScroller extends PApplet {
 		Options.load();
 
 		// Create All Graphics
-		Tileset.load(this);
-
-		// Set Scene
-		setScene("MAPEDITOR");
-
-		// Create Player
-		player = new Player(this);
-		player.load(graphicsSheet);
-		player.pos.x = 0; // // TODO set to spawn loc
-		player.pos.y = -100; // // TODO set to spawn loc
 	}
 
 	/**
@@ -241,33 +217,15 @@ public class SideScroller extends PApplet {
 	 */
 	@Override
 	public void draw() {
-		surface.setTitle("Sardonyx Prealpha | " + mapEditor.tool.toString() + " | " + frameCount);
 
-		pushMatrix();
-		drawBelowCamera: { // drawn objects enclosed by pushMatrix() and popMatrix() are transformed by the
-			// camera.
-			camera.update();
-			mousePosition = camera.getMouseCoord().copy();
-			mapEditor.drawMap(); // Handle Draw Scene Method - draws world, etc.
-			if (debug == debugType.ALL) {
-				mapEditor.debug();
-				camera.postDebug();
-			}
-			mapEditor.drawPlayer(); // draws player
-		}
-		popMatrix();
+//		surface.setTitle("Sardonyx Prealpha | " + currentScene.tool.toString() + " | " + frameCount);
 
-		drawAboveCamera: { // Where HUD etc should be drawn
-			mousePosition = new PVector(mouseX, mouseY);
-			mapEditor.drawUI();
-			if (debug == debugType.ALL) {
-				camera.post();
-				displayDebugInfo();
-			}
-			if (debug == debugType.INFO_ONLY) {
-				displayDebugInfo();
-			}
-		}
+		camera.hook();
+		drawBelowCamera();
+		camera.release();
+		drawAboveCamera();
+
+		rectMode(CENTER);
 
 		// Update DeltaTime
 		if (frameRate < Options.targetFrameRate - 20 && frameRate > Options.targetFrameRate + 20) {
@@ -281,14 +239,42 @@ public class SideScroller extends PApplet {
 		keyReleaseEvent = false;
 		mousePressEvent = false;
 		mouseReleaseEvent = false;
+	}
 
-		rectMode(CENTER);
-
-		if (keys.contains(75)) { // K - for development
-			camera.rotate(-PI / 60);
+	/**
+	 * Any Processing drawing enclosed in {@link #drawBelowCamera()} will be
+	 * affected (zoomed, panned, rotated) by the camera. Called in {@link #draw()},
+	 * before {@link #drawAboveCamera()}.
+	 * 
+	 * @see #drawAboveCamera()
+	 * @see {@link Camera#hook()}
+	 */
+	private void drawBelowCamera() {
+		mousePosition = camera.getMouseCoord().copy();
+		currentScene.draw(); // Handle Draw Scene Method - draws world, etc.
+		if (debug == debugType.ALL) {
+			currentScene.debug();
+			camera.postDebug();
 		}
-		if (keys.contains(76)) { // L - for development
-			camera.rotate(PI / 60);
+	}
+
+	/**
+	 * Any Processing drawing enclosed in {@link #drawAboveCamera()} will not be
+	 * affected (zoomed, panned, rotated) by the camera. Called in {@link #draw()},
+	 * after {@link #drawBelowCamera()}.
+	 * 
+	 * @see #drawBelowCamera()
+	 * @see {@link Camera#release()}
+	 */
+	private void drawAboveCamera() {
+		mousePosition = new PVector(mouseX, mouseY);
+		currentScene.drawUI();
+		if (debug == debugType.ALL) {
+			camera.post();
+			displayDebugInfo();
+		}
+		if (debug == debugType.INFO_ONLY) {
+			displayDebugInfo();
 		}
 	}
 
@@ -325,7 +311,7 @@ public class SideScroller extends PApplet {
 				camera.setCameraPosition(camera.getMouseCoord()); // for development
 				break;
 			case 'F' :
-				camera.setFollowObject(player); // for development
+				camera.setFollowObject(game.getPlayer()); // for development
 				camera.setZoomScale(1.0f); // for development
 				break;
 			case 'G' :
@@ -340,11 +326,7 @@ public class SideScroller extends PApplet {
 						loop();
 						break;
 					case 27 : // ESC - Pause menu here
-						if (looping) {
-							noLoop();
-						} else {
-							loop();
-						}
+						currentScene = currentScene == menu ? game : menu; // TODO
 						break;
 					case 9 : // TAB
 						debug = debug.next();
@@ -376,7 +358,7 @@ public class SideScroller extends PApplet {
 	 */
 	@Override
 	public void mouseWheel(MouseEvent event) {
-		mapEditor.mouseWheel(event);
+		game.mouseWheel(event);
 		if (event.getAmount() == -1.0) { // for development
 			camera.zoomIn(0.02f);
 		} else {
@@ -394,18 +376,6 @@ public class SideScroller extends PApplet {
 	 */
 	public boolean keyPress(int k) {
 		return keys.contains(k);
-	}
-
-	/**
-	 * Sets the scene to be used.
-	 * 
-	 * @param s the scene id.
-	 */
-	private void setScene(String s) {
-		PScene.name = s;
-
-		// Run Setup On Scene Change
-		mapEditor.setup();
 	}
 
 	/**
@@ -463,6 +433,7 @@ public class SideScroller extends PApplet {
 		final int yOffset = 1;
 		final int labelPadding = 225; // label -x offset (from screen width)
 		final int ip = 1; // infoPadding -xoffset (from screen width)
+		final var player = game.getPlayer();
 		fill(0, 50);
 		noStroke();
 		rectMode(CORNER);
@@ -496,7 +467,7 @@ public class SideScroller extends PApplet {
 		text("[" + round(degrees(camera.getCameraRotation())) + "]", width - ip, lineOffset * 7 + yOffset);
 		text("[" + round(camera.getMouseCoord().x) + ", " + round(camera.getMouseCoord().y) + "]", width - ip,
 				lineOffset * 8 + yOffset);
-		text("[" + projectileObjects.size() + "]", width - ip, lineOffset * 9 + yOffset);
+//		text("[" + projectileObjects.size() + "]", width - ip, lineOffset * 9 + yOffset); TODO expose
 		if (frameRate >= 59.5) {
 			fill(0, 255, 0);
 		}

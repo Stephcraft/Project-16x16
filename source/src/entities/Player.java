@@ -2,6 +2,7 @@ package entities;
 
 import processing.core.*;
 import projectiles.Swing;
+import scene.GameplayScene;
 import sidescroller.Options;
 //import sidescroller.PClass;
 import sidescroller.SideScroller;
@@ -23,7 +24,7 @@ import objects.EditableObject;
  * </p>
  */
 public final class Player extends EditableObject {
-
+	
 	/**
 	 * Previous position.
 	 */
@@ -77,8 +78,10 @@ public final class Player extends EditableObject {
 	 * 
 	 * @param a SideScroller game controller.
 	 */
-	public Player(SideScroller a) {
-		super(a);
+	public Player(SideScroller a, GameplayScene g) {
+		
+		super(a, g);
+//		this.g = g;
 
 		pos = new PVector(100, 300);
 		gravity = 1;
@@ -105,10 +108,10 @@ public final class Player extends EditableObject {
 	 * @param sheet sprite sheet as PImage.
 	 */
 	public void load(PImage sheet) {
-		image = util.pg(sheet.get(0, 258, 14, 14), 4);
+		image = Util.pg(sheet.get(0, 258, 14, 14), 4);
 
-		lifeOn = util.pg(sheet.get(144, 256, 9, 9), 4);
-		lifeOff = util.pg(sheet.get(160, 256, 9, 9), 4);
+		lifeOn = Util.pg(sheet.get(144, 256, 9, 9), 4);
+		lifeOff = Util.pg(sheet.get(160, 256, 9, 9), 4);
 
 		setAnimation(ACTIONS.IDLE);
 	}
@@ -222,7 +225,7 @@ public final class Player extends EditableObject {
 			}
 
 			// Create Swing Projectile
-			swings.add(new Swing(applet, (int) pos.x, (int) pos.y, direction));
+			swings.add(new Swing(applet, gameScene, (int) pos.x, (int) pos.y, direction));
 		}
 
 		// End Dash
@@ -262,8 +265,8 @@ public final class Player extends EditableObject {
 		}
 
 		// All Collision Global Check
-		for (int i = 0; i < applet.collidableObjects.size(); i++) {
-			CollidableObject collision = applet.collidableObjects.get(i);
+		for (int i = 0; i < gameScene.collidableObjects.size(); i++) {
+			CollidableObject collision = gameScene.collidableObjects.get(i);
             if (Util.fastInRange(pos, collision.pos, collisionRange)) { // In Player Range
 				if (applet.debug == debugType.ALL) {
 					applet.strokeWeight(2);

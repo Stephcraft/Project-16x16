@@ -1,6 +1,7 @@
 package objects;
 
 import processing.core.*;
+import scene.GameplayScene;
 import sidescroller.PClass;
 import sidescroller.SideScroller;
 import sidescroller.Tileset;
@@ -18,10 +19,14 @@ public class EditorItem extends PClass {
 	public tileType type;
 
 	private String mode;
+	
+	private GameplayScene gameplayScene;
 
-	public EditorItem(SideScroller a) {
+	public EditorItem(SideScroller a, GameplayScene g) {
 		super(a);
 
+		gameplayScene = g;
+		
 		setTile("BOX");
 		setMode("CREATE");
 
@@ -52,25 +57,25 @@ public class EditorItem extends PClass {
 									Util.roundToNearest(applet.getMouseY(), SideScroller.snapSize)));
 					switch (type) {
 						case COLLISION :
-							CollidableObject c = new CollidableObject(applet, id, 0, 0);
+							CollidableObject c = new CollidableObject(applet, gameplayScene, id, 0, 0);
 							c.pos.x = realPos.x;
 							c.pos.y = realPos.y;
 							c.focus();
-							applet.collidableObjects.add(c);
+							gameplayScene.collidableObjects.add(c);
 							break;
 						case BACKGROUND :
-							BackgroundObject bObject = new BackgroundObject(applet, id, 0, 0);
+							BackgroundObject bObject = new BackgroundObject(applet, gameplayScene, id, 0, 0);
 							bObject.pos.x = realPos.x;
 							bObject.pos.y = realPos.y;
 							bObject.focus();
-							applet.backgroundObjects.add(bObject);
+							gameplayScene.backgroundObjects.add(bObject);
 							break;
 						case OBJECT :
 							GameObject obj = Tileset.getObjectClass(id);
 							obj.focus();
 							obj.pos.x = realPos.x;
 							obj.pos.y = realPos.y;
-							applet.gameObjects.add(obj);
+							gameplayScene.gameObjects.add(obj);
 							break;
 						default :
 							break;

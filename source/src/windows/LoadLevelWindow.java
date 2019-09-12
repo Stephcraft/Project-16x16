@@ -1,8 +1,9 @@
 package windows;
 
-import scene.SceneMapEditor;
+import scene.GameplayScene;
 import sidescroller.PClass;
 import sidescroller.SideScroller;
+import sidescroller.Util;
 import ui.Anchor;
 import ui.Button;
 import ui.List;
@@ -18,14 +19,15 @@ public class LoadLevelWindow extends PClass {
 
 	String path = "Assets/Storage/Game/Maps/";
 	// Map editor Scene
-	public SceneMapEditor scene;
+	public GameplayScene scene;
 	public List list;
 	File f;
 
-	public LoadLevelWindow(SideScroller a) {
+	public LoadLevelWindow(SideScroller a, GameplayScene scene) {
+		
 		super(a);
 
-		scene = (SceneMapEditor) a.mapEditor;
+		this.scene = scene;
 
 		f = new File(path);
 		File[] files = f.listFiles(new FileFilter() {
@@ -74,16 +76,16 @@ public class LoadLevelWindow extends PClass {
 
 	public void confirmButton() {
 		if (list.getConfirmPress() && !list.getElement().isEmpty()) {
-			util.loadLevel(path + list.getElement());
+			scene.loadLevel(path + list.getElement());
 			list.resetElement();
-			scene.tool = SceneMapEditor.Tools.MOVE;
+			scene.tool = GameplayScene.Tools.MOVE;
 		} else if (list.getConfirmPress() && list.getElement().isEmpty())
-			scene.tool = SceneMapEditor.Tools.MOVE;
+			scene.tool = GameplayScene.Tools.MOVE;
 	}
 
 	public void cancelButton() {
 		if (list.getCancelPress()) {
-			scene.tool = SceneMapEditor.Tools.MOVE;
+			scene.tool = GameplayScene.Tools.MOVE;
 			list.resetElement();
 		}
 	}

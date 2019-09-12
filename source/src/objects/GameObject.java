@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import components.AnimationComponent;
 import processing.core.PImage;
+import scene.GameplayScene;
 import sidescroller.SideScroller;
 import sidescroller.Tileset;
 
@@ -20,14 +21,15 @@ public class GameObject extends EditableObject {
 
 	public PImage image;
 
-	public GameObject(SideScroller a) {
-		super(a);
+	public GameObject(SideScroller a, GameplayScene g) {
+		super(a, g);
 
 		animation = new AnimationComponent();
 	}
 
 	public void display() {
 	}
+
 	public void update() {
 	}
 
@@ -39,11 +41,11 @@ public class GameObject extends EditableObject {
 	}
 
 	protected PImage g(int x, int y, int w, int h) {
-		return Tileset.getTile(x, y, w, h); 
+		return Tileset.getTile(x, y, w, h);
 	}
-	
-	//TODO: not sure s (size) should still be here
-	protected PImage g(int x, int y, int w, int h, float s) { 
-		return Tileset.getTile(x, y, w, h); 
+
+	// TODO: not sure s (size) should still be here
+	protected PImage g(int x, int y, int w, int h, float s) {
+		return Tileset.getTile(x, y, w, h);
 	}
 }

@@ -10,6 +10,7 @@ import objects.CollidableObject;
 import processing.core.PApplet;
 import processing.core.PImage;
 import processing.core.PVector;
+import scene.GameplayScene;
 import sidescroller.SideScroller;
 import sidescroller.Tileset;
 import sidescroller.Util;
@@ -24,9 +25,8 @@ public class MagicProjectile extends ProjectileObject {
 	private ParticleSystem trail;
 	private ParticleSystem explode;
 	
-	public MagicProjectile(SideScroller a, int x, int y, int dir) {
-		super(a);
-		util = new Util(a);
+	public MagicProjectile(SideScroller a, GameplayScene g, int x, int y, int dir) {
+		super(a, g);
 		
 		id = "MAGIC";
 		pos = new PVector(x, y);
@@ -65,8 +65,8 @@ public class MagicProjectile extends ProjectileObject {
 	}
 	
 	public void destroyProjectile() {
-		for (int i = 0; i < applet.collidableObjects.size(); i++) {
-			CollidableObject collision = applet.collidableObjects.get(i);
+		for (int i = 0; i < gameScene.collidableObjects.size(); i++) {
+			CollidableObject collision = gameScene.collidableObjects.get(i);
 			if (collides(collision) && !collision.flag.equals("TRANSPARENT_BULLET")) {
 				hit = true;
 				trail.spawn = false;
@@ -109,7 +109,7 @@ public class MagicProjectile extends ProjectileObject {
 		float scale = 0.12f;
 		float angle = PApplet.radians(11);
 		while(scale > 0.025f) {
-			particleAnimation.add(util.pg(util.resizeImage(util.rotateImage(image.copy(), angle), scale),4));
+			particleAnimation.add(Util.pg(Util.resizeImage(Util.rotateImage(image.copy(), angle), scale),4));
 			angle += PApplet.radians(PApplet.radians(11));
 			scale -= Math.random() * 0.03;
 		}

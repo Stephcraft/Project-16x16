@@ -8,31 +8,45 @@ import java.nio.charset.StandardCharsets;
 import objects.BackgroundObject;
 import objects.CollidableObject;
 import objects.GameObject;
-import processing.core.*;
-import processing.data.*;
+
+import processing.core.PApplet;
+import processing.core.PConstants;
+import processing.core.PGraphics;
+import processing.core.PImage;
+import processing.core.PVector;
+import processing.data.JSONArray;
+import processing.data.JSONObject;
+
 import scene.PScene;
-import scene.SceneMapEditor;
+import scene.GameplayScene;
 
-public class Util {
+public final class Util {
 
-	private static final boolean encrypt = true; // encrypt saving
+	private static SideScroller applet;
 
-	SideScroller applet;
-
-	public Util(SideScroller a) {
+	/**
+	 * The Util class provides static functions, but uses a PApplet (SideScroller)
+	 * instance within the static methods. This instance must be assigned in a
+	 * static method, here, before anything else uses this class.
+	 */
+	public static void assignApplet(SideScroller a) {
 		applet = a;
 	}
 
-	public PImage pg(PImage img) {
+	public static PImage pg(PImage img) {
 		return pg(img, 1);
 	}
 
 	/**
+	 * Note: Graphics in Project-16x16 are generally scaled by x4 at load, so you
+	 * probably want to call this method with scl=4, if you're loading game graphics
+	 * with it.
+	 * 
 	 * @param img
-	 * @param scl Scale
+	 * @param scl Scale (probably set to 4).
 	 * @return
 	 */
-	public PImage pg(PImage img, float scl) {
+	public static PImage pg(PImage img, float scl) {
 		PGraphics pg = applet.createGraphics((int) (img.width * scl), (int) (img.height * scl));
 		pg.noSmooth();
 		pg.beginDraw();
@@ -41,7 +55,7 @@ public class Util {
 		return pg.get();
 	}
 
-	public PImage blur(PImage img, float b) {
+	public static PImage blur(PImage img, float b) {
 		PGraphics pg = applet.createGraphics(img.width, img.height);
 
 		pg.noSmooth();
@@ -54,7 +68,7 @@ public class Util {
 		return pg.get();
 	}
 
-	public PImage warp(PImage source, float waveAmplitude, float numWaves) {
+	public static PImage warp(PImage source, float waveAmplitude, float numWaves) {
 		int w = source.width, h = source.height;
 		PImage destination = applet.createImage(w, h, PConstants.ARGB);
 		source.loadPixels();
@@ -79,7 +93,7 @@ public class Util {
 		return pg(destination).get();
 	}
 
-	public PImage scale(PImage pBuffer, int scaling) {
+	public static PImage scale(PImage pBuffer, int scaling) {
 		PImage originalImage = pBuffer;
 		PImage tempImage = applet.createImage(PApplet.parseInt(originalImage.width * scaling),
 				PApplet.parseInt(originalImage.height * scaling), PConstants.ARGB);
@@ -94,34 +108,34 @@ public class Util {
 		tempImage.updatePixels();
 		return pg(tempImage).get();
 	}
-	
-	public PImage resizeImage(PImage img, float scl) {
-		  PGraphics pg = applet.createGraphics((int)(img.width*scl), (int)(img.height*scl));
-		  
-		  pg.beginDraw();
-		    pg.clear();
-		    pg.scale( scl, scl );
-		    pg.image(img,0,0);
-		  pg.endDraw();
-		  
-		  return pg;
-	}
-	
-	public PImage rotateImage(PImage img, float angle) {
-		  PGraphics pg = applet.createGraphics((int)(img.width*1.5), (int)(img.height*1.5));
-		  
-		  pg.beginDraw();
-		    pg.clear();
-		    pg.imageMode(PApplet.CENTER);
-		    pg.translate(pg.width/2, pg.height/2);
-		    pg.rotate( angle );
-		    pg.image(img,0,0);
-		  pg.endDraw();
-		  
-		  return pg;
+
+	public static PImage resizeImage(PImage img, float scl) {
+		PGraphics pg = applet.createGraphics((int) (img.width * scl), (int) (img.height * scl));
+
+		pg.beginDraw();
+		pg.clear();
+		pg.scale(scl, scl);
+		pg.image(img, 0, 0);
+		pg.endDraw();
+
+		return pg;
 	}
 
-	public float clamp(float val, float min, float max) {
+	public static PImage rotateImage(PImage img, float angle) {
+		PGraphics pg = applet.createGraphics((int) (img.width * 1.5), (int) (img.height * 1.5));
+
+		pg.beginDraw();
+		pg.clear();
+		pg.imageMode(PApplet.CENTER);
+		pg.translate(pg.width / 2, pg.height / 2);
+		pg.rotate(angle);
+		pg.image(img, 0, 0);
+		pg.endDraw();
+
+		return pg;
+	}
+
+	public static float clamp(float val, float min, float max) {
 		if (val < min) {
 			val = min;
 		}
@@ -132,7 +146,7 @@ public class Util {
 		return val;
 	}
 
-	public float clampMin(float val, float min) {
+	public static float clampMin(float val, float min) {
 		if (val < min) {
 			val = min;
 		}
@@ -140,7 +154,7 @@ public class Util {
 		return val;
 	}
 
-	public float smoothMove(float pos, float target, float speed) {
+	public static float smoothMove(float pos, float target, float speed) {
 		return pos + (target - pos) * speed;
 	}
 
@@ -153,7 +167,7 @@ public class Util {
 	 * @param h region height
 	 * @return Whether mouse hovers region.
 	 */
-	public boolean hover(float x, float y, float w, float h) {
+	public static boolean hover(float x, float y, float w, float h) {
 		return (applet.getMouseX() > x - w / 2 && applet.getMouseX() < x + w / 2 && applet.getMouseY() > y - h / 2
 				&& applet.getMouseY() < y + h / 2);
 	}
@@ -167,16 +181,17 @@ public class Util {
 	public static float roundToNearest(float n, float x) {
 		return Math.round(n / x) * x;
 	}
-	
+
 	/**
 	 * Round a float to 'n' decimal places.
+	 * 
 	 * @param n number to round
 	 * @param d number of decimal places
 	 * @return rounded float
 	 */
 	public static float roundToNPlaces(float n, int d) {
-		  return Float.parseFloat(String.format("%." + d + "f", n));
-		}
+		return Float.parseFloat(String.format("%." + d + "f", n));
+	}
 
 	/**
 	 * Are two PVectors with range of each other? Faster than using
@@ -224,7 +239,7 @@ public class Util {
 		}
 	}
 
-	public boolean fileExists(String src) {
+	public static boolean fileExists(String src) {
 		boolean condition = false;
 		try {
 			String[] file = applet.loadStrings(src);
@@ -237,139 +252,21 @@ public class Util {
 		return condition;
 	}
 
-	// Game
-	public void loadLevel(String path) { // TODO save camera position/settings.
-		String[] script = applet.loadStrings(path);
-		String scriptD = decrypt(PApplet.join(script, "\n"));
-
-		// Parse JSON
-		JSONArray data = JSONArray.parse(scriptD);
-
-		// Clear Object Arrays
-		applet.collidableObjects.clear();
-		applet.backgroundObjects.clear();
-
-		// Create Level
-		for (int i = 0; i < data.size(); i++) {
-			JSONObject item = data.getJSONObject(i);
-
-			String type = item.getString("type");
-
-			// Read Main
-			if (i == 0) {
-				JSONArray d = item.getJSONArray("scene-dimension");
-				if (PScene.name == "MAPEDITOR") {
-					((SceneMapEditor) applet.mapEditor).worldViewportEditor.setSize();
-				}
-			} else {
-				switch (type) {
-					case "COLLISION" :
-						CollidableObject collision = new CollidableObject(applet);
-						try {
-							collision.setGraphic(item.getString("id"));
-						} catch (Exception e) {
-							collision.width = 64;
-							collision.height = 64;
-						}
-						collision.pos.x = item.getInt("x");
-						collision.pos.y = item.getInt("y");
-
-						// Append To Level
-						applet.collidableObjects.add(collision);
-						break;
-					case "BACKGROUND" :
-						BackgroundObject backgroundObject = new BackgroundObject(applet);
-						backgroundObject.setGraphic(item.getString("id"));
-						backgroundObject.pos.x = item.getInt("x");
-						backgroundObject.pos.y = item.getInt("y");
-
-						// Append To Level
-						applet.backgroundObjects.add(backgroundObject);
-						break;
-					case "OBJECT" :
-						GameObject gameObject = Tileset.getObjectClass(item.getString("id"));
-						gameObject.pos.x = item.getInt("x");
-						gameObject.pos.y = item.getInt("y");
-
-						// Append To Level
-						applet.gameObjects.add(gameObject);
-						break;
-				}
-			}
-		}
-	}
-
-	/**
-	 * Saves the level (background, game and collideable objects), encrypting the
-	 * output.
-	 * 
-	 * @param path Save location path.
-	 */
-	public void saveLevel(String path) {
-		JSONArray data = new JSONArray();
-
-		// MAIN
-		JSONObject main = new JSONObject();
-		main.setString("title", "undefined");
-		main.setString("creator", "undefined");
-		main.setString("version", "alpha 1.0.0");
-
-		// Add Main
-		data.append(main);
-
-		// Add Collisions
-		for (int i = 0; i < applet.collidableObjects.size(); i++) {
-			JSONObject item = new JSONObject();
-			item.setString("id", applet.collidableObjects.get(i).id);
-			item.setString("type", "COLLISION");
-			item.setInt("x", (int) applet.collidableObjects.get(i).pos.x);
-			item.setInt("y", (int) applet.collidableObjects.get(i).pos.y);
-			data.append(item);
-		}
-
-		// Add Background Objects
-		for (int i = 0; i < applet.backgroundObjects.size(); i++) {
-			JSONObject item = new JSONObject();
-			item.setString("id", applet.backgroundObjects.get(i).id);
-			item.setString("type", "BACKGROUND");
-			item.setInt("x", (int) applet.backgroundObjects.get(i).pos.x);
-			item.setInt("y", (int) applet.backgroundObjects.get(i).pos.y);
-			data.append(item);
-		}
-
-		// Add Game Objects
-		for (int i = 0; i < applet.gameObjects.size(); i++) {
-			applet.collidableObjects.remove(applet.gameObjects.get(i).collision);
-
-			JSONObject item = new JSONObject();
-			item.setString("id", applet.gameObjects.get(i).id);
-			item.setString("type", "OBJECT");
-			item.setInt("x", (int) applet.gameObjects.get(i).pos.x);
-			item.setInt("y", (int) applet.gameObjects.get(i).pos.y);
-			data.append(item);
-		}
-
-		// Save Level
-		saveFile(path, encrypt(data.toString()));
-	}
-
 	/**
 	 * Encrypts str (JSON) for output.
 	 * 
 	 * @param str
 	 * @return
 	 */
-	private static String encrypt(String str) {
-		if (encrypt) {
-			String output = "";
-			for (int i = 0; i < str.length(); i++) {
-				int k = PApplet.parseInt(str.charAt(i));
-				k = (k * 8) - 115; // Encrypt Key
-				output += PApplet.parseChar(k);
-			}
-			return output;
+	public static String encrypt(String str) {
+		String output = "";
+		for (int i = 0; i < str.length(); i++) {
+			int k = PApplet.parseInt(str.charAt(i));
+			k = (k * 8) - 115; // Encrypt Key
+			output += PApplet.parseChar(k);
 		}
-		return str;
+		return output;
+
 	}
 
 	/**
@@ -378,7 +275,7 @@ public class Util {
 	 * @param str
 	 * @return
 	 */
-	private static String decrypt(String str) {
+	public static String decrypt(String str) {
 		String output = "";
 		for (int i = 0; i < str.length(); i++) {
 			int k = PApplet.parseInt(str.charAt(i));

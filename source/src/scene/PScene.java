@@ -1,26 +1,25 @@
 package scene;
 
-import processing.event.MouseEvent;
 import sidescroller.PClass;
 import sidescroller.SideScroller;
 
-public class PScene extends PClass {
-
-	public static String name;
+/**
+ * TODO (possibly): methods to be called when activated & de-activated.
+ * 
+ * @author micycle1
+ *
+ */
+public abstract class PScene extends PClass {
 
 	public PScene(SideScroller a) {
 		super(a);
-
-		name = "";
 	}
 
-	public void setup() {
-	}
-	public void draw() {
-	}
+	public abstract void setup();
 
-	public void mouseWheel(MouseEvent event) {
-	}
-	public void mouseMoved() {
-	}
+	public abstract void draw();
+
+	public abstract void drawUI();
+
+	public abstract void debug();
 }

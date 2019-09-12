@@ -2,6 +2,7 @@ package objects;
 
 import processing.core.PImage;
 import processing.core.PVector;
+import scene.GameplayScene;
 import sidescroller.SideScroller;
 import sidescroller.SideScroller.debugType;
 import sidescroller.Tileset;
@@ -10,20 +11,19 @@ public class BackgroundObject extends EditableObject {
 
 	public PImage image;
 
-	public BackgroundObject(SideScroller a) {
-		super(a);
+	public BackgroundObject(SideScroller a, GameplayScene g) {
+		super(a, g);
 
 		type = type.BACKGROUND;
 	}
 
-	public BackgroundObject(SideScroller a, String id) {
-		this(a);
-
+	public BackgroundObject(SideScroller a, GameplayScene g, String id) {
+		this(a, g);
 		setGraphic(id);
 	}
 
-	public BackgroundObject(SideScroller a, String id, int x, int y) {
-		this(a);
+	public BackgroundObject(SideScroller a, GameplayScene g, String id, int x, int y) {
+		this(a, g);
 
 		pos = new PVector(x, y);
 		setGraphic(id);

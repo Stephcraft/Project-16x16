@@ -2,7 +2,7 @@ package objects;
 
 import processing.core.PImage;
 import processing.core.PVector;
-import scene.SceneMapEditor;
+import scene.GameplayScene;
 import sidescroller.PClass;
 import sidescroller.SideScroller;
 import sidescroller.Tileset;
@@ -42,23 +42,23 @@ public class EditableObject extends PClass {
 	private PImage editArrowYActive;
 
 	// Map Editor Scene
-	private SceneMapEditor scene;
+	public GameplayScene gameScene;
 
 	protected int editOffsetX;
 	protected int editOffsetY;
 
-	public EditableObject(SideScroller a) {
+	public EditableObject(SideScroller a, GameplayScene g) {
 		super(a);
 
 		pos = new PVector(0, 0);
 
-		scene = (SceneMapEditor) a.mapEditor;
+		gameScene = g;
 
 		// Get Edit Arrows
-		editArrowX = util.pg(applet.graphicsSheet.get(268, 278, 6, 5), 4);
-		editArrowY = util.pg(applet.graphicsSheet.get(275, 278, 5, 6), 4);
-		editArrowXActive = util.pg(applet.graphicsSheet.get(268, 284, 6, 5), 4);
-		editArrowYActive = util.pg(applet.graphicsSheet.get(275, 284, 5, 6), 4);
+		editArrowX = Util.pg(applet.graphicsSheet.get(268, 278, 6, 5), 4);
+		editArrowY = Util.pg(applet.graphicsSheet.get(275, 278, 5, 6), 4);
+		editArrowXActive = Util.pg(applet.graphicsSheet.get(268, 284, 6, 5), 4);
+		editArrowYActive = Util.pg(applet.graphicsSheet.get(275, 284, 5, 6), 4);
 	}
 
 	/**
@@ -128,13 +128,13 @@ public class EditableObject extends PClass {
 		// Focus Event
 		if (applet.mousePressEvent) {
 			if (mouseHover()) { // Focus Enable
-				if (scene.focusedObject == null) {
+				if (gameScene.focusedObject == null) {
 					focus = true;
-					scene.focusedObject = this;
+					gameScene.focusedObject = this;
 				}
 			} else {
 				if (focus && !mouseHoverX() && !mouseHoverY()) { // Focus Disable
-					scene.focusedObject = null;
+					gameScene.focusedObject = null;
 					focus = false;
 					focusX = false;
 					focusY = false;
@@ -151,14 +151,14 @@ public class EditableObject extends PClass {
 					focusM = false;
 					editOffsetX = (int) pos.x + 100 - applet.getMouseX();
 					editOffsetY = (int) pos.y - applet.getMouseY();
-					scene.focusedObject = this;
+					gameScene.focusedObject = this;
 				} else if (mouseHoverY()) {
 					focusY = true;
 					focusX = false;
 					focusM = false;
 					editOffsetX = (int) pos.x - applet.getMouseX();
 					editOffsetY = (int) pos.y - 100 - applet.getMouseY();
-					scene.focusedObject = this;
+					gameScene.focusedObject = this;
 				} else if (mouseHover()) {
 					focusM = true;
 					editOffsetX = (int) pos.x - applet.getMouseX();
@@ -171,14 +171,14 @@ public class EditableObject extends PClass {
 					EditableObject copy; // Duplicate Instance
 					switch (type) {
 						case COLLISION :
-							copy = new CollidableObject(applet, id, 0, 0);
+							copy = new CollidableObject(applet, gameScene, id, 0, 0);
 							copy.focus = true;
 							copy.focusX = focusX;
 							copy.focusY = focusY;
 							copy.pos = pos.copy();
 							copy.editOffsetX = editOffsetX;
 							copy.editOffsetY = editOffsetY;
-							applet.collidableObjects.add((CollidableObject) copy);
+							gameScene.collidableObjects.add((CollidableObject) copy);
 							break;
 						case OBJECT :
 							copy = Tileset.getObjectClass(id);
@@ -189,10 +189,10 @@ public class EditableObject extends PClass {
 							copy.pos.y = pos.y;
 							copy.editOffsetX = editOffsetX;
 							copy.editOffsetY = editOffsetY;
-							applet.gameObjects.add((GameObject) copy);
+							gameScene.gameObjects.add((GameObject) copy);
 							switch (id) {
 								case "MIRROR_BOX" :
-									((MirrorBoxObject) applet.gameObjects.get(applet.gameObjects.size()
+									((MirrorBoxObject) gameScene.gameObjects.get(gameScene.gameObjects.size()
 											- 1)).direction = ((MirrorBoxObject) this).direction;
 									break;
 							}
@@ -248,6 +248,6 @@ public class EditableObject extends PClass {
 		if (applet.mouseX < 400 && applet.mouseY < 100) { // Over Inventory Bar
 			return false;
 		}
-		return util.hover(pos.x, pos.y, width, height);
+		return Util.hover(pos.x, pos.y, width, height);
 	}
 }

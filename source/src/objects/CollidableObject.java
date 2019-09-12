@@ -1,6 +1,7 @@
 package objects;
 
 import processing.core.*;
+import scene.GameplayScene;
 import sidescroller.SideScroller;
 import sidescroller.SideScroller.debugType;
 import sidescroller.Tileset;
@@ -15,22 +16,22 @@ public class CollidableObject extends EditableObject {
 	private float pixelOffsetX = 0;
 	private float pixelOffsetY = 0;
 
-	public CollidableObject(SideScroller a) {
-		super(a);
+	public CollidableObject(SideScroller a, GameplayScene g) {
+		super(a, g);
 
 		flag = "";
 		type = type.COLLISION;
 		pos = new PVector(0, 0);
 	}
 
-	public CollidableObject(SideScroller a, int w, int h, int x, int y, boolean ch) {
-		this(a, w, h, x, y);
+	public CollidableObject(SideScroller a, GameplayScene g, int w, int h, int x, int y, boolean ch) {
+		this(a, g, w, h, x, y);
 
 		child = ch;
 	}
 
-	public CollidableObject(SideScroller a, int w, int h, int x, int y) {
-		this(a);
+	public CollidableObject(SideScroller a, GameplayScene g, int w, int h, int x, int y) {
+		this(a, g);
 
 		// Get From Game Graphics Image
 		pos = new PVector(x, y);
@@ -38,8 +39,8 @@ public class CollidableObject extends EditableObject {
 		height = h;
 	}
 
-	public CollidableObject(SideScroller a, String t, int x, int y) {
-		this(a);
+	public CollidableObject(SideScroller a, GameplayScene g, String t, int x, int y) {
+		this(a, g);
 
 		// Get From Game Graphics Image
 		setGraphic(t);
