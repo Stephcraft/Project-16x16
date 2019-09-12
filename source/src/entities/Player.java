@@ -146,6 +146,8 @@ public final class Player extends EditableObject {
 	 * The update method handles updating the character.
 	 */
 	public void update() {
+		// If falling, flying = true, triggering falling animation
+		// This should fix the walking of edge animation problem
 		if(pos.y > py) {
 			flying = true;
 		}
