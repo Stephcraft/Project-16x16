@@ -146,6 +146,9 @@ public final class Player extends EditableObject {
 	 * The update method handles updating the character.
 	 */
 	public void update() {
+		if(pos.y > py) {
+			flying = true;
+		}
 
 		if (!dashing) {
 			speedY += gravity * applet.deltaTime;
