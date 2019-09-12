@@ -34,10 +34,10 @@ public final class Player extends EditableObject {
 	/**
 	 * Current player sprite
 	 */
-	private PImage image;
+	private static PImage image;
 
-	private PImage lifeOn;
-	private PImage lifeOff;
+	private static PImage lifeOn;
+	private static PImage lifeOff;
 
 	private float gravity;
 
@@ -72,6 +72,12 @@ public final class Player extends EditableObject {
 	private enum ACTIONS {
 		WALK, IDLE, SQUISH, FALL, ATTACK, DASH, DASH_ATTACK
 	}
+	
+	static {
+		image = Tileset.getTile(0, 258, 14, 14, 4);
+		lifeOn = Tileset.getTile(144, 256, 9, 9, 4);
+		lifeOff = Tileset.getTile(160, 256, 9, 9, 4);
+	}
 
 	/**
 	 * Constructor
@@ -81,7 +87,6 @@ public final class Player extends EditableObject {
 	public Player(SideScroller a, GameplayScene g) {
 		
 		super(a, g);
-//		this.g = g;
 
 		pos = new PVector(100, 300);
 		gravity = 1;
@@ -100,19 +105,7 @@ public final class Player extends EditableObject {
 		height = 16 * 4;
 
 		flying = true;
-	}
-
-	/**
-	 * load any needed assets.
-	 * 
-	 * @param sheet sprite sheet as PImage.
-	 */
-	public void load(PImage sheet) {
-		image = Util.pg(sheet.get(0, 258, 14, 14), 4);
-
-		lifeOn = Util.pg(sheet.get(144, 256, 9, 9), 4);
-		lifeOff = Util.pg(sheet.get(160, 256, 9, 9), 4);
-
+		
 		setAnimation(ACTIONS.IDLE);
 	}
 

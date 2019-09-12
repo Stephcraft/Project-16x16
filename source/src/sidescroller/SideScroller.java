@@ -53,11 +53,6 @@ public class SideScroller extends PApplet {
 	private final PVector windowSize = new PVector(1280, 720); // Game window size -- to be set via options
 	private final PVector gameResolution = new PVector(1280, 720); // Game rendering resolution -- to be set
 																	// via options
-
-	// Image Resources
-	public static PImage graphicsSheet;
-	public static PImage magicSheet;
-
 	// Font Resources
 	private static PFont font_pixel;
 
@@ -70,7 +65,7 @@ public class SideScroller extends PApplet {
 	 * variable directly!
 	 */
 	public PScene currentScene;
-	private MainMenu menu; // TODO
+	private MainMenu menu;
 	private GameplayScene game;
 
 	// Events
@@ -179,7 +174,7 @@ public class SideScroller extends PApplet {
 
 		// Create scene
 		game = new GameplayScene(this);
-		menu = new MainMenu(this); // TODO
+		menu = new MainMenu(this);
 		swapScene(game);
 
 		// Camera
@@ -193,24 +188,13 @@ public class SideScroller extends PApplet {
 	}
 
 	/**
-	 * This is where any needed assets will be loaded. TODO move to Tileset class
+	 * This is where any needed assets will be loaded.
 	 */
 	private void load() {
 		Tileset.load(this);
-		// Load Font
-		font_pixel = loadFont("Assets/Font/font-pixel-48.vlw");
-
-		// Apply Text Font
-		textFont(font_pixel);
-
-		// Load Graphics Sheet
-		graphicsSheet = loadImage("Assets/Art/graphics-sheet.png");
-		magicSheet = loadImage("Assets/Art/magic.png");
-
-		// Load Options
-		Options.load();
-
-		// Create All Graphics
+		font_pixel = loadFont("Assets/Font/font-pixel-48.vlw"); // Load Font
+		textFont(font_pixel); // Apply Text Font
+		Options.load(); // Load Options
 	}
 
 	public void swapScene(PScene newScene) {
@@ -228,7 +212,7 @@ public class SideScroller extends PApplet {
 	@Override
 	public void draw() {
 
-//		surface.setTitle("Sardonyx Prealpha | " + currentScene.tool.toString() + " | " + frameCount);
+		surface.setTitle("Sardonyx Prealpha" + " | " + frameCount);
 
 		camera.hook();
 		drawBelowCamera();

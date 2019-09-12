@@ -57,10 +57,10 @@ public class EditableObject extends PClass {
 		gameScene = g;
 
 		// Get Edit Arrows
-		editArrowX = Util.pg(applet.graphicsSheet.get(268, 278, 6, 5), 4);
-		editArrowY = Util.pg(applet.graphicsSheet.get(275, 278, 5, 6), 4);
-		editArrowXActive = Util.pg(applet.graphicsSheet.get(268, 284, 6, 5), 4);
-		editArrowYActive = Util.pg(applet.graphicsSheet.get(275, 284, 5, 6), 4);
+		editArrowX = Tileset.getTile(268, 278, 6, 5, 4);
+		editArrowY = Tileset.getTile(275, 278, 5, 6, 4);
+		editArrowXActive = Tileset.getTile(268, 284, 6, 5, 4);
+		editArrowYActive = Tileset.getTile(275, 284, 5, 6, 4);
 	}
 
 	/**
