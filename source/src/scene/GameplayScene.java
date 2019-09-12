@@ -1,5 +1,6 @@
 package scene;
 
+import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.Iterator;
 
@@ -92,10 +93,10 @@ public class GameplayScene extends PScene {
 
 	public GameplayScene(SideScroller a) {
 		super(a);
+		setup();
 	}
 
-	@Override
-	public void setup() {
+	private void setup() {
 
 		// Init Game World Objects Arrays
 		collidableObjects = new ArrayList<CollidableObject>();
@@ -117,21 +118,21 @@ public class GameplayScene extends PScene {
 		worldViewportEditor = new WorldViewportEditor(applet);
 
 		// Get Slots Graphics
-		slot = Util.pg(SideScroller.graphicsSheet.get(289, 256, 20, 21), 4);
-		slotEditor = Util.pg(SideScroller.graphicsSheet.get(310, 256, 20, 21), 4);
+		slot = Tileset.getTile(289, 256, 20, 21, 4);
+		slotEditor = Tileset.getTile(310, 256, 20, 21, 4);
 
 		// Get Icon Graphics
-		icon_eye = Util.pg(SideScroller.graphicsSheet.get(267, 302, 11, 8), 4);
-		icon_arrow = Util.pg(SideScroller.graphicsSheet.get(279, 301, 9, 9), 4);
-		icon_inventory = Util.pg(SideScroller.graphicsSheet.get(289, 301, 9, 9), 4);
-		icon_play = Util.pg(SideScroller.graphicsSheet.get(298, 301, 9, 9), 4);
-		icon_save = Util.pg(SideScroller.graphicsSheet.get(307, 301, 9, 9), 4);
+		icon_eye = Tileset.getTile(267, 302, 11, 8, 4);
+		icon_arrow = Tileset.getTile(279, 301, 9, 9, 4);
+		icon_inventory = Tileset.getTile(289, 301, 9, 9, 4);
+		icon_play = Tileset.getTile(298, 301, 9, 9, 4);
+		icon_save = Tileset.getTile(307, 301, 9, 9, 4);
 
-		icon_eyeActive = Util.pg(SideScroller.graphicsSheet.get(267, 292, 11, 8), 4);
-		icon_arrowActive = Util.pg(SideScroller.graphicsSheet.get(279, 291, 9, 9), 4);
-		icon_inventoryActive = Util.pg(SideScroller.graphicsSheet.get(289, 291, 9, 9), 4);
-		icon_playActive = Util.pg(SideScroller.graphicsSheet.get(298, 291, 9, 9), 4);
-		icon_saveActive = Util.pg(SideScroller.graphicsSheet.get(307, 291, 9, 9), 4);
+		icon_eyeActive = Tileset.getTile(267, 292, 11, 8, 4);
+		icon_arrowActive = Tileset.getTile(279, 291, 9, 9, 4);
+		icon_inventoryActive = Tileset.getTile(289, 291, 9, 9, 4);
+		icon_playActive = Tileset.getTile(298, 291, 9, 9, 4);
+		icon_saveActive = Tileset.getTile(307, 291, 9, 9, 4);
 
 		// Init Window
 		window_saveLevel = new SaveLevelWindow(applet, this);
@@ -153,7 +154,6 @@ public class GameplayScene extends PScene {
 
 		// Init Player
 		player = new Player(applet, this);
-		player.load(SideScroller.graphicsSheet);
 		player.pos.x = 0; // // TODO set to spawn loc
 		player.pos.y = -100; // // TODO set to spawn loc
 
@@ -709,8 +709,7 @@ public class GameplayScene extends PScene {
 						collision.pos.x = item.getInt("x");
 						collision.pos.y = item.getInt("y");
 
-						// Append To Level
-						collidableObjects.add(collision);
+						collidableObjects.add(collision); // Append To Level
 						break;
 					case "BACKGROUND" :
 						BackgroundObject backgroundObject = new BackgroundObject(applet, this);
@@ -718,16 +717,21 @@ public class GameplayScene extends PScene {
 						backgroundObject.pos.x = item.getInt("x");
 						backgroundObject.pos.y = item.getInt("y");
 
-						// Append To Level
-						backgroundObjects.add(backgroundObject);
+						backgroundObjects.add(backgroundObject); // Append To Level
 						break;
 					case "OBJECT" :
-						GameObject gameObject = Tileset.getObjectClass(item.getString("id"));
-						gameObject.pos.x = item.getInt("x");
-						gameObject.pos.y = item.getInt("y");
+						try {
+							Class<? extends GameObject> gameObjectClass = Tileset.getObjectClass(item.getString("id"));
+							Constructor<?> ctor = gameObjectClass.getDeclaredConstructors()[0];
+							GameObject gameObject = (GameObject) ctor.newInstance(new Object[] { applet, this });
+							gameObject.pos.x = item.getInt("x");
+							gameObject.pos.y = item.getInt("y");
 
-						// Append To Level
-						gameObjects.add(gameObject);
+							gameObjects.add(gameObject); // Append To Level
+							break;
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
 						break;
 				}
 			}

@@ -6,16 +6,15 @@ import java.util.HashMap;
 import objects.GameObject;
 import objects.MagicSourceObject;
 import objects.MirrorBoxObject;
+
 import processing.core.PApplet;
 import processing.core.PGraphics;
 import processing.core.PImage;
 import processing.data.JSONObject;
-import scene.GameplayScene;
 import processing.data.JSONArray;
 
 /**
- * Tileset is a static class that loads and provides PImages
- * TODO deprecate SideScroller.graphicsSheet and uses thereof.
+ * Tileset is a static class that loads and provides PImages.
  */
 public class Tileset {
 
@@ -61,6 +60,20 @@ public class Tileset {
 	public static PImage getTile(int x, int y, int w, int h)
 	{
 		return graphicsSheet.get(x, y, w, h);
+	}
+	
+	/**
+	 * Get and scale at once (many graphics are scaled x4).
+	 * @param x
+	 * @param y
+	 * @param w
+	 * @param h
+	 * @param scale
+	 * @return
+	 * @author micycle1
+	 */
+	public static PImage getTile(int x, int y, int w, int h, int scale) {
+		return resize(graphicsSheet.get(x, y, w, h), scale);
 	}
 		
 	public static String getTileName(int id)
@@ -150,12 +163,24 @@ public class Tileset {
 		return images;
 	}
 	
-	public static GameObject getObjectClass(String name) { // TODO unsafe casts
-		if (name.equals("MAGIC_SOURCE"))
-			return new MagicSourceObject(applet, (GameplayScene) applet.currentScene);
-		if (name.equals("MIRROR_BOX"))
-			return new MirrorBoxObject(applet, (GameplayScene) applet.currentScene);
-		return new GameObject(applet, (GameplayScene) applet.currentScene);
+	/**
+	 * Returns the class that is associated with the input string (eg.
+	 * "MAGIC_SOURCE" --> MagicSourceObject.java). This class object is later used
+	 * to create an instance of the class using reflection. This method is used in
+	 * loading level info from JSON (ie. constructing Java objects -- map objects --
+	 * from their JSON string representation).
+	 * 
+	 * @author micycle1
+	 */
+	public static Class<? extends GameObject> getObjectClass(String name) {
+		switch (name) {
+			case "MAGIC_SOURCE" :
+				return MagicSourceObject.class;
+			case "MIRROR_BOX" :
+				return MirrorBoxObject.class;
+			default :
+				return GameObject.class;
+		}
 	}
 	
 	private static void loadJSON() {
@@ -173,14 +198,14 @@ public class Tileset {
 							       (int) (tile.getFloat("y") * TILESETSIZE),
 								   tile.getInt("w"), tile.getInt("h"));
 			
-			image = pixelate(image, SCALE);
+			image = resize(image, SCALE);
 			
 			tileRef.put(name, i);
 			loadedTiles.add(image);
 		}
 	}
 	
-	private static PImage pixelate(PImage img, int scale) {
+	private static PImage resize(PImage img, int scale) {
 	    PGraphics pg = applet.createGraphics(img.width * SCALE, img.height * SCALE);
 	    pg.noSmooth();
 	    pg.beginDraw();

@@ -5,20 +5,11 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.nio.charset.StandardCharsets;
 
-import objects.BackgroundObject;
-import objects.CollidableObject;
-import objects.GameObject;
-
 import processing.core.PApplet;
 import processing.core.PConstants;
 import processing.core.PGraphics;
 import processing.core.PImage;
 import processing.core.PVector;
-import processing.data.JSONArray;
-import processing.data.JSONObject;
-
-import scene.PScene;
-import scene.GameplayScene;
 
 public final class Util {
 
@@ -38,12 +29,12 @@ public final class Util {
 	}
 
 	/**
-	 * Note: Graphics in Project-16x16 are generally scaled by x4 at load, so you
-	 * probably want to call this method with scl=4, if you're loading game graphics
-	 * with it.
+	 * Scales a PImage object.
 	 * 
 	 * @param img
 	 * @param scl Scale (probably set to 4).
+	 * @deprecated Use {@link Tileset#getTile(int, int, int, int, int) getTile() to
+	 *             load and scale game graphics}.
 	 * @return
 	 */
 	public static PImage pg(PImage img, float scl) {
@@ -141,14 +132,6 @@ public final class Util {
 		}
 		if (val > max) {
 			val = max;
-		}
-
-		return val;
-	}
-
-	public static float clampMin(float val, float min) {
-		if (val < min) {
-			val = min;
 		}
 
 		return val;
