@@ -1,5 +1,6 @@
 package scene;
 
+import processing.event.MouseEvent;
 import sidescroller.SideScroller;
 import ui.Button;
 
@@ -74,4 +75,8 @@ public final class MainMenu extends PScene {
 			System.exit(0);
 		}
 	}
+    @Override
+    void mouseReleased(MouseEvent e) {
+    	update();
+    }
 }

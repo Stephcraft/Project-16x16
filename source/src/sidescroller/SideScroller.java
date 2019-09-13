@@ -353,11 +353,6 @@ public class SideScroller extends PApplet {
 	@Override
 	public void mouseReleased() {
 		mouseReleaseEvent = true;
-		if(currentScene == menu) {
-			menu.update();
-		} else if(currentScene == pmenu) {
-			pmenu.update();
-		}
 	}
 
 	/**

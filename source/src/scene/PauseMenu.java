@@ -5,6 +5,7 @@ package scene;
 
 import sidescroller.SideScroller;
 import ui.Button;
+import processing.event.MouseEvent;
 
 /**
  * @author Quillbert182
@@ -77,5 +78,9 @@ public class PauseMenu extends PScene {
 			game.debug = SideScroller.debugType.OFF;
 		}
 	}
-
+	
+    @Override
+    void mouseReleased(MouseEvent e) {
+    	update();
+    }
 }
