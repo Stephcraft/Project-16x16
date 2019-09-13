@@ -14,7 +14,7 @@ public class Button extends PClass {
 	private int x;
 	private int y;
 	
-	int textSize = 20;
+	private int textSize = 20;
 
 	private boolean focus;
 	private boolean press;

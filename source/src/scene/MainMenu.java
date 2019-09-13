@@ -10,16 +10,14 @@ import ui.Button;
  */
 public final class MainMenu extends PScene {
 
-	Button pressStart;
-	Button pressQuit;
-	Button pressSettings; // Doesn't yet do anything
+	public Button pressStart;
+	public Button pressQuit;
+	public Button pressSettings; // TODO add settings menu
 	
-	SideScroller game;
+	private SideScroller game;
 	
 	public MainMenu(SideScroller a) {
-		super(a);
-		// TODO Auto-generated constructor stub
-		
+		super(a);		
 		game = a;
 		
 		pressStart = new Button(a);
@@ -48,8 +46,7 @@ public final class MainMenu extends PScene {
 
 	@Override
 	public void drawUI() {
-		background(0);
-		//applet.rect(50, 50, 50, 50);
+		background(29, 33, 45);
 		pressStart.manDisplay();
 		pressSettings.manDisplay();
 		pressQuit.manDisplay();
