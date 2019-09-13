@@ -22,6 +22,7 @@ import processing.javafx.PSurfaceFX;
 import scene.PScene;
 import scene.GameplayScene;
 import scene.MainMenu;
+import scene.PauseMenu;
 
 /**
  * <h1>SideScroller Class</h1>
@@ -67,7 +68,8 @@ public class SideScroller extends PApplet {
 	public PScene currentScene;
 	private MainMenu menu;
 	private GameplayScene game;
-
+	private PauseMenu pmenu;
+	
 	// Events
 	private HashSet<Integer> keys;
 	public boolean keyPressEvent;
@@ -175,7 +177,8 @@ public class SideScroller extends PApplet {
 		// Create scene
 		game = new GameplayScene(this);
 		menu = new MainMenu(this);
-		swapScene(game);
+		pmenu = new PauseMenu(this);
+		swapScene(menu);
 
 		// Camera
 		camera = new Camera(this);
@@ -324,7 +327,7 @@ public class SideScroller extends PApplet {
 						loop();
 						break;
 					case 27 : // ESC - Pause menu here
-						swapScene(currentScene == menu ? game : menu);
+						swapScene(currentScene == pmenu ? game : pmenu);
 						break;
 					case 9 : // TAB
 						debug = debug.next();
