@@ -48,6 +48,23 @@ public class Button extends PClass {
 		intW();
 		intH();
 	}
+	
+	//Display with custom size
+	
+	public void manDisplay() { 
+		applet.strokeWeight(4);
+		displayColors();
+		applet.pushMatrix();
+		displayTextColors();
+		applet.popMatrix();
+	}
+	
+	//Only works with manDisplay
+	
+	public void setSize(int w, int h) {
+		width = w;
+		height = h;
+	}
 
 	/**
 	 * Updates the button
@@ -167,6 +184,7 @@ public class Button extends PClass {
 	public void setBlocked(boolean blocked) {
 		this.blocked = blocked;
 	}
+	
 	public int getX() {
 		return x;
 	}
