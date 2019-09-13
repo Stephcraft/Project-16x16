@@ -4,7 +4,7 @@ import java.util.HashSet;
 
 import components.AnimationComponent;
 import dm.core.DM;
-
+import entities.Player;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.transform.Scale;
@@ -12,7 +12,6 @@ import javafx.stage.Stage;
 
 import processing.core.PApplet;
 import processing.core.PFont;
-import processing.core.PImage;
 import processing.core.PSurface;
 import processing.core.PVector;
 import processing.event.KeyEvent;
@@ -134,7 +133,7 @@ public class SideScroller extends PApplet {
 	@Override
 	public void noSmooth() {
 		try {
-			canvas.getGraphicsContext2D().setImageSmoothing(false);
+//			canvas.getGraphicsContext2D().setImageSmoothing(false);
 		} catch (java.lang.NoSuchMethodError e) {
 		}
 	}
@@ -435,7 +434,7 @@ public class SideScroller extends PApplet {
 		final int yOffset = 1;
 		final int labelPadding = 225; // label -x offset (from screen width)
 		final int ip = 1; // infoPadding -xoffset (from screen width)
-		final var player = game.getPlayer();
+		final Player player = game.getPlayer();
 		fill(0, 50);
 		noStroke();
 		rectMode(CORNER);

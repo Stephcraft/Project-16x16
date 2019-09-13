@@ -6,7 +6,7 @@ import sidescroller.PClass;
 import sidescroller.SideScroller;
 
 /**
- * 
+ * Scenes are a way of encapsulating. 
  * @author micycle1
  *
  */
@@ -24,9 +24,7 @@ public abstract class PScene extends PClass {
 	public PScene(SideScroller a) {
 		super(a);
 	}
-
-//	public abstract void setup();
-
+	
 	/**
 	 * Code here is affected by camera.
 	 */
@@ -40,7 +38,8 @@ public abstract class PScene extends PClass {
 	/**
 	 * Code here called if dev debug mode is ON (affected by camera).
 	 */
-	public abstract void debug();
+	public void debug() {
+	}
 
 	/**
 	 * Called when scene is made active (set-up).
@@ -117,7 +116,7 @@ public abstract class PScene extends PClass {
 	 * Therefore write any code here that should be executed when the mouse is
 	 * <b>clicked</b>. (a press and release in quick succession).
 	 */
-	protected void mouseClicked(MouseEvent e) {
+	void mouseClicked(MouseEvent e) {
 	}
 
 	/**
@@ -170,7 +169,7 @@ public abstract class PScene extends PClass {
 	 * Therefore write any code here that should be executed when a key is
 	 * <b>pressed</b>.
 	 */
-	protected void keyPressed(KeyEvent e) {
+	void keyPressed(KeyEvent e) {
 	}
 
 	/**
@@ -180,6 +179,6 @@ public abstract class PScene extends PClass {
 	 * Therefore write any code here that should be executed when a key is
 	 * <b>released</b>.
 	 */
-	protected void keyReleased(KeyEvent e) {
+	void keyReleased(KeyEvent e) {
 	}
 }

@@ -1,24 +1,27 @@
 # Project-16x16
-Looking for a cool project ? well here is a good one !
-Project 16x16 is a 2D Platformer game made using java/processing. **You** are able to contribute to this project. The goal is to make a cool game in processing together, that includes **You**. Plus, if you are not a programmer, well this is a game so, we also need cool ideas for gameplay mechanics and story, level designers, also people who can do soundtracks/audio, and artists ! We are already using the amazing industrial tileset made by [0x72](https://0x72.itch.io/16x16-industrial-tileset), **but!** Additional art can be added like UI designs, effects and **epic bosses for epic boss fights** ;)
+Project 16x16 is a 2D Platformer game made using the [Processing](https://processing.org) library for Java. 
 
-## How do I start!
-Wow!! This project seems **EPIC!** Right? And its made in processing, like *whhhooaaahht* ! So how do I get in, how do I start? Simple! 
+We invite you to **contribute to this project** -- the goal is to make a cool game in Processing together (that includes **you**). 
 
-### Programmers
-1. Join the [discord server](https://discord.gg/zDJSCqd)
-2. Dont know processing? [their official website](https://processing.org)
-3. Still dont know processing? [Epic processing tutorials by the CodingTrain on YouTube](https://www.youtube.com/watch?v=2VLaIr5Ckbs&list=PLRqwX-V7Uu6ZYJC7L-r6rX6utt6wwJCyi)
-4. Now you should know processing, but maybe you dont know the Eclipse IDE, [tutorial here](https://processing.org/tutorials/eclipse/)
-5. Okay, now you are ready to setup the project in eclipse, [read this wiki](https://github.com/Stephcraft/Project-16x16/wiki/Detail)
-7. Have fun coding and meeting other contributors on discord :D
+If you are not a programmer, you can still contribute: we need ideas for gameplay mechanics and story, level designers, soundtracks/audio, and artists! We are already using the amazing industrial tileset made by [0x72](https://0x72.itch.io/16x16-industrial-tileset) **but** it's limited: additional art like UI designs, effects and **epic bosses for epic boss fights** is also needed!
 
-### Artist, Sound designer, Ideas
-* Join the [discord server](https://discord.gg/zDJSCqd)
-* Write you ideas in the folder `idea` in the text file format of your choice, for exemple: `.md`, `.txt` or `.docx`
+## How do I start?
+Wow!! This project seems **EPIC!** Right? And its made in Processing, like *whhhooaaahht* ! So, how do I get in? How do I start?
+
+### Everybody
+* Join the [Discord server](https://discord.gg/zDJSCqd) -- this is where anything and everything (not just code) relating to development is discussed.
+
+#### Programmers
+1. Read about [Processing](https://processing.org) (if you haven't already) -- we also recommend the video tutorials [here](https://www.youtube.com/watch?v=2VLaIr5Ckbs&list=PLRqwX-V7Uu6ZYJC7L-r6rX6utt6wwJCyi).
+2. See [`CONTRIBUTING.md`](https://github.com/Stephcraft/Project-16x16/blob/development/CONTRIBUTING.md) -- this will explain how to get started and delve into the code.
+
+#### Artists, Sound designers, Ideas
+* Write your ideas in the repository folder `idea` in the text file format of your choice, for exemple: `.md`, `.txt` or `.docx` (or share on Discord).
+
+---
 
 ## This is the final result we are aiming for
-Art by 0x72, more [here](https://0x72.itch.io/16x16-industrial-tileset)
+Art by 0x72 (more [here](https://0x72.itch.io/16x16-industrial-tileset)).
 
 ![image](https://img.itch.zone/aW1hZ2UvMTYyMzY0Lzc3MzkzMy5naWY=/794x1000/K7WB6P.gif) 
 
