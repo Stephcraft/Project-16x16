@@ -13,6 +13,8 @@ public class Button extends PClass {
 	private String text;
 	private int x;
 	private int y;
+	
+	int textSize = 20;
 
 	private boolean focus;
 	private boolean press;
@@ -109,7 +111,7 @@ public class Button extends PClass {
 			applet.fill(colorValues[4]);
 		}
 		applet.textAlign(CENTER, CENTER);
-		applet.textSize(20);
+		applet.textSize(textSize);
 		applet.text(text, x, y);
 	}
 
@@ -163,6 +165,11 @@ public class Button extends PClass {
 		return text;
 	}
 
+	// Sets size of text
+	public void setTextSize(int size) {
+		textSize = size;
+	}
+	
 	/**
 	 * Sets the position for the button
 	 * 

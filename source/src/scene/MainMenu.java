@@ -24,14 +24,17 @@ public final class MainMenu extends PScene {
 		pressStart.setText("Start Game");
 		pressStart.setPosition(applet.width/2, applet.height/2-150);
 		pressStart.setSize(300, 100);
+		pressStart.setTextSize(40);
 		
 		pressSettings.setText("Settings");
 		pressSettings.setPosition(applet.width/2, applet.height/2);
 		pressSettings.setSize(300, 100);
+		pressSettings.setTextSize(40);
 		
 		pressQuit.setText("Quit Game");
 		pressQuit.setPosition(applet.width/2, applet.height/2 + 150);
 		pressQuit.setSize(300, 100);
+		pressQuit.setTextSize(40);
 	}
 
 	@Override
