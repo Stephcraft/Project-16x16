@@ -45,7 +45,7 @@ public class SideScroller extends PApplet {
 		}
 	}
 
-	public debugType debug = debugType.ALL;
+	public debugType debug = debugType.OFF;
 
 	public static final boolean SNAP = true; // snap objects to grid when moving; located here for ease of access
 	public static int snapSize;
@@ -67,7 +67,7 @@ public class SideScroller extends PApplet {
 	 */
 	public PScene currentScene;
 	private MainMenu menu;
-	private GameplayScene game;
+	public GameplayScene game;
 	private PauseMenu pmenu;
 	
 	// Events
@@ -328,6 +328,7 @@ public class SideScroller extends PApplet {
 						break;
 					case 27 : // ESC - Pause menu here
 						swapScene(currentScene == pmenu ? game : pmenu);
+						debug = currentScene == pmenu ? debugType.OFF : debugType.ALL;
 						break;
 					case 9 : // TAB
 						debug = debug.next();
@@ -352,6 +353,9 @@ public class SideScroller extends PApplet {
 	@Override
 	public void mouseReleased() {
 		mouseReleaseEvent = true;
+		if(currentScene == menu) {
+			menu.update();
+		}
 	}
 
 	/**
