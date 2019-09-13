@@ -14,9 +14,14 @@ public final class MainMenu extends PScene {
 	Button pressQuit;
 	Button pressSettings; // Doesn't yet do anything
 	
+	SideScroller game;
+	
 	public MainMenu(SideScroller a) {
 		super(a);
 		// TODO Auto-generated constructor stub
+		
+		game = a;
+		
 		pressStart = new Button(a);
 		pressQuit = new Button(a);
 		pressSettings = new Button(a);
@@ -53,5 +58,23 @@ public final class MainMenu extends PScene {
 	@Override
 	public void debug() {
 		// TODO Auto-generated method stub
+	}
+	
+	public void update() {
+		pressStart.update();
+		if(pressStart.event()) {
+			game.swapScene(game.game);
+			game.debug = SideScroller.debugType.ALL;
+		}
+		
+		pressSettings.update();
+		if(pressSettings.event()) {
+			
+		}
+		
+		pressQuit.update();
+		if(pressQuit.event()) {
+			System.exit(0);
+		}
 	}
 }
