@@ -16,8 +16,12 @@ public class PauseMenu extends PScene {
 	public Button pressMenu;	//Retruns to main menu
 	public Button pressSettings; //TODO add settings menu
 	
+	private SideScroller game;
+	
 	public PauseMenu(SideScroller a) {
 		super(a);
+		game = a;
+		
 		pressResume = new Button(a);
 		pressSettings = new Button(a);
 		pressMenu = new Button(a);
@@ -40,13 +44,11 @@ public class PauseMenu extends PScene {
 
 	@Override
 	public void draw() {
-		// TODO Auto-generated method stub
 
 	}
 
 	@Override
 	public void drawUI() {
-		// TODO Auto-generated method stub
 		background(29, 33, 45);
 		pressResume.manDisplay();
 		pressSettings.manDisplay();
@@ -55,8 +57,25 @@ public class PauseMenu extends PScene {
 
 	@Override
 	public void debug() {
-		// TODO Auto-generated method stub
-
+	}
+	
+	public void update() {
+		pressResume.update();
+		if(pressResume.event()) {
+			game.swapScene(game.game);
+			game.debug = SideScroller.debugType.ALL;
+		}
+		
+		pressSettings.update();
+		if(pressSettings.event()) {
+			
+		}
+		
+		pressMenu.update();
+		if(pressMenu.event()) {
+			game.swapScene(game.menu);
+			game.debug = SideScroller.debugType.OFF;
+		}
 	}
 
 }

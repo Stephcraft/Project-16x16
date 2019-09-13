@@ -66,7 +66,7 @@ public class SideScroller extends PApplet {
 	 * variable directly!
 	 */
 	public PScene currentScene;
-	private MainMenu menu;
+	public MainMenu menu;
 	public GameplayScene game;
 	private PauseMenu pmenu;
 	
@@ -355,6 +355,8 @@ public class SideScroller extends PApplet {
 		mouseReleaseEvent = true;
 		if(currentScene == menu) {
 			menu.update();
+		} else if(currentScene == pmenu) {
+			pmenu.update();
 		}
 	}
 
