@@ -40,9 +40,10 @@ public final class MainMenu extends PScene {
 		pressQuit.setSize(300, 100);
 		pressQuit.setTextSize(40);
 	}
-
+	
 	@Override
 	public void draw() {
+		// TODO Auto-generated method stub
 	}
 
 	@Override
@@ -52,13 +53,8 @@ public final class MainMenu extends PScene {
 		pressSettings.manDisplay();
 		pressQuit.manDisplay();
 	}
-
-	@Override
-	public void debug() {
-		// TODO Auto-generated method stub
-	}
 	
-	public void update() {
+	private void update() {
 		pressStart.update();
 		if(pressStart.hover()) {
 			game.swapScene(game.game);
@@ -75,6 +71,7 @@ public final class MainMenu extends PScene {
 			System.exit(0);
 		}
 	}
+	
     @Override
     void mouseReleased(MouseEvent e) {
     	update();

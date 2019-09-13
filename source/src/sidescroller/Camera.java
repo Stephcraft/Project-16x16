@@ -486,10 +486,10 @@ public final class Camera extends ZoomPan {
 	 */
 	@Override
 	public PVector getMouseCoord() {
-		final var theta = Util.angleBetween(super.getMouseCoord(), logicalPosition) - rotation;
-		final var eDist = PVector.dist(super.getMouseCoord(), logicalPosition);
-		final var xReal = logicalPosition.x + eDist * (cos(theta));
-		final var yReal = logicalPosition.y + eDist * (sin(theta));
+		final float theta = Util.angleBetween(super.getMouseCoord(), logicalPosition) - rotation;
+		final float eDist = PVector.dist(super.getMouseCoord(), logicalPosition);
+		final float xReal = logicalPosition.x + eDist * (cos(theta));
+		final float yReal = logicalPosition.y + eDist * (sin(theta));
 
 		return new PVector(xReal, yReal);
 	}
