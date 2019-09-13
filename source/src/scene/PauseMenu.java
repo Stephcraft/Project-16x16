@@ -62,18 +62,18 @@ public class PauseMenu extends PScene {
 	
 	public void update() {
 		pressResume.update();
-		if(pressResume.event()) {
+		if(pressResume.hover()) {
 			game.swapScene(game.game);
 			game.debug = SideScroller.debugType.ALL;
 		}
 		
 		pressSettings.update();
-		if(pressSettings.event()) {
+		if(pressSettings.hover()) {
 			
 		}
 		
 		pressMenu.update();
-		if(pressMenu.event()) {
+		if(pressMenu.hover()) {
 			game.swapScene(game.menu);
 			game.debug = SideScroller.debugType.OFF;
 		}
