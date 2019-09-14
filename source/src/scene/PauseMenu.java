@@ -4,7 +4,9 @@
 package scene;
 
 import sidescroller.SideScroller;
+import sidescroller.Util;
 import ui.Button;
+import processing.core.PImage;
 import processing.event.MouseEvent;
 
 /**
@@ -18,6 +20,7 @@ public class PauseMenu extends PScene {
 	public Button pressSettings; //TODO add settings menu
 	
 	private SideScroller game;
+	private PImage cache;
 	
 	public PauseMenu(SideScroller a) {
 		super(a);
@@ -47,10 +50,17 @@ public class PauseMenu extends PScene {
 	public void draw() {
 
 	}
+	
+	@Override
+	public void switchTo() {
+		super.switchTo();
+		cache = applet.get(); // when game is paused, cache the game screen.
+		cache = Util.blur(cache, 3, 2); // blur game screen
+	}
 
 	@Override
 	public void drawUI() {
-		background(29, 33, 45);
+		applet.image(cache, applet.width/2, applet.height/2); // draw cached & blurred game
 		pressResume.manDisplay();
 		pressSettings.manDisplay();
 		pressMenu.manDisplay();

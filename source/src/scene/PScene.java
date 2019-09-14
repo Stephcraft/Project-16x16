@@ -42,18 +42,20 @@ public abstract class PScene extends PClass {
 	}
 
 	/**
-	 * Called when scene is made active (set-up).
+	 * Called when scene is made active (set-up). If you @Override this method,
+	 * ensure you still call super.switchTo().
 	 */
-	public final void switchTo() {
+	public void switchTo() {
 		applet.registerMethod("keyEvent", this);
 		applet.registerMethod("mouseEvent", this);
 		registered = true;
 	}
 
 	/**
-	 * Called when the scene was active but another scene made active (tidy-up).
+	 * Called when the scene was active but another scene made active (tidy-up). If
+	 * you @Override this method, ensure you still call super.switchFrom().
 	 */
-	public final void switchFrom() {
+	public void switchFrom() {
 		if (registered) {
 			applet.unregisterMethod("keyEvent", this);
 			applet.unregisterMethod("mouseEvent", this);

@@ -46,17 +46,11 @@ public final class Util {
 		return pg.get();
 	}
 
-	public static PImage blur(PImage img, float b) {
-		PGraphics pg = applet.createGraphics(img.width, img.height);
-
-		pg.noSmooth();
-		pg.beginDraw();
-		pg.clear();
-		pg.image(img, 0, 0, img.width, img.height);
-		pg.filter(PConstants.BLUR, b);
-		pg.endDraw();
-
-		return pg.get();
+	/**
+	 * @see {@link BlurUtils#blurImage(PImage, int, int) blurImage()}.
+	 */
+	public static PImage blur(PImage img, int radius, int iterations) {
+		return BlurUtils.blurImage(img, radius, iterations);
 	}
 
 	public static PImage warp(PImage source, float waveAmplitude, float numWaves) {
@@ -266,5 +260,185 @@ public final class Util {
 			output += PApplet.parseChar(k);
 		}
 		return output.replaceAll("" + PApplet.parseChar(8202), "\n").replaceAll("" + PApplet.parseChar(8201), "\t");
+	}
+}
+
+/**
+ * A simple set of software blur utilities for mobile applications.
+ * https://gist.github.com/mattdesl/4383372
+ * 
+ * @author davedes, blur algorithm by Romain Guy
+ * @author micycle1 -- PImage integration.
+ */
+final class BlurUtils {
+	/*
+	 * Copyright (c) 2007, Romain Guy All rights reserved.
+	 * 
+	 * Redistribution and use in source and binary forms, with or without
+	 * modification, are permitted provided that the following conditions are met:
+	 * 
+	 * * Redistributions of source code must retain the above copyright notice, this
+	 * list of conditions and the following disclaimer. * Redistributions in binary
+	 * form must reproduce the above copyright notice, this list of conditions and
+	 * the following disclaimer in the documentation and/or other materials provided
+	 * with the distribution. * Neither the name of the TimingFramework project nor
+	 * the names of its contributors may be used to endorse or promote products
+	 * derived from this software without specific prior written permission.
+	 * 
+	 * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+	 * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+	 * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+	 * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
+	 * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+	 * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+	 * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+	 * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+	 * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+	 * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+	 * POSSIBILITY OF SUCH DAMAGE.
+	 */
+	/**
+	 * <p>
+	 * Blurs the source pixels into the destination pixels. The force of the blur is
+	 * specified by the radius which must be greater than 0.
+	 * </p>
+	 * <p>
+	 * The source and destination pixels arrays are expected to be in the RGBA
+	 * format.
+	 * </p>
+	 * 
+	 * @param srcPixels the source pixels
+	 * @param dstPixels the destination pixels
+	 * @param width     the width of the source picture
+	 * @param height    the height of the source picture
+	 * @param radius    the radius of the blur effect
+	 * @author Romain Guy <romain.guy@mac.com>
+	 */
+	private static void blurPass(int[] srcPixels, int[] dstPixels, int width, int height, int radius) {
+		final int windowSize = radius * 2 + 1;
+		final int radiusPlusOne = radius + 1;
+
+		int sumRed;
+		int sumGreen;
+		int sumBlue;
+		int sumAlpha;
+
+		int srcIndex = 0;
+		int dstIndex;
+		int pixel;
+
+		int[] sumLookupTable = new int[256 * windowSize];
+		for (int i = 0; i < sumLookupTable.length; i++) {
+			sumLookupTable[i] = i / windowSize;
+		}
+
+		int[] indexLookupTable = new int[radiusPlusOne];
+		if (radius < width) {
+			for (int i = 0; i < indexLookupTable.length; i++) {
+				indexLookupTable[i] = i;
+			}
+		} else {
+			for (int i = 0; i < width; i++) {
+				indexLookupTable[i] = i;
+			}
+			for (int i = width; i < indexLookupTable.length; i++) {
+				indexLookupTable[i] = width - 1;
+			}
+		}
+
+		for (int y = 0; y < height; y++) {
+			sumAlpha = sumRed = sumGreen = sumBlue = 0;
+			dstIndex = y;
+
+			pixel = srcPixels[srcIndex];
+			sumRed += radiusPlusOne * ((pixel >> 24) & 0xFF);
+			sumGreen += radiusPlusOne * ((pixel >> 16) & 0xFF);
+			sumBlue += radiusPlusOne * ((pixel >> 8) & 0xFF);
+			sumAlpha += radiusPlusOne * (pixel & 0xFF);
+
+			for (int i = 1; i <= radius; i++) {
+				pixel = srcPixels[srcIndex + indexLookupTable[i]];
+				sumRed += (pixel >> 24) & 0xFF;
+				sumGreen += (pixel >> 16) & 0xFF;
+				sumBlue += (pixel >> 8) & 0xFF;
+				sumAlpha += pixel & 0xFF;
+			}
+
+			for (int x = 0; x < width; x++) {
+				dstPixels[dstIndex] = sumLookupTable[sumRed] << 24 | sumLookupTable[sumGreen] << 16
+						| sumLookupTable[sumBlue] << 8 | sumLookupTable[sumAlpha];
+				dstIndex += height;
+
+				int nextPixelIndex = x + radiusPlusOne;
+				if (nextPixelIndex >= width) {
+					nextPixelIndex = width - 1;
+				}
+
+				int previousPixelIndex = x - radius;
+				if (previousPixelIndex < 0) {
+					previousPixelIndex = 0;
+				}
+
+				int nextPixel = srcPixels[srcIndex + nextPixelIndex];
+				int previousPixel = srcPixels[srcIndex + previousPixelIndex];
+
+				sumRed += (nextPixel >> 24) & 0xFF;
+				sumRed -= (previousPixel >> 24) & 0xFF;
+
+				sumGreen += (nextPixel >> 16) & 0xFF;
+				sumGreen -= (previousPixel >> 16) & 0xFF;
+
+				sumBlue += (nextPixel >> 8) & 0xFF;
+				sumBlue -= (previousPixel >> 8) & 0xFF;
+
+				sumAlpha += nextPixel & 0xFF;
+				sumAlpha -= previousPixel & 0xFF;
+			}
+
+			srcIndex += width;
+		}
+	}
+
+	/**
+	 * Blurs (in both horizontal and vertical directions) the specified RGBA image
+	 * with the given radius and iterations.
+	 * 
+	 * @param inputRGBA  the image pixels, in RGBA format
+	 * @param width      the width of the image in pixels
+	 * @param height     the height of the image in pixels
+	 * @param radius     the radius of the blur effect
+	 * @param iterations the number of times to perform the blur; i.e. to increase
+	 *                   quality
+	 * @return the blurred pixels
+	 */
+	private static int[] blur(int[] inputRGBA, int width, int height, int radius, int iterations) {
+		int[] srcPixels = new int[width * height];
+		int[] dstPixels = new int[width * height];
+
+		System.arraycopy(inputRGBA, 0, srcPixels, 0, srcPixels.length); // copy input into srcPixels
+
+		for (int i = 0; i < iterations; i++) {
+			blurPass(srcPixels, dstPixels, width, height, radius); // horizontal pass
+			blurPass(dstPixels, srcPixels, height, width, radius); // vertical pass
+		}
+		return srcPixels; // the result is now stored in srcPixels due to the 2nd pass
+	}
+
+	/**
+	 * Blurs the input PImage, producing a copy [the orignal is untouched] (much
+	 * faster than using {@link processing.core.PApplet#filter(int) filter(BLUR)}).
+	 * 
+	 * @param in         source PImage
+	 * @param radius     radius of blur effect
+	 * @param iterations the number of times to perform the blur; i.e. to increase
+	 *                   quality
+	 * @return PImage blurred PImage object
+	 */
+	public static PImage blurImage(PImage in, int radius, int iterations) {
+		PImage out = new PImage(in.width, in.height);
+		out.loadPixels();
+		out.pixels = blur(in.pixels, in.width, in.height, radius, iterations);
+		out.updatePixels();
+		return out;
 	}
 }

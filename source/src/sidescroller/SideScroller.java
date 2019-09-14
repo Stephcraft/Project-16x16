@@ -133,7 +133,7 @@ public class SideScroller extends PApplet {
 	@Override
 	public void noSmooth() {
 		try {
-//			canvas.getGraphicsContext2D().setImageSmoothing(false);
+			canvas.getGraphicsContext2D().setImageSmoothing(false);
 		} catch (java.lang.NoSuchMethodError e) {
 		}
 	}
