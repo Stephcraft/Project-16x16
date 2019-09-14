@@ -1,5 +1,6 @@
 package sidescroller;
 
+import java.io.File;
 import java.util.HashSet;
 
 import components.AnimationComponent;
@@ -193,9 +194,13 @@ public class SideScroller extends PApplet {
 	 */
 	private void load() {
 		Tileset.load(this);
-		font_pixel = loadFont("Assets/Font/font-pixel-48.vlw"); // Load Font
-		textFont(font_pixel); // Apply Text Font
-		Options.load(); // Load Options
+		if (new File("Assets/Font/font-pixel-48.vlw").exists()) {
+			font_pixel = loadFont("Assets/Font/font-pixel-48.vlw"); // Load Font
+			textFont(font_pixel); // Apply Text Font
+		}
+		else {
+			System.err.println("Could not locate the game font file.");
+		}
 	}
 
 	/**

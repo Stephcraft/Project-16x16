@@ -428,51 +428,6 @@ public class GameplayScene extends PScene {
 			default :
 				break;
 		}
-
-		// Change tool;
-		if (tool != Tools.SAVE) {
-			if (applet.keyPressEvent) {
-				if (applet.keyPress(49)) {
-					tool = Tools.MOVE;
-					editorItem.setMode("CREATE");
-					editorItem.focus = false;
-				}
-				if (applet.keyPress(50)) {
-					tool = Tools.MODIFY;
-					editorItem.setMode("CREATE");
-					editorItem.focus = false;
-				}
-				if (applet.keyPress(51)) {
-					tool = Tools.INVENTORY;
-					editorItem.setMode("CREATE");
-					editorItem.focus = false;
-					scroll_inventory = 0;
-				}
-				if (applet.keyPress(52)) {
-					tool = Tools.PLAY;
-					editorItem.setMode("CREATE");
-					editorItem.focus = false;
-					applet.camera.setFollowObject(player);
-				}
-				if (applet.keyPress(53)) {
-					tool = Tools.SAVE;
-					editorItem.setMode("CREATE");
-					editorItem.focus = false;
-				}
-				if (applet.keyPress(69)) {
-					if (tool == Tools.INVENTORY) {
-						tool = Tools.MOVE;
-						editorItem.setMode("CREATE");
-						editorItem.focus = false;
-					} else {
-						tool = Tools.INVENTORY;
-						editorItem.setMode("ITEM");
-						editorItem.focus = false;
-						scroll_inventory = 0;
-					}
-				}
-			}
-		}
 	}
 
 	/**
@@ -623,7 +578,7 @@ public class GameplayScene extends PScene {
 
 	@Override
 	void mouseDragged(MouseEvent e) {
-		if (e.getButton() == PConstants.CENTER) { // pan on MMB; TODO fix when zoom != 1.00
+		if (e.getButton() == PConstants.CENTER && tool==Tools.MODIFY) { // pan on MMB; TODO fix when zoom != 1.00
 			applet.camera.setCameraPositionNoLerp(
 					PVector.add(origPos, PVector.sub(mouseDown, applet.getMouseCoordScreen())));
 		}
@@ -636,6 +591,44 @@ public class GameplayScene extends PScene {
 				scrollBar.mouseWheel(event);
 				scroll_inventory = (int) PApplet.map(scrollBar.barLocation, 1, 0,
 						-getInventorySize() + applet.height - 8, 0);
+			}
+		}
+	}
+	
+	@Override
+	protected void keyReleased(processing.event.KeyEvent e) {
+		if (tool != Tools.SAVE) { // Change tool;
+			editorItem.setMode("CREATE");
+			editorItem.focus = false;
+			switch (e.getKeyCode()) {
+				case 49 : // 1
+					tool = Tools.MOVE;
+					break;
+				case 50 : // 2
+					tool = Tools.MODIFY;
+					break;
+				case 51 : // 3
+					tool = Tools.INVENTORY;
+					scroll_inventory = 0;
+					break;
+				case 52 : // 4
+					tool = Tools.PLAY;
+                    applet.camera.setFollowObject(player);
+					break;
+				case 53 : // 5
+					tool = Tools.SAVE;
+					break;
+				case 69 : // 'e' TODO remove?
+					if (tool == Tools.INVENTORY) {
+						tool = Tools.MOVE;
+					} else {
+						tool = Tools.INVENTORY;
+						editorItem.setMode("ITEM");
+						scroll_inventory = 0;
+					}
+					break;
+				default :
+					break;
 			}
 		}
 	}
@@ -695,14 +688,22 @@ public class GameplayScene extends PScene {
 	}
 
 	public void loadLevel(String path) { // TODO save camera position/settings.
-		String[] script = applet.loadStrings(path);
-		String scriptD = Util.decrypt(PApplet.join(script, "\n"));
 
-		// Parse JSON
-		JSONArray data = JSONArray.parse(scriptD);
+		String[] script = applet.loadStrings(path);
+		if (script == null) {
+			return;
+		}
+		
+		String scriptD = Util.decrypt(PApplet.join(script, "\n")); // decrypt save data
+		JSONArray data = JSONArray.parse(scriptD); // Parse JSON
+		
+		if (data == null) {
+			System.err.println("Failed to parse level data to JSON. File is probably corrupt.");
+			return;
+		}
 
 		// Clear Object Arrays
-		collidableObjects.clear();
+		collidableObjects.clear(); // TODO reset method
 		backgroundObjects.clear();
 
 		// Create Level

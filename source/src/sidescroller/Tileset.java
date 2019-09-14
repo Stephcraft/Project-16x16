@@ -40,8 +40,13 @@ public class Tileset {
 	public static void load(SideScroller app){
 		applet = app;
 		graphicsSheet = applet.loadImage(TILESHEETPATH);
-		loadJSON();
-		loadTiles();
+		try {
+			loadJSON();
+			loadTiles();
+		} catch (Exception e) {
+			System.err.println("Could not load tile data. Exiting...");
+			System.exit(0);
+		}
 	}
 	
 	public static PImage getTile(String name){
