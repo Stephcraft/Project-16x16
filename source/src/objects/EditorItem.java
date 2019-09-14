@@ -44,8 +44,7 @@ public class EditorItem extends PClass {
 	public void update() {
 
 		if (focus) {
-			pos.x = applet.getMouseX();
-			pos.y = applet.getMouseY();
+			pos = applet.getMouseCoordScreen();
 
 			if (applet.mouseReleaseEvent) {
 				focus = false;
@@ -54,9 +53,9 @@ public class EditorItem extends PClass {
 					// transform from screen mouse pos to game pos
 					// Create new instance from dragged icon
 
-					PVector realPos = applet.camera
-							.getDispToCoord(new PVector(Util.roundToNearest(applet.getMouseX(), SideScroller.snapSize),
-									Util.roundToNearest(applet.getMouseY(), SideScroller.snapSize)));
+					PVector realPos = applet.camera.getDispToCoord(
+							new PVector(Util.roundToNearest(applet.getMouseCoordScreen().x, SideScroller.snapSize),
+									Util.roundToNearest(applet.getMouseCoordScreen().y, SideScroller.snapSize)));
 					switch (type) {
 						case COLLISION :
 							CollidableObject c = new CollidableObject(applet, gameplayScene, id, 0, 0);
@@ -99,7 +98,7 @@ public class EditorItem extends PClass {
 			applet.strokeWeight(1);
 			applet.stroke(0, 255, 200);
 			applet.noFill();
-			applet.rect(round((applet.getMouseX()) / 4) * 4, round((applet.getMouseY()) / 4) * 4, image.width,
+			applet.rect(round((applet.getMouseCoordGame().x) / 4) * 4, round((applet.getMouseCoordGame().y) / 4) * 4, image.width,
 					image.height);
 		}
 	}

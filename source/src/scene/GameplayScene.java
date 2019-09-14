@@ -92,6 +92,8 @@ public class GameplayScene extends PScene {
 	private int scroll_inventory;
 
 	private Player player;
+	
+	private PVector mouseDown, origPos;
 
 	public GameplayScene(SideScroller a) {
 		super(a);
@@ -300,8 +302,8 @@ public class GameplayScene extends PScene {
 				if (applet.mousePressEvent) {
 					float x = 20 * 4 / 2 + 10 + i * (20 * 4 + 10);
 					float y = 20 * 4 / 2 + 10;
-					if (applet.getMouseX() > x - (20 * 4) / 2 && applet.getMouseX() < x + (20 * 4) / 2
-							&& applet.getMouseY() > y - (20 * 4) / 2 && applet.getMouseY() < y + (20 * 4) / 2) {
+					if (applet.getMouseCoordScreen().x > x - (20 * 4) / 2 && applet.getMouseCoordScreen().x < x + (20 * 4) / 2
+							&& applet.getMouseCoordScreen().y > y - (20 * 4) / 2 && applet.getMouseCoordScreen().y < y + (20 * 4) / 2) {
 						editorItem.focus = true;
 						editorItem.setTile(inventory.get(i));
 						editorItem.type = Tileset.getTileType(inventory.get(i));
@@ -311,16 +313,16 @@ public class GameplayScene extends PScene {
 		}
 
 		// GUI Icons
-		if (tool == Tools.MOVE || (Util.hover(40, 120, 36, 36) && tool != Tools.SAVE && tool != Tools.INVENTORY)) {
-			if (Util.hover(40, 120, 36, 36) && applet.mousePressEvent) {
+		if (tool == Tools.MOVE || (Util.hoverScreen(40, 120, 36, 36) && tool != Tools.SAVE && tool != Tools.INVENTORY)) {
+			if (Util.hoverScreen(40, 120, 36, 36) && applet.mousePressEvent) {
 				tool = Tools.MOVE;
 			}
 			image(icon_eyeActive, 40, 120);
 		} else {
 			image(icon_eye, 40, 120);
 		}
-		if (tool == Tools.MODIFY || (Util.hover(90, 120, 36, 36) && tool != Tools.SAVE && tool != Tools.INVENTORY)) {
-			if (Util.hover(90, 120, 36, 36) && applet.mousePressEvent) {
+		if (tool == Tools.MODIFY || (Util.hoverScreen(90, 120, 36, 36) && tool != Tools.SAVE && tool != Tools.INVENTORY)) {
+			if (Util.hoverScreen(90, 120, 36, 36) && applet.mousePressEvent) {
 				tool = Tools.MODIFY;
 			}
 			image(icon_arrowActive, 90, 120);
@@ -328,8 +330,8 @@ public class GameplayScene extends PScene {
 			image(icon_arrow, 90, 120);
 		}
 		if (tool == Tools.INVENTORY
-				|| (Util.hover(90 + 48, 120, 36, 36) && tool != Tools.SAVE && tool != Tools.INVENTORY)) {
-			if (Util.hover(90 + 48, 120, 36, 36) && applet.mousePressEvent) {
+				|| (Util.hoverScreen(90 + 48, 120, 36, 36) && tool != Tools.SAVE && tool != Tools.INVENTORY)) {
+			if (Util.hoverScreen(90 + 48, 120, 36, 36) && applet.mousePressEvent) {
 				tool = Tools.INVENTORY;
 			}
 			image(icon_inventoryActive, 90 + 48, 120);
@@ -337,8 +339,9 @@ public class GameplayScene extends PScene {
 			image(icon_inventory, 90 + 48, 120);
 		}
 		if (tool == Tools.PLAY
-				|| (Util.hover(90 + 48 * 2, 120, 36, 36) && tool != Tools.SAVE && tool != Tools.INVENTORY)) {
-			if (Util.hover(90 + 48 * 2, 120, 36, 36) && applet.mousePressEvent) {
+				|| (Util.hoverScreen(90 + 48 * 2, 120, 36, 36) && tool != Tools.SAVE && tool != Tools.INVENTORY)) {
+			if (Util.hoverScreen(90 + 48 * 2, 120, 36, 36) && applet.mousePressEvent) {
+				applet.camera.setFollowObject(player);
 				tool = Tools.PLAY;
 			}
 			image(icon_playActive, 90 + 48 * 2, 120);
@@ -346,8 +349,8 @@ public class GameplayScene extends PScene {
 			image(icon_play, 90 + 48 * 2, 120);
 		}
 		if (tool == Tools.SAVE
-				|| (Util.hover(90 + 48 * 3, 120, 36, 36) && tool != Tools.SAVE && tool != Tools.INVENTORY)) {
-			if (Util.hover(90 + 48 * 3, 120, 36, 36) && applet.mousePressEvent) {
+				|| (Util.hoverScreen(90 + 48 * 3, 120, 36, 36) && tool != Tools.SAVE && tool != Tools.INVENTORY)) {
+			if (Util.hoverScreen(90 + 48 * 3, 120, 36, 36) && applet.mousePressEvent) {
 				tool = Tools.SAVE;
 			}
 			image(icon_saveActive, 90 + 48 * 3, 120);
@@ -449,6 +452,7 @@ public class GameplayScene extends PScene {
 					tool = Tools.PLAY;
 					editorItem.setMode("CREATE");
 					editorItem.focus = false;
+					applet.camera.setFollowObject(player);
 				}
 				if (applet.keyPress(53)) {
 					tool = Tools.SAVE;
@@ -531,9 +535,10 @@ public class GameplayScene extends PScene {
 			if (applet.mousePressEvent) {
 				float xx = 20 * 4 / 2 + 10 + x * (20 * 4 + 10);
 				float yy = y * (20 * 4 + 10) + scroll_inventory;
-				if (applet.getMouseY() > 100) {
-					if (applet.getMouseX() > xx - (20 * 4) / 2 && applet.getMouseX() < xx + (20 * 4) / 2
-							&& applet.getMouseY() > yy - (20 * 4) / 2 && applet.getMouseY() < yy + (20 * 4) / 2) {
+				if (applet.getMouseCoordScreen().y > 100) {
+					if (applet.getMouseCoordScreen().x > xx - (20 * 4) / 2 && applet.getMouseCoordScreen().x < xx + (20 * 4) / 2
+							&& applet.getMouseCoordScreen().y > yy - (20 * 4) / 2
+							&& applet.getMouseCoordScreen().y < yy + (20 * 4) / 2) {
 						editorItem.focus = true;
 						editorItem.setTile(Tileset.getTileName(Tileset.getTileId(img)));
 					}
@@ -571,8 +576,8 @@ public class GameplayScene extends PScene {
 			if (applet.mouseReleaseEvent) {
 				float xx = 20 * 4 / 2 + 10 + i * (20 * 4 + 10);
 				float yy = 20 * 4 / 2 + 10;
-				if (editorItem.focus && applet.getMouseX() > xx - (20 * 4) / 2 && applet.getMouseX() < xx + (20 * 4) / 2
-						&& applet.getMouseY() > yy - (20 * 4) / 2 && applet.getMouseY() < yy + (20 * 4) / 2) {
+				if (editorItem.focus && applet.getMouseCoordScreen().x > xx - (20 * 4) / 2 && applet.getMouseCoordScreen().x < xx + (20 * 4) / 2
+						&& applet.getMouseCoordScreen().y > yy - (20 * 4) / 2 && applet.getMouseCoordScreen().y < yy + (20 * 4) / 2) {
 					editorItem.focus = false;
 					inventory.set(i, editorItem.id);
 				}
@@ -608,6 +613,20 @@ public class GameplayScene extends PScene {
 			}
 		}
 		return 20 * 4 + 10 + y * (20 * 4 + 10);
+	}
+
+	@Override
+	void mousePressed(MouseEvent e) {
+		origPos = applet.camera.getPosition();
+		mouseDown = applet.getMouseCoordScreen();
+	}
+
+	@Override
+	void mouseDragged(MouseEvent e) {
+		if (e.getButton() == PConstants.CENTER) { // pan on MMB; TODO fix when zoom != 1.00
+			applet.camera.setCameraPositionNoLerp(
+					PVector.add(origPos, PVector.sub(mouseDown, applet.getMouseCoordScreen())));
+		}
 	}
 
 	public void mouseWheel(MouseEvent event) {

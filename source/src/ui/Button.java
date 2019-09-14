@@ -2,6 +2,7 @@ package ui;
 
 import sidescroller.PClass;
 import sidescroller.SideScroller;
+import sidescroller.Util;
 
 /**
  * The Press Class extends PClass A button for the player to click
@@ -148,8 +149,7 @@ public class Button extends PClass {
 	 * @return response as a boolean
 	 */
 	public boolean hover() {
-		return (applet.getMouseX() > x - width / 2 && applet.getMouseX() < x + width / 2
-				&& applet.getMouseY() > y - height / 2 && applet.getMouseY() < y + height / 2);
+		return Util.hoverScreen(x, y, width, height);
 	}
 
 	/**

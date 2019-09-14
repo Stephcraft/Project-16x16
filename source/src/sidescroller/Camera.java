@@ -387,6 +387,19 @@ public final class Camera extends ZoomPan {
 		following = false;
 		this.targetPosition = new PVector(-position.x, -position.y);
 	}
+	
+	/**
+	 * Sets camera position immediately (no lerping towards target position).
+	 * 
+	 * @param position World position camera will center on.
+	 * @see #setCameraPosition(PVector)
+	 */
+	public void setCameraPositionNoLerp(PVector position) {
+		following = false;
+		PVector temp = PVector.sub(position, offset);
+		this.setPanOffset(-temp.x, -temp.y);
+		this.targetPosition = new PVector(-position.x, -position.y);
+	}
 
 	/**
 	 * Set camera rotation (the camera rotates around the camera position - not a
@@ -463,13 +476,13 @@ public final class Camera extends ZoomPan {
 	 * object located at (0, 0) which the camera is following gives a camera
 	 * position of (0, 0) too).
 	 * 
-	 * @return Formatted string representation of camera position (point the camera
-	 *         is centered on).
+	 * @return Representation of camera position (the point the camera is centered
+	 *         on).
 	 * @see {@link ZoomPan#getPanOffset() getPanOffset()} (not adjusted for
 	 *      centering and translation)
 	 */
-	public String getCameraPosition() {
-		return PApplet.round(logicalPosition.x) + ", " + PApplet.round(logicalPosition.y);
+	public PVector getPosition() {
+		return logicalPosition;
 	}
 
 	/**

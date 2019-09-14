@@ -79,7 +79,6 @@ public class SideScroller extends PApplet {
 
 	// Camera Variables
 	public Camera camera;
-	private PVector mousePosition;
 
 	// Expose JavaFX nodes
 	/**
@@ -185,7 +184,6 @@ public class SideScroller extends PApplet {
 		camera.setMouseMask(CONTROL);
 		camera.setMinZoomScale(0.3);
 		camera.setMaxZoomScale(3);
-		camera.setFollowObject(game.getPlayer());
 
 		scaleResolution();
 	}
@@ -266,7 +264,6 @@ public class SideScroller extends PApplet {
 	 * @see {@link Camera#hook()}
 	 */
 	private void drawBelowCamera() {
-		mousePosition = camera.getMouseCoord().copy();
 		currentScene.draw(); // Handle Draw Scene Method - draws world, etc.
 		if (debug == debugType.ALL) {
 			currentScene.debug();
@@ -283,7 +280,6 @@ public class SideScroller extends PApplet {
 	 * @see {@link Camera#release()}
 	 */
 	private void drawAboveCamera() {
-		mousePosition = new PVector(mouseX, mouseY);
 		currentScene.drawUI();
 		if (debug == debugType.ALL) {
 			camera.post();
@@ -401,32 +397,29 @@ public class SideScroller extends PApplet {
 
 	/**
 	 * Any object that is transformed by the camera (ie. not HUD elements) and uses
-	 * mouse position in any manner should use this method to access the <b>mouse
-	 * X</b> coordinate (ie. where the mouse is in the game world). Such objects
-	 * should not reference the PApplet's {@link processing.core.PApplet.mouseX
-	 * mouseX} variable.
+	 * mouse position in any manner should use this method to access the mouse
+	 * coordinate (ie. where the mouse is in the game world). Such objects should
+	 * not reference the PApplet's {@link processing.core.PApplet.mouseX mouseY}
+	 * variable.
 	 * 
-	 * @return mouseX coordinate (accounting for camera displacement).
-	 * @see {@link #getMouseY()}
+	 * @return Mouse Coordinate [Game World]
 	 * @see {@link org.gicentre.utils.move.ZoomPan#getMouseCoord() getMouseCoord()}
+	 * @see #getMouseCoordScreen()
 	 */
-	public int getMouseX() {
-		return (int) mousePosition.x;
+	public PVector getMouseCoordGame() {
+		return camera.getMouseCoord();
 	}
 
 	/**
-	 * Any object that is transformed by the camera (ie. not HUD elements) and uses
-	 * mouse position in any manner should use this method to access the <b>mouse
-	 * Y</b> coordinate (ie. where the mouse is in the game world). Such objects
-	 * should not reference the PApplet's {@link processing.core.PApplet.mouseX
-	 * mouseY} variable.
+	 * Objects that use the screen mouse coordinate (most UI objects) to determine
+	 * interaction should use this method to get a PVector of the mouse coord, or
+	 * refer to the PApplet mouseX and mouseY variables.
 	 * 
-	 * @return mouseY coordinate (accounting for camera displacement).
-	 * @see {@link #getMouseX()}
-	 * @see {@link org.gicentre.utils.move.ZoomPan#getMouseCoord() getMouseCoord()}
+	 * @return Mouse Coordinate [Screen]
+	 * @see #getMouseCoordGame()
 	 */
-	public int getMouseY() {
-		return (int) mousePosition.y;
+	public PVector getMouseCoordScreen() {
+		return new PVector(mouseX, mouseY);
 	}
 
 	/**
@@ -483,7 +476,8 @@ public class SideScroller extends PApplet {
 				lineOffset * 3 + yOffset);
 		text("[" + (player.flying ? "FLY" : player.attack ? "ATT" : "DASH") + "]", width - ip,
 				lineOffset * 4 + yOffset);
-		text("[" + camera.getCameraPosition() + "]", width - ip, lineOffset * 5 + yOffset);
+		text("[" + PApplet.round(camera.getPosition().x) + ", " + PApplet.round(camera.getPosition().y) + "]",
+				width - ip, lineOffset * 5 + yOffset);
 		text("[" + String.format("%.2f", camera.getZoomScale()) + "]", width - ip, lineOffset * 6 + yOffset);
 		text("[" + round(degrees(camera.getCameraRotation())) + "]", width - ip, lineOffset * 7 + yOffset);
 		text("[" + round(camera.getMouseCoord().x) + ", " + round(camera.getMouseCoord().y) + "]", width - ip,

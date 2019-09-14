@@ -46,13 +46,13 @@ public class EditableObject extends PClass {
 	// Map Editor Scene
 	public GameplayScene gameScene;
 
-	protected int editOffsetX;
-	protected int editOffsetY;
+	protected PVector editOffset;
 
 	public EditableObject(SideScroller a, GameplayScene g) {
 		super(a);
 
 		pos = new PVector(0, 0);
+		editOffset =  new PVector(0, 0);
 
 		gameScene = g;
 
@@ -151,20 +151,17 @@ public class EditableObject extends PClass {
 					focusX = true;
 					focusY = false;
 					focusM = false;
-					editOffsetX = (int) pos.x + 100 - applet.getMouseX();
-					editOffsetY = (int) pos.y - applet.getMouseY();
+					editOffset = PVector.sub(pos, applet.getMouseCoordGame()).sub(new PVector(-100, 0));
 					gameScene.focusedObject = this;
 				} else if (mouseHoverY()) {
 					focusY = true;
 					focusX = false;
 					focusM = false;
-					editOffsetX = (int) pos.x - applet.getMouseX();
-					editOffsetY = (int) pos.y - 100 - applet.getMouseY();
+					editOffset = PVector.sub(pos, applet.getMouseCoordGame()).sub(new PVector(0, 100));
 					gameScene.focusedObject = this;
 				} else if (mouseHover()) {
 					focusM = true;
-					editOffsetX = (int) pos.x - applet.getMouseX();
-					editOffsetY = (int) pos.y - applet.getMouseY();
+					editOffset = PVector.sub(pos, applet.getMouseCoordGame());
 				}
 			}
 
@@ -178,8 +175,7 @@ public class EditableObject extends PClass {
 							copy.focusX = focusX;
 							copy.focusY = focusY;
 							copy.pos = pos.copy();
-							copy.editOffsetX = editOffsetX;
-							copy.editOffsetY = editOffsetY;
+							copy.editOffset = editOffset.copy();
 							gameScene.collidableObjects.add((CollidableObject) copy);
 							break;
 						case OBJECT :
@@ -190,10 +186,8 @@ public class EditableObject extends PClass {
 								copy.focus = true;
 								copy.focusX = focusX;
 								copy.focusY = focusY;
-								copy.pos.x = pos.x;
-								copy.pos.y = pos.y;
-								copy.editOffsetX = editOffsetX;
-								copy.editOffsetY = editOffsetY;
+								copy.pos = pos.copy();
+								copy.editOffset = editOffset.copy();
 								gameScene.gameObjects.add((GameObject) copy);
 								break;
 							} catch (Exception e) {
@@ -217,14 +211,14 @@ public class EditableObject extends PClass {
 
 			// Focus Movement
 			if (focusX) {
-				pos.x = Util.roundToNearest(applet.getMouseX() + editOffsetY - 100, SideScroller.snapSize);
+				pos.x = Util.roundToNearest(applet.getMouseCoordGame().x + editOffset.y - 100, SideScroller.snapSize);
 			}
 			if (focusY) {
-				pos.y = Util.roundToNearest(applet.getMouseY() + editOffsetY + 100, SideScroller.snapSize);
+				pos.y = Util.roundToNearest(applet.getMouseCoordGame().y + editOffset.y + 100, SideScroller.snapSize);
 			}
 			if (focusM) {
-				pos = new PVector(Util.roundToNearest(applet.getMouseX() + editOffsetX, SideScroller.snapSize),
-						Util.roundToNearest(applet.getMouseY() + editOffsetY, SideScroller.snapSize));
+				pos = new PVector(Util.roundToNearest(applet.getMouseCoordGame().x + editOffset.x, SideScroller.snapSize),
+						Util.roundToNearest(applet.getMouseCoordGame().y + editOffset.y, SideScroller.snapSize));
 			}
 		}
 	}
@@ -239,8 +233,8 @@ public class EditableObject extends PClass {
 	 * @return boolean true if mouse hovering.
 	 */
 	private boolean mouseHoverX() {
-		return (applet.getMouseX() > pos.x + 100 - 6 * 4 && applet.getMouseX() < pos.x + 100 + 6 * 4)
-				&& (applet.getMouseY() > pos.y - 5 * 4 && applet.getMouseY() < pos.y + 5 * 4);
+		return (applet.getMouseCoordGame().x > pos.x + 100 - 6 * 4 && applet.getMouseCoordGame().x < pos.x + 100 + 6 * 4)
+				&& (applet.getMouseCoordGame().y > pos.y - 5 * 4 && applet.getMouseCoordGame().y < pos.y + 5 * 4);
 	}
 
 	/**
@@ -249,14 +243,14 @@ public class EditableObject extends PClass {
 	 * @return boolean true if mouse hovering.
 	 */
 	private boolean mouseHoverY() {
-		return (applet.getMouseX() > pos.x - 6 * 4 && applet.getMouseX() < pos.x + 6 * 4)
-				&& (applet.getMouseY() > pos.y - 100 - 5 * 4 && applet.getMouseY() < pos.y - 100 + 5 * 4);
+		return (applet.getMouseCoordGame().x > pos.x - 6 * 4 && applet.getMouseCoordGame().x < pos.x + 6 * 4)
+				&& (applet.getMouseCoordGame().y > pos.y - 100 - 5 * 4 && applet.getMouseCoordGame().y < pos.y - 100 + 5 * 4);
 	}
 
 	private boolean mouseHover() {
 		if (applet.mouseX < 400 && applet.mouseY < 100) { // Over Inventory Bar
 			return false;
 		}
-		return Util.hover(pos.x, pos.y, width, height);
+		return Util.hoverGame(pos.x, pos.y, width, height);
 	}
 }

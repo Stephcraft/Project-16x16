@@ -3,6 +3,7 @@ package ui;
 import processing.core.PApplet;
 import sidescroller.PClass;
 import sidescroller.SideScroller;
+import sidescroller.Util;
 
 /**
  * The PInput Class extends PClass
@@ -70,7 +71,7 @@ public class TextInputField extends PClass {
 	public void update() {
 
 		// Focus Event
-		if (hover()) {
+		if (Util.hoverScreen(x, y, width, height)) {
 			if (applet.mousePressEvent) {
 				focus = true;
 			}
@@ -97,15 +98,6 @@ public class TextInputField extends PClass {
 				}
 			}
 		}
-	}
-
-	/**
-	 * Determin if mouse is hovering over window
-	 * @return response as boolean
-	 */
-	public boolean hover() {
-		return (applet.getMouseX() > x - width / 2 && applet.getMouseX() < x + width / 2 && applet.getMouseY() > y - height / 2
-				&& applet.getMouseY() < y + height / 2);
 	}
 
 	/**

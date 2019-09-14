@@ -136,17 +136,35 @@ public final class Util {
 	}
 
 	/**
-	 * Is the mouse within a square region, given by its center coordinate (x,y).
+	 * Is the <b>screen coordinate</b> of the mouse within a square region, given by
+	 * its center coordinate (x,y)?
 	 * 
 	 * @param x region center pos X
 	 * @param y region center pos Y
 	 * @param w region width
 	 * @param h region height
 	 * @return Whether mouse hovers region.
+	 * @see #hoverGame(float, float, float, float) hoverGame()
 	 */
-	public static boolean hover(float x, float y, float w, float h) {
-		return (applet.getMouseX() > x - w / 2 && applet.getMouseX() < x + w / 2 && applet.getMouseY() > y - h / 2
-				&& applet.getMouseY() < y + h / 2);
+	public static boolean hoverScreen(float x, float y, float w, float h) {
+		return (applet.getMouseCoordScreen().x > x - w / 2 && applet.getMouseCoordScreen().x < x + w / 2
+				&& applet.getMouseCoordScreen().y > y - h / 2 && applet.getMouseCoordScreen().y < y + h / 2);
+	}
+
+	/**
+	 * Is the <b>gameworld coordinate</b> of the mouse within a square region, given
+	 * by its center coordinate (x,y)?
+	 * 
+	 * @param x region center pos X
+	 * @param y region center pos Y
+	 * @param w region width
+	 * @param h region height
+	 * @return Whether mouse hovers region.
+	 * @see #hoverScreen(float, float, float, float) hoverScreen()
+	 */
+	public static boolean hoverGame(float x, float y, float w, float h) {
+		return (applet.getMouseCoordGame().x > x - w / 2 && applet.getMouseCoordGame().x < x + w / 2
+				&& applet.getMouseCoordGame().y > y - h / 2 && applet.getMouseCoordGame().y < y + h / 2);
 	}
 
 	/**
