@@ -57,7 +57,7 @@ public final class MainMenu extends PScene {
 	private void update() {
 		pressStart.update();
 		if(pressStart.hover()) {
-			game.swapScene(game.game);
+			game.swapToScene(game.game);
 			game.debug = SideScroller.debugType.ALL;
 		}
 		

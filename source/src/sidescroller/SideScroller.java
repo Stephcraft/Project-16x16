@@ -61,14 +61,15 @@ public class SideScroller extends PApplet {
 
 	// Scenes
 	/**
-	 * Use {@link #swapScene(PScene)} to change the scene-- don't reassign this
-	 * variable directly!
+	 * Use {@link #swapToScene(PScene)} or {@link #returnScene()} to change the
+	 * scene -- don't reassign this variable directly!
 	 */
-	public PScene currentScene;
+	private PScene currentScene;
+	private PScene previousScene;
 	public MainMenu menu;
 	public GameplayScene game;
-	private PauseMenu pmenu;
-	
+	public PauseMenu pmenu;
+
 	// Events
 	private HashSet<Integer> keys;
 	public boolean keyPressEvent;
@@ -177,7 +178,7 @@ public class SideScroller extends PApplet {
 		game = new GameplayScene(this);
 		menu = new MainMenu(this);
 		pmenu = new PauseMenu(this);
-		swapScene(menu);
+		swapToScene(menu);
 
 		// Camera
 		camera = new Camera(this);
@@ -199,12 +200,31 @@ public class SideScroller extends PApplet {
 		Options.load(); // Load Options
 	}
 
-	public void swapScene(PScene newScene) {
+	/**
+	 * 
+	 * @param newScene
+	 * @see #returnScene()
+	 */
+	public void swapToScene(PScene newScene) {
 		if (currentScene != null) {
 			currentScene.switchFrom();
+			if (!(newScene.equals(previousScene))) {
+				previousScene = currentScene;
+			}
 		}
 		currentScene = newScene;
 		currentScene.switchTo();
+	}
+
+	/**
+	 * Scenes should call this if they are being closed and the intention is to
+	 * return to the previous scene (for example closing the pause menu and
+	 * returning to the game).
+	 */
+	public void returnScene() {
+		if (previousScene != null) {
+			swapToScene(previousScene);
+		}
 	}
 
 	/**
@@ -326,7 +346,7 @@ public class SideScroller extends PApplet {
 						loop();
 						break;
 					case 27 : // ESC - Pause menu here
-						swapScene(currentScene == pmenu ? game : pmenu);
+						swapToScene(currentScene == pmenu ? game : pmenu);
 						debug = currentScene == pmenu ? debugType.OFF : debugType.ALL;
 						break;
 					case 9 : // TAB

@@ -152,6 +152,10 @@ public final class Camera extends ZoomPan {
 		if (following) {
 			applet.rectMode(PApplet.CENTER);
 			applet.rect(getCoordToDisp(followObject.pos).x, getCoordToDisp(followObject.pos).y, length * 2, length * 2);
+			applet.strokeWeight(PApplet.map(PApplet.dist(applet.width / 2, applet.height / 2,
+					getCoordToDisp(followObject.pos).x, getCoordToDisp(followObject.pos).y), 0, 100, 2, 10));
+			applet.line(applet.width / 2, applet.height / 2, getCoordToDisp(followObject.pos).x,
+					getCoordToDisp(followObject.pos).y);
 			if (deadZoneScreen) {
 				applet.rectMode(PApplet.CORNER);
 				applet.rect(deadZoneP1.x, deadZoneP1.y, deadZoneP2.x - deadZoneP1.x, deadZoneP2.y - deadZoneP1.y);

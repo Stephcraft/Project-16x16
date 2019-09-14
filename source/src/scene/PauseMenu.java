@@ -73,7 +73,7 @@ public class PauseMenu extends PScene {
 	public void update() {
 		pressResume.update();
 		if(pressResume.hover()) {
-			game.swapScene(game.game);
+			game.returnScene();
 			game.debug = SideScroller.debugType.ALL;
 		}
 		
@@ -84,7 +84,7 @@ public class PauseMenu extends PScene {
 		
 		pressMenu.update();
 		if(pressMenu.hover()) {
-			game.swapScene(game.menu);
+			game.swapToScene(game.menu);
 			game.debug = SideScroller.debugType.OFF;
 		}
 	}

@@ -19,7 +19,7 @@ public class TestWindow extends PClass{
 	public TestWindow(SideScroller a) {
 		super(a);
 
-		scene = (GameplayScene) a.currentScene;
+		scene = a.game;
 
 		pressLoad = new Button(applet);
 		pressLoad.setText("Test Window");

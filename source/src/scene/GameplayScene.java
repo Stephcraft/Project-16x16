@@ -5,24 +5,29 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 import entities.Player;
+
 import objects.EditorItem;
 import objects.GameObject;
 import objects.BackgroundObject;
 import objects.CollidableObject;
 import objects.EditableObject;
+
 import processing.core.*;
 import processing.data.JSONArray;
 import processing.data.JSONObject;
 import processing.event.MouseEvent;
+
 import projectiles.ProjectileObject;
-import scene.components.WorldViewportEditor;
+
 import sidescroller.SideScroller;
 import sidescroller.Tileset;
 import sidescroller.Tileset.tileType;
 import sidescroller.Util;
+
 import ui.Anchor;
 import ui.ScrollBarVertical;
 import ui.Tab;
+
 import windows.LoadLevelWindow;
 import windows.SaveLevelWindow;
 import windows.TestWindow;
@@ -66,9 +71,6 @@ public class GameplayScene extends PScene {
 
 	// Editor Item
 	private EditorItem editorItem;
-
-	// Editor Viewport
-	public WorldViewportEditor worldViewportEditor;
 
 	// Scroll Bar
 	private ScrollBarVertical scrollBar;
@@ -115,7 +117,6 @@ public class GameplayScene extends PScene {
 
 		// Init Editor Components
 		editorItem = new EditorItem(applet, this);
-		worldViewportEditor = new WorldViewportEditor(applet);
 
 		// Get Slots Graphics
 		slot = Tileset.getTile(289, 256, 20, 21, 4);
@@ -136,7 +137,7 @@ public class GameplayScene extends PScene {
 
 		// Init Window
 		window_saveLevel = new SaveLevelWindow(applet, this);
-		window_test = new TestWindow(applet);
+//		window_test = new TestWindow(applet);
 		window_loadLevel = new LoadLevelWindow(applet, this);
 
 		// Init ScollBar
@@ -690,50 +691,48 @@ public class GameplayScene extends PScene {
 			JSONObject item = data.getJSONObject(i);
 
 			String type = item.getString("type");
+			if (type == null) {
+				continue;
+			}
+			
+			switch (type) { // Read Main
+				case "COLLISION" :
+					CollidableObject collision = new CollidableObject(applet, this);
+					try {
+						collision.setGraphic(item.getString("id"));
+					} catch (Exception e) {
+						collision.width = 64;
+						collision.height = 64;
+					}
+					collision.pos.x = item.getInt("x");
+					collision.pos.y = item.getInt("y");
 
-			// Read Main
-			if (i == 0) {
-				if (applet.currentScene instanceof GameplayScene) {
-					((GameplayScene) applet.currentScene).worldViewportEditor.setSize();
-				}
-			} else {
-				switch (type) {
-					case "COLLISION" :
-						CollidableObject collision = new CollidableObject(applet, this);
-						try {
-							collision.setGraphic(item.getString("id"));
-						} catch (Exception e) {
-							collision.width = 64;
-							collision.height = 64;
-						}
-						collision.pos.x = item.getInt("x");
-						collision.pos.y = item.getInt("y");
+					collidableObjects.add(collision); // Append To Level
+					break;
+				case "BACKGROUND" :
+					BackgroundObject backgroundObject = new BackgroundObject(applet, this);
+					backgroundObject.setGraphic(item.getString("id"));
+					backgroundObject.pos.x = item.getInt("x");
+					backgroundObject.pos.y = item.getInt("y");
 
-						collidableObjects.add(collision); // Append To Level
+					backgroundObjects.add(backgroundObject); // Append To Level
+					break;
+				case "OBJECT" :
+					try {
+						Class<? extends GameObject> gameObjectClass = Tileset.getObjectClass(item.getString("id"));
+						Constructor<?> ctor = gameObjectClass.getDeclaredConstructors()[0];
+						GameObject gameObject = (GameObject) ctor.newInstance(new Object[] { applet, this });
+						gameObject.pos.x = item.getInt("x");
+						gameObject.pos.y = item.getInt("y");
+
+						gameObjects.add(gameObject); // Append To Level
 						break;
-					case "BACKGROUND" :
-						BackgroundObject backgroundObject = new BackgroundObject(applet, this);
-						backgroundObject.setGraphic(item.getString("id"));
-						backgroundObject.pos.x = item.getInt("x");
-						backgroundObject.pos.y = item.getInt("y");
-
-						backgroundObjects.add(backgroundObject); // Append To Level
-						break;
-					case "OBJECT" :
-						try {
-							Class<? extends GameObject> gameObjectClass = Tileset.getObjectClass(item.getString("id"));
-							Constructor<?> ctor = gameObjectClass.getDeclaredConstructors()[0];
-							GameObject gameObject = (GameObject) ctor.newInstance(new Object[] { applet, this });
-							gameObject.pos.x = item.getInt("x");
-							gameObject.pos.y = item.getInt("y");
-
-							gameObjects.add(gameObject); // Append To Level
-							break;
-						} catch (Exception e) {
-							e.printStackTrace();
-						}
-						break;
-				}
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+					break;
+				default :
+					break;
 			}
 		}
 	}
