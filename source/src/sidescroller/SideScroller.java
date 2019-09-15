@@ -8,6 +8,7 @@ import dm.core.DM;
 import entities.Player;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
+import javafx.scene.input.KeyCombination;
 import javafx.scene.transform.Scale;
 import javafx.stage.Stage;
 
@@ -121,8 +122,10 @@ public class SideScroller extends PApplet {
 		canvas.heightProperty().unbind(); // used for scaling
 		scene = canvas.getScene();
 		stage = (Stage) canvas.getScene().getWindow();
+		stage.setTitle("Project-16x16");
 		stage.setResizable(false); // prevent abitrary user resize
 		stage.setFullScreenExitHint(""); // disable fullscreen toggle hint
+		stage.setFullScreenExitKeyCombination(KeyCombination.NO_MATCH); // prevent ESC toggling fullscreen
 		return surface;
 	}
 
@@ -236,9 +239,7 @@ public class SideScroller extends PApplet {
 	 */
 	@Override
 	public void draw() {
-
-		surface.setTitle("Sardonyx Prealpha" + " | " + frameCount);
-
+		
 		camera.hook();
 		drawBelowCamera();
 		camera.release();
