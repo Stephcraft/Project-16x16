@@ -71,11 +71,11 @@ public class EditorItem extends PClass {
 							bObject.focus();
 							gameplayScene.backgroundObjects.add(bObject);
 							break;
-						case OBJECT :							
+						case OBJECT :
 							try {
 								Class<? extends GameObject> gameObjectClass = Tileset.getObjectClass(id);
 								Constructor<?> ctor = gameObjectClass.getDeclaredConstructors()[0];
-								GameObject obj = (GameObject) ctor.newInstance(new Object[] { applet, this });
+								GameObject obj = (GameObject) ctor.newInstance(new Object[] { applet, gameplayScene });
 								obj.focus();
 								obj.pos.x = realPos.x;
 								obj.pos.y = realPos.y;
