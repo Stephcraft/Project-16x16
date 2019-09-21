@@ -201,7 +201,7 @@ public class Tileset {
 			
 			PImage image = getTile((int) (tile.getFloat("x") * TILESETSIZE),
 							       (int) (tile.getFloat("y") * TILESETSIZE),
-								   tile.getInt("w"), tile.getInt("h"));
+							       TILESETSIZE, TILESETSIZE);
 			
 			image = resize(image, SCALE);
 			
