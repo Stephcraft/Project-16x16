@@ -110,12 +110,12 @@ public class GameplayScene extends PScene {
 
 		// Create Inventory
 		inventory = new ArrayList<String>();
-		inventory.add("WEED_WALK_MIDDLE:0");
-		inventory.add("WEED_WALK_MIDDLE:1");
-		inventory.add("WEED_WALK_MIDDLE:2");
-		inventory.add("WEED_WALK_MIDDLE:3");
-		inventory.add("WEED_WALK_MIDDLE:4");
-		inventory.add("WEED_WALK_MIDDLE:5");
+		inventory.add("Metal");
+		inventory.add("Metal_Walk_Left:0");
+		inventory.add("Metal_Walk_Middle:0");
+		inventory.add("Metal_Walk_Middle:1");
+		inventory.add("Metal_Walk_Right:0");
+		inventory.add("XBox");
 
 		// Init Editor Components
 		editorItem = new EditorItem(applet, this);
