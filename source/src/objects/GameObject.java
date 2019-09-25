@@ -3,39 +3,49 @@ package objects;
 import java.util.ArrayList;
 
 import components.AnimationComponent;
-import processing.core.PGraphics;
+import processing.core.PImage;
+import scene.GameplayScene;
 import sidescroller.SideScroller;
+import sidescroller.Tileset;
 
+/**
+ * Extends {@link EditableObject}.
+ */
 public class GameObject extends EditableObject {
-	
-	//Animation Component
+
+	// Animation Component
 	public AnimationComponent animation;
-	
-	//Collision Component
-	public Collision collision;
-	
-	public PGraphics image;
-	
-	public GameObject(SideScroller a) {
-		super(a);
-		
+
+	// Collision Component
+	public CollidableObject collision;
+
+	public PImage image;
+
+	public GameObject(SideScroller a, GameplayScene g) {
+		super(a, g);
+
 		animation = new AnimationComponent();
 	}
-	
-	public void display() {}
-	public void update() {}
-	
-	public void delete() {}
-	
-	protected ArrayList<PGraphics> getAnimation(String id) {
-		return applet.gameGraphics.getAnimation(id);
+
+	public void display() {
 	}
-	
-	protected PGraphics g(int x, int y, int w, int h) {
-		return applet.gameGraphics.g(x, y, w, h);
+
+	public void update() {
 	}
-	
-	protected PGraphics g(int x, int y, int w, int h, float s) {
-		return applet.gameGraphics.g(x, y, w, h, s);
+
+	public void delete() {
+	}
+
+	protected ArrayList<PImage> getAnimation(String name) {
+		return Tileset.getAnimation(name);
+	}
+
+	protected PImage g(int x, int y, int w, int h) {
+		return Tileset.getTile(x, y, w, h);
+	}
+
+	// TODO: not sure s (size) should still be here
+	protected PImage g(int x, int y, int w, int h, float s) {
+		return Tileset.getTile(x, y, w, h);
 	}
 }

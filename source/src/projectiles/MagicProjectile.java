@@ -1,171 +1,118 @@
 package projectiles;
 
-import objects.Collision;
+import java.util.ArrayList;
+
+import ParticleSystem.ParticleSystem;
+import ParticleSystem.emissions.AreaEmission;
+import ParticleSystem.events.ParticleAnimationController;
+import ParticleSystem.events.ParticleNoLoopController;
+import objects.CollidableObject;
 import processing.core.PApplet;
+import processing.core.PImage;
 import processing.core.PVector;
+import scene.GameplayScene;
 import sidescroller.SideScroller;
+import sidescroller.Tileset;
+import sidescroller.Util;
 
 public class MagicProjectile extends ProjectileObject {
 
-	public MagicProjectile(SideScroller a, int x, int y, int dir) {
-		super(a);
+	final int SCALE = 4;
+	final int PROJECTILE_SPEED = 10;
+	final int PROJECTILE_IDLE_SIZE = 8;
+	
+	private static ArrayList<PImage> particleAnimation;
+	private ParticleSystem trail;
+	private ParticleSystem explode;
+	
+	public MagicProjectile(SideScroller a, GameplayScene g, int x, int y, int dir) {
+		super(a, g);
 		
 		id = "MAGIC";
-		
-		pos = new PVector(x,y);
-		
+		pos = new PVector(x, y);
 		direction = dir;
+		prevDirection = dir; // Used for tracking the prevDirection of the projectile
 		
-		//Setup Animation
-		animation.frames = getAnimation("MAGIC::MOVE");
-		animation.loop = true;
-		animation.length = 8;
-		animation.rate = 4;
-		animation.frame = 0;
-		animation.start = 0;
+		speed = PROJECTILE_SPEED;
+		width = PROJECTILE_IDLE_SIZE * SCALE;
+		height = PROJECTILE_IDLE_SIZE * SCALE;
 		
-		speed = 10;
+		if (particleAnimation == null)
+			setParticleAnimation(a);
+
+		trail = new ParticleSystem(a, image, 40, 1, 0.2f);
+		trail.setEmission(new AreaEmission(pos, 0.8f, -0.01f, 8));
+		trail.addEventListener(new ParticleAnimationController(particleAnimation, -1));
 		
-		width = 22*4;
-		height = 10*4;
+		explode = new ParticleSystem(a, image, 15, 5, 0.4f);
+		explode.setEmission(new AreaEmission(pos, 3, -0.13f, 10));
+		explode.addEventListener(new ParticleAnimationController(particleAnimation, -1));
+		explode.addEventListener(new ParticleNoLoopController(10));
 	}
-	
+
 	public void display() {
-		switch(direction) {
-			case LEFT:
-				applet.pushMatrix();
-					applet.translate(pos.x-applet.originX, pos.y-applet.originY);
-					applet.scale(-1, 1);
-					applet.image(image, 0, 0);
-				applet.popMatrix();
+		//debugMode();
+	}
+
+	public void update() {	
+		trail.run();
+		if (hit)
+			explode.run();
+		else {
+			moveProjectile();
+			destroyProjectile();
+		}
+	}
+	
+	public void destroyProjectile() {
+		for (int i = 0; i < gameScene.collidableObjects.size(); i++) {
+			CollidableObject collision = gameScene.collidableObjects.get(i);
+			if (collides(collision) && !collision.flag.equals("TRANSPARENT_BULLET")) {
+				hit = true;
+				trail.spawn = false;
+			}
+		}
+	}
+
+	public void moveProjectile() {
+		switch (direction) {
+		case LEFT:
+			pos.x -= speed;
 			break;
-			case RIGHT:
-				applet.image(image, pos.x-applet.originX, pos.y-applet.originY);
-				break;
-			case UP:
-				applet.pushMatrix();
-					applet.translate(pos.x-applet.originX, pos.y-applet.originY);
-					applet.rotate(PApplet.radians(-90));
-					applet.image(image, 0, 0);
-				applet.popMatrix();
-				break;
-			case DOWN:
-				applet.pushMatrix();
-					applet.translate(pos.x-applet.originX, pos.y-applet.originY);
-					applet.rotate(PApplet.radians(90));
-					applet.image(image, 0, 0);
-				applet.popMatrix();
-				break;
-		}
-		applet.stroke(255);
-		applet.noFill();
-		applet.rect(pos.x-applet.originX, pos.y-applet.originY, width, height);
-	}
-	
-	public void update() {
-		image = animation.animate(applet.frameCount, applet.deltaTime);
-		
-		//Destroy on collide
-		if(!hit) {
-			for(int i=0; i<applet.collisions.size(); i++) {
-				Collision collision = applet.collisions.get(i);
-				
-				if(collides(collision) && !collision.flag.equals("TRANSPARENT_BULLET")) {
-					hit = true;
-					
-					width = 8*4;
-					height = 8*4;
-					
-					//Realistic Colliding
-					if(pos.x-applet.originX < collision.pos.x-applet.originX) {
-						pos.x = collision.pos.x-collision.width/2;
-					}
-					else if(pos.x-applet.originX > collision.pos.x-applet.originX) {
-						pos.x = collision.pos.x+collision.width/2;
-					}
-					else if(pos.y-applet.originY+height/2 < collision.pos.y-applet.originY) {
-						pos.y = collision.pos.y-collision.height/2 - height/2;
-					}
-					else if(pos.y-applet.originY > collision.pos.y-applet.originY) {
-						pos.y = collision.pos.y+collision.height/2 + height/2;
-					}
-					
-					//Setup Animation
-					animation.frames = getAnimation("MAGIC::IDLE");
-					animation.loop = true;
-					animation.length = 8;
-					animation.rate = 4;
-					animation.frame = 0;
-					animation.start = 0;
-					
-					//Override Animation
-					image = animation.animate(applet.frameCount, applet.deltaTime);
-					
-					//applet.projectileObjects.remove(this);
-				}
-			}
-		}
-		
-		//Move Projectile
-		if(!hit) {
-			switch(direction) {
-				case LEFT:
-					pos.x -= speed;
-					
-					width = 22*4;
-					height = 10*4;
-					break;
-				case RIGHT:
-					pos.x += speed;
-					
-					width = 22*4;
-					height = 10*4;
-					break;
-				case UP:
-					pos.y -= speed;
-					
-					width = 10*4;
-					height = 22*4;
-					break;
-				case DOWN:
-					pos.y += speed;
-					
-					width = 10*4;
-					height = 22*4;
-					break;
-			}
+		case RIGHT:
+			pos.x += speed;
+			break;
+		case UP:
+			pos.y -= speed;
+			break;
+		case DOWN:
+			pos.y += speed;
+			break;
 		}
 	}
-	
-	public void hit(Collision collision) {
+
+	public void hit(CollidableObject collision) {
 		hit = true;
-		
-		width = 8*4;
-		height = 8*4;
-		
-		//Realistic Colliding
-		if(pos.x-applet.originX < collision.pos.x-applet.originX) {
-			pos.x = collision.pos.x-collision.width/2;
-		}
-		else if(pos.x-applet.originX > collision.pos.x-applet.originX) {
-			pos.x = collision.pos.x+collision.width/2;
-		}
-		else if(pos.y-applet.originY+height/2 < collision.pos.y-applet.originY) {
-			pos.y = collision.pos.y-collision.height/2 - height/2;
-		}
-		else if(pos.y-applet.originY > collision.pos.y-applet.originY) {
-			pos.y = collision.pos.y+collision.height/2 + height/2;
-		}
-		
-		//Setup Animation
-		animation.frames = getAnimation("MAGIC::IDLE");
-		animation.loop = true;
-		animation.length = 8;
-		animation.rate = 4;
-		animation.frame = 0;
-		animation.start = 0;
-		
-		//Override Animation
-		image = animation.animate(applet.frameCount, applet.deltaTime);
+		trail.spawn = false;
 	}
+
+	public void debugMode() {
+		applet.stroke(255,0,0);
+		applet.noFill();
+		if(direction == LEFT || direction == RIGHT)applet.rect(pos.x, pos.y, width, height);
+		else applet.rect(pos.x, pos.y, height, width);
+	}
+	
+	private void setParticleAnimation(SideScroller a) {
+		particleAnimation = new ArrayList<PImage>();
+		PImage image = Tileset.getTile("MAGIC_SOURCE");
+		float scale = 0.12f;
+		float angle = PApplet.radians(11);
+		while(scale > 0.025f) {
+			particleAnimation.add(Util.pg(Util.resizeImage(Util.rotateImage(image.copy(), angle), scale),4));
+			angle += PApplet.radians(PApplet.radians(11));
+			scale -= Math.random() * 0.03;
+		}
+	}
+
 }

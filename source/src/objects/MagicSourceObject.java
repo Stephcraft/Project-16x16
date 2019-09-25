@@ -1,62 +1,103 @@
 package objects;
 
+import java.util.ArrayList;
+
+import ParticleSystem.ParticleSystem;
+import ParticleSystem.emissions.AreaEmission;
+import ParticleSystem.events.ParticleAnimationController;
+import processing.core.PApplet;
+import processing.core.PImage;
 import projectiles.MagicProjectile;
 import projectiles.Swing;
+import scene.GameplayScene;
 import sidescroller.SideScroller;
+import sidescroller.Tileset;
+import sidescroller.Util;
 
+/**
+ * Extends {@link GameObject}.
+ */
 public class MagicSourceObject extends GameObject {
-	
-	public MagicSourceObject(SideScroller a) {
-		super(a);
-		
-		type = "OBJECT";
+
+	private static ArrayList<PImage> particleAnimation;
+	private ParticleSystem trail;
+
+	public MagicSourceObject(SideScroller a, GameplayScene g) {
+		super(a, g);
+
+		type = type.OBJECT;
 		id = "MAGIC_SOURCE";
+
+		if (particleAnimation == null)
+			setParticleAnimation(a);
 		
-		//Default image
-		image = applet.gameGraphics.get("MAGIC_SOURCE");
-		
-		//Setup Animation
-		animation.frames = applet.gameGraphics.ga(applet.magicSheet, 0,0, 16,16, 80);
-		animation.loop = true;
-		animation.length = 79;
-		animation.rate = 6;
-		animation.frame = 0;
-		animation.start = 0;
+		trail = new ParticleSystem(a, image, 5, 1, 0.4f);
+		trail.setEmission(new AreaEmission(pos, 1f, -0.01f, 5));
+		trail.addEventListener(new ParticleAnimationController(particleAnimation, -1));
 		
 		width = 48;
 		height = 48;
-		
+
 		pos.y = -80;
 	}
-	
+
+	@Override
 	public void display() {
-		applet.image(image, pos.x-applet.originX, pos.y-applet.originY);
+		trail.run();
 	}
 	
+	//oldMillis is used to calculate the difference in time between shots.
+	//shotDelay denotes the "fire rate" of the MagicSource in milliseconds.
+	int oldMillis = 0;
+	int shotDelay = 500;
+	
+	@Override
 	public void update() {
-		image = animation.animate(applet.frameCount, applet.deltaTime);
-		
-		//Create new Magic Projectiles
-		for(int i=0; i<applet.player.swings.size(); i++) {
-			Swing swing = applet.player.swings.get(i);
-			
-			if(collidesWithSwing(swing)) {
-				if(!swing.activated) {
-					applet.projectileObjects.add( new MagicProjectile(applet, (int)pos.x, (int)pos.y, swing.direction) );
+		// Create new Magic Projectiles
+		for (int i = 0; i < gameScene.getPlayer().swings.size(); i++) {
+			Swing swing = gameScene.getPlayer().swings.get(i);
+
+			if (collidesWithSwing(swing)) {
+				if (!swing.activated) {
 					
-					swing.activated = true;
+					if(applet.millis() > oldMillis + shotDelay) {
+						oldMillis = applet.millis();
+						
+						gameScene.projectileObjects
+							.add(new MagicProjectile(applet, gameScene, (int) pos.x, (int) pos.y, swing.direction));
+
+						swing.activated = true;
+					}
 				}
 			}
 		}
 	}
-	
+
 	public boolean collidesWithSwing(Swing swing) {
-		return (swing.pos.x-applet.originX+swing.width/2 > pos.x-applet.originX-width/2 && swing.pos.x-applet.originX-swing.width/2 < pos.x-applet.originX+width/2) &&
-			   (swing.pos.y-applet.originY+swing.height/2 > pos.y-applet.originY-height/2 && swing.pos.y-applet.originY-swing.height/2 < pos.y-applet.originY+height/2);
+		return (swing.pos.x + swing.width / 2 > pos.x - width / 2
+				&& swing.pos.x - swing.width / 2 < pos.x + width / 2)
+				&& (swing.pos.y + swing.height / 2 > pos.y - height / 2
+						&& swing.pos.y - swing.height / 2 < pos.y + height / 2);
+	}
+
+	public boolean collidesWithPlayer() {
+		return (gameScene.getPlayer().pos.x + gameScene.getPlayer().width / 2 > pos.x - width / 2
+				&& gameScene.getPlayer().pos.x - gameScene.getPlayer().width / 2 < pos.x + width / 2)
+				&& (gameScene.getPlayer().pos.y + gameScene.getPlayer().height / 2 > pos.y
+						- height / 2
+						&& gameScene.getPlayer().pos.y - gameScene.getPlayer().height / 2 < pos.y
+								+ height / 2);
 	}
 	
-	public boolean collidesWithPlayer() {
-		return (applet.player.pos.x-applet.originX+applet.player.width/2 > pos.x-applet.originX-width/2 && applet.player.pos.x-applet.originX-applet.player.width/2 < pos.x-applet.originX+width/2) &&
-			   (applet.player.pos.y-applet.originY+applet.player.height/2 > pos.y-applet.originY-height/2 && applet.player.pos.y-applet.originY-applet.player.height/2 < pos.y-applet.originY+height/2);
+	private void setParticleAnimation(SideScroller a) {
+		particleAnimation = new ArrayList<PImage>();
+		PImage image = Tileset.getTile("MAGIC_SOURCE");
+		float scale = 0.12f;
+		float angle = PApplet.radians(11);
+		while(scale > 0.025f) {
+			particleAnimation.add(Util.pg(Util.resizeImage(Util.rotateImage(image.copy(), angle), scale),4));
+			angle += PApplet.radians(PApplet.radians(11));
+			scale -= Math.random() * 0.03;
+		}
 	}
 }
