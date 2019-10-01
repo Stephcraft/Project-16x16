@@ -18,6 +18,11 @@ First, join our [Discord server](https://discord.gg/zDJSCqd) this is where anyth
 #### Other developers
 * Write your ideas in the folder `idea`, preferably with the `.md` file format or share on Discord directly!
 
+## Overall goal
+The goal of the project is to create an amazing video game with processing to make people go WOW. We are going the extra mile to show what can be achieved with processing and to understand from A to Z how we made it. We are building a big project from scratch to inspire others.  
+
+> Contribution to an open source project is a great element to display on your portfolio
+
 ## Concept
 Art by 0x72 (more [here](https://0x72.itch.io/16x16-industrial-tileset)).
 
