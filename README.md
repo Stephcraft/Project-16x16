@@ -1,27 +1,24 @@
 # Project-16x16
-Project 16x16 is a 2D Platformer game made using the [Processing](https://processing.org) library for Java. 
+Looking forward to contribute to an awesome open source project? Well here is a good one! Project 16x16 is a 2D Platformer game made with java and processing. **You** are able to contribute to this project. The goal is to make a cool game in processing together, that includes **You**. Plus, if you are not a programmer, well this is a game so we need cool ideas for gameplay mechanics, original story concepts, level designers, also people who can create soundtracks/audio, and artists! We are already using the amazing industrial tileset made by [0x72](https://0x72.itch.io/16x16-industrial-tileset), **but!** additional art is needed like UI designs, effects and **epic bosses for epic boss fights** ;) 
 
 ## How do I start!
-Wow!! This project seems **EPIC!** Right? And its made in processing, like *whhhooaaahht* ! So how do I get in, how do I start? Simple:
+Wow!! This project seems **EPIC!** Right? And its made in processing, like *whhhooaaahht* ! So how do I get in, how do I start? Simple:  
 
-If you are not a programmer, you can still contribute: we need ideas for gameplay mechanics and story, level designers, soundtracks/audio, and artists! We are already using the amazing industrial tileset made by [0x72](https://0x72.itch.io/16x16-industrial-tileset) **but** it's limited: additional art like UI designs, effects and **epic bosses for epic boss fights** is also needed!
-
-## How do I start?
-Wow!! This project seems **EPIC!** Right? And its made in Processing, like *whhhooaaahht* ! So, how do I get in? How do I start?
-
-### Everybody
-* Join the [Discord server](https://discord.gg/zDJSCqd) -- this is where anything and everything (not just code) relating to development is discussed.
+First, join our [Discord server](https://discord.gg/zDJSCqd) this is where anything and everything (not just code) related to development is discussed.
 
 #### Programmers
-1. Read about [Processing](https://processing.org) (if you haven't already) -- we also recommend the video tutorials [here](https://www.youtube.com/watch?v=2VLaIr5Ckbs&list=PLRqwX-V7Uu6ZYJC7L-r6rX6utt6wwJCyi).
-2. See [`CONTRIBUTING.md`](https://github.com/Stephcraft/Project-16x16/blob/development/CONTRIBUTING.md) -- this will explain how to get started and delve into the code.
+1. Want to learn how to code? [dive right in](http://hello.processing.org)
+2. Don't know processing? [their official website](https://processing.org/)
+3. Still don't know processing? [Epic processing tutorials by the CodingTrain on YouTube](https://www.youtube.com/watch?v=2VLaIr5Ckbs&list=PLRqwX-V7Uu6ZYJC7L-r6rX6utt6wwJCyi)
+4. Now you should know processing, but maybe you've never used the Eclipse IDE before, [tutorial here](https://processing.org/tutorials/eclipse/)
+5. First time contributing to an open source project? [we made CONTRIBUTING.md just for you](https://github.com/Stephcraft/Project-16x16/blob/master/CONTRIBUTING.md)
+6. Okay, now you are ready to setup the project in eclipse, [read this wiki](https://github.com/Stephcraft/Project-16x16/wiki/Setup)
+7. Have fun coding and meeting other contributors on discord :D
 
-#### Artists, Sound designers, Ideas
-* Write your ideas in the repository folder `idea` in the text file format of your choice, for exemple: `.md`, `.txt` or `.docx` (or share on Discord).
+#### Other developers
+* Write your ideas in the folder `idea`, preferably with the `.md` file format or share on Discord directly!
 
----
-
-## This is the final result we are aiming for
+## Concept
 Art by 0x72 (more [here](https://0x72.itch.io/16x16-industrial-tileset)).
 
 ![image](https://img.itch.zone/aW1hZ2UvMTYyMzY0Lzc3MzkzMy5naWY=/794x1000/K7WB6P.gif) 
