@@ -44,6 +44,8 @@ The temperature meter indicates the player character's temperature. It will star
 
 There will be special items that can be equipped to complete actions in the game. These will take the place of the blade.
 
+We might be able to add different categories of special Items. Clothes, weapons, and other.
+
 ## Controls
 
 Press E to interact
