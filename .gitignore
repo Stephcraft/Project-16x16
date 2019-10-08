@@ -14,6 +14,7 @@ source/.idea
 
 # Maven dirs
 source/target
+source/target/maven-status/maven-compiler-plugin/compile/default-compile
 source/out
 
 # Package Files #
