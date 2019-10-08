@@ -7,6 +7,15 @@
 # BlueJ files
 *.ctxt
 
+# IntelliJ files
+.idea
+source/.idea
+*.iml
+
+# Maven dirs
+source/target
+source/out
+
 # Package Files #
 *.war
 *.nar
