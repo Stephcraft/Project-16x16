@@ -6,11 +6,7 @@ import java.util.Iterator;
 
 import entities.Player;
 
-import objects.EditorItem;
-import objects.GameObject;
-import objects.BackgroundObject;
-import objects.CollidableObject;
-import objects.EditableObject;
+import objects.*;
 
 import processing.core.*;
 import processing.data.JSONArray;
@@ -92,7 +88,9 @@ public class GameplayScene extends PScene {
 	private int scroll_inventory;
 
 	private Player player;
-	
+
+	private MagicSourceObject magic;
+
 	private PVector mouseDown, origPos;
 
 	public GameplayScene(SideScroller a) {
@@ -365,6 +363,7 @@ public class GameplayScene extends PScene {
 			case MODIFY :
 				editorItem.update();
 				editorItem.display();
+				magic.relocate();
 				break;
 			case MOVE :
 				break;
@@ -744,6 +743,10 @@ public class GameplayScene extends PScene {
 						GameObject gameObject = (GameObject) ctor.newInstance(new Object[] { applet, this });
 						gameObject.pos.x = item.getInt("x");
 						gameObject.pos.y = item.getInt("y");
+
+						if (gameObjectClass == MagicSourceObject.class){
+							magic = (MagicSourceObject) gameObject;
+						};
 
 						gameObjects.add(gameObject); // Append To Level
 						break;

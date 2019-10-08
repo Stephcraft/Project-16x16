@@ -7,6 +7,7 @@ import ParticleSystem.emissions.AreaEmission;
 import ParticleSystem.events.ParticleAnimationController;
 import processing.core.PApplet;
 import processing.core.PImage;
+import processing.core.PVector;
 import projectiles.MagicProjectile;
 import projectiles.Swing;
 import scene.GameplayScene;
@@ -50,7 +51,12 @@ public class MagicSourceObject extends GameObject {
 	//shotDelay denotes the "fire rate" of the MagicSource in milliseconds.
 	int oldMillis = 0;
 	int shotDelay = 500;
-	
+
+	public void relocate(){
+		trail.setEmission(new AreaEmission(pos, 1f, -0.01f, 5));
+		trail.addEventListener(new ParticleAnimationController(particleAnimation, -1));
+	}
+
 	@Override
 	public void update() {
 		// Create new Magic Projectiles
