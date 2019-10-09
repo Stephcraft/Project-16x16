@@ -108,31 +108,84 @@
                 <plugin>
                     <artifactId>maven-clean-plugin</artifactId>
                     <version>3.1.0</version>
+                    <executions>
+                        <execution>
+                            <phase>none</phase>
+                        </execution>
+                    </executions>
                 </plugin>
                 <plugin>
                     <artifactId>maven-resources-plugin</artifactId>
                     <version>3.0.2</version>
+                    <executions>
+                        <execution>
+                            <phase>none</phase>
+                        </execution>
+                    </executions>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-compiler-plugin</artifactId>
                     <version>3.8.0</version>
+                    <executions>
+                        <execution>
+                            <phase>none</phase>
+                        </execution>
+                    </executions>
                 </plugin>
                 <plugin>
                     <artifactId>maven-surefire-plugin</artifactId>
                     <version>2.22.1</version>
+                    <executions>
+                        <execution>
+                            <phase>none</phase>
+                        </execution>
+                    </executions>
                 </plugin>
                 <plugin>
                     <artifactId>maven-jar-plugin</artifactId>
                     <version>3.0.2</version>
+                    <executions>
+                        <execution>
+                            <phase>none</phase>
+                        </execution>
+                    </executions>
                 </plugin>
                 <plugin>
                     <artifactId>maven-install-plugin</artifactId>
                     <version>2.5.2</version>
+                    <executions>
+                        <execution>
+                            <phase>none</phase>
+                        </execution>
+                    </executions>
                 </plugin>
                 <plugin>
                     <artifactId>maven-deploy-plugin</artifactId>
                     <version>2.8.2</version>
+                    <executions>
+                        <execution>
+                            <phase>none</phase>
+                        </execution>
+                    </executions>
+                </plugin>
+                <plugin>
+                    <artifactId>maven-site-plugin</artifactId>
+                    <version>3.7.1</version>
+                    <executions>
+                        <execution>
+                            <phase>none</phase>
+                        </execution>
+                    </executions>
+                </plugin>
+                <plugin>
+                    <artifactId>maven-project-info-reports-plugin</artifactId>
+                    <version>3.0.0</version>
+                    <executions>
+                        <execution>
+                            <phase>none</phase>
+                        </execution>
+                    </executions>
                 </plugin>
                 <plugin>
                     <artifactId>maven-assembly-plugin</artifactId>
@@ -148,23 +201,6 @@
                     </configuration>
                 </plugin>
                 <plugin>
-                    <artifactId>maven-site-plugin</artifactId>
-                    <version>3.7.1</version>
-                </plugin>
-                <plugin>
-                    <artifactId>maven-project-info-reports-plugin</artifactId>
-                    <version>3.0.0</version>
-                </plugin>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-compiler-plugin</artifactId>
-                    <version>3.1</version>
-                    <configuration>
-                        <source>1.8</source>
-                        <target>1.8</target>
-                    </configuration>
-                </plugin>
-                <plugin>
                     <groupId>com.akathist.maven.plugins.launch4j</groupId>
                     <artifactId>launch4j-maven-plugin</artifactId>
                     <executions>
@@ -176,37 +212,30 @@
                             </goals>
                             <configuration>
                                 <headerType>gui</headerType>
-                                <jar>target/Project16x16-1.0.0.jar.jar</jar>
-                                <outfile>target/Project16x16.exe</outfile>
+                                <jar>${project.build.directory}/Project16x16-1.0.0-jar-with-dependencies.jar</jar>
+                                <outfile>${project.build.directory}/${project.artifactId}.exe</outfile>
                                 <downloadUrl>http://java.com/download</downloadUrl>
-                                <classPath>
-                                    <mainClass>org.project16x16.sidescroller.SideScroller</mainClass>
-                                    <preCp>anything</preCp>
-                                </classPath>
+                                <pluginArtifacts></pluginArtifacts>
                                 <jre>
+                                    <path>C:\Program Files\Java\jdk-12.0.2</path>
                                     <bundledJre64Bit>false</bundledJre64Bit>
                                     <bundledJreAsFallback>false</bundledJreAsFallback>
-                                    <minVersion>1.8.0</minVersion>
+                                    <minVersion></minVersion>
+                                    <maxVersion></maxVersion>
                                     <jdkPreference>preferJre</jdkPreference>
-                                    <runtimeBits>32</runtimeBits>
+                                    <runtimeBits>64/32</runtimeBits>
                                 </jre>
-                                <versionInfo>
-                                    <fileVersion>1.0.0.0</fileVersion>
-                                    <txtFileVersion>${project.version}</txtFileVersion>
-                                    <fileDescription>${project.name}</fileDescription>
-                                    <copyright>2017 spiraluplabs.com</copyright>
-                                    <productVersion>1.0.0.0</productVersion>
-                                    <txtProductVersion>1.0.0.0</txtProductVersion>
-                                    <productName>${project.name}</productName>
-                                    <companyName>SpiralUp</companyName>
-                                    <internalName>SpiralShareAutoAllocation</internalName>
-                                    <originalFilename>SpiralShareAutoAllocation.exe</originalFilename>
-                                </versionInfo>
                             </configuration>
                         </execution>
                     </executions>
                 </plugin>
             </plugins>
         </pluginManagement>
+        <plugins>
+            <plugin>
+                <groupId>com.akathist.maven.plugins.launch4j</groupId>
+                <artifactId>launch4j-maven-plugin</artifactId>
+            </plugin>
+        </plugins>
     </build>
 </project>
