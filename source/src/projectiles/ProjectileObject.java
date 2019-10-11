@@ -34,8 +34,8 @@ public class ProjectileObject extends EditableObject {
 
 	public boolean hit;
 
-	public ProjectileObject(SideScroller a, GameplayScene g) {
-		super(a, g);
+	public ProjectileObject(GameplayScene g) {
+		super(g);
 
 		id = "";
 		spawnTime = applet.frameCount;

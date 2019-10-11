@@ -28,8 +28,8 @@ public class Button extends PClass {
 	 * 
 	 * @param a Reference to Game
 	 */
-	public Button(SideScroller a) {
-		super(a);
+	public Button() {
+		super();
 		text = "Press me";
 		width = 0;
 		height = 0;
@@ -54,7 +54,7 @@ public class Button extends PClass {
 	
 	//Display with custom size
 	
-	public void manDisplay() { 
+	public void manDisplay() {
 		applet.strokeWeight(4);
 		displayColors();
 		applet.pushMatrix();
@@ -74,10 +74,10 @@ public class Button extends PClass {
 	 */
 	public void update() {
 		press = false;
-		if (applet.mousePressEvent) {
+		if (applet.isMousePressEvent()) {
 			focus = hover();
 		}
-		if (applet.mouseReleaseEvent) {
+		if (applet.isMouseReleaseEvent()) {
 			if (hover()) {
 				press = true;
 			}
@@ -87,9 +87,9 @@ public class Button extends PClass {
 
 	public void updateOnPress() {
 		press = false;
-		if (applet.mousePressEvent) {
+		if (applet.isMousePressEvent()) {
 			focus = hover();
-		} else if (applet.mouseReleaseEvent && hover()) {
+		} else if (applet.isMouseReleaseEvent() && hover()) {
 			press = true;
 		}
 	}

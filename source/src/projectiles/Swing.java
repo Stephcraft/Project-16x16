@@ -3,7 +3,6 @@ package projectiles;
 import components.AnimationComponent;
 import processing.core.PVector;
 import scene.GameplayScene;
-import sidescroller.SideScroller;
 import sidescroller.Tileset;
 
 public class Swing extends ProjectileObject { // PClass
@@ -12,8 +11,8 @@ public class Swing extends ProjectileObject { // PClass
 
 	public boolean activated;
 
-	public Swing(SideScroller a, GameplayScene g, int x, int y, int dir) {
-		super(a, g);
+	public Swing(GameplayScene g, int x, int y, int dir) {
+		super(g);
 		animation = new AnimationComponent();
 
 		direction = dir;

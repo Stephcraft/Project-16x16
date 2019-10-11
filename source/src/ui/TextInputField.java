@@ -21,10 +21,9 @@ public class TextInputField extends PClass {
 
 	/**
 	 * Constructor for PInput
-	 * @param  a This a reference to the game //TODO: having variable names that are just letters can be confusing to new contributors
 	 */
-	public TextInputField(SideScroller a) {
-		super(a);
+	public TextInputField() {
+		super();
 
 		width = 200;
 		height = 30;
@@ -72,11 +71,11 @@ public class TextInputField extends PClass {
 
 		// Focus Event
 		if (Util.hoverScreen(x, y, width, height)) {
-			if (applet.mousePressEvent) {
+			if (applet.isMousePressEvent()) {
 				focus = true;
 			}
 		} else {
-			if (applet.mousePressEvent) {
+			if (applet.isMousePressEvent()) {
 				focus = false;
 			}
 		}
@@ -84,7 +83,7 @@ public class TextInputField extends PClass {
 		// Typing
 		if (focus) {
 			applet.textSize(20);
-			if (applet.keyPressEvent) {
+			if (applet.isKeyPressEvent()) {
 				if (applet.key != '\u0008') {
 					if (applet.textWidth(text) < width - 20) {
 						if (applet.key != '\uFFFF' && applet.key != '\n') {

@@ -95,8 +95,8 @@ public class GameplayScene extends PScene {
 	
 	private PVector mouseDown, origPos;
 
-	public GameplayScene(SideScroller a) {
-		super(a);
+	public GameplayScene() {
+		super();
 		setup();
 	}
 
@@ -118,7 +118,7 @@ public class GameplayScene extends PScene {
 		inventory.add("XBox");
 
 		// Init Editor Components
-		editorItem = new EditorItem(applet, this);
+		editorItem = new EditorItem(this);
 
 		// Get Slots Graphics
 		slot = Tileset.getTile(289, 256, 20, 21, 4);
@@ -138,7 +138,7 @@ public class GameplayScene extends PScene {
 		icon_saveActive = Tileset.getTile(307, 291, 9, 9, 4);
 
 		// Init Window
-		window_saveLevel = new SaveLevelWindow(applet, this);
+		window_saveLevel = new SaveLevelWindow(this);
 //		window_test = new TestWindow(applet);
 		window_loadLevel = new LoadLevelWindow(applet, this);
 
@@ -150,19 +150,19 @@ public class GameplayScene extends PScene {
 		scrollBar.setBarRatio(0.8f);
 
 		// Default Scene
-		collidableObjects.add(new CollidableObject(applet, this, "METAL_WALK_MIDDLE:0", 0, 0));
+		collidableObjects.add(new CollidableObject(this, "METAL_WALK_MIDDLE:0", 0, 0));
 
 		// Default Tool
 		tool = Tools.MODIFY;
 
 		// Init Player
-		player = new Player(applet, this);
+		player = new Player(this);
 		player.pos.x = 0; // // TODO set to spawn loc
 		player.pos.y = -100; // // TODO set to spawn loc
 
 		loadLevel(SideScroller.LEVEL); // TODO change level
 
-		windowTabs = new Tab(applet, tabTexts, 3);
+		windowTabs = new Tab(tabTexts, 3);
 	}
 
 	/**
@@ -176,7 +176,7 @@ public class GameplayScene extends PScene {
 
 		if (tool == Tools.MODIFY) {
 			displayGrid();
-			if (applet.mousePressEvent && focusedObject != null) {
+			if (applet.isMousePressEvent() && focusedObject != null) {
 				focusedObject.updateEdit(); // enforce one item selected at once
 			}
 		}
@@ -189,9 +189,9 @@ public class GameplayScene extends PScene {
 
 			backgroundObjects.get(i).display();
 
-			if (backgroundObjects.get(i).focus && applet.keyPress(8) && applet.keyPressEvent) {
+			if (backgroundObjects.get(i).focus && applet.keyPress(8) && applet.isKeyPressEvent()) {
 				backgroundObjects.remove(i);
-				applet.keyPressEvent = false;
+				applet.setKeyPressEvent(false);
 			}
 		}
 
@@ -203,9 +203,9 @@ public class GameplayScene extends PScene {
 
 			collidableObjects.get(i).display();
 
-			if (collidableObjects.get(i).focus && applet.keyPress(8) && applet.keyPressEvent) {
+			if (collidableObjects.get(i).focus && applet.keyPress(8) && applet.isKeyPressEvent()) {
 				collidableObjects.remove(i);
-				applet.keyPressEvent = false;
+				applet.setKeyPressEvent(false);
 			}
 		}
 
@@ -222,9 +222,9 @@ public class GameplayScene extends PScene {
 			gameObjects.get(i).display();
 
 			// Delete
-			if (gameObjects.get(i).focus && applet.keyPress(8) && applet.keyPressEvent) {
+			if (gameObjects.get(i).focus && applet.keyPress(8) && applet.isKeyPressEvent()) {
 				gameObjects.remove(i);
-				applet.keyPressEvent = false;
+				applet.setKeyPressEvent(false);
 			}
 		}
 
@@ -299,7 +299,7 @@ public class GameplayScene extends PScene {
 						img.height * (float) 0.5);
 
 				// Focus Event
-				if (applet.mousePressEvent) {
+				if (applet.isMousePressEvent()) {
 					float x = 20 * 4 / 2 + 10 + i * (20 * 4 + 10);
 					float y = 20 * 4 / 2 + 10;
 					if (applet.getMouseCoordScreen().x > x - (20 * 4) / 2 && applet.getMouseCoordScreen().x < x + (20 * 4) / 2
@@ -314,7 +314,7 @@ public class GameplayScene extends PScene {
 
 		// GUI Icons
 		if (tool == Tools.MOVE || (Util.hoverScreen(40, 120, 36, 36) && tool != Tools.SAVE && tool != Tools.INVENTORY)) {
-			if (Util.hoverScreen(40, 120, 36, 36) && applet.mousePressEvent) {
+			if (Util.hoverScreen(40, 120, 36, 36) && applet.isMousePressEvent()) {
 				tool = Tools.MOVE;
 			}
 			image(icon_eyeActive, 40, 120);
@@ -322,7 +322,7 @@ public class GameplayScene extends PScene {
 			image(icon_eye, 40, 120);
 		}
 		if (tool == Tools.MODIFY || (Util.hoverScreen(90, 120, 36, 36) && tool != Tools.SAVE && tool != Tools.INVENTORY)) {
-			if (Util.hoverScreen(90, 120, 36, 36) && applet.mousePressEvent) {
+			if (Util.hoverScreen(90, 120, 36, 36) && applet.isMousePressEvent()) {
 				tool = Tools.MODIFY;
 			}
 			image(icon_arrowActive, 90, 120);
@@ -331,7 +331,7 @@ public class GameplayScene extends PScene {
 		}
 		if (tool == Tools.INVENTORY
 				|| (Util.hoverScreen(90 + 48, 120, 36, 36) && tool != Tools.SAVE && tool != Tools.INVENTORY)) {
-			if (Util.hoverScreen(90 + 48, 120, 36, 36) && applet.mousePressEvent) {
+			if (Util.hoverScreen(90 + 48, 120, 36, 36) && applet.isMousePressEvent()) {
 				tool = Tools.INVENTORY;
 			}
 			image(icon_inventoryActive, 90 + 48, 120);
@@ -340,8 +340,8 @@ public class GameplayScene extends PScene {
 		}
 		if (tool == Tools.PLAY
 				|| (Util.hoverScreen(90 + 48 * 2, 120, 36, 36) && tool != Tools.SAVE && tool != Tools.INVENTORY)) {
-			if (Util.hoverScreen(90 + 48 * 2, 120, 36, 36) && applet.mousePressEvent) {
-				applet.camera.setFollowObject(player);
+			if (Util.hoverScreen(90 + 48 * 2, 120, 36, 36) && applet.isMousePressEvent()) {
+				applet.getCamera().setFollowObject(player);
 				tool = Tools.PLAY;
 			}
 			image(icon_playActive, 90 + 48 * 2, 120);
@@ -350,7 +350,7 @@ public class GameplayScene extends PScene {
 		}
 		if (tool == Tools.SAVE
 				|| (Util.hoverScreen(90 + 48 * 3, 120, 36, 36) && tool != Tools.SAVE && tool != Tools.INVENTORY)) {
-			if (Util.hoverScreen(90 + 48 * 3, 120, 36, 36) && applet.mousePressEvent) {
+			if (Util.hoverScreen(90 + 48 * 3, 120, 36, 36) && applet.isMousePressEvent()) {
 				tool = Tools.SAVE;
 			}
 			image(icon_saveActive, 90 + 48 * 3, 120);
@@ -487,7 +487,7 @@ public class GameplayScene extends PScene {
 			}
 
 			// Grab Item
-			if (applet.mousePressEvent) {
+			if (applet.isMousePressEvent()) {
 				float xx = 20 * 4 / 2 + 10 + x * (20 * 4 + 10);
 				float yy = y * (20 * 4 + 10) + scroll_inventory;
 				if (applet.getMouseCoordScreen().y > 100) {
@@ -528,7 +528,7 @@ public class GameplayScene extends PScene {
 					img.height * (float) 0.5);
 
 			// Focus Event
-			if (applet.mouseReleaseEvent) {
+			if (applet.isMousePressEvent()) {
 				float xx = 20 * 4 / 2 + 10 + i * (20 * 4 + 10);
 				float yy = 20 * 4 / 2 + 10;
 				if (editorItem.focus && applet.getMouseCoordScreen().x > xx - (20 * 4) / 2 && applet.getMouseCoordScreen().x < xx + (20 * 4) / 2
@@ -572,14 +572,14 @@ public class GameplayScene extends PScene {
 
 	@Override
 	void mousePressed(MouseEvent e) {
-		origPos = applet.camera.getPosition();
+		origPos = applet.getCamera().getPosition();
 		mouseDown = applet.getMouseCoordScreen();
 	}
 
 	@Override
 	void mouseDragged(MouseEvent e) {
 		if (e.getButton() == PConstants.CENTER && tool==Tools.MODIFY) { // pan on MMB; TODO fix when zoom != 1.00
-			applet.camera.setCameraPositionNoLerp(
+			applet.getCamera().setCameraPositionNoLerp(
 					PVector.add(origPos, PVector.sub(mouseDown, applet.getMouseCoordScreen())));
 		}
 	}
@@ -613,7 +613,7 @@ public class GameplayScene extends PScene {
 					break;
 				case 52 : // 4
 					tool = Tools.PLAY;
-                    applet.camera.setFollowObject(player);
+                    applet.getCamera().setFollowObject(player);
 					break;
 				case 53 : // 5
 					tool = Tools.SAVE;
@@ -717,7 +717,7 @@ public class GameplayScene extends PScene {
 			
 			switch (type) { // Read Main
 				case "COLLISION" :
-					CollidableObject collision = new CollidableObject(applet, this);
+					CollidableObject collision = new CollidableObject(this);
 					try {
 						collision.setGraphic(item.getString("id"));
 					} catch (Exception e) {
@@ -730,7 +730,7 @@ public class GameplayScene extends PScene {
 					collidableObjects.add(collision); // Append To Level
 					break;
 				case "BACKGROUND" :
-					BackgroundObject backgroundObject = new BackgroundObject(applet, this);
+					BackgroundObject backgroundObject = new BackgroundObject(this);
 					backgroundObject.setGraphic(item.getString("id"));
 					backgroundObject.pos.x = item.getInt("x");
 					backgroundObject.pos.y = item.getInt("y");
@@ -741,7 +741,7 @@ public class GameplayScene extends PScene {
 					try {
 						Class<? extends GameObject> gameObjectClass = Tileset.getObjectClass(item.getString("id"));
 						Constructor<?> ctor = gameObjectClass.getDeclaredConstructors()[0];
-						GameObject gameObject = (GameObject) ctor.newInstance(new Object[] { applet, this });
+						GameObject gameObject = (GameObject) ctor.newInstance(new Object[] { this });
 						gameObject.pos.x = item.getInt("x");
 						gameObject.pos.y = item.getInt("y");
 

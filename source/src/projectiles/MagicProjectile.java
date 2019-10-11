@@ -25,8 +25,8 @@ public class MagicProjectile extends ProjectileObject {
 	private ParticleSystem trail;
 	private ParticleSystem explode;
 	
-	public MagicProjectile(SideScroller a, GameplayScene g, int x, int y, int dir) {
-		super(a, g);
+	public MagicProjectile(GameplayScene g, int x, int y, int dir) {
+		super(g);
 		
 		id = "MAGIC";
 		pos = new PVector(x, y);
@@ -38,13 +38,13 @@ public class MagicProjectile extends ProjectileObject {
 		height = PROJECTILE_IDLE_SIZE * SCALE;
 		
 		if (particleAnimation == null)
-			setParticleAnimation(a);
+			setParticleAnimation();
 
-		trail = new ParticleSystem(a, image, 40, 1, 0.2f);
+		trail = new ParticleSystem(image, 40, 1, 0.2f);
 		trail.setEmission(new AreaEmission(pos, 0.8f, -0.01f, 8));
 		trail.addEventListener(new ParticleAnimationController(particleAnimation, -1));
 		
-		explode = new ParticleSystem(a, image, 15, 5, 0.4f);
+		explode = new ParticleSystem(image, 15, 5, 0.4f);
 		explode.setEmission(new AreaEmission(pos, 3, -0.13f, 10));
 		explode.addEventListener(new ParticleAnimationController(particleAnimation, -1));
 		explode.addEventListener(new ParticleNoLoopController(10));
@@ -103,7 +103,7 @@ public class MagicProjectile extends ProjectileObject {
 		else applet.rect(pos.x, pos.y, height, width);
 	}
 	
-	private void setParticleAnimation(SideScroller a) {
+	private void setParticleAnimation() {
 		particleAnimation = new ArrayList<PImage>();
 		PImage image = Tileset.getTile("MAGIC_SOURCE");
 		float scale = 0.12f;

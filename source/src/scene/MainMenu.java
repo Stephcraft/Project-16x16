@@ -15,15 +15,12 @@ public final class MainMenu extends PScene {
 	public Button pressQuit;
 	public Button pressSettings; // TODO add settings menu
 	
-	private SideScroller game;
-	
-	public MainMenu(SideScroller a) {
-		super(a);		
-		game = a;
+	public MainMenu() {
+		super();
 		
-		pressStart = new Button(a);
-		pressQuit = new Button(a);
-		pressSettings = new Button(a);
+		pressStart = new Button();
+		pressQuit = new Button();
+		pressSettings = new Button();
 		
 		pressStart.setText("Start Game");
 		pressStart.setPosition(applet.width/2, applet.height/2-150);
@@ -53,12 +50,12 @@ public final class MainMenu extends PScene {
 		pressSettings.manDisplay();
 		pressQuit.manDisplay();
 	}
-	
+
 	private void update() {
 		pressStart.update();
 		if(pressStart.hover()) {
-			game.swapToScene(game.game);
-			game.debug = SideScroller.debugType.ALL;
+			applet.swapToScene(applet.getGame());
+			applet.setDebug(SideScroller.DebugMode.ALL);
 		}
 		
 		pressSettings.update();

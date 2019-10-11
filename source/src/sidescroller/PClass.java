@@ -4,6 +4,7 @@ import processing.core.PApplet;
 import processing.core.PConstants;
 import processing.core.PImage;
 
+import settings.GameSettings;
 import sidescroller.Util;
 
 /**
@@ -17,7 +18,6 @@ import sidescroller.Util;
  * </p>
  */
 public abstract class PClass {
-	public SideScroller applet;
 
 	public static final int CENTER = PConstants.CENTER;
 	public static final int CORNER = PConstants.CORNER;
@@ -34,12 +34,10 @@ public abstract class PClass {
 	public static final int KEY_S = 83;
 	public static final int KEY_D = 68;
 
-	/**
-	 * Constructor
-	 * @param a The SideScroller game controller.
-	 */
-	public PClass(SideScroller a) {
-		applet = a;
+	protected SideScroller applet;
+
+	public PClass() {
+		this.applet = GameSettings.getInstance().getApplet();
 	}
 
 	/**

@@ -21,8 +21,8 @@ public class MirrorBoxObject extends GameObject {
 	final int BOX_W = 64;
 	final int BOX_H = 64;
 
-	public MirrorBoxObject(SideScroller a, GameplayScene g) {
-		super(a, g);
+	public MirrorBoxObject(GameplayScene g) {
+		super(g);
 
 		direction = 0;
 
@@ -34,7 +34,7 @@ public class MirrorBoxObject extends GameObject {
 		width = BOX_W;
 		height = BOX_H;
 
-		collision = new CollidableObject(applet, g, BOX_W, BOX_H, 0, 0, true);
+		collision = new CollidableObject(g, BOX_W, BOX_H, 0, 0, true);
 		collision.flag = "TRANSPARENT_BULLET";
 		g.collidableObjects.add(collision);
 	}

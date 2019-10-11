@@ -8,7 +8,7 @@ import sidescroller.Options;
 import sidescroller.SideScroller;
 import sidescroller.Tileset;
 import sidescroller.Util;
-import sidescroller.SideScroller.debugType;
+import sidescroller.SideScroller.DebugMode;
 
 import java.util.ArrayList;
 
@@ -81,12 +81,10 @@ public final class Player extends EditableObject {
 
 	/**
 	 * Constructor
-	 * 
-	 * @param a SideScroller game controller.
 	 */
-	public Player(SideScroller a, GameplayScene g) {
+	public Player(GameplayScene g) {
 		
-		super(a, g);
+		super(g);
 
 		pos = new PVector(100, 300);
 		gravity = 1;
@@ -130,7 +128,7 @@ public final class Player extends EditableObject {
 			applet.image(image, pos.x, pos.y);
 		}
 
-		if (applet.debug == debugType.ALL) {
+		if (DebugMode.ALL.equals(applet.getDebug())) {
 			applet.strokeWeight(1);
 			applet.stroke(0, 255, 200);
 			applet.noFill();
@@ -149,9 +147,9 @@ public final class Player extends EditableObject {
 		}
 
 		if (!dashing) {
-			speedY += gravity * applet.deltaTime;
+			speedY += gravity * applet.getDeltaTime();
 		} else {
-			speedY += gravity * applet.deltaTime * .5;
+			speedY += gravity * applet.getDeltaTime() * .5;
 		}
 
 		// Save Previous State
@@ -161,23 +159,23 @@ public final class Player extends EditableObject {
 
 		// Move on the x axis
 		if (applet.keyPress(Options.moveRightKey) || applet.keyPress(68)) {
-			if (applet.keyPressEvent && !attack && !dashing) {
+			if (applet.isKeyPressEvent() && !attack && !dashing) {
 				setAnimation(ACTIONS.WALK);
 			}
 			if (!dashing) {
-				speedX = (speedWalk * applet.deltaTime);
+				speedX = (speedWalk * applet.getDeltaTime());
 			} else {
-				speedX = (float) (speedWalk * applet.deltaTime * 1.5);
+				speedX = (float) (speedWalk * applet.getDeltaTime() * 1.5);
 			}
 			direction = RIGHT;
 		} else if (applet.keyPress(Options.moveLeftKey) || applet.keyPress(65)) {
-			if (applet.keyPressEvent && !attack && !dashing) {
+			if (applet.isKeyPressEvent() && !attack && !dashing) {
 				setAnimation(ACTIONS.WALK);
 			}
 			if (!dashing) {
-				speedX = -speedWalk * applet.deltaTime;
+				speedX = -speedWalk * applet.getDeltaTime();
 			} else {
-				speedX = (float) (-speedWalk * applet.deltaTime * 1.5);
+				speedX = (float) (-speedWalk * applet.getDeltaTime() * 1.5);
 			}
 
 			direction = LEFT;
@@ -187,7 +185,7 @@ public final class Player extends EditableObject {
 		}
 		// Dash
 		if (applet.keyPress(Options.dashKey)) {
-			if (applet.keyPressEvent && !dashing) {
+			if (applet.isKeyPressEvent() && !dashing) {
 				setAnimation(ACTIONS.DASH);
 				dashing = true;
 			}
@@ -195,12 +193,12 @@ public final class Player extends EditableObject {
 
 		// Move on the y axis
 		if (applet.keyPress(Options.jumpKey) || applet.keyPress(' ')) {
-			if (applet.keyPressEvent && !flying) { // && speedY == 0 && !flying
+			if (applet.isKeyPressEvent() && !flying) { // && speedY == 0 && !flying
 				flying = true;
 				if (!dashing) {
-					speedY -= (int) (speedJump * applet.deltaTime);
+					speedY -= (int) (speedJump * applet.getDeltaTime());
 				} else {
-					speedY -= (float) (speedJump * applet.deltaTime * 1.2);
+					speedY -= (float) (speedJump * applet.getDeltaTime() * 1.2);
 				}
 
 			}
@@ -218,7 +216,7 @@ public final class Player extends EditableObject {
 			}
 
 			// Create Swing Projectile
-			swings.add(new Swing(applet, gameScene, (int) pos.x, (int) pos.y, direction));
+			swings.add(new Swing(gameScene, (int) pos.x, (int) pos.y, direction));
 		}
 
 		// End Dash
@@ -250,7 +248,7 @@ public final class Player extends EditableObject {
 		}
 		// boolean collides = false;
 
-		if (applet.debug == debugType.ALL) {
+		if (DebugMode.ALL.equals(applet.getDebug())) {
 			applet.noFill();
 			applet.stroke(255, 0, 0);
 			applet.strokeWeight(1);
@@ -261,7 +259,7 @@ public final class Player extends EditableObject {
 		for (int i = 0; i < gameScene.collidableObjects.size(); i++) {
 			CollidableObject collision = gameScene.collidableObjects.get(i);
             if (Util.fastInRange(pos, collision.pos, collisionRange)) { // In Player Range
-				if (applet.debug == debugType.ALL) {
+				if (DebugMode.ALL.equals(applet.getDebug())) {
 					applet.strokeWeight(2);
 					applet.rect(collision.pos.x, collision.pos.y, collision.width, collision.height);
 					applet.fill(255, 0, 0);
@@ -311,7 +309,7 @@ public final class Player extends EditableObject {
 		// On Ground Event
 		if (!flying && pflying && !attack && !dashing) {
 			setAnimation(ACTIONS.SQUISH);
-			applet.camera.shake(0.2f); // TODO consider removing
+			applet.getCamera().shake(0.2f); // TODO consider removing
 		}
 
 		// Idle Animation
@@ -445,8 +443,7 @@ public final class Player extends EditableObject {
 
 	/**
 	 * getter for the currently used animation.
-	 * 
-	 * @param id the animation id
+	 *
 	 * @return the animation being used.
 	 */
 	private ArrayList<PImage> getAnimation(String name) {

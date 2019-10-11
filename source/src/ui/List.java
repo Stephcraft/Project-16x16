@@ -18,7 +18,7 @@ public class List extends PClass {
 	int elementOffSet;
 
 	public List(SideScroller a, String ar[], int elementOffset) {
-		super(a);
+		super();
 		x = 0;
 		y = 0;
 		w = 0;
@@ -33,7 +33,7 @@ public class List extends PClass {
 	// If new elements are present can use it to recreate them
 	private void initalizeElements() {
 		for (int i = 0; i < elements.length; i++)
-			elements[i] = new Button(applet);
+			elements[i] = new Button();
 	}
 
 	public void refreshElements(String ar[]) {
@@ -99,13 +99,13 @@ public class List extends PClass {
 	}
 
 	public void setConfirmButton(String text, int x, int y) {
-		confirm = new Button(applet);
+		confirm = new Button();
 		confirm.setText(text);
 		confirm.setPosition(x, y);
 	}
 
 	public void setCancelButton(String text, int x, int y) {
-		cancel = new Button(applet);
+		cancel = new Button();
 		cancel.setText(text);
 		cancel.setPosition(x, y);
 	}

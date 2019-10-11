@@ -7,7 +7,6 @@ import ParticleSystem.emissions.*;
 import ParticleSystem.events.*;
 import processing.core.PImage;
 import processing.core.PVector;
-import sidescroller.SideScroller;
 import sidescroller.Tileset;
 
 /**
@@ -21,8 +20,7 @@ import sidescroller.Tileset;
 public class ParticleSystem {
 
 	public static final int FRAMERATE = 60;
-	
-	private SideScroller applet;
+
 	public PImage image;
 	public ParticleEmission emission;
 	public Particles particles;
@@ -37,36 +35,33 @@ public class ParticleSystem {
 	/**
      * Create a new particle system.
      * Set emission with setEmission() for a different effect, default provided
-     * 
-     * @param applet 	   SideScroller
+     *
      * @param imageName    particles image name
      * @param spawnRate    How many times a second will particles be spawned
      * @param spawnAmount  How many particles will be spawned
      * @param lifespan     How long will the particle be displayed (seconds)
      */
-	public ParticleSystem(SideScroller applet, String imageName, int spawnRate, int spawnAmount, float lifespan) {
-		this(applet, Tileset.getTile(imageName), spawnRate, spawnAmount, lifespan);
+	public ParticleSystem(String imageName, int spawnRate, int spawnAmount, float lifespan) {
+		this(Tileset.getTile(imageName), spawnRate, spawnAmount, lifespan);
 	}
 	
 	/**
      * Create a new particle system.
      * Set emission with setEmission() for a different effect, default provided
-     * 
-     * @param applet 	   SideScroller
+     *
      * @param image        image of particle
      * @param spawnRate    How many times a second will particles be spawned
      * @param spawnAmount  How many particles will be spawned
      * @param lifespan     How long will the particle be displayed (seconds)
      */
-	public ParticleSystem(SideScroller applet, PImage image, int spawnRate, int spawnAmount, float lifespan) {
-		this.applet = applet;
+	public ParticleSystem(PImage image, int spawnRate, int spawnAmount, float lifespan) {
 		this.spawnRate = spawnRate;
 		this.spawnAmount = spawnAmount;
 		this.lifespan = lifespan;
 		this.image = image;
 		
 		emission = new AreaEmission(new PVector(0,0), 1, 1, 0);
-		particles = new Particles(this, applet);
+		particles = new Particles(this);
 	}
 	
 	public void run() {
@@ -80,7 +75,7 @@ public class ParticleSystem {
 	}
 	
 	public ParticleSystem copy() {
-		ParticleSystem copy = new ParticleSystem(applet, image, spawnRate, spawnAmount, lifespan);
+		ParticleSystem copy = new ParticleSystem(image, spawnRate, spawnAmount, lifespan);
 		copy.setEmission(emission.copy());
 		for(ParticleEventListener mod : listeners)
 			copy.addEventListener(mod.copy());

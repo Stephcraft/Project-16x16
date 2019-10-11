@@ -22,16 +22,16 @@ public class MagicSourceObject extends GameObject {
 	private static ArrayList<PImage> particleAnimation;
 	private ParticleSystem trail;
 
-	public MagicSourceObject(SideScroller a, GameplayScene g) {
-		super(a, g);
+	public MagicSourceObject(GameplayScene g) {
+		super(g);
 
 		type = type.OBJECT;
 		id = "MAGIC_SOURCE";
 
 		if (particleAnimation == null)
-			setParticleAnimation(a);
+			setParticleAnimation();
 		
-		trail = new ParticleSystem(a, image, 5, 1, 0.4f);
+		trail = new ParticleSystem(image, 5, 1, 0.4f);
 		trail.setEmission(new AreaEmission(pos, 1f, -0.01f, 5));
 		trail.addEventListener(new ParticleAnimationController(particleAnimation, -1));
 		
@@ -64,7 +64,7 @@ public class MagicSourceObject extends GameObject {
 						oldMillis = applet.millis();
 						
 						gameScene.projectileObjects
-							.add(new MagicProjectile(applet, gameScene, (int) pos.x, (int) pos.y, swing.direction));
+							.add(new MagicProjectile(gameScene, (int) pos.x, (int) pos.y, swing.direction));
 
 						swing.activated = true;
 					}
@@ -89,7 +89,7 @@ public class MagicSourceObject extends GameObject {
 								+ height / 2);
 	}
 	
-	private void setParticleAnimation(SideScroller a) {
+	private void setParticleAnimation() {
 		particleAnimation = new ArrayList<PImage>();
 		PImage image = Tileset.getTile("MAGIC_SOURCE");
 		float scale = 0.12f;

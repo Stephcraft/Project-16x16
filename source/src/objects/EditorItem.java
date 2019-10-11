@@ -21,13 +21,13 @@ public class EditorItem extends PClass {
 	public tileType type;
 
 	private String mode;
-	
+
 	private GameplayScene gameplayScene;
 
-	public EditorItem(SideScroller a, GameplayScene g) {
-		super(a);
+	public EditorItem(GameplayScene gameplayScene) {
+		super();
 
-		gameplayScene = g;
+		this.gameplayScene = gameplayScene;
 		
 		setTile("BOX");
 		setMode("CREATE");
@@ -46,26 +46,26 @@ public class EditorItem extends PClass {
 		if (focus) {
 			pos = applet.getMouseCoordScreen();
 
-			if (applet.mouseReleaseEvent) {
+			if (applet.isMouseReleaseEvent()) {
 				focus = false;
 
-				if (mode == "CREATE") {
+				if (mode.equals("CREATE")) {
 					// transform from screen mouse pos to game pos
 					// Create new instance from dragged icon
 
-					PVector realPos = applet.camera.getDispToCoord(
-							new PVector(Util.roundToNearest(applet.getMouseCoordScreen().x, SideScroller.snapSize),
-									Util.roundToNearest(applet.getMouseCoordScreen().y, SideScroller.snapSize)));
+					PVector realPos = applet.getCamera().getDispToCoord(
+							new PVector(Util.roundToNearest(applet.getMouseCoordScreen().x, applet.getSnapSize()),
+									Util.roundToNearest(applet.getMouseCoordScreen().y, applet.getSnapSize())));
 					switch (type) {
 						case COLLISION :
-							CollidableObject c = new CollidableObject(applet, gameplayScene, id, 0, 0);
+							CollidableObject c = new CollidableObject(gameplayScene, id, 0, 0);
 							c.pos.x = realPos.x;
 							c.pos.y = realPos.y;
 							c.focus();
 							gameplayScene.collidableObjects.add(c);
 							break;
 						case BACKGROUND :
-							BackgroundObject bObject = new BackgroundObject(applet, gameplayScene, id, 0, 0);
+							BackgroundObject bObject = new BackgroundObject(gameplayScene, id, 0, 0);
 							bObject.pos.x = realPos.x;
 							bObject.pos.y = realPos.y;
 							bObject.focus();

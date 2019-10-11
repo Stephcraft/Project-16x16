@@ -18,17 +18,15 @@ public class PauseMenu extends PScene {
 	public Button pressResume;
 	public Button pressMenu;	//Retruns to main menu
 	public Button pressSettings; //TODO add settings menu
-	
-	private SideScroller game;
+
 	private PImage cache;
 	
-	public PauseMenu(SideScroller a) {
-		super(a);
-		game = a;
+	public PauseMenu() {
+		super();
 		
-		pressResume = new Button(a);
-		pressSettings = new Button(a);
-		pressMenu = new Button(a);
+		pressResume = new Button();
+		pressSettings = new Button();
+		pressMenu = new Button();
 		
 		pressResume.setText("Resume Game");
 		pressResume.setPosition(applet.width/2, applet.height/2-150);
@@ -73,8 +71,8 @@ public class PauseMenu extends PScene {
 	public void update() {
 		pressResume.update();
 		if(pressResume.hover()) {
-			game.returnScene();
-			game.debug = SideScroller.debugType.ALL;
+			applet.returnScene();
+			applet.setDebug(SideScroller.DebugMode.ALL);
 		}
 		
 		pressSettings.update();
@@ -84,8 +82,8 @@ public class PauseMenu extends PScene {
 		
 		pressMenu.update();
 		if(pressMenu.hover()) {
-			game.swapToScene(game.menu);
-			game.debug = SideScroller.debugType.OFF;
+			applet.swapToScene(applet.getMenu());
+			applet.setDebug(SideScroller.DebugMode.OFF);
 		}
 	}
 	

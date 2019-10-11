@@ -16,20 +16,20 @@ public class TestWindow extends PClass{
 	// Map Editor Scene
 	public GameplayScene scene;
 
-	public TestWindow(SideScroller a) {
-		super(a);
+	public TestWindow() {
+		super();
 
-		scene = a.game;
+		scene = applet.getGame();
 
-		pressLoad = new Button(applet);
+		pressLoad = new Button();
 		pressLoad.setText("Test Window");
 		pressLoad.setPosition(applet.width / 2, applet.height / 2 + 150);
 
-		pressCancel = new Button(applet);
+		pressCancel = new Button();
 		pressCancel.setText("Cancel");
 		pressCancel.setPosition(applet.width / 2, applet.height / 2 + 200);
 
-		input = new TextInputField(applet);
+		input = new TextInputField();
 		input.setPosition(applet.width / 2, applet.height / 2);
 		input.setWidth(300);
 	}

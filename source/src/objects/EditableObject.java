@@ -48,13 +48,13 @@ public class EditableObject extends PClass {
 
 	protected PVector editOffset;
 
-	public EditableObject(SideScroller a, GameplayScene g) {
-		super(a);
+	public EditableObject(GameplayScene gameplayScene) {
+		super();
 
 		pos = new PVector(0, 0);
 		editOffset =  new PVector(0, 0);
 
-		gameScene = g;
+		this.gameScene = gameplayScene;
 
 		// Get Edit Arrows
 		editArrowX = Tileset.getTile(268, 278, 6, 5, 4);
@@ -120,7 +120,7 @@ public class EditableObject extends PClass {
 			return;
 		}
 
-		if (applet.mouseReleaseEvent) {
+		if (applet.isMouseReleaseEvent()) {
 			focusX = false; // defocus move arrows
 			focusY = false; // defocus move arrows
 			focusM = false;
@@ -128,7 +128,7 @@ public class EditableObject extends PClass {
 		}
 
 		// Focus Event
-		if (applet.mousePressEvent) {
+		if (applet.isMousePressEvent()) {
 			if (mouseHover()) { // Focus Enable
 				if (gameScene.focusedObject == null) {
 					focus = true;
@@ -146,7 +146,7 @@ public class EditableObject extends PClass {
 		}
 		
 		if (focus) { // When Focused
-			if (applet.mousePressEvent) {
+			if (applet.isMousePressEvent()) {
 				if (mouseHoverX()) {
 					focusX = true;
 					focusY = false;
@@ -166,11 +166,11 @@ public class EditableObject extends PClass {
 			}
 
 			// Duplicate Object Shift
-				if (applet.keyPressEvent && applet.keyPress(SideScroller.SHIFT)) {
+				if (applet.isKeyPressEvent() && applet.keyPress(SideScroller.SHIFT)) {
 					EditableObject copy; // Duplicate Instance
 					switch (type) {
 						case COLLISION :
-							copy = new CollidableObject(applet, gameScene, id, 0, 0);
+							copy = new CollidableObject(gameScene, id, 0, 0);
 							copy.focus = true;
 							copy.focusX = focusX;
 							copy.focusY = focusY;
@@ -203,7 +203,7 @@ public class EditableObject extends PClass {
 						default :
 							break;
 					}
-					applet.keyPressEvent = false;
+					applet.setKeyPressEvent(false);
 					focus = false;
 					focusX = false;
 					focusY = false;
@@ -211,14 +211,14 @@ public class EditableObject extends PClass {
 
 			// Focus Movement
 			if (focusX) {
-				pos.x = Util.roundToNearest(applet.getMouseCoordGame().x + editOffset.y - 100, SideScroller.snapSize);
+				pos.x = Util.roundToNearest(applet.getMouseCoordGame().x + editOffset.y - 100, applet.getSnapSize());
 			}
 			if (focusY) {
-				pos.y = Util.roundToNearest(applet.getMouseCoordGame().y + editOffset.y + 100, SideScroller.snapSize);
+				pos.y = Util.roundToNearest(applet.getMouseCoordGame().y + editOffset.y + 100, applet.getSnapSize());
 			}
 			if (focusM) {
-				pos = new PVector(Util.roundToNearest(applet.getMouseCoordGame().x + editOffset.x, SideScroller.snapSize),
-						Util.roundToNearest(applet.getMouseCoordGame().y + editOffset.y, SideScroller.snapSize));
+				pos = new PVector(Util.roundToNearest(applet.getMouseCoordGame().x + editOffset.x, applet.getSnapSize()),
+						Util.roundToNearest(applet.getMouseCoordGame().y + editOffset.y, applet.getSnapSize()));
 			}
 		}
 	}

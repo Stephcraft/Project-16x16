@@ -24,8 +24,7 @@ public class LoadLevelWindow extends PClass {
 	File f;
 
 	public LoadLevelWindow(SideScroller a, GameplayScene scene) {
-		
-		super(a);
+		super();
 
 		this.scene = scene;
 

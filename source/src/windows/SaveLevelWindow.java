@@ -1,12 +1,12 @@
 package windows;
 
 import scene.GameplayScene;
+import settings.GameSettings;
 import sidescroller.PClass;
 import sidescroller.SideScroller;
-import sidescroller.Util;
 import ui.TextInputField;
 import ui.Button;
-import ui.Tab;
+
 
 public class SaveLevelWindow extends PClass {
 
@@ -19,27 +19,28 @@ public class SaveLevelWindow extends PClass {
 	// Map Editor Scene
 	public GameplayScene scene;
 
-	public SaveLevelWindow(SideScroller a, GameplayScene scene) {
+	public SaveLevelWindow(GameplayScene scene) {
 		
-		super(a);
+		super();
 
 		this.scene = scene; 
 
-		pressSave = new Button(applet);
+		pressSave = new Button();
 		pressSave.setText("Save Level");
-		pressSave.setPosition(applet.width / 2, applet.height / 2 + 150);
+		pressSave.setPosition((int)(GameSettings.getInstance().getWindowSize().x / 2), (int)(GameSettings.getInstance().getWindowSize().y / 2 + 150));
 
-		pressCancel = new Button(applet);
+		pressCancel = new Button();
 		pressCancel.setText("Cancel");
-		pressCancel.setPosition(applet.width / 2, applet.height / 2 + 200);
+		pressCancel.setPosition((int)(GameSettings.getInstance().getWindowSize().x / 2), (int)(GameSettings.getInstance().getWindowSize().y / 2 + 200));
 
-		input = new TextInputField(applet);
-		input.setPosition(applet.width / 2, applet.height / 2);
+		input = new TextInputField();
+		input.setPosition((int)(GameSettings.getInstance().getWindowSize().x / 2), (int)(GameSettings.getInstance().getWindowSize().y / 2));
 		input.setWidth(300);
 	}
 
 	//Used to toggle the darkened background, use for buttons at the moment
 	public void privacyDisplay() {
+		SideScroller applet = GameSettings.getInstance().getApplet();
 		// Display Privacy Area
 		applet.fill(0, 100);
 		applet.noStroke();
@@ -47,6 +48,7 @@ public class SaveLevelWindow extends PClass {
 	}
 	
 	public void display() {
+		SideScroller applet = GameSettings.getInstance().getApplet();
 		// Display Window
 		applet.fill(29, 33, 45);
 		applet.stroke(47, 54, 73);
@@ -74,9 +76,9 @@ public class SaveLevelWindow extends PClass {
 	}
 
 	public void update() {
-		pressSave.setPosition(applet.width / 2, applet.height / 2 + 150);
-		pressCancel.setPosition(applet.width / 2, applet.height / 2 + 200);
-		input.setPosition(applet.width / 2, applet.height / 2);
+		pressSave.setPosition((int)(GameSettings.getInstance().getWindowSize().x / 2), (int)(GameSettings.getInstance().getWindowSize().y / 2 + 150));
+		pressCancel.setPosition((int)(GameSettings.getInstance().getWindowSize().x / 2), (int)(GameSettings.getInstance().getWindowSize().y / 2 + 200));
+		input.setPosition((int)(GameSettings.getInstance().getWindowSize().x / 2), (int)(GameSettings.getInstance().getWindowSize().y / 2));
 		
 		input.update();
 

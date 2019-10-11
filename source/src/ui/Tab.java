@@ -14,14 +14,14 @@ public class Tab extends PClass{
 	private double incrementSpeed;
 	
 	//Basic constructor for tab
-	public Tab(SideScroller a, String[] texts, int tabs) {
-		super(a);
+	public Tab(String[] texts, int tabs) {
+		super();
 		tabCount = tabs;
 		buttons = new Button[tabCount];
 		incrementSpeed = 1;
 		movingIncrement = 0;
 		for(int i = 0; i < tabCount; i++) {
-			buttons[i] = new Button(a);
+			buttons[i] = new Button();
 			buttons[i].setText(texts[i]);
 			if(i == 0) {
 				buttons[i].setPosition((applet.width / 2) - 155, (applet.height / 2) - 265);

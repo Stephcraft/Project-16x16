@@ -21,8 +21,8 @@ public class GameObject extends EditableObject {
 
 	public PImage image;
 
-	public GameObject(SideScroller a, GameplayScene g) {
-		super(a, g);
+	public GameObject(GameplayScene gameplayScene) {
+		super(gameplayScene);
 
 		animation = new AnimationComponent();
 	}

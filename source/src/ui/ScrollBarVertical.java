@@ -20,7 +20,7 @@ public class ScrollBarVertical extends PClass {
 	
 	
 	public ScrollBarVertical(Anchor anchor) {
-		super(anchor.getPApplet());
+		super();
 		setAnchor(anchor);
 	}
 	
@@ -44,10 +44,10 @@ public class ScrollBarVertical extends PClass {
 	}
 	
 	public void update() {
-		if (applet.mousePressEvent && container.hover()) {
+		if (applet.isMousePressEvent() && container.hover()) {
 			barSelected = true;
 		}
-		if (applet.mouseReleaseEvent) {
+		if (applet.isMouseReleaseEvent()) {
 			barSelected = false;
 		}
 		if (barSelected)
