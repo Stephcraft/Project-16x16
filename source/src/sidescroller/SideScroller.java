@@ -35,15 +35,6 @@ public class SideScroller extends BaseWindow {
 	// Game Dev
 	public static final String LEVEL = "Assets/Storage/Game/Maps/gg-2.dat";
 
-	public enum DebugMode {
-		OFF, ALL, INFO_ONLY;
-		private static DebugMode[] vals = values();
-
-		public DebugMode next() {
-			return vals[(this.ordinal() + 1) % vals.length];
-		}
-	}
-
 	private DebugMode debug = DebugMode.OFF;
 	private final boolean SNAP = true; // snap objects to grid when moving; located here for ease of access
 	private int snapSize;

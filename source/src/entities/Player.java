@@ -3,10 +3,10 @@ package entities;
 import processing.core.*;
 import projectiles.Swing;
 import scene.GameplayScene;
+import sidescroller.DebugMode;
 import sidescroller.Options;
 import sidescroller.Tileset;
 import sidescroller.Util;
-import sidescroller.SideScroller.DebugMode;
 
 import java.util.ArrayList;
 
