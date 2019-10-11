@@ -4,8 +4,6 @@ import processing.core.*;
 import projectiles.Swing;
 import scene.GameplayScene;
 import sidescroller.Options;
-//import sidescroller.PClass;
-import sidescroller.SideScroller;
 import sidescroller.Tileset;
 import sidescroller.Util;
 import sidescroller.SideScroller.DebugMode;

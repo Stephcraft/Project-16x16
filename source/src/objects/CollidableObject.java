@@ -2,7 +2,6 @@ package objects;
 
 import processing.core.*;
 import scene.GameplayScene;
-import sidescroller.SideScroller;
 import sidescroller.SideScroller.DebugMode;
 import sidescroller.Tileset;
 

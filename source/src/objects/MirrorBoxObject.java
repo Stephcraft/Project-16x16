@@ -5,7 +5,6 @@ import projectiles.MagicProjectile;
 import projectiles.ProjectileObject;
 import projectiles.Swing;
 import scene.GameplayScene;
-import sidescroller.SideScroller;
 import sidescroller.Tileset;
 
 public class MirrorBoxObject extends GameObject {

@@ -3,7 +3,6 @@ package scene;
 import processing.event.KeyEvent;
 import processing.event.MouseEvent;
 import sidescroller.PClass;
-import sidescroller.SideScroller;
 
 /**
  * Scenes are a way of encapsulating. 

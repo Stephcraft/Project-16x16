@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import components.AnimationComponent;
 import processing.core.PImage;
 import scene.GameplayScene;
-import sidescroller.SideScroller;
 import sidescroller.Tileset;
 
 /**

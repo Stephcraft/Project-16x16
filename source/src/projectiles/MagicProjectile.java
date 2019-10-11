@@ -11,7 +11,6 @@ import processing.core.PApplet;
 import processing.core.PImage;
 import processing.core.PVector;
 import scene.GameplayScene;
-import sidescroller.SideScroller;
 import sidescroller.Tileset;
 import sidescroller.Util;
 

@@ -2,9 +2,10 @@ package windows;
 
 import scene.GameplayScene;
 import sidescroller.PClass;
-import sidescroller.SideScroller;
+
 import ui.Button;
 import ui.TextInputField;
+
 //CAN BE IGNORED: ONLY A TESTING WINDOW
 public class TestWindow extends PClass{
 	TextInputField input;

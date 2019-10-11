@@ -3,17 +3,11 @@ package windows;
 import scene.GameplayScene;
 import sidescroller.PClass;
 import sidescroller.SideScroller;
-import sidescroller.Util;
-import ui.Anchor;
-import ui.Button;
 import ui.List;
-import ui.ScrollBarVertical;
 
 import java.io.File;
 import java.io.FileFilter;
 import java.util.Arrays;
-
-import processing.core.PApplet;
 
 public class LoadLevelWindow extends PClass {
 

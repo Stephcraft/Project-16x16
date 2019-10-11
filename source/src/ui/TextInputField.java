@@ -2,7 +2,6 @@ package ui;
 
 import processing.core.PApplet;
 import sidescroller.PClass;
-import sidescroller.SideScroller;
 import sidescroller.Util;
 
 /**

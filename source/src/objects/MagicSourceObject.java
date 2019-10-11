@@ -10,7 +10,6 @@ import processing.core.PImage;
 import projectiles.MagicProjectile;
 import projectiles.Swing;
 import scene.GameplayScene;
-import sidescroller.SideScroller;
 import sidescroller.Tileset;
 import sidescroller.Util;
 

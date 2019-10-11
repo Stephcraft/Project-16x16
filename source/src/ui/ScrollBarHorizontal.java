@@ -1,6 +1,5 @@
 package ui;
 
-import ui.Anchor;
 import ui.Anchor.AnchorOrigin;
 import processing.core.*;
 import processing.event.MouseEvent;

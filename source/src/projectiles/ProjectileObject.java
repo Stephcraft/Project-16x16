@@ -8,8 +8,6 @@ import objects.EditableObject;
 import processing.core.PImage;
 import processing.core.PVector;
 import scene.GameplayScene;
-import sidescroller.PClass;
-import sidescroller.SideScroller;
 import sidescroller.Tileset;
 
 public class ProjectileObject extends EditableObject {

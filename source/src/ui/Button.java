@@ -1,7 +1,6 @@
 package ui;
 
 import sidescroller.PClass;
-import sidescroller.SideScroller;
 import sidescroller.Util;
 
 /**

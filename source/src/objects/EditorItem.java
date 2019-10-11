@@ -5,7 +5,6 @@ import java.lang.reflect.Constructor;
 import processing.core.*;
 import scene.GameplayScene;
 import sidescroller.PClass;
-import sidescroller.SideScroller;
 import sidescroller.Tileset;
 import sidescroller.Tileset.tileType;
 import sidescroller.Util;

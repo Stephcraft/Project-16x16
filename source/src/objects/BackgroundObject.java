@@ -3,7 +3,6 @@ package objects;
 import processing.core.PImage;
 import processing.core.PVector;
 import scene.GameplayScene;
-import sidescroller.SideScroller;
 import sidescroller.Tileset;
 
 public class BackgroundObject extends EditableObject {
