@@ -9,7 +9,7 @@ import processing.core.PApplet;
 import processing.core.PSurface;
 import processing.core.PVector;
 import processing.javafx.PSurfaceFX;
-import settings.GameSettings;
+import state.GameState;
 
 
 // this class is for infomation about the base window
@@ -40,12 +40,12 @@ public abstract class BaseWindow extends PApplet {
 
 	@Override
 	public void settings() {
-		PVector windowSize = GameSettings.getInstance().getWindowSize();
+		PVector windowSize = GameState.getInstance().getWindowSize();
 		size((int) windowSize.x, (int) windowSize.y, FX2D);
 	}
 
 	/**
-	 * Called by Processing after settings().
+	 * Called by Processing after state().
 	 */
 	@Override
 	protected PSurface initSurface() {
@@ -81,7 +81,7 @@ public abstract class BaseWindow extends PApplet {
 	 * changed</b> - currently called only when toggling fullscreen mode.
 	 */
 	protected void scaleResolution() {
-		PVector gameResolution = GameSettings.getInstance().getGameResolution();
+		PVector gameResolution = GameState.getInstance().getGameResolution();
 		canvas.getTransforms().clear();
 		canvas.setTranslateX(-scene.getWidth() / 2 + gameResolution.x / 2); // recenters after scale
 		canvas.setTranslateY(-scene.getHeight() / 2 + gameResolution.y / 2); // recenters after scale

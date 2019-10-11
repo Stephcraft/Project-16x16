@@ -2,7 +2,7 @@ package ParticleSystem;
 
 import java.util.ArrayList;
 
-import settings.GameSettings;
+import state.GameState;
 import sidescroller.SideScroller;
 
 /**
@@ -22,7 +22,7 @@ public class Particles {
 	public ArrayList<Particle> inactiveParticles;
 	
 	public Particles(ParticleSystem particleSystem) {
-		this.applet = GameSettings.getInstance().getApplet();
+		this.applet = GameState.getInstance().getApplet();
 		this.particleSystem = particleSystem;
 		
 		activeParticles = new ArrayList<Particle>();

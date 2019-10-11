@@ -1,7 +1,7 @@
 package windows;
 
 import scene.GameplayScene;
-import settings.GameSettings;
+import state.GameState;
 import sidescroller.PClass;
 import sidescroller.SideScroller;
 import ui.TextInputField;
@@ -27,20 +27,20 @@ public class SaveLevelWindow extends PClass {
 
 		pressSave = new Button();
 		pressSave.setText("Save Level");
-		pressSave.setPosition((int)(GameSettings.getInstance().getWindowSize().x / 2), (int)(GameSettings.getInstance().getWindowSize().y / 2 + 150));
+		pressSave.setPosition((int)(GameState.getInstance().getWindowSize().x / 2), (int)(GameState.getInstance().getWindowSize().y / 2 + 150));
 
 		pressCancel = new Button();
 		pressCancel.setText("Cancel");
-		pressCancel.setPosition((int)(GameSettings.getInstance().getWindowSize().x / 2), (int)(GameSettings.getInstance().getWindowSize().y / 2 + 200));
+		pressCancel.setPosition((int)(GameState.getInstance().getWindowSize().x / 2), (int)(GameState.getInstance().getWindowSize().y / 2 + 200));
 
 		input = new TextInputField();
-		input.setPosition((int)(GameSettings.getInstance().getWindowSize().x / 2), (int)(GameSettings.getInstance().getWindowSize().y / 2));
+		input.setPosition((int)(GameState.getInstance().getWindowSize().x / 2), (int)(GameState.getInstance().getWindowSize().y / 2));
 		input.setWidth(300);
 	}
 
 	//Used to toggle the darkened background, use for buttons at the moment
 	public void privacyDisplay() {
-		SideScroller applet = GameSettings.getInstance().getApplet();
+		SideScroller applet = GameState.getInstance().getApplet();
 		// Display Privacy Area
 		applet.fill(0, 100);
 		applet.noStroke();
@@ -48,7 +48,7 @@ public class SaveLevelWindow extends PClass {
 	}
 	
 	public void display() {
-		SideScroller applet = GameSettings.getInstance().getApplet();
+		SideScroller applet = GameState.getInstance().getApplet();
 		// Display Window
 		applet.fill(29, 33, 45);
 		applet.stroke(47, 54, 73);
@@ -76,9 +76,9 @@ public class SaveLevelWindow extends PClass {
 	}
 
 	public void update() {
-		pressSave.setPosition((int)(GameSettings.getInstance().getWindowSize().x / 2), (int)(GameSettings.getInstance().getWindowSize().y / 2 + 150));
-		pressCancel.setPosition((int)(GameSettings.getInstance().getWindowSize().x / 2), (int)(GameSettings.getInstance().getWindowSize().y / 2 + 200));
-		input.setPosition((int)(GameSettings.getInstance().getWindowSize().x / 2), (int)(GameSettings.getInstance().getWindowSize().y / 2));
+		pressSave.setPosition((int)(GameState.getInstance().getWindowSize().x / 2), (int)(GameState.getInstance().getWindowSize().y / 2 + 150));
+		pressCancel.setPosition((int)(GameState.getInstance().getWindowSize().x / 2), (int)(GameState.getInstance().getWindowSize().y / 2 + 200));
+		input.setPosition((int)(GameState.getInstance().getWindowSize().x / 2), (int)(GameState.getInstance().getWindowSize().y / 2));
 		
 		input.update();
 

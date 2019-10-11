@@ -687,7 +687,7 @@ public class GameplayScene extends PScene {
 		Util.saveFile(path, Util.encrypt(data.toString()));
 	}
 
-	public void loadLevel(String path) { // TODO save camera position/settings.
+	public void loadLevel(String path) { // TODO save camera position/state.
 
 		String[] script = applet.loadStrings(path);
 		if (script == null) {

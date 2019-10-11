@@ -1,4 +1,4 @@
-package settings;
+package state;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -6,7 +6,7 @@ import processing.core.PVector;
 import sidescroller.SideScroller;
 
 @Getter
-public class GameSettings {
+public class GameState {
 	// Game Rendering
 	private final PVector windowSize = new PVector(1280, 720); // Game window size -- to be set via options
 	private final PVector gameResolution = new PVector(1280, 720); // Game rendering resolution -- to be set
@@ -14,13 +14,13 @@ public class GameSettings {
 	@Setter
 	private SideScroller applet;
 
-	private static GameSettings gameSettings;
+	private static GameState gameState;
 
-	public static GameSettings getInstance() {
-		if (gameSettings == null) {
-			gameSettings = new GameSettings();
+	public static GameState getInstance() {
+		if (gameState == null) {
+			gameState = new GameState();
 		}
 
-		return gameSettings;
+		return gameState;
 	}
 }

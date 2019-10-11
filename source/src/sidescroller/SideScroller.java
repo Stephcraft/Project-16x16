@@ -6,26 +6,19 @@ import java.util.HashSet;
 import components.AnimationComponent;
 import dm.core.DM;
 import entities.Player;
-import javafx.scene.Scene;
-import javafx.scene.canvas.Canvas;
-import javafx.scene.input.KeyCombination;
-import javafx.scene.transform.Scale;
-import javafx.stage.Stage;
 
 import lombok.Data;
 import processing.core.PApplet;
 import processing.core.PFont;
-import processing.core.PSurface;
 import processing.core.PVector;
 import processing.event.KeyEvent;
 import processing.event.MouseEvent;
-import processing.javafx.PSurfaceFX;
 
 import scene.PScene;
 import scene.GameplayScene;
 import scene.MainMenu;
 import scene.PauseMenu;
-import settings.GameSettings;
+import state.GameState;
 
 /**
  * <h1>SideScroller Class</h1>
@@ -93,7 +86,7 @@ public class SideScroller extends BaseWindow {
 	 */
 	@Override
 	public void setup() {
-		GameSettings.getInstance().setApplet(this);
+		GameState.getInstance().setApplet(this);
 
 		snapSize = SNAP ? 32 : 1; // global snap step
 

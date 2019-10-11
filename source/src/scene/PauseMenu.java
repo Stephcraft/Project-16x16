@@ -17,7 +17,7 @@ public class PauseMenu extends PScene {
 
 	public Button pressResume;
 	public Button pressMenu;	//Retruns to main menu
-	public Button pressSettings; //TODO add settings menu
+	public Button pressSettings; //TODO add state menu
 
 	private PImage cache;
 	

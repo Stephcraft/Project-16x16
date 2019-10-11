@@ -4,8 +4,7 @@ import processing.core.PApplet;
 import processing.core.PConstants;
 import processing.core.PImage;
 
-import settings.GameSettings;
-import sidescroller.Util;
+import state.GameState;
 
 /**
  * <h1>PClass</h1>
@@ -37,7 +36,7 @@ public abstract class PClass {
 	protected SideScroller applet;
 
 	public PClass() {
-		this.applet = GameSettings.getInstance().getApplet();
+		this.applet = GameState.getInstance().getApplet();
 	}
 
 	/**

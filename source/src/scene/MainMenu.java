@@ -13,7 +13,7 @@ public final class MainMenu extends PScene {
 
 	public Button pressStart;
 	public Button pressQuit;
-	public Button pressSettings; // TODO add settings menu
+	public Button pressSettings; // TODO add state menu
 	
 	public MainMenu() {
 		super();
