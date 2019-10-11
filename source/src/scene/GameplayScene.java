@@ -118,7 +118,7 @@ public class GameplayScene extends PScene {
 		inventory.add("XBox");
 
 		// Init Editor Components
-		editorItem = new EditorItem(this);
+		editorItem = new EditorItem();
 
 		// Get Slots Graphics
 		slot = Tileset.getTile(289, 256, 20, 21, 4);
@@ -150,19 +150,19 @@ public class GameplayScene extends PScene {
 		scrollBar.setBarRatio(0.8f);
 
 		// Default Scene
-		collidableObjects.add(new CollidableObject(this, "METAL_WALK_MIDDLE:0", 0, 0));
+		collidableObjects.add(new CollidableObject("METAL_WALK_MIDDLE:0", 0, 0));
 
 		// Default Tool
 		tool = Tools.MODIFY;
 
 		// Init Player
-		player = new Player(this);
+		player = new Player();
 		player.pos.x = 0; // // TODO set to spawn loc
 		player.pos.y = -100; // // TODO set to spawn loc
 
-		loadLevel(SideScroller.LEVEL); // TODO change level
 
 		windowTabs = new Tab(tabTexts, 3);
+//		loadLevel(SideScroller.LEVEL); // TODO change level
 	}
 
 	/**
@@ -673,7 +673,7 @@ public class GameplayScene extends PScene {
 
 		// Add Game Objects
 		for (int i = 0; i < gameObjects.size(); i++) {
-			collidableObjects.remove(gameObjects.get(i).collision);
+			collidableObjects.remove(gameObjects.get(i).getCollision());
 
 			JSONObject item = new JSONObject();
 			item.setString("id", gameObjects.get(i).id);
@@ -717,7 +717,7 @@ public class GameplayScene extends PScene {
 			
 			switch (type) { // Read Main
 				case "COLLISION" :
-					CollidableObject collision = new CollidableObject(this);
+					CollidableObject collision = new CollidableObject();
 					try {
 						collision.setGraphic(item.getString("id"));
 					} catch (Exception e) {
@@ -730,7 +730,7 @@ public class GameplayScene extends PScene {
 					collidableObjects.add(collision); // Append To Level
 					break;
 				case "BACKGROUND" :
-					BackgroundObject backgroundObject = new BackgroundObject(this);
+					BackgroundObject backgroundObject = new BackgroundObject();
 					backgroundObject.setGraphic(item.getString("id"));
 					backgroundObject.pos.x = item.getInt("x");
 					backgroundObject.pos.y = item.getInt("y");
@@ -741,7 +741,7 @@ public class GameplayScene extends PScene {
 					try {
 						Class<? extends GameObject> gameObjectClass = Tileset.getObjectClass(item.getString("id"));
 						Constructor<?> ctor = gameObjectClass.getDeclaredConstructors()[0];
-						GameObject gameObject = (GameObject) ctor.newInstance(new Object[] { this });
+						GameObject gameObject = (GameObject) ctor.newInstance(new Object[] {  });
 						gameObject.pos.x = item.getInt("x");
 						gameObject.pos.y = item.getInt("y");
 

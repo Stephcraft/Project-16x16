@@ -2,7 +2,6 @@ package entities;
 
 import processing.core.*;
 import projectiles.Swing;
-import scene.GameplayScene;
 import sidescroller.DebugMode;
 import sidescroller.Options;
 import sidescroller.Tileset;
@@ -80,9 +79,8 @@ public final class Player extends EditableObject {
 	/**
 	 * Constructor
 	 */
-	public Player(GameplayScene g) {
-		
-		super(g);
+	public Player() {
+		super();
 
 		pos = new PVector(100, 300);
 		gravity = 1;
@@ -214,7 +212,7 @@ public final class Player extends EditableObject {
 			}
 
 			// Create Swing Projectile
-			swings.add(new Swing(gameScene, (int) pos.x, (int) pos.y, direction));
+			swings.add(new Swing((int) pos.x, (int) pos.y, direction));
 		}
 
 		// End Dash

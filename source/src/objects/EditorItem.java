@@ -23,10 +23,10 @@ public class EditorItem extends PClass {
 
 	private GameplayScene gameplayScene;
 
-	public EditorItem(GameplayScene gameplayScene) {
+	public EditorItem() {
 		super();
 
-		this.gameplayScene = gameplayScene;
+		this.gameplayScene = applet.getGame();
 		
 		setTile("BOX");
 		setMode("CREATE");
@@ -57,14 +57,14 @@ public class EditorItem extends PClass {
 									Util.roundToNearest(applet.getMouseCoordScreen().y, applet.getSnapSize())));
 					switch (type) {
 						case COLLISION :
-							CollidableObject c = new CollidableObject(gameplayScene, id, 0, 0);
+							CollidableObject c = new CollidableObject(id, 0, 0);
 							c.pos.x = realPos.x;
 							c.pos.y = realPos.y;
 							c.focus();
 							gameplayScene.collidableObjects.add(c);
 							break;
 						case BACKGROUND :
-							BackgroundObject bObject = new BackgroundObject(gameplayScene, id, 0, 0);
+							BackgroundObject bObject = new BackgroundObject(id, 0, 0);
 							bObject.pos.x = realPos.x;
 							bObject.pos.y = realPos.y;
 							bObject.focus();
@@ -74,7 +74,7 @@ public class EditorItem extends PClass {
 							try {
 								Class<? extends GameObject> gameObjectClass = Tileset.getObjectClass(id);
 								Constructor<?> ctor = gameObjectClass.getDeclaredConstructors()[0];
-								GameObject obj = (GameObject) ctor.newInstance(new Object[] { applet, gameplayScene });
+								GameObject obj = (GameObject) ctor.newInstance(new Object[] {  });
 								obj.focus();
 								obj.pos.x = realPos.x;
 								obj.pos.y = realPos.y;

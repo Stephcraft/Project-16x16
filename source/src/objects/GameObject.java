@@ -3,25 +3,26 @@ package objects;
 import java.util.ArrayList;
 
 import components.AnimationComponent;
+import lombok.Data;
 import processing.core.PImage;
-import scene.GameplayScene;
 import sidescroller.Tileset;
 
 /**
  * Extends {@link EditableObject}.
  */
+@Data
 public class GameObject extends EditableObject {
 
 	// Animation Component
-	public AnimationComponent animation;
+	protected AnimationComponent animation;
 
 	// Collision Component
-	public CollidableObject collision;
+	protected CollidableObject collision;
 
-	public PImage image;
+	protected PImage image;
 
-	public GameObject(GameplayScene gameplayScene) {
-		super(gameplayScene);
+	public GameObject() {
+		super();
 
 		animation = new AnimationComponent();
 	}

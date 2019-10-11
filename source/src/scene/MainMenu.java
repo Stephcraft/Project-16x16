@@ -1,6 +1,7 @@
 package scene;
 
 import processing.event.MouseEvent;
+import sidescroller.DebugMode;
 import sidescroller.SideScroller;
 import ui.Button;
 
@@ -55,7 +56,7 @@ public final class MainMenu extends PScene {
 		pressStart.update();
 		if(pressStart.hover()) {
 			applet.swapToScene(applet.getGame());
-			applet.setDebug(SideScroller.DebugMode.ALL);
+			applet.setDebug(DebugMode.ALL);
 		}
 		
 		pressSettings.update();

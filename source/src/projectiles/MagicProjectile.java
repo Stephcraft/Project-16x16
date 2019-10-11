@@ -24,8 +24,8 @@ public class MagicProjectile extends ProjectileObject {
 	private ParticleSystem trail;
 	private ParticleSystem explode;
 	
-	public MagicProjectile(GameplayScene g, int x, int y, int dir) {
-		super(g);
+	public MagicProjectile(int x, int y, int dir) {
+		super();
 		
 		id = "MAGIC";
 		pos = new PVector(x, y);

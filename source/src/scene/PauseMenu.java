@@ -3,6 +3,7 @@
  */
 package scene;
 
+import sidescroller.DebugMode;
 import sidescroller.SideScroller;
 import sidescroller.Util;
 import ui.Button;
@@ -72,7 +73,7 @@ public class PauseMenu extends PScene {
 		pressResume.update();
 		if(pressResume.hover()) {
 			applet.returnScene();
-			applet.setDebug(SideScroller.DebugMode.ALL);
+			applet.setDebug(DebugMode.ALL);
 		}
 		
 		pressSettings.update();
@@ -83,7 +84,7 @@ public class PauseMenu extends PScene {
 		pressMenu.update();
 		if(pressMenu.hover()) {
 			applet.swapToScene(applet.getMenu());
-			applet.setDebug(SideScroller.DebugMode.OFF);
+			applet.setDebug(DebugMode.OFF);
 		}
 	}
 	

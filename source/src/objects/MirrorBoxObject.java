@@ -4,7 +4,6 @@ import processing.core.PApplet;
 import projectiles.MagicProjectile;
 import projectiles.ProjectileObject;
 import projectiles.Swing;
-import scene.GameplayScene;
 import sidescroller.Tileset;
 
 public class MirrorBoxObject extends GameObject {
@@ -20,8 +19,8 @@ public class MirrorBoxObject extends GameObject {
 	final int BOX_W = 64;
 	final int BOX_H = 64;
 
-	public MirrorBoxObject(GameplayScene g) {
-		super(g);
+	public MirrorBoxObject() {
+		super();
 
 		direction = 0;
 
@@ -33,9 +32,9 @@ public class MirrorBoxObject extends GameObject {
 		width = BOX_W;
 		height = BOX_H;
 
-		collision = new CollidableObject(g, BOX_W, BOX_H, 0, 0, true);
+		collision = new CollidableObject(BOX_W, BOX_H, 0, 0, true);
 		collision.flag = "TRANSPARENT_BULLET";
-		g.collidableObjects.add(collision);
+		gameScene.collidableObjects.add(collision);
 	}
 
 	public void display() {
@@ -57,7 +56,7 @@ public class MirrorBoxObject extends GameObject {
 
 	public void update() {
 		if (rotating) 
-	      image = animation.animate();
+	      	image = animation.animate();
 		collision.pos = pos;
 
 		// Change Mirror Box Axis

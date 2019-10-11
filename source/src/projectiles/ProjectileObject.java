@@ -7,7 +7,6 @@ import objects.CollidableObject;
 import objects.EditableObject;
 import processing.core.PImage;
 import processing.core.PVector;
-import scene.GameplayScene;
 import sidescroller.Tileset;
 
 public class ProjectileObject extends EditableObject {
@@ -32,8 +31,8 @@ public class ProjectileObject extends EditableObject {
 
 	public boolean hit;
 
-	public ProjectileObject(GameplayScene g) {
-		super(g);
+	public ProjectileObject() {
+		super();
 
 		id = "";
 		spawnTime = applet.frameCount;

@@ -9,19 +9,19 @@ public class BackgroundObject extends EditableObject {
 
 	public PImage image;
 
-	public BackgroundObject(GameplayScene g) {
-		super(g);
+	public BackgroundObject() {
+		super();
 
 		type = type.BACKGROUND;
 	}
 
-	public BackgroundObject(GameplayScene g, String id) {
-		this(g);
+	public BackgroundObject(String id) {
+		this();
 		setGraphic(id);
 	}
 
-	public BackgroundObject(GameplayScene g, String id, int x, int y) {
-		this(g);
+	public BackgroundObject(String id, int x, int y) {
+		this();
 
 		pos = new PVector(x, y);
 		setGraphic(id);

@@ -48,13 +48,13 @@ public class EditableObject extends PClass {
 
 	protected PVector editOffset;
 
-	public EditableObject(GameplayScene gameplayScene) {
+	public EditableObject() {
 		super();
 
 		pos = new PVector(0, 0);
 		editOffset =  new PVector(0, 0);
 
-		this.gameScene = gameplayScene;
+		this.gameScene = applet.getGame();
 
 		// Get Edit Arrows
 		editArrowX = Tileset.getTile(268, 278, 6, 5, 4);
@@ -170,7 +170,7 @@ public class EditableObject extends PClass {
 					EditableObject copy; // Duplicate Instance
 					switch (type) {
 						case COLLISION :
-							copy = new CollidableObject(gameScene, id, 0, 0);
+							copy = new CollidableObject(id, 0, 0);
 							copy.focus = true;
 							copy.focusX = focusX;
 							copy.focusY = focusY;

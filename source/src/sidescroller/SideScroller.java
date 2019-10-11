@@ -120,6 +120,7 @@ public class SideScroller extends BaseWindow {
 		camera.setMaxZoomScale(3);
 
 		scaleResolution();
+		game.loadLevel(LEVEL);
 	}
 
 	/**

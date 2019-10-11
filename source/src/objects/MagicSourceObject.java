@@ -9,7 +9,6 @@ import processing.core.PApplet;
 import processing.core.PImage;
 import projectiles.MagicProjectile;
 import projectiles.Swing;
-import scene.GameplayScene;
 import sidescroller.Tileset;
 import sidescroller.Util;
 
@@ -21,8 +20,8 @@ public class MagicSourceObject extends GameObject {
 	private static ArrayList<PImage> particleAnimation;
 	private ParticleSystem trail;
 
-	public MagicSourceObject(GameplayScene g) {
-		super(g);
+	public MagicSourceObject() {
+		super();
 
 		type = type.OBJECT;
 		id = "MAGIC_SOURCE";
@@ -63,7 +62,7 @@ public class MagicSourceObject extends GameObject {
 						oldMillis = applet.millis();
 						
 						gameScene.projectileObjects
-							.add(new MagicProjectile(gameScene, (int) pos.x, (int) pos.y, swing.direction));
+							.add(new MagicProjectile((int) pos.x, (int) pos.y, swing.direction));
 
 						swing.activated = true;
 					}
