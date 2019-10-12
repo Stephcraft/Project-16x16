@@ -1,5 +1,4 @@
-function show(type)
-{
+function show(type) {
     count = 0;
     for (var key in methods) {
         var row = document.getElementById(key);
@@ -13,8 +12,7 @@ function show(type)
     updateTabs(type);
 }
 
-function updateTabs(type)
-{
+function updateTabs(type) {
     for (var value in tabs) {
         var sNode = document.getElementById(tabs[value][0]);
         var spanNode = sNode.firstChild;
