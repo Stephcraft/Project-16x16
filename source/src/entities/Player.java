@@ -253,18 +253,28 @@ public final class Player extends EditableObject {
 				}
 				
 				if (collidesFuturX(collision)) {
-					velocity.x = 0;
-					if (state.dashing) {
-						state.dashing = false;
+					// player left of collision
+					if (pos.x < collision.pos.x) {
+						pos.x = collision.pos.x - collision.width / 2 - width / 2;
+					// player right of collision
+					} else {
+						pos.x = collision.pos.x + collision.width / 2 + width / 2;
 					}
+					velocity.x = 0;
+					state.dashing = false;
 				}
 				if (collidesFuturY(collision)) {
-					if (pos.y + height / 2 < collision.pos.y) {
+					// player above collision
+					if (pos.y < collision.pos.y) {
 						if (state.flying) {
 							state.landing = true;
 						}
 						pos.y = collision.pos.y - collision.height / 2 - height / 2;
 						state.flying = false;
+					// player below collision
+					} else {
+						pos.y = collision.pos.y + collision.height / 2 + height / 2;
+						state.jumping = false;
 					}
 					velocity.y = 0;
 				}
