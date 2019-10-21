@@ -89,10 +89,21 @@ public class AnimationComponent {
 		return (int) (length - currentFrame);
 	}
 
+	/**
+	* Retrieves the current frame
+	*
+	* @return the current frame as a float
+	**/
 	public float getFrame() {
 		return currentFrame;
 	}
 	
+	
+	/**
+	*Retrieves the length of the animation
+	*
+	* @return the time of the animation as an int
+	**/
 	public int getAnimLength() {
 		return length;
 	}
