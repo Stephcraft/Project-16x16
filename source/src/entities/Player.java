@@ -24,13 +24,6 @@ import objects.EditableObject;
  * </p>
  */
 public final class Player extends EditableObject {
-	
-	/**
-	 * Previous position.
-	 */
-	private float px;
-	private float py;
-
 	/**
 	 * Current player sprite
 	 */
@@ -41,24 +34,15 @@ public final class Player extends EditableObject {
 
 	private float gravity;
 
-	public float speedX;
-	public float speedY;
+	private PVector velocity = new PVector(0, 0);
 
 	private static final int collisionRange = 145;
 
 	private int speedWalk;
 	private int speedJump;
 
-	private int direction;
-
 	private int life;
 	private int lifeCapacity;
-
-	public boolean flying;
-	private boolean pflying;
-
-	public boolean attack;
-	private boolean dashing;
 
 	// Player Projectile
 	public ArrayList<Swing> swings;
@@ -70,8 +54,41 @@ public final class Player extends EditableObject {
 	 * Possible player actions/states
 	 */
 	private enum ACTIONS {
-		WALK, IDLE, SQUISH, FALL, ATTACK, DASH, DASH_ATTACK
+		WALK, IDLE, JUMP, LAND, FALL, ATTACK, DASH, DASH_ATTACK
 	}
+	
+	private class PlayerState {
+		public PVector pos;
+		public boolean flying;
+		public boolean attacking;
+		public boolean dashing;
+		public int facingDir;
+		public boolean landing;
+		public boolean jumping;
+		
+		public PlayerState() {
+			pos = new PVector(0, 0);
+			flying = false;
+			attacking = false;
+			dashing = false;
+			facingDir = RIGHT;
+			jumping = false;
+			landing = false;
+		}
+		
+		public PlayerState(PlayerState ps) {
+			pos = ps.pos;
+			flying = ps.flying;
+			attacking = ps.attacking;
+			dashing = ps.dashing;
+			facingDir = ps.facingDir;
+			landing = ps.landing;
+			jumping = ps.jumping;
+		}
+	}
+	
+	private PlayerState pstate;
+	private PlayerState state;
 	
 	static {
 		image = Tileset.getTile(0, 258, 14, 14, 4);
@@ -99,14 +116,19 @@ public final class Player extends EditableObject {
 		life = lifeCapacity;
 
 		speedWalk = 7;
-		speedJump = 18; // 20
+		speedJump = 18;
 
 		width = 14 * 4;
 		height = 16 * 4;
-
-		flying = true;
+		
+		state = new PlayerState();
+		state.pos = pos;
 		
 		setAnimation(ACTIONS.IDLE);
+	}
+	
+	public PVector getVelocity() {
+		return new PVector(velocity.x, velocity.y);
 	}
 
 	/**
@@ -120,15 +142,13 @@ public final class Player extends EditableObject {
 			swings.get(i).display();
 		}
 
-		if (direction == LEFT) { // flips sprite along vertical line
-			applet.pushMatrix();
-			applet.translate(pos.x, pos.y);
+		applet.pushMatrix();
+		applet.translate(pos.x, pos.y);
+		if (state.facingDir == LEFT) {
 			applet.scale(-1, 1);
-			applet.image(image, 0, 0);
-			applet.popMatrix();
-		} else {
-			applet.image(image, pos.x, pos.y);
 		}
+		applet.image(image, 0, 0);
+		applet.popMatrix();
 
 		if (applet.debug == debugType.ALL) {
 			applet.strokeWeight(1);
@@ -142,113 +162,76 @@ public final class Player extends EditableObject {
 	 * The update method handles updating the character.
 	 */
 	public void update() {
-		// If falling, flying = true, triggering falling animation
-		// This should fix the walking of edge animation problem
-		if(pos.y > py) {
-			flying = true;
-		}
-
-		if (!dashing) {
-			speedY += gravity * applet.deltaTime;
-		} else {
-			speedY += gravity * applet.deltaTime * .5;
-		}
-
-		// Save Previous State
-		px = pos.x;
-		py = pos.y;
-		pflying = flying;
-
-		// Move on the x axis
-		if (applet.keyPress(Options.moveRightKey) || applet.keyPress(68)) {
-			if (applet.keyPressEvent && !attack && !dashing) {
-				setAnimation(ACTIONS.WALK);
-			}
-			if (!dashing) {
-				speedX = (speedWalk * applet.deltaTime);
-			} else {
-				speedX = (float) (speedWalk * applet.deltaTime * 1.5);
-			}
-			direction = RIGHT;
-		} else if (applet.keyPress(Options.moveLeftKey) || applet.keyPress(65)) {
-			if (applet.keyPressEvent && !attack && !dashing) {
-				setAnimation(ACTIONS.WALK);
-			}
-			if (!dashing) {
-				speedX = -speedWalk * applet.deltaTime;
-			} else {
-				speedX = (float) (-speedWalk * applet.deltaTime * 1.5);
-			}
-
-			direction = LEFT;
-
-		} else {
-			speedX = 0;
-		}
+		pstate = state;
+		state = new PlayerState(pstate);
+		state.pos = pos;
+		
 		// Dash
-		if (applet.keyPress(Options.dashKey)) {
-			if (applet.keyPressEvent && !dashing) {
-				setAnimation(ACTIONS.DASH);
-				dashing = true;
-			}
-		}
-
-		// Move on the y axis
-		if (applet.keyPress(Options.jumpKey) || applet.keyPress(' ')) {
-			if (applet.keyPressEvent && !flying) { // && speedY == 0 && !flying
-				flying = true;
-				if (!dashing) {
-					speedY -= (int) (speedJump * applet.deltaTime);
-				} else {
-					speedY -= (float) (speedJump * applet.deltaTime * 1.2);
-				}
-
-			}
+		if (applet.keyPressed && applet.keyPress(Options.dashKey)) {
+			state.dashing = true;
 		}
 
 		// Attack
-		if (applet.mousePressed && !attack) {
-			if (applet.mouseButton == LEFT) {
-				attack = true;
-				if (!dashing) {
-					setAnimation(ACTIONS.ATTACK);
-				} else if (dashing) {
-					setAnimation(ACTIONS.DASH_ATTACK);
-				}
-			}
-
+		if (applet.mousePressed && applet.mouseButton == LEFT && !state.attacking) {
+			state.attacking = true;
 			// Create Swing Projectile
-			swings.add(new Swing(applet, gameScene, (int) pos.x, (int) pos.y, direction));
+			swings.add(new Swing(applet, gameScene, (int) pos.x, (int) pos.y, state.facingDir));
 		}
 
 		// End Dash
-
 		if (animation.name == "DASH" && animation.ended) {
-			dashing = false;
-			if (flying) {
-				speedY = 0;
-			}
-			setAnimation(ACTIONS.WALK);
+			state.dashing = false;
 		}
+		
 		// End Dash Attack
 		if (animation.name == "DASH_ATTACK" && animation.ended) {
-			dashing = false;
-			attack = false;
-			if (flying) {
-				speedY = 0;
-			}
-			setAnimation(ACTIONS.WALK);
+			state.dashing = false;
+			state.attacking = false;
 		}
 		// End Attack
 		if (animation.name == "ATTACK" && animation.ended) {
-			attack = false;
-			if (speedX != 0) {
-				setAnimation(ACTIONS.WALK);
-			} else if (speedX == 0) {
-				setAnimation(ACTIONS.IDLE);
+			state.attacking = false;
+		}
+		
+		// End Jumping
+		if (animation.name == "JUMP" && animation.ended) {
+			state.jumping = false;
+		}
+		
+		if (animation.name == "LAND" && animation.ended) {
+			state.landing = false;
+		}
+
+		// update velocity on the x axis
+		if (applet.keyPress(Options.moveRightKey) || applet.keyPress(68)) {
+			velocity.x = speedWalk * applet.deltaTime;
+			if (state.dashing) {
+				velocity.x *= 1.5;
+			}
+			state.facingDir = RIGHT;
+		} else if (applet.keyPress(Options.moveLeftKey) || applet.keyPress(65)) {
+			velocity.x = -speedWalk * applet.deltaTime;
+			if (state.dashing) {
+				velocity.x *= 1.5;
+			}
+			state.facingDir = LEFT;
+		} else {
+			velocity.x = 0;
+			state.dashing = false;
+		}
+
+		// update velocity on the y axis
+		if (!state.flying && applet.keyPressed && (applet.keyPress(Options.jumpKey) || applet.keyPress(' '))) {
+			state.flying = true;
+			state.jumping = true;
+			velocity.y -= speedJump;
+			if (state.dashing) {
+				state.dashing = false;
+				velocity.y *= 1.2;
 			}
 		}
-		// boolean collides = false;
+		
+		velocity.y += gravity * applet.deltaTime;
 
 		if (applet.debug == debugType.ALL) {
 			applet.noFill();
@@ -268,83 +251,71 @@ public final class Player extends EditableObject {
 					applet.ellipse(collision.pos.x, collision.pos.y, 5, 5);
 					applet.noFill();
 				}
-				if (collides(collision)) {
-					if (px + width / 2 < collision.pos.x + collision.width / 2) {
+				
+				if (collidesFuturX(collision)) {
+					// player left of collision
+					if (pos.x < collision.pos.x) {
 						pos.x = collision.pos.x - collision.width / 2 - width / 2;
-					} else if (px - width / 2 > collision.pos.x - collision.width / 2) { // +collision.width/2
+					// player right of collision
+					} else {
 						pos.x = collision.pos.x + collision.width / 2 + width / 2;
 					}
-					if (dashing) {
-						dashing = false;
-						setAnimation(ACTIONS.IDLE);
-					}
-
-				}
-				if (collidesFuturX(collision)) {
-					if (px < collision.pos.x) {
-						speedX = 0;
-					} else if (px > collision.pos.x) {
-						speedX = 0;
-					}
-					if (dashing) {
-						dashing = false;
-						setAnimation(ACTIONS.IDLE);
-					}
+					velocity.x = 0;
+					state.dashing = false;
 				}
 				if (collidesFuturY(collision)) {
-					if (py + height / 2 < collision.pos.y) {
+					// player above collision
+					if (pos.y < collision.pos.y) {
+						if (state.flying) {
+							state.landing = true;
+						}
 						pos.y = collision.pos.y - collision.height / 2 - height / 2;
-						speedY = 0;
-						flying = false;
-					} else if (pos.y > collision.pos.y) {
+						state.flying = false;
+					// player below collision
+					} else {
 						pos.y = collision.pos.y + collision.height / 2 + height / 2;
-						speedY = 0;
+						state.jumping = false;
 					}
+					velocity.y = 0;
 				}
 			}
 		}
-
-		if (flying && !attack && !dashing) {
-			setAnimation(ACTIONS.FALL);
+		
+		if (velocity.y != 0) {
+			state.flying = true;
 		}
 
-		// On Ground Event
-		if (!flying && pflying && !attack && !dashing) {
-			setAnimation(ACTIONS.SQUISH);
-			applet.camera.shake(0.2f); // TODO consider removing
-		}
-
-		// Idle Animation
-		if (speedX == 0 && speedY == 0 && !attack && !dashing && !flying && !pflying) {
-			setAnimation(ACTIONS.IDLE);
-		}
-
-		if (animation.name == "SQUISH" && speedX != 0 && !attack) {
-			setAnimation(ACTIONS.WALK);
-		}
-
-		if (animation.name == "WALK" && speedX == 0 && !attack) {
-			setAnimation(ACTIONS.IDLE);
-		}
-
-		if (speedX == 0 && animation.name == "WALK" && attack) {
-			attack = false;
-		}
-
-		if (dashing) {
-			if (speedY < -25) {
-				speedY = -25;
+		if (state.jumping) {
+			setAnimation(ACTIONS.JUMP);
+		} else if (state.landing) {
+			setAnimation(ACTIONS.LAND);
+		} else if (state.attacking) {
+			if (state.dashing) {
+				setAnimation(ACTIONS.DASH_ATTACK);
+			} else {
+				setAnimation(ACTIONS.ATTACK);
 			}
+		} else if (state.flying) {
+			setAnimation(ACTIONS.FALL);
+		} else if (velocity.x != 0) {
+			if (state.dashing) {
+				setAnimation(ACTIONS.DASH);
+			} else {
+				setAnimation(ACTIONS.WALK);
+			}
+		} else {
+			setAnimation(ACTIONS.IDLE);
 		}
-		pos.x += speedX;
-		pos.y += speedY;
+		
+		pos.x += velocity.x;
+		pos.y += velocity.y;
 
 		// out of bounds check
 		if (pos.y > 2000) {
 			pos.y = -100; // TODO set to spawn loc
 			pos.x = 0; // TODO set to spawn loc
-			speedX = 0;
-			speedY = 0;
+			velocity.x = 0;
+			velocity.y = 0;
 		}
 
 		// Update Swing Projectiles
@@ -390,15 +361,15 @@ public final class Player extends EditableObject {
 	}
 
 	private boolean collidesFutur(CollidableObject collision) {
-		return (pos.x + speedX + width / 2 > collision.pos.x - collision.width / 2
-				&& pos.x + speedX - width / 2 < collision.pos.x + collision.width / 2)
-				&& (pos.y + speedY + height / 2 > collision.pos.y - collision.height / 2
-						&& pos.y + speedY - height / 2 < collision.pos.y + collision.height / 2);
+		return (pos.x + velocity.x + width / 2 > collision.pos.x - collision.width / 2
+				&& pos.x + velocity.x - width / 2 < collision.pos.x + collision.width / 2)
+				&& (pos.y + velocity.y + height / 2 > collision.pos.y - collision.height / 2
+						&& pos.y + velocity.y - height / 2 < collision.pos.y + collision.height / 2);
 	}
 
 	private boolean collidesFuturX(CollidableObject collision) {
-		return (pos.x + speedX + width / 2 > collision.pos.x - collision.width / 2
-				&& pos.x + speedX - width / 2 < collision.pos.x + collision.width / 2)
+		return (pos.x + velocity.x + width / 2 > collision.pos.x - collision.width / 2
+				&& pos.x + velocity.x - width / 2 < collision.pos.x + collision.width / 2)
 				&& (pos.y + 0 + height / 2 > collision.pos.y - collision.height / 2
 						&& pos.y + 0 - height / 2 < collision.pos.y + collision.height / 2);
 	}
@@ -406,8 +377,8 @@ public final class Player extends EditableObject {
 	private boolean collidesFuturY(CollidableObject collision) {
 		return (pos.x + 0 + width / 2 > collision.pos.x - collision.width / 2
 				&& pos.x + 0 - width / 2 < collision.pos.x + collision.width / 2)
-				&& (pos.y + speedY + height / 2 > collision.pos.y - collision.height / 2
-						&& pos.y + speedY - height / 2 < collision.pos.y + collision.height / 2);
+				&& (pos.y + velocity.y + height / 2 > collision.pos.y - collision.height / 2
+						&& pos.y + velocity.y - height / 2 < collision.pos.y + collision.height / 2);
 	}
 
 	/**
@@ -416,6 +387,10 @@ public final class Player extends EditableObject {
 	 * @param anim the animation id
 	 */
 	private void setAnimation(ACTIONS anim) {
+		if (animation.name == anim.name() && !animation.ended) {
+			return;
+		}
+		
 		switch (anim) {
 			case WALK :
 				animation.changeAnimation(getAnimation("PLAYER::WALK"), true, 6);
@@ -423,11 +398,14 @@ public final class Player extends EditableObject {
 			case IDLE :
 				animation.changeAnimation(getAnimation("PLAYER::IDLE"), true, 20);
 				break;
-			case SQUISH :
+			case JUMP :
 				animation.changeAnimation(getAnimation("PLAYER::SQUISH"), false, 4);
 				break;
+			case LAND :
+				animation.changeAnimation(getAnimation("PLAYER::SQUISH"), false, 2);
+				break;
 			case FALL :
-				animation.changeAnimation(getAnimation("PLAYER::SQUISH"), false, 6);
+				animation.changeAnimation(getAnimation("PLAYER::IDLE"), true, 20);
 				break;
 			case ATTACK :
 				animation.changeAnimation(getAnimation("PLAYER::ATTACK"), false, 4);
@@ -436,7 +414,7 @@ public final class Player extends EditableObject {
 				animation.changeAnimation(getAnimation("PLAYER::SQUISH"), false, 6);
 				break;
 			case DASH_ATTACK :
-				animation.changeAnimation(getAnimation("PLAYER::ATTACK"), false, 4, 2 + animation.remainingFrames());
+				animation.changeAnimation(getAnimation("PLAYER::ATTACK"), false, 2);
 				break;
 		}
 		animation.ended = false;
