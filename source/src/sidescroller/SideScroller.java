@@ -454,6 +454,7 @@ public class SideScroller extends PApplet {
 		final int labelPadding = 225; // label -x offset (from screen width)
 		final int ip = 1; // infoPadding -xoffset (from screen width)
 		final Player player = game.getPlayer();
+		PVector velocity = player.getVelocity();
 		fill(0, 50);
 		noStroke();
 		rectMode(CORNER);
@@ -476,12 +477,10 @@ public class SideScroller extends PApplet {
 
 		textAlign(RIGHT, TOP);
 		text("[" + round(player.pos.x) + ", " + round(player.pos.y) + "]", width - ip, lineOffset * 0 + yOffset);
-		text("[" + player.speedX + ", " + player.speedY + "]", width - ip, lineOffset * 1 + yOffset);
+		text("[" + round(velocity.x) + ", " + round(velocity.y) + "]", width - ip, lineOffset * 1 + yOffset);
 		text("[" + player.animation.name + "]", width - ip, lineOffset * 2 + yOffset);
 		text("[" + round(player.animation.getFrame()) + " / " + player.animation.getAnimLength() + "]", width - ip,
 				lineOffset * 3 + yOffset);
-		text("[" + (player.flying ? "FLY" : player.attack ? "ATT" : "DASH") + "]", width - ip,
-				lineOffset * 4 + yOffset);
 		text("[" + PApplet.round(camera.getPosition().x) + ", " + PApplet.round(camera.getPosition().y) + "]",
 				width - ip, lineOffset * 5 + yOffset);
 		text("[" + String.format("%.2f", camera.getZoomScale()) + "]", width - ip, lineOffset * 6 + yOffset);

@@ -30,15 +30,7 @@ public class AnimationComponent {
 	 * @param rate   Every x frames the next frame is loaded.
 	 */
 	public void changeAnimation(ArrayList<PImage> frames, boolean loop, int rate) {
-		if (!frames.equals(this.frames) || ended) { // change animation only if it's a different one.
-			this.frames = frames;
-			this.loop = loop;
-			this.rate = rate;
-			length = frames.size() - 1;
-			start = 0;
-			currentFrame = start;
-			firstFrame = applet.frameCount;
-		}
+		changeAnimation(frames, loop, rate, frames.size() - 1);
 	}
 
 	/**
@@ -49,15 +41,13 @@ public class AnimationComponent {
 	 * @param length Set a custom anim length
 	 */
 	public void changeAnimation(ArrayList<PImage> frames, boolean loop, int rate, int length) {
-		if (!frames.equals(this.frames) || ended) { // change animation only if it's a different one.
-			this.frames = frames;
-			this.loop = loop;
-			this.rate = rate;
-			this.length = length;
-			start = 0;
-			currentFrame = start;
-			firstFrame = applet.frameCount;
-		}
+		this.frames = frames;
+		this.loop = loop;
+		this.rate = rate;
+		this.length = length;
+		start = 0;
+		currentFrame = start;
+		firstFrame = applet.frameCount;
 	}
 
 	/**
@@ -89,10 +79,21 @@ public class AnimationComponent {
 		return (int) (length - currentFrame);
 	}
 
+	/**
+	* Retrieves the current frame
+	*
+	* @return the current frame as a float
+	**/
 	public float getFrame() {
 		return currentFrame;
 	}
 	
+	
+	/**
+	*Retrieves the length of the animation
+	*
+	* @return the time of the animation as an int
+	**/
 	public int getAnimLength() {
 		return length;
 	}
