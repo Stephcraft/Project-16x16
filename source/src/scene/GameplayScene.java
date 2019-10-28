@@ -97,10 +97,9 @@ public class GameplayScene extends PScene {
 
 	public GameplayScene() {
 		super();
-		setup();
 	}
 
-	private void setup() {
+	public void setup() {
 
 		// Init Game World Objects Arrays
 		collidableObjects = new ArrayList<CollidableObject>();

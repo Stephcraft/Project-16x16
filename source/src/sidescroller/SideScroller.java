@@ -109,6 +109,7 @@ public class SideScroller extends BaseWindow {
 
 		// Create scene
 		game = new GameplayScene();
+		game.setup();
 		menu = new MainMenu();
 		pmenu = new PauseMenu();
 		swapToScene(menu);
