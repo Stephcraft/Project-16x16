@@ -89,8 +89,6 @@ public class GameplayScene extends PScene {
 
 	private Player player;
 
-	private MagicSourceObject magic;
-
 	private PVector mouseDown, origPos;
 
 	public GameplayScene(SideScroller a) {
@@ -211,6 +209,10 @@ public class GameplayScene extends PScene {
 		for (int i = 0; i < gameObjects.size(); i++) {
 			if (tool == Tools.MODIFY) {
 				gameObjects.get(i).updateEdit();
+				if(gameObjects.get(i).id == "MAGIC_SOURCE") {
+					MagicSourceObject magic = (MagicSourceObject) gameObjects.get(i);
+					magic.relocate();
+				}
 			}
 
 			if (tool == Tools.PLAY) {
@@ -363,7 +365,6 @@ public class GameplayScene extends PScene {
 			case MODIFY :
 				editorItem.update();
 				editorItem.display();
-				magic.relocate();
 				break;
 			case MOVE :
 				break;
@@ -743,10 +744,6 @@ public class GameplayScene extends PScene {
 						GameObject gameObject = (GameObject) ctor.newInstance(new Object[] { applet, this });
 						gameObject.pos.x = item.getInt("x");
 						gameObject.pos.y = item.getInt("y");
-
-						if (gameObjectClass == MagicSourceObject.class){
-							magic = (MagicSourceObject) gameObject;
-						};
 
 						gameObjects.add(gameObject); // Append To Level
 						break;

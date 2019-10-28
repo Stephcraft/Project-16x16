@@ -33,8 +33,7 @@ public class MagicSourceObject extends GameObject {
 			setParticleAnimation(a);
 		
 		trail = new ParticleSystem(a, image, 5, 1, 0.4f);
-		trail.setEmission(new AreaEmission(pos, 1f, -0.01f, 5));
-		trail.addEventListener(new ParticleAnimationController(particleAnimation, -1));
+		this.relocate();
 		
 		width = 48;
 		height = 48;
