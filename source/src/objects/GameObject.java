@@ -59,9 +59,8 @@ public class GameObject extends EditableObject {
 	protected PImage g(int x, int y, int w, int h) {
 		return Tileset.getTile(x, y, w, h);
 	}
-@@ -48,4 +63,4 @@ protected PImage g(int x, int y, int w, int h) {
+
 	protected PImage g(int x, int y, int w, int h, float s) {
 		return Tileset.getTile(x, y, w, h);
 	}
 } 
-}
