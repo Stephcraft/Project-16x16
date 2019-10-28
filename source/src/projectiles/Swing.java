@@ -32,25 +32,18 @@ public class Swing extends ProjectileObject { // PClass
 
 		// Setup Animation
 		animation.changeAnimation(Tileset.getAnimation("Swing"), false, 4);
+		update();
 	}
 
 	@Override
 	public void display() {
-		try {
-			switch (direction) {
-				case LEFT :
-					applet.pushMatrix();
-					applet.translate(pos.x, pos.y);
-					applet.scale(-1, 1);
-					applet.image(image, 0, 0);
-					applet.popMatrix();
-					break;
-				case RIGHT :
-					applet.image(image, pos.x, pos.y);
-					break;
-			}
-		} catch (Exception e) {
+		applet.pushMatrix();
+		applet.translate(pos.x, pos.y);
+		if (direction == LEFT) {
+			applet.scale(-1, 1);
 		}
+		applet.image(image, 0, 0);
+		applet.popMatrix();
 	}
 
 	@Override
