@@ -19,7 +19,7 @@ git commit -m "description telling what you modified/added"
 #### Save in the cloud aka GitHub
 You should save your local work on your forked GitHub when you accomplish something important.
 ```
-git push master
+git push
 ```
 
 #### Pull request
