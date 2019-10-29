@@ -1,6 +1,6 @@
 package ui;
 
-import sidescroller.PClass;
+import game.engine.sidescroller.PClass;
 
 public class Tab extends PClass{
 	
@@ -107,7 +107,7 @@ public class Tab extends PClass{
 		}
 	}
 	
-	//Check hover state of each button
+	//Check hover game.state of each button
 	public boolean hover() {
 		for(int i = 0; i < tabCount; i++) {
 			if(buttons[i].hover()) {

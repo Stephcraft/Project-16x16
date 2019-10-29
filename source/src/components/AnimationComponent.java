@@ -3,7 +3,7 @@ package components;
 import java.util.ArrayList;
 
 import processing.core.PImage;
-import sidescroller.SideScroller;
+import game.engine.sidescroller.SideScroller;
 
 /**
  * The Animation Class

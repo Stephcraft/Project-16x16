@@ -1,8 +1,8 @@
 package ui;
 
 import processing.core.PApplet;
-import sidescroller.PClass;
-import sidescroller.Util;
+import game.engine.sidescroller.PClass;
+import game.engine.sidescroller.Util;
 
 /**
  * The PInput Class extends PClass

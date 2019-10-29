@@ -1,9 +1,9 @@
 package windows;
 
-import scene.GameplayScene;
-import state.GameState;
-import sidescroller.PClass;
-import sidescroller.SideScroller;
+import game.engine.scene.GameplayScene;
+import game.state.GameState;
+import game.engine.sidescroller.PClass;
+import game.engine.sidescroller.SideScroller;
 import ui.TextInputField;
 import ui.Button;
 

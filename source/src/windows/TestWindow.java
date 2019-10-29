@@ -1,7 +1,7 @@
 package windows;
 
-import scene.GameplayScene;
-import sidescroller.PClass;
+import game.engine.scene.GameplayScene;
+import game.engine.sidescroller.PClass;
 
 import ui.Button;
 import ui.TextInputField;

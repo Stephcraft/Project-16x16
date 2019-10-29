@@ -3,8 +3,8 @@ package ui;
 import ui.Anchor.AnchorOrigin;
 import processing.core.*;
 import processing.event.MouseEvent;
-import sidescroller.PClass;
-import sidescroller.Util;
+import game.engine.sidescroller.PClass;
+import game.engine.sidescroller.Util;
 
 /**
  * Horizontal ScrollBar

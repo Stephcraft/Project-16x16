@@ -1,7 +1,7 @@
 package ui;
 
-import sidescroller.PClass;
-import sidescroller.Util;
+import game.engine.sidescroller.PClass;
+import game.engine.sidescroller.Util;
 
 /**
  * The Press Class extends PClass A button for the player to click

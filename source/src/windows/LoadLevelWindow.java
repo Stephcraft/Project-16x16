@@ -1,8 +1,8 @@
 package windows;
 
-import scene.GameplayScene;
-import sidescroller.PClass;
-import sidescroller.SideScroller;
+import game.engine.scene.GameplayScene;
+import game.engine.sidescroller.PClass;
+import game.engine.sidescroller.SideScroller;
 import ui.List;
 
 import java.io.File;

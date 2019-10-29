@@ -1,8 +1,8 @@
 package ui;
 
 import processing.core.PApplet;
-import sidescroller.PClass;
-import sidescroller.SideScroller;
+import game.engine.sidescroller.PClass;
+import game.engine.sidescroller.SideScroller;
 
 public class List extends PClass {
 

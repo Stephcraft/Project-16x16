@@ -1,7 +1,7 @@
 package ui;
 
 import processing.core.PApplet;
-import sidescroller.SideScroller;
+import game.engine.sidescroller.SideScroller;
 
 public class Anchor {
 	
