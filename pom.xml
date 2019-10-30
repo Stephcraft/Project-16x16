@@ -1,0 +1,64 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>Project_16x16</groupId>
+  <artifactId>Project_16x16</artifactId>
+  <packaging>jar</packaging>
+  <version>0.0.1</version>
+  <name>Project-16x16</name>
+  <url>https://github.com/Stephcraft/Project-16x16</url>
+  <repositories>
+    <repository>
+      <id>lib</id>
+      <url>${project.baseUri}lib</url>
+    </repository>
+  </repositories>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.processing</groupId>
+      <artifactId>core</artifactId>
+      <version>3.3.6</version>
+    </dependency>
+    <dependency>
+      <groupId>processing</groupId>
+      <artifactId>gicentreutils</artifactId>
+      <version>local</version>
+    </dependency>
+    <dependency>
+      <groupId>dm</groupId>
+      <artifactId>DM</artifactId>
+      <version>local</version>
+    </dependency>
+  </dependencies>
+  
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>3.8.0</version>
+        <configuration>
+          <source>1.8</source>
+          <target>1.8</target>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>exec-maven-plugin</artifactId>
+        <version>1.6.0</version>
+        <executions>
+          <execution>
+            <id>exec-java</id>
+            <goals>
+              <goal>java</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <mainClass>project_16x16.SideScroller</mainClass>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+</project>
