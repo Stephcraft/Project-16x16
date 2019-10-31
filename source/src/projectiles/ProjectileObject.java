@@ -3,50 +3,60 @@ package projectiles;
 import java.util.ArrayList;
 
 import components.AnimationComponent;
-import objects.Collision;
-import processing.core.PGraphics;
+import objects.CollidableObject;
+import objects.EditableObject;
+import processing.core.PImage;
 import processing.core.PVector;
+import scene.GameplayScene;
 import sidescroller.PClass;
 import sidescroller.SideScroller;
+import sidescroller.Tileset;
 
-public class ProjectileObject extends PClass {
-	
+public class ProjectileObject extends EditableObject {
+
 	public AnimationComponent animation;
-	
+
 	public PVector pos;
-	
-	public PGraphics image;
-	
+
+	public PImage image;
+
 	public int direction;
-	
+	public int prevDirection;
 	public int width;
 	public int height;
 	
+	public int spawnTime;
+
 	public int speed;
-	
-	//Identification
+
+	// Identification
 	public String id;
-	
+
 	public boolean hit;
 
-	public ProjectileObject(SideScroller a) {
-		super(a);
-		
+	public ProjectileObject(SideScroller a, GameplayScene g) {
+		super(a, g);
+
 		id = "";
-		
+		spawnTime = applet.frameCount;
 		animation = new AnimationComponent();
-		pos = new PVector(0,0);
+		pos = new PVector(0, 0);
 	}
-	
-	public void display() {}
-	public void update() {}
-	
-	public boolean collides(Collision collision) {
-		return (pos.x-applet.originX+width/2 > collision.pos.x-applet.originX-collision.width/2 && pos.x-applet.originX-width/2 < collision.pos.x-applet.originX+collision.width/2) &&
-			   (pos.y-applet.originY+height/2 > collision.pos.y-applet.originY-collision.height/2 && pos.y-applet.originY-height/2 < collision.pos.y-applet.originY+collision.height/2);
+
+	public void display() {
 	}
-	
-	protected ArrayList<PGraphics> getAnimation(String id) {
-		return applet.gameGraphics.getAnimation(id);
+	public void update() {
+	}
+
+	public boolean collides(CollidableObject collision) {
+		return (pos.x + width / 2 > collision.pos.x - collision.width / 2
+				&& pos.x - width / 2 < collision.pos.x + collision.width / 2)
+				&& (pos.y + height / 2 > collision.pos.y - collision.height / 2
+						&& pos.y - height / 2 < collision.pos.y
+								+ collision.height / 2);
+	}
+
+	protected ArrayList<PImage> getAnimation(String name) {
+		return Tileset.getAnimation(name);
 	}
 }
