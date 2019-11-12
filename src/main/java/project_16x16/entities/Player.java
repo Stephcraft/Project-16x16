@@ -40,8 +40,8 @@ public final class Player extends EditableObject {
 	private int speedWalk;
 	private int speedJump;
 
-	private int life;
-	private int lifeCapacity;
+	public int life; // public for debugging TODO make private
+	public int lifeCapacity; // public for debugging TODO make private
 
 	// Player Projectile
 	public ArrayList<Swing> swings;
@@ -55,7 +55,7 @@ public final class Player extends EditableObject {
 	private enum ACTIONS {
 		WALK, IDLE, JUMP, LAND, FALL, ATTACK, DASH, DASH_ATTACK
 	}
-	
+
 	private class PlayerState {
 		public PVector pos;
 		public boolean flying;
@@ -64,7 +64,7 @@ public final class Player extends EditableObject {
 		public int facingDir;
 		public boolean landing;
 		public boolean jumping;
-		
+
 		public PlayerState() {
 			pos = new PVector(0, 0);
 			flying = false;
@@ -74,7 +74,7 @@ public final class Player extends EditableObject {
 			jumping = false;
 			landing = false;
 		}
-		
+
 		public PlayerState(PlayerState ps) {
 			pos = ps.pos;
 			flying = ps.flying;
@@ -85,10 +85,10 @@ public final class Player extends EditableObject {
 			jumping = ps.jumping;
 		}
 	}
-	
+
 	private PlayerState pstate;
 	private PlayerState state;
-	
+
 	static {
 		image = Tileset.getTile(0, 258, 14, 14, 4);
 		lifeOn = Tileset.getTile(144, 256, 9, 9, 4);
@@ -101,7 +101,7 @@ public final class Player extends EditableObject {
 	 * @param a SideScroller game controller.
 	 */
 	public Player(SideScroller a, GameplayScene g) {
-		
+
 		super(a, g);
 
 		pos = new PVector(100, 300);
@@ -111,21 +111,21 @@ public final class Player extends EditableObject {
 		swings = new ArrayList<Swing>();
 
 		// Set life
-		lifeCapacity = 3;
-		life = lifeCapacity;
+		lifeCapacity = 6;
+		life = 3;
 
 		speedWalk = 7;
 		speedJump = 18;
 
 		width = 14 * 4;
 		height = 16 * 4;
-		
+
 		state = new PlayerState();
 		state.pos = pos;
-		
+
 		setAnimation(ACTIONS.IDLE);
 	}
-	
+
 	public PVector getVelocity() {
 		return new PVector(velocity.x, velocity.y);
 	}
@@ -164,7 +164,7 @@ public final class Player extends EditableObject {
 		pstate = state;
 		state = new PlayerState(pstate);
 		state.pos = pos;
-		
+
 		// Dash
 		if (applet.keyPressed && applet.keyPress(Options.dashKey)) {
 			state.dashing = true;
@@ -181,7 +181,7 @@ public final class Player extends EditableObject {
 		if (animation.name == "DASH" && animation.ended) {
 			state.dashing = false;
 		}
-		
+
 		// End Dash Attack
 		if (animation.name == "DASH_ATTACK" && animation.ended) {
 			state.dashing = false;
@@ -191,12 +191,12 @@ public final class Player extends EditableObject {
 		if (animation.name == "ATTACK" && animation.ended) {
 			state.attacking = false;
 		}
-		
+
 		// End Jumping
 		if (animation.name == "JUMP" && animation.ended) {
 			state.jumping = false;
 		}
-		
+
 		if (animation.name == "LAND" && animation.ended) {
 			state.landing = false;
 		}
@@ -229,7 +229,7 @@ public final class Player extends EditableObject {
 				velocity.y *= 1.2;
 			}
 		}
-		
+
 		velocity.y += gravity * applet.deltaTime;
 
 		if (applet.debug == debugType.ALL) {
@@ -242,7 +242,7 @@ public final class Player extends EditableObject {
 		// All Collision Global Check
 		for (int i = 0; i < gameScene.collidableObjects.size(); i++) {
 			CollidableObject collision = gameScene.collidableObjects.get(i);
-            if (Util.fastInRange(pos, collision.pos, collisionRange)) { // In Player Range
+			if (Util.fastInRange(pos, collision.pos, collisionRange)) { // In Player Range
 				if (applet.debug == debugType.ALL) {
 					applet.strokeWeight(2);
 					applet.rect(collision.pos.x, collision.pos.y, collision.width, collision.height);
@@ -250,12 +250,12 @@ public final class Player extends EditableObject {
 					applet.ellipse(collision.pos.x, collision.pos.y, 5, 5);
 					applet.noFill();
 				}
-				
+
 				if (collidesFuturX(collision)) {
 					// player left of collision
 					if (pos.x < collision.pos.x) {
 						pos.x = collision.pos.x - collision.width / 2 - width / 2;
-					// player right of collision
+						// player right of collision
 					} else {
 						pos.x = collision.pos.x + collision.width / 2 + width / 2;
 					}
@@ -270,7 +270,7 @@ public final class Player extends EditableObject {
 						}
 						pos.y = collision.pos.y - collision.height / 2 - height / 2;
 						state.flying = false;
-					// player below collision
+						// player below collision
 					} else {
 						pos.y = collision.pos.y + collision.height / 2 + height / 2;
 						state.jumping = false;
@@ -279,7 +279,7 @@ public final class Player extends EditableObject {
 				}
 			}
 		}
-		
+
 		if (velocity.y != 0) {
 			state.flying = true;
 		}
@@ -305,7 +305,7 @@ public final class Player extends EditableObject {
 		} else {
 			setAnimation(ACTIONS.IDLE);
 		}
-		
+
 		pos.x += velocity.x;
 		pos.y += velocity.y;
 
@@ -328,11 +328,14 @@ public final class Player extends EditableObject {
 	 * Displays life capacity as long as the character has health.
 	 */
 	public void displayLife() {
+		applet.fill(100, 130, 145, 100);
+		applet.rectMode(CORNER);
+		applet.rect(50 - 20, applet.gameResolution.y - 50 - 20, 40 * lifeCapacity, 40);
+		applet.rectMode(CENTER);
 		for (int i = 0; i < lifeCapacity; i++) {
-			if (i <= life) {
-				applet.image(lifeOn, 30 + i * 50, 30);
-			} else {
-				applet.image(lifeOff, 30 + i * 50, 30);
+			image(lifeOff, 50 + 40 * i, applet.gameResolution.y - 50);
+			if (i < life) {
+				image(lifeOn, 50 + 40 * i, applet.gameResolution.y - 50);
 			}
 		}
 	}
@@ -389,7 +392,7 @@ public final class Player extends EditableObject {
 		if (animation.name == anim.name() && !animation.ended) {
 			return;
 		}
-		
+
 		switch (anim) {
 			case WALK :
 				animation.changeAnimation(getAnimation("PLAYER::WALK"), true, 6);
