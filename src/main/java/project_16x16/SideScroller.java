@@ -9,6 +9,7 @@ import project_16x16.entities.Player;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.input.KeyCombination;
+import javafx.scene.layout.StackPane;
 import javafx.scene.transform.Scale;
 import javafx.stage.Stage;
 
@@ -53,8 +54,8 @@ public class SideScroller extends PApplet {
 	public static int snapSize;
 
 	// Game Rendering
-	private final PVector windowSize = new PVector(1280, 720); // Game window size -- to be set via options
-	public final PVector gameResolution = new PVector(1280, 720); // Game rendering resolution -- to be set
+	private PVector windowSize = new PVector(1280, 720); // Game window size -- to be set via options
+	public PVector gameResolution = new PVector(1280, 720); // Game rendering resolution -- to be set
 																	// via options
 	// Font Resources
 	private static PFont font_pixel;
@@ -123,7 +124,7 @@ public class SideScroller extends PApplet {
 		canvas.widthProperty().unbind(); // used for scaling
 		canvas.heightProperty().unbind(); // used for scaling
 		scene = canvas.getScene();
-		stage = (Stage) canvas.getScene().getWindow();
+		stage = (Stage) scene.getWindow();
 		stage.setTitle("Project-16x16");
 		stage.setResizable(false); // prevent abitrary user resize
 		stage.setFullScreenExitHint(""); // disable fullscreen toggle hint
@@ -421,6 +422,19 @@ public class SideScroller extends PApplet {
 	 */
 	public PVector getMouseCoordScreen() {
 		return new PVector(mouseX, mouseY);
+	}
+	
+	public void resizeWindow(int width, int height) {
+		windowSize = new PVector(width, height);
+		gameResolution = windowSize.copy();
+		stage.setWidth(width); // sceneWidth is not bound, so doesn't change
+		stage.setHeight(height);
+//		stage.setScene(new Scene(new StackPane(canvas), width, height)); // TODO
+	}
+
+	public void resizeGameResolution(int width, int height) {
+		gameResolution = new PVector(width, height);
+		scaleResolution();
 	}
 
 	/**
