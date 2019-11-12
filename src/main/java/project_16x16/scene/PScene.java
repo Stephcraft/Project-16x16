@@ -28,12 +28,12 @@ public abstract class PScene extends PClass {
 	/**
 	 * Code here is affected by camera.
 	 */
-	public abstract void draw();
+	public void draw() {}
 
 	/**
 	 * Code here is unaffected by camera.
 	 */
-	public abstract void drawUI();
+	public void drawUI() {}
 
 	/**
 	 * Code here called if dev debug mode is ON (affected by camera).

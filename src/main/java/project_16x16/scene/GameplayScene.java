@@ -369,6 +369,7 @@ public class GameplayScene extends PScene {
 			case MOVE :
 				break;
 			case PLAY :
+				player.displayLife();
 				break;
 			case SAVE :
 				// Save , Load

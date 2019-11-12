@@ -79,7 +79,7 @@ public class PauseMenu extends PScene {
 		
 		pressSettings.update();
 		if(pressSettings.hover()) {
-			
+			game.swapToScene(game.settings);
 		}
 		
 		pressMenu.update();

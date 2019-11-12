@@ -1,11 +1,11 @@
 package project_16x16;
 
-import java.io.File;
 import java.util.HashSet;
 
 import project_16x16.components.AnimationComponent;
 import dm.core.DM;
 import project_16x16.entities.Player;
+
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.input.KeyCombination;
@@ -24,6 +24,7 @@ import project_16x16.scene.PScene;
 import project_16x16.scene.GameplayScene;
 import project_16x16.scene.MainMenu;
 import project_16x16.scene.PauseMenu;
+import project_16x16.scene.Settings;
 
 /**
  * <h1>SideScroller Class</h1>
@@ -53,7 +54,7 @@ public class SideScroller extends PApplet {
 
 	// Game Rendering
 	private final PVector windowSize = new PVector(1280, 720); // Game window size -- to be set via options
-	private final PVector gameResolution = new PVector(1280, 720); // Game rendering resolution -- to be set
+	public final PVector gameResolution = new PVector(1280, 720); // Game rendering resolution -- to be set
 																	// via options
 	// Font Resources
 	private static PFont font_pixel;
@@ -71,6 +72,7 @@ public class SideScroller extends PApplet {
 	public MainMenu menu;
 	public GameplayScene game;
 	public PauseMenu pmenu;
+	public Settings settings;
 
 	// Events
 	private HashSet<Integer> keys;
@@ -166,6 +168,7 @@ public class SideScroller extends PApplet {
 		game = new GameplayScene(this);
 		menu = new MainMenu(this);
 		pmenu = new PauseMenu(this);
+		settings = new Settings(this);
 		swapToScene(menu);
 
 		// Camera
@@ -318,6 +321,18 @@ public class SideScroller extends PApplet {
 				break;
 			case 'G' :
 				camera.shake(0.4f); // for development
+				break;
+			case 'P' :
+				game.getPlayer().lifeCapacity++;
+				break;
+			case 'O' :
+				game.getPlayer().lifeCapacity--;
+				break;
+			case 'L' :
+				game.getPlayer().life++;
+				break;
+			case 'K' :
+				game.getPlayer().life--;
 				break;
 			default :
 				switch (event.getKeyCode()) { // non-character keys
