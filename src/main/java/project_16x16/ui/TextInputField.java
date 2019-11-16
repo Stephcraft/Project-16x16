@@ -10,14 +10,15 @@ import project_16x16.Util;
  * An input field 
  */
 public class TextInputField extends PClass {
-	private int width;
-	private int height;
-	private int x;
-	private int y;
+	
+	protected int width;
+	protected int height;
+	protected int x;
+	protected int y;
 
-	private String text;
+	protected String text;
 
-	private boolean focus;
+	protected boolean focus;
 
 	/**
 	 * Constructor for PInput
