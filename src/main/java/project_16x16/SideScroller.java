@@ -1,5 +1,6 @@
 package project_16x16;
 
+import java.awt.event.KeyEvent;
 import java.util.HashSet;
 
 import project_16x16.components.AnimationComponent;
@@ -9,7 +10,6 @@ import project_16x16.entities.Player;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.input.KeyCombination;
-import javafx.scene.layout.StackPane;
 import javafx.scene.transform.Scale;
 import javafx.stage.Stage;
 
@@ -17,7 +17,6 @@ import processing.core.PApplet;
 import processing.core.PFont;
 import processing.core.PSurface;
 import processing.core.PVector;
-import processing.event.KeyEvent;
 import processing.event.MouseEvent;
 import processing.javafx.PSurfaceFX;
 
@@ -287,7 +286,7 @@ public class SideScroller extends PApplet {
 	 * FOR GLOBAL KEYS ONLY
 	 */
 	@Override
-	public void keyPressed(KeyEvent event) {
+	public void keyPressed(processing.event.KeyEvent event) {
 		keys.add(event.getKeyCode());
 		keyPressEvent = true;
 	}
@@ -299,60 +298,57 @@ public class SideScroller extends PApplet {
 	 * FOR GLOBAL KEYS ONLY
 	 */
 	@Override
-	public void keyReleased(KeyEvent event) {
+	public void keyReleased(processing.event.KeyEvent event) {
 		keys.remove(event.getKeyCode());
 		keyReleaseEvent = true;
 
-		switch (event.getKey()) { // must be ALL-CAPS
-			case 'Z' :
+		switch (event.getKeyCode()) {
+			case KeyEvent.VK_Z :
 				frameRate(5000);
 				break;
-			case 'X' :
+			case KeyEvent.VK_X :
 				frameRate(20);
 				break;
-			case 'V' :
+			case KeyEvent.VK_V :
 				camera.toggleDeadZone(); // for development
 				break;
-			case 'C' :
+			case KeyEvent.VK_C :
 				camera.setCameraPosition(camera.getMouseCoord()); // for development
 				break;
-			case 'F' :
+			case KeyEvent.VK_F :
 				camera.setFollowObject(game.getPlayer()); // for development
 				camera.setZoomScale(1.0f); // for development
 				break;
-			case 'G' :
+			case KeyEvent.VK_G :
 				camera.shake(0.4f); // for development
 				break;
-			case 'P' :
+			case KeyEvent.VK_P :
 				game.getPlayer().lifeCapacity++;
 				break;
-			case 'O' :
+			case KeyEvent.VK_O :
 				game.getPlayer().lifeCapacity--;
 				break;
-			case 'L' :
+			case KeyEvent.VK_L :
 				game.getPlayer().life++;
 				break;
-			case 'K' :
+			case KeyEvent.VK_K :
 				game.getPlayer().life--;
 				break;
+			case KeyEvent.VK_F11 :
+				noLoop();
+				stage.setFullScreen(!stage.isFullScreen());
+				scaleResolution();
+				loop();
+				break;
+			case ESC : // Pause
+				swapToScene(currentScene == pmenu ? game : pmenu);
+				debug = currentScene == pmenu ? debugType.OFF : debugType.ALL;
+				break;
+			case TAB :
+				debug = debug.next();
+				break;
 			default :
-				switch (event.getKeyCode()) { // non-character keys
-					case 122 : // F11
-						noLoop();
-						stage.setFullScreen(!stage.isFullScreen());
-						scaleResolution();
-						loop();
-						break;
-					case 27 : // ESC - Pause menu here
-						swapToScene(currentScene == pmenu ? game : pmenu);
-						debug = currentScene == pmenu ? debugType.OFF : debugType.ALL;
-						break;
-					case 9 : // TAB
-						debug = debug.next();
-						break;
-					default :
-						break;
-				}
+				break;
 		}
 	}
 
