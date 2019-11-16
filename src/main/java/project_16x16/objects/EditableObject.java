@@ -166,7 +166,7 @@ public class EditableObject extends PClass {
 			}
 
 			// Duplicate Object Shift
-				if (applet.keyPressEvent && applet.keyPress(SideScroller.SHIFT)) {
+				if (applet.keyPressEvent && applet.isKeyDown(SideScroller.SHIFT)) {
 					EditableObject copy; // Duplicate Instance
 					switch (type) {
 						case COLLISION :

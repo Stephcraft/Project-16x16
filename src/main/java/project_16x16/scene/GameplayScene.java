@@ -189,7 +189,7 @@ public class GameplayScene extends PScene {
 
 			backgroundObjects.get(i).display();
 
-			if (backgroundObjects.get(i).focus && applet.keyPress(8) && applet.keyPressEvent) {
+			if (backgroundObjects.get(i).focus && applet.isKeyDown(8) && applet.keyPressEvent) {
 				backgroundObjects.remove(i);
 				applet.keyPressEvent = false;
 			}
@@ -203,7 +203,7 @@ public class GameplayScene extends PScene {
 
 			collidableObjects.get(i).display();
 
-			if (collidableObjects.get(i).focus && applet.keyPress(8) && applet.keyPressEvent) {
+			if (collidableObjects.get(i).focus && applet.isKeyDown(8) && applet.keyPressEvent) {
 				collidableObjects.remove(i);
 				applet.keyPressEvent = false;
 			}
@@ -222,7 +222,7 @@ public class GameplayScene extends PScene {
 			gameObjects.get(i).display();
 
 			// Delete
-			if (gameObjects.get(i).focus && applet.keyPress(8) && applet.keyPressEvent) {
+			if (gameObjects.get(i).focus && applet.isKeyDown(8) && applet.keyPressEvent) {
 				gameObjects.remove(i);
 				applet.keyPressEvent = false;
 			}
@@ -575,6 +575,14 @@ public class GameplayScene extends PScene {
 	void mousePressed(MouseEvent e) {
 		origPos = applet.camera.getPosition();
 		mouseDown = applet.getMouseCoordScreen();
+		switch (e.getButton()) {
+			case LEFT :
+				break;
+			case RIGHT : 
+				break;
+			default :
+				break;
+		}
 	}
 
 	@Override
