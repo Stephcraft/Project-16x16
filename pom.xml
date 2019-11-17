@@ -25,7 +25,7 @@
     </dependency>
     <dependency>
       <groupId>processing</groupId>
-      <artifactId>gicentreutils</artifactId>
+      <artifactId>gicentreUtils</artifactId>
       <version>local</version>
       <type>jar</type>
     </dependency>
