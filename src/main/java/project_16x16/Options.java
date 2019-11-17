@@ -20,14 +20,7 @@ public class Options {
 	public static int targetFrameRate = options.getInt(option.targetFPS.toString(), 60);
 	public static int snapSize = options.getInt(option.snapSize.toString(), 32);
 	public static int debugMode = options.getInt(option.debugMode.toString(), 0); // 0 = OFF
-	
-	/**
-	 * Should save key codes, not chars
-	 */
-	public static void save() {
-		// TODO
-	}
-	
+		
 	public static void save(option option, int value) {
 		options.putInt(option.toString(), value);
 	}
