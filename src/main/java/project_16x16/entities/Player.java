@@ -5,7 +5,7 @@ import java.util.HashMap;
 
 import processing.core.PImage;
 import processing.core.PVector;
-
+import processing.data.JSONObject;
 import project_16x16.Options;
 import project_16x16.SideScroller;
 import project_16x16.SideScroller.debugType;
@@ -140,8 +140,8 @@ public final class Player extends EditableObject {
 	 * The update method handles updating the character.
 	 */
 	public void update() {
-		velocity.set(0, velocity.y+gravity*applet.deltaTime);
-		
+		velocity.set(0, velocity.y + gravity * applet.deltaTime);
+
 		handleKeyboardInput();
 		handleMouseInput();
 
@@ -225,42 +225,44 @@ public final class Player extends EditableObject {
 	}
 
 	private void checkPlayerCollision() {
-		for (int i = 0; i < gameScene.collidableObjects.size(); i++) {
-			CollidableObject collision = gameScene.collidableObjects.get(i);
-			if (Util.fastInRange(pos, collision.pos, collisionRange)) { // In Player Range
-				if (applet.debug == debugType.ALL) {
-					applet.strokeWeight(2);
-					applet.rect(collision.pos.x, collision.pos.y, collision.width, collision.height);
-					applet.fill(255, 0, 0);
-					applet.ellipse(collision.pos.x, collision.pos.y, 5, 5);
-					applet.noFill();
-				}
+		for (EditableObject o : gameScene.objects) {
+			if (o instanceof CollidableObject) {
+				CollidableObject collision = (CollidableObject) o;
+				if (Util.fastInRange(pos, collision.pos, collisionRange)) { // In Player Range
+					if (applet.debug == debugType.ALL) {
+						applet.strokeWeight(2);
+						applet.rect(collision.pos.x, collision.pos.y, collision.width, collision.height);
+						applet.fill(255, 0, 0);
+						applet.ellipse(collision.pos.x, collision.pos.y, 5, 5);
+						applet.noFill();
+					}
 
-				if (collidesFuturX(collision)) {
-					// player left of collision
-					if (pos.x < collision.pos.x) {
-						pos.x = collision.pos.x - collision.width / 2 - width / 2;
-						// player right of collision
-					} else {
-						pos.x = collision.pos.x + collision.width / 2 + width / 2;
-					}
-					velocity.x = 0;
-					state.dashing = false;
-				}
-				if (collidesFuturY(collision)) {
-					// player above collision
-					if (pos.y < collision.pos.y) {
-						if (state.flying) {
-							state.landing = true;
+					if (collidesFuturX(collision)) {
+						// player left of collision
+						if (pos.x < collision.pos.x) {
+							pos.x = collision.pos.x - collision.width / 2 - width / 2;
+							// player right of collision
+						} else {
+							pos.x = collision.pos.x + collision.width / 2 + width / 2;
 						}
-						pos.y = collision.pos.y - collision.height / 2 - height / 2;
-						state.flying = false;
-						// player below collision
-					} else {
-						pos.y = collision.pos.y + collision.height / 2 + height / 2;
-						state.jumping = false;
+						velocity.x = 0;
+						state.dashing = false;
 					}
-					velocity.y = 0;
+					if (collidesFuturY(collision)) {
+						// player above collision
+						if (pos.y < collision.pos.y) {
+							if (state.flying) {
+								state.landing = true;
+							}
+							pos.y = collision.pos.y - collision.height / 2 - height / 2;
+							state.flying = false;
+							// player below collision
+						} else {
+							pos.y = collision.pos.y + collision.height / 2 + height / 2;
+							state.jumping = false;
+						}
+						velocity.y = 0;
+					}
 				}
 			}
 		}
@@ -413,5 +415,16 @@ public final class Player extends EditableObject {
 			jumping = false;
 			landing = false;
 		}
+	}
+
+	@Override
+	public void debug() {
+		// TODO Auto-generated method stub
+	}
+
+	@Override
+	public JSONObject exportToJSON() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

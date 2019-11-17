@@ -2,9 +2,10 @@ package project_16x16.objects;
 
 import processing.core.PImage;
 import processing.core.PVector;
+import processing.data.JSONObject;
+
 import project_16x16.scene.GameplayScene;
 import project_16x16.SideScroller;
-import project_16x16.SideScroller.debugType;
 import project_16x16.Tileset;
 
 public class BackgroundObject extends EditableObject {
@@ -52,5 +53,22 @@ public class BackgroundObject extends EditableObject {
 		id = name;
 		width = image.width;
 		height = image.height;
+	}
+
+	@Override
+	public void debug() {
+		applet.stroke(50, 255, 120);
+		applet.noFill();
+		applet.rect(pos.x, pos.y, width, height);
+	}
+
+	@Override
+	public JSONObject exportToJSON() {
+		JSONObject item = new JSONObject();
+		item.setString("id", id);
+		item.setString("type", "BACKGROUND");
+		item.setInt("x", (int) pos.x);
+		item.setInt("y", (int) pos.y);
+		return item;
 	}
 }

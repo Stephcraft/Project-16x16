@@ -7,6 +7,7 @@ import project_16x16.objects.CollidableObject;
 import project_16x16.objects.EditableObject;
 import processing.core.PImage;
 import processing.core.PVector;
+import processing.data.JSONObject;
 import project_16x16.scene.GameplayScene;
 import project_16x16.PClass;
 import project_16x16.SideScroller;
@@ -58,5 +59,14 @@ public class ProjectileObject extends EditableObject {
 
 	protected ArrayList<PImage> getAnimation(String name) {
 		return Tileset.getAnimation(name);
+	}
+
+	@Override
+	public void debug() {
+	}
+
+	@Override
+	public JSONObject exportToJSON() {
+		return null;
 	}
 }

@@ -2,8 +2,9 @@ package project_16x16.objects;
 
 import java.lang.reflect.Constructor;
 
-import processing.core.PImage;
 import processing.core.PVector;
+import processing.data.JSONObject;
+
 import project_16x16.scene.GameplayScene;
 import project_16x16.PClass;
 import project_16x16.SideScroller;
@@ -13,7 +14,7 @@ import project_16x16.Util;
 /**
  * Extends {@link PClass}.
  */
-public class EditableObject extends PClass {
+public abstract class EditableObject extends PClass {
 
 	// Base Data
 	public PVector pos;
@@ -30,7 +31,7 @@ public class EditableObject extends PClass {
 	protected type type;
 
 	// Focus
-	public boolean focus;
+	private boolean focus;
 
 	/**
 	 * Child of gameObject.
@@ -49,6 +50,10 @@ public class EditableObject extends PClass {
 		editOffset = new PVector(0, 0);
 		gameScene = g;
 	}
+	
+	public abstract void display();
+	public abstract void debug();
+	public abstract JSONObject exportToJSON(); 
 
 	/**
 	 * Draws position edit arrows and bounding box if the object is selected
@@ -124,7 +129,7 @@ public class EditableObject extends PClass {
 						copy.focus = true;
 						copy.pos = pos.copy();
 						copy.editOffset = editOffset.copy();
-						gameScene.collidableObjects.add((CollidableObject) copy);
+						gameScene.objects.add(copy);
 						break;
 					case OBJECT :
 						try {
@@ -134,15 +139,15 @@ public class EditableObject extends PClass {
 							copy.focus = true;
 							copy.pos = pos.copy();
 							copy.editOffset = editOffset.copy();
-							gameScene.gameObjects.add((GameObject) copy);
+							gameScene.objects.add(copy);
 							break;
 						} catch (Exception e) {
 							e.printStackTrace();
 						}
 						switch (id) {
 							case "MIRROR_BOX" :
-								((MirrorBoxObject) gameScene.gameObjects.get(gameScene.gameObjects.size()
-										- 1)).direction = ((MirrorBoxObject) this).direction;
+								((MirrorBoxObject) gameScene.objects.get(
+										gameScene.objects.size() - 1)).direction = ((MirrorBoxObject) this).direction;
 								break;
 						}
 						break;
@@ -169,8 +174,12 @@ public class EditableObject extends PClass {
 	public void unFocus() {
 		focus = false;
 	}
+	
+	public boolean isFocused() {
+		return focus;
+	}
 
-	private boolean mouseHover() {
+	public boolean mouseHover() {
 		if (applet.mouseX < 400 && applet.mouseY < 100) { // Over Inventory Bar -- rough approximation
 			return false;
 		}
