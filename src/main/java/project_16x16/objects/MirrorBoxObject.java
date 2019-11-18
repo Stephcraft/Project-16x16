@@ -36,7 +36,7 @@ public class MirrorBoxObject extends GameObject {
 
 		collision = new CollidableObject(applet, g, BOX_W, BOX_H, 0, 0, true);
 		collision.flag = "TRANSPARENT_BULLET";
-		g.collidableObjects.add(collision);
+		g.objects.add(collision);
 	}
 
 	public void display() {

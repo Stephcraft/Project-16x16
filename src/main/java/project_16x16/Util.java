@@ -166,6 +166,20 @@ public final class Util {
 		return (applet.getMouseCoordGame().x > x - w / 2 && applet.getMouseCoordGame().x < x + w / 2
 				&& applet.getMouseCoordGame().y > y - h / 2 && applet.getMouseCoordGame().y < y + h / 2);
 	}
+	
+	/**
+	 * Determine if a point is within a rectangular region.
+	 * @param point PVector position to test.
+	 * @param UL Corner one of region.
+	 * @param BR Corner two of region (different X & Y).
+	 * @return True if point contained in region.
+	 */
+	public static boolean withinRegion(PVector point, PVector UL, PVector BR) {
+		return (point.x >= UL.x && point.y >= UL.y) && (point.x <= BR.x && point.y <= BR.y) // SE
+				|| (point.x >= BR.x && point.y >= BR.y) && (point.x <= UL.x && point.y <= UL.y) // NW
+				|| (point.x <= UL.x && point.x >= BR.x) && (point.y >= UL.y && point.y <= BR.y) // SW
+				|| (point.x <= BR.x && point.x >= UL.x) && (point.y >= BR.y && point.y <= UL.y); // NE
+	}
 
 	/**
 	 * Rounds n to the nearest x.

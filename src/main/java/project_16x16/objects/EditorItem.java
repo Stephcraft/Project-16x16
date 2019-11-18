@@ -21,14 +21,14 @@ public class EditorItem extends PClass {
 	public tileType type;
 
 	private String mode;
-	
+
 	private GameplayScene gameplayScene;
 
 	public EditorItem(SideScroller a, GameplayScene g) {
 		super(a);
 
 		gameplayScene = g;
-		
+
 		setTile("BOX");
 		setMode("CREATE");
 
@@ -56,38 +56,31 @@ public class EditorItem extends PClass {
 					PVector realPos = applet.camera.getDispToCoord(
 							new PVector(Util.roundToNearest(applet.getMouseCoordScreen().x, SideScroller.snapSize),
 									Util.roundToNearest(applet.getMouseCoordScreen().y, SideScroller.snapSize)));
+					EditableObject c = null;
 					switch (type) {
 						case COLLISION :
-							CollidableObject c = new CollidableObject(applet, gameplayScene, id, 0, 0);
-							c.pos.x = realPos.x;
-							c.pos.y = realPos.y;
-							c.focus();
-							gameplayScene.collidableObjects.add(c);
+							c = new CollidableObject(applet, gameplayScene, id, 0, 0);
+							c.pos.set(realPos);
 							break;
 						case BACKGROUND :
-							BackgroundObject bObject = new BackgroundObject(applet, gameplayScene, id, 0, 0);
-							bObject.pos.x = realPos.x;
-							bObject.pos.y = realPos.y;
-							bObject.focus();
-							gameplayScene.backgroundObjects.add(bObject);
+							c = new BackgroundObject(applet, gameplayScene, id, 0, 0);
 							break;
 						case OBJECT :
 							try {
 								Class<? extends GameObject> gameObjectClass = Tileset.getObjectClass(id);
 								Constructor<?> ctor = gameObjectClass.getDeclaredConstructors()[0];
-								GameObject obj = (GameObject) ctor.newInstance(new Object[] { applet, gameplayScene });
-								obj.focus();
-								obj.pos.x = realPos.x;
-								obj.pos.y = realPos.y;
-								gameplayScene.gameObjects.add(obj);
+								c = (GameObject) ctor.newInstance(new Object[] { applet, gameplayScene });
 								break;
 							} catch (Exception e) {
 								e.printStackTrace();
-							}	
+							}
 							break;
 						default :
 							break;
 					}
+					c.pos.set(realPos);
+					c.focus();
+					gameplayScene.objects.add(c);
 				}
 			}
 		}
@@ -98,8 +91,8 @@ public class EditorItem extends PClass {
 			applet.strokeWeight(1);
 			applet.stroke(0, 255, 200);
 			applet.noFill();
-			applet.rect(round((applet.getMouseCoordGame().x) / 4) * 4, round((applet.getMouseCoordGame().y) / 4) * 4, image.width,
-					image.height);
+			applet.rect(round((applet.getMouseCoordGame().x) / 4) * 4, round((applet.getMouseCoordGame().y) / 4) * 4,
+					image.width, image.height);
 		}
 	}
 

@@ -7,6 +7,7 @@ import project_16x16.ParticleSystem.emissions.AreaEmission;
 import project_16x16.ParticleSystem.events.ParticleAnimationController;
 import project_16x16.ParticleSystem.events.ParticleNoLoopController;
 import project_16x16.objects.CollidableObject;
+import project_16x16.objects.EditableObject;
 import processing.core.PApplet;
 import processing.core.PImage;
 import processing.core.PVector;
@@ -65,11 +66,13 @@ public class MagicProjectile extends ProjectileObject {
 	}
 	
 	public void destroyProjectile() {
-		for (int i = 0; i < gameScene.collidableObjects.size(); i++) {
-			CollidableObject collision = gameScene.collidableObjects.get(i);
-			if (collides(collision) && !collision.flag.equals("TRANSPARENT_BULLET")) {
-				hit = true;
-				trail.spawn = false;
+		for (EditableObject o : gameScene.objects) {
+			if (o instanceof CollidableObject) {
+				CollidableObject collidable = (CollidableObject) o;
+				if (collides(collidable) && collidable.flag.equals("TRANSPARENT_BULLET")) {
+					hit = true;
+					trail.spawn = false;
+				}
 			}
 		}
 	}

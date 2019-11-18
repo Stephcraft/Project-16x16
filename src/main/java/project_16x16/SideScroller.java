@@ -1,15 +1,13 @@
 package project_16x16;
 
+import java.awt.event.KeyEvent;
 import java.util.HashSet;
 
-import project_16x16.components.AnimationComponent;
 import dm.core.DM;
-import project_16x16.entities.Player;
 
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.input.KeyCombination;
-import javafx.scene.layout.StackPane;
 import javafx.scene.transform.Scale;
 import javafx.stage.Stage;
 
@@ -17,13 +15,16 @@ import processing.core.PApplet;
 import processing.core.PFont;
 import processing.core.PSurface;
 import processing.core.PVector;
-import processing.event.KeyEvent;
+
 import processing.event.MouseEvent;
 import processing.javafx.PSurfaceFX;
 
-import project_16x16.scene.PScene;
+import project_16x16.Options.option;
+import project_16x16.components.AnimationComponent;
+import project_16x16.entities.Player;
 import project_16x16.scene.GameplayScene;
 import project_16x16.scene.MainMenu;
+import project_16x16.scene.PScene;
 import project_16x16.scene.PauseMenu;
 import project_16x16.scene.Settings;
 
@@ -46,9 +47,13 @@ public class SideScroller extends PApplet {
 		public debugType next() {
 			return vals[(this.ordinal() + 1) % vals.length];
 		}
+		
+		public static debugType set(int value) {
+			return values()[value];
+		}
 	}
 
-	public debugType debug = debugType.OFF;
+	public debugType debug = debugType.set(Options.debugMode);
 
 	public static final boolean SNAP = true; // snap objects to grid when moving; located here for ease of access
 	public static int snapSize;
@@ -76,7 +81,7 @@ public class SideScroller extends PApplet {
 	public Settings settings;
 
 	// Events
-	private HashSet<Integer> keys;
+	private HashSet<Integer> keysDown;
 	public boolean keyPressEvent;
 	public boolean keyReleaseEvent;
 	public boolean mousePressEvent;
@@ -139,7 +144,9 @@ public class SideScroller extends PApplet {
 	@Override
 	public void setup() {
 
-		snapSize = SNAP ? 32 : 1; // global snap step
+		snapSize = SNAP ? Options.snapSize : 1; // global snap step
+		
+		frameRate(Options.targetFrameRate);
 
 		// Start Graphics
 		background(0);
@@ -160,7 +167,7 @@ public class SideScroller extends PApplet {
 		deltaTime = 1;
 
 		// Create ArrayList
-		keys = new HashSet<Integer>();
+		keysDown = new HashSet<Integer>();
 
 		// Main Load
 		load();
@@ -287,8 +294,8 @@ public class SideScroller extends PApplet {
 	 * FOR GLOBAL KEYS ONLY
 	 */
 	@Override
-	public void keyPressed(KeyEvent event) {
-		keys.add(event.getKeyCode());
+	public void keyPressed(processing.event.KeyEvent event) {
+		keysDown.add(event.getKeyCode());
 		keyPressEvent = true;
 	}
 
@@ -299,60 +306,57 @@ public class SideScroller extends PApplet {
 	 * FOR GLOBAL KEYS ONLY
 	 */
 	@Override
-	public void keyReleased(KeyEvent event) {
-		keys.remove(event.getKeyCode());
+	public void keyReleased(processing.event.KeyEvent event) {
+		keysDown.remove(event.getKeyCode());
 		keyReleaseEvent = true;
 
-		switch (event.getKey()) { // must be ALL-CAPS
-			case 'Z' :
+		switch (event.getKeyCode()) {
+			case KeyEvent.VK_Z :
 				frameRate(5000);
 				break;
-			case 'X' :
+			case KeyEvent.VK_X :
 				frameRate(20);
 				break;
-			case 'V' :
+			case KeyEvent.VK_V :
 				camera.toggleDeadZone(); // for development
 				break;
-			case 'C' :
+			case KeyEvent.VK_C :
 				camera.setCameraPosition(camera.getMouseCoord()); // for development
 				break;
-			case 'F' :
+			case KeyEvent.VK_F :
 				camera.setFollowObject(game.getPlayer()); // for development
 				camera.setZoomScale(1.0f); // for development
 				break;
-			case 'G' :
+			case KeyEvent.VK_G :
 				camera.shake(0.4f); // for development
 				break;
-			case 'P' :
+			case KeyEvent.VK_P :
 				game.getPlayer().lifeCapacity++;
 				break;
-			case 'O' :
+			case KeyEvent.VK_O :
 				game.getPlayer().lifeCapacity--;
 				break;
-			case 'L' :
+			case KeyEvent.VK_L :
 				game.getPlayer().life++;
 				break;
-			case 'K' :
+			case KeyEvent.VK_K :
 				game.getPlayer().life--;
 				break;
+			case KeyEvent.VK_F11 :
+				noLoop();
+				stage.setFullScreen(!stage.isFullScreen());
+				scaleResolution();
+				loop();
+				break;
+			case ESC : // Pause
+				swapToScene(currentScene == pmenu ? game : pmenu); // TODO interfering with settings menu?
+				break;
+			case TAB :
+				debug = debug.next();
+				Options.save(option.debugMode, debug.ordinal());
+				break;
 			default :
-				switch (event.getKeyCode()) { // non-character keys
-					case 122 : // F11
-						noLoop();
-						stage.setFullScreen(!stage.isFullScreen());
-						scaleResolution();
-						loop();
-						break;
-					case 27 : // ESC - Pause menu here
-						swapToScene(currentScene == pmenu ? game : pmenu);
-						debug = currentScene == pmenu ? debugType.OFF : debugType.ALL;
-						break;
-					case 9 : // TAB
-						debug = debug.next();
-						break;
-					default :
-						break;
-				}
+				break;
 		}
 	}
 
@@ -378,7 +382,7 @@ public class SideScroller extends PApplet {
 	@Override
 	public void mouseWheel(MouseEvent event) {
 		game.mouseWheel(event);
-		if (event.getAmount() == -1.0) { // for development
+		if (event.getCount() == -1) { // for development
 			camera.zoomIn(0.02f);
 		} else {
 			camera.zoomOut(0.02f);
@@ -393,8 +397,8 @@ public class SideScroller extends PApplet {
 	 * @param k (int) the key that we are determining is valid and has been pressed.
 	 * @return boolean key has or has not been pressed.
 	 */
-	public boolean keyPress(int k) {
-		return keys.contains(k);
+	public boolean isKeyDown(int k) {
+		return keysDown.contains(k);
 	}
 
 	/**

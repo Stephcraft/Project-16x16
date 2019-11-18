@@ -1,54 +1,28 @@
 package project_16x16;
 
-import processing.core.PApplet;
-import processing.data.JSONObject;
+import java.util.prefs.Preferences;
 
+/**
+ * Handle loading/saving of player settings (game options)
+ */
 public class Options {
 	
-	private static final String SAVEPATH = "options.json";
+	private static final Preferences options = Preferences.userNodeForPackage(Options.class);
 	
-	public static int moveLeftKey = 37;		//A = 65	LeftArrow = 37
-	public static int moveRightKey = 39;	//D = 68	RightArrow = 39
-	public static int jumpKey = 38;			//W = 87	UpArrow = 38
-	public static int attackKey = 40;		//S = 83    DownArrow = 40
-	public static int dashKey = 16;			//Shift = 16
-	public static int targetFrameRate = 60;
+	public static enum option {
+		moveLeftKey, moveRightKey, jumpKey, dashKey, targetFPS, snapSize, debugMode;
+	}
 
-	public static void load()
-	{
-		PApplet app = new PApplet();
-		app.sketchPath(SAVEPATH);
-		JSONObject json;
+	public static int moveLeftKey = options.getInt(option.moveLeftKey.toString(), 65); // 65 = 'A'
+	public static int moveRightKey = options.getInt(option.moveRightKey.toString(), 68); // 68 = 'D'
+	public static int jumpKey = options.getInt(option.jumpKey.toString(), 32); // 32 = SPACE
+	public static int dashKey = options.getInt(option.dashKey.toString(), 16); // 16 = SHIFT
+	public static int targetFrameRate = options.getInt(option.targetFPS.toString(), 60);
+	public static int snapSize = options.getInt(option.snapSize.toString(), 32);
+	public static int debugMode = options.getInt(option.debugMode.toString(), 0); // 0 = OFF
 		
-		try
-		{
-			json = app.loadJSONObject(SAVEPATH);
-			
-			moveLeftKey = json.getInt("moveLeftKey", moveLeftKey);
-			moveRightKey = json.getInt("moveRightKey", moveRightKey);
-			jumpKey = json.getInt("jumpKey", jumpKey);
-			attackKey = json.getInt("attackKey", attackKey);
-			dashKey = json.getInt("dashKey", dashKey);
-			targetFrameRate = json.getInt("targetFrameRate", targetFrameRate);
-		} catch (Exception e) {
-			save();
-		}
+	public static void save(option option, int value) {
+		options.putInt(option.toString(), value);
 	}
 	
-	public static void save()
-	{
-		PApplet app = new PApplet();
-		app.sketchPath(SAVEPATH);
-		
-		JSONObject json = new JSONObject();
-		
-		json.setInt("moveLeftKey", moveLeftKey);
-		json.setInt("moveRightKey", moveRightKey);
-		json.setInt("jumpKey", jumpKey);
-		json.setInt("attackKey", attackKey);
-		json.setInt("dashKey", dashKey);
-		json.setInt("targetFrameRate", targetFrameRate);
-		
-		app.saveJSONObject(json, SAVEPATH);
-	}
 }
