@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Maven: processing:gicentreUtils:local">
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/processing/gicentreUtils/local/gicentreUtils-local.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$MAVEN_REPOSITORY$/processing/gicentreUtils/local/gicentreUtils-local-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$MAVEN_REPOSITORY$/processing/gicentreUtils/local/gicentreUtils-local-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>
