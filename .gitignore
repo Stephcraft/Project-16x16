@@ -20,3 +20,7 @@ target
 **/.classpath
 **/.project
 **/.settings
+
+# Intellij
+.idea/
+Project_16x16.iml
