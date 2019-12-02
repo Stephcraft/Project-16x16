@@ -6,11 +6,7 @@ import java.util.Iterator;
 
 import project_16x16.entities.Player;
 
-import project_16x16.objects.EditorItem;
-import project_16x16.objects.GameObject;
-import project_16x16.objects.BackgroundObject;
-import project_16x16.objects.CollidableObject;
-import project_16x16.objects.EditableObject;
+import project_16x16.objects.*;
 
 import processing.core.*;
 import processing.data.JSONArray;
@@ -173,6 +169,9 @@ public class GameplayScene extends PScene {
 		}
 
 		for (EditableObject o : objects) {
+			if(o instanceof MagicSourceObject){
+				((MagicSourceObject)o).updateEmissionPosition();
+			}
 			if (tool == Tools.MODIFY) {
 				o.updateEdit();
 				o.displayEdit();
