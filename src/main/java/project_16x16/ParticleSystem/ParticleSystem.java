@@ -90,6 +90,7 @@ public class ParticleSystem {
 	public void setEmission(ParticleEmission emission) {
 		this.emission = emission;
 	}
+	public ParticleEmission getEmission(){ return emission; }
 	
 	public Consumer<Particle> getEmissionConsumer() {
 		return emission.getConsumer();

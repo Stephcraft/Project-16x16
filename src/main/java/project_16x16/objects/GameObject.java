@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import project_16x16.components.AnimationComponent;
 import processing.core.PImage;
+import processing.data.JSONObject;
 import project_16x16.scene.GameplayScene;
 import project_16x16.SideScroller;
 import project_16x16.Tileset;
@@ -62,5 +63,22 @@ public class GameObject extends EditableObject {
 
 	protected PImage g(int x, int y, int w, int h, float s) {
 		return Tileset.getTile(x, y, w, h);
+	}
+
+	@Override
+	public void debug() {
+		applet.stroke(255, 190, 200);
+		applet.noFill();
+		applet.rect(pos.x, pos.y, width, height);
+	}
+
+	@Override
+	public JSONObject exportToJSON() {
+		JSONObject item = new JSONObject();
+		item.setString("id", id);
+		item.setString("type", "OBJECT");
+		item.setInt("x", (int) pos.x);
+		item.setInt("y", (int) pos.y);
+		return item;
 	}
 } 

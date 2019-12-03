@@ -17,5 +17,10 @@ hs_err_pid*
 
 # Project-16x16
 target
-src/.classpath
-src/.project
+**/.classpath
+**/.project
+**/.settings
+
+# Intellij
+.idea/
+Project_16x16.iml

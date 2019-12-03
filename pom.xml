@@ -11,6 +11,9 @@
     <repository>
       <id>lib</id>
       <url>${project.baseUri}lib</url>
+      <releases>
+        <checksumPolicy>ignore</checksumPolicy>
+      </releases>
     </repository>
   </repositories>
 
@@ -22,13 +25,15 @@
     </dependency>
     <dependency>
       <groupId>processing</groupId>
-      <artifactId>gicentreutils</artifactId>
+      <artifactId>gicentreUtils</artifactId>
       <version>local</version>
+      <type>jar</type>
     </dependency>
     <dependency>
       <groupId>dm</groupId>
       <artifactId>DM</artifactId>
       <version>local</version>
+      <type>jar</type>
     </dependency>
   </dependencies>
   

@@ -100,4 +100,7 @@ public class MagicSourceObject extends GameObject {
 			scale -= Math.random() * 0.03;
 		}
 	}
+	public void updateEmissionPosition(){
+		trail.getEmission().setPosition(pos);
+	}
 }
