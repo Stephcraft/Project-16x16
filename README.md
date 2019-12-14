@@ -4,7 +4,7 @@ Looking forward to contribute to an awesome open source project? Well here is a 
 ## How do I start!
 Wow!! This project seems **EPIC!** Right? And its made in processing, like *whhhooaaahht* ! So how do I get in, how do I start? Simple:  
 
-First, join our [Discord server](https://discord.gg/zDJSCqd) [test](https://img.shields.io/discord/310521827749265409?color=%23738adb&label=Discord&logo=Stephcraft) this is where anything and everything (not just code) related to development is discussed.
+First, join our [Discord server](https://discord.gg/zDJSCqd) ![discord](https://img.shields.io/discord/310521827749265409?color=%23738adb&label=Discord&logo=Stephcraft) this is where anything and everything (not just code) related to development is discussed.
 
 #### Programmers
 1. Want to learn how to code? [dive right in](http://hello.processing.org)
