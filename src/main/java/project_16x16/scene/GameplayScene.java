@@ -6,6 +6,7 @@ import java.util.Iterator;
 
 import project_16x16.entities.Player;
 
+import project_16x16.multiplayer.Multiplayer;
 import project_16x16.objects.*;
 
 import processing.core.*;
@@ -32,6 +33,17 @@ import project_16x16.windows.TestWindow;
  * Gameplay Scene. Both the level editor and gameplay.
  */
 public class GameplayScene extends PScene {
+
+	//Singleplayer
+	private boolean isSingleplayer;
+
+	//Multiplayer
+	private Multiplayer host;
+	private Multiplayer client;
+
+	private String Ip = "127.0.0.1";
+	private int port = 25565;
+	private boolean isHost;
 
 	// Graphics Slots
 	private PImage slot;
@@ -210,6 +222,25 @@ public class GameplayScene extends PScene {
 		drawPlayer();
 	}
 
+	public void setInfo(String IP, int port, boolean isHost) {
+		this.Ip = IP;
+		this.port = port;
+		this.isHost = isHost;
+	}
+
+	public void setupMultiplayer(boolean isHost) {
+		if (isHost) {
+			this.isHost = true;
+			host = new Multiplayer(this, this.port);
+		} else {
+			this.isHost = false;
+			client = new Multiplayer(this, this.Ip, this.port);
+		}
+	}
+	public void setSingleplayer(boolean value) {
+		this.isSingleplayer = value;
+	}
+
 	/**
 	 * Draws and updates the player.
 	 */
@@ -220,7 +251,20 @@ public class GameplayScene extends PScene {
 				player.displayEdit();
 				break;
 			case PLAY :
-				player.update();
+				if (isSingleplayer) {
+					player.update();
+				} else {
+					if (isHost) {
+						host.writeDataServer((int) player.pos.x, (int) player.pos.y, player.animation.name);
+						host.readDataServer();
+						player.update();
+					} else {
+						System.out.println(player);
+						client.writeDataClient((int) player.pos.x, (int) player.pos.y, player.animation.name);
+						client.readDataClient();
+						player.update();
+					}
+				}
 				break;
 			case MOVE :
 			case INVENTORY :

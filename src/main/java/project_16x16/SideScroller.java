@@ -22,11 +22,7 @@ import processing.javafx.PSurfaceFX;
 import project_16x16.Options.option;
 import project_16x16.components.AnimationComponent;
 import project_16x16.entities.Player;
-import project_16x16.scene.GameplayScene;
-import project_16x16.scene.MainMenu;
-import project_16x16.scene.PScene;
-import project_16x16.scene.PauseMenu;
-import project_16x16.scene.Settings;
+import project_16x16.scene.*;
 
 /**
  * <h1>SideScroller Class</h1>
@@ -79,6 +75,9 @@ public class SideScroller extends PApplet {
 	public GameplayScene game;
 	public PauseMenu pmenu;
 	public Settings settings;
+	public MultiplayerMenu mmenu;
+	public MultiplayerHostMenu mHostMenu;
+	public MultiplayerClientMenu mClientMenu;
 
 	// Events
 	private HashSet<Integer> keysDown;
@@ -177,6 +176,9 @@ public class SideScroller extends PApplet {
 		menu = new MainMenu(this);
 		pmenu = new PauseMenu(this);
 		settings = new Settings(this);
+		mmenu = new MultiplayerMenu(this);
+		mHostMenu = new MultiplayerHostMenu(this);
+		mClientMenu = new MultiplayerClientMenu(this);
 		swapToScene(menu);
 
 		// Camera
