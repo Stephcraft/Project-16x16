@@ -29,7 +29,12 @@
       <version>local</version>
       <type>jar</type>
     </dependency>
-    <dependency>
+  <dependency>
+      <groupId>org.processing</groupId>
+      <artifactId>net</artifactId>
+      <version>3.2.3</version>
+  </dependency>
+      <dependency>
       <groupId>dm</groupId>
       <artifactId>DM</artifactId>
       <version>local</version>
