@@ -1,15 +1,12 @@
-package project_16x16.scene;
+package scene;
 
 import processing.event.KeyEvent;
 import processing.event.MouseEvent;
-
-import project_16x16.PClass;
-import project_16x16.SideScroller;
+import sidescroller.PClass;
+import sidescroller.SideScroller;
 
 /**
- * Scenes are a way of encapsulating different game states/views (such as menu
- * vs playable game).
- * 
+ * Scenes are a way of encapsulating. 
  * @author micycle1
  *
  */
@@ -27,18 +24,16 @@ public abstract class PScene extends PClass {
 	public PScene(SideScroller a) {
 		super(a);
 	}
-
+	
 	/**
 	 * Code here is affected by camera.
 	 */
-	public void draw() {
-	}
+	public abstract void draw();
 
 	/**
 	 * Code here is unaffected by camera.
 	 */
-	public void drawUI() {
-	}
+	public abstract void drawUI();
 
 	/**
 	 * Code here called if dev debug mode is ON (affected by camera).
@@ -76,19 +71,19 @@ public abstract class PScene extends PClass {
 	 */
 	public final void mouseEvent(MouseEvent e) {
 		switch (e.getAction()) {
-			case MouseEvent.PRESS :
+			case processing.event.MouseEvent.PRESS :
 				mousePressed(e);
 				break;
-			case MouseEvent.RELEASE :
+			case processing.event.MouseEvent.RELEASE :
 				mouseReleased(e);
 				break;
-			case MouseEvent.CLICK :
+			case processing.event.MouseEvent.CLICK :
 				mouseClicked(e);
 				break;
-			case MouseEvent.WHEEL :
+			case processing.event.MouseEvent.WHEEL :
 				mouseWheel(e);
 				break;
-			case MouseEvent.DRAG :
+			case processing.event.MouseEvent.DRAG :
 				mouseDragged(e);
 				break;
 			default :
@@ -158,10 +153,10 @@ public abstract class PScene extends PClass {
 	 */
 	public final void keyEvent(KeyEvent e) {
 		switch (e.getAction()) {
-			case KeyEvent.PRESS :
+			case processing.event.KeyEvent.PRESS :
 				keyPressed(e);
 				break;
-			case KeyEvent.RELEASE :
+			case processing.event.KeyEvent.RELEASE :
 				keyReleased(e);
 				break;
 			default :

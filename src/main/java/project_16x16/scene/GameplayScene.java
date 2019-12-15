@@ -1,37 +1,50 @@
-package project_16x16.scene;
+package scene;
 
+import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-import project_16x16.entities.Player;
+import entities.Player;
 
-import project_16x16.objects.*;
+import objects.EditorItem;
+import objects.GameObject;
+import objects.BackgroundObject;
+import objects.CollidableObject;
+import objects.EditableObject;
 
 import processing.core.*;
 import processing.data.JSONArray;
 import processing.data.JSONObject;
 import processing.event.MouseEvent;
 
-import project_16x16.projectiles.ProjectileObject;
+import projectiles.ProjectileObject;
 
-import project_16x16.SideScroller;
-import project_16x16.Tileset;
-import project_16x16.Tileset.tileType;
-import project_16x16.Util;
+import sidescroller.SideScroller;
+import sidescroller.Tileset;
+import sidescroller.Tileset.tileType;
+import sidescroller.Util;
 
-import project_16x16.ui.Anchor;
-import project_16x16.ui.ScrollBarVertical;
-import project_16x16.ui.Tab;
+import ui.Anchor;
+import ui.ScrollBarVertical;
+import ui.Tab;
 
-import project_16x16.windows.LoadLevelWindow;
-import project_16x16.windows.SaveLevelWindow;
-import project_16x16.windows.TestWindow;
+import windows.LoadLevelWindow;
+import windows.SaveLevelWindow;
+import windows.TestWindow;
 
 /**
  * Gameplay Scene. Both the level editor and gameplay.
  */
 public class GameplayScene extends PScene {
+
+	//Multiplayer
+	private Multiplayer host;
+	private Multiplayer client;
+
+	private String Ip;
+	private int port;
+	private boolean isHost;
 
 	// Graphics Slots
 	private PImage slot;
@@ -49,8 +62,11 @@ public class GameplayScene extends PScene {
 	private PImage icon_playActive;
 	private PImage icon_saveActive;
 
-	public ArrayList<ProjectileObject> projectileObjects; // TODO working?
-	public ArrayList<EditableObject> objects;
+	// Game World Objects
+	public ArrayList<CollidableObject> collidableObjects;
+	public ArrayList<BackgroundObject> backgroundObjects;
+	public ArrayList<GameObject> gameObjects;
+	public ArrayList<ProjectileObject> projectileObjects;
 
 	// Windows
 	private SaveLevelWindow window_saveLevel;
@@ -76,6 +92,8 @@ public class GameplayScene extends PScene {
 
 	private ArrayList<String> inventory;
 
+//	public boolean focusedOnObject; // mutex
+
 	public EditableObject focusedObject = null;
 
 	public boolean edit;
@@ -83,10 +101,8 @@ public class GameplayScene extends PScene {
 	private int scroll_inventory;
 
 	private Player player;
-
+	
 	private PVector mouseDown, origPos;
-
-	private SelectionBox selectionBox;
 
 	public GameplayScene(SideScroller a) {
 		super(a);
@@ -95,9 +111,11 @@ public class GameplayScene extends PScene {
 
 	private void setup() {
 
+		// Init Game World Objects Arrays
+		collidableObjects = new ArrayList<CollidableObject>();
+		backgroundObjects = new ArrayList<BackgroundObject>();
+		gameObjects = new ArrayList<GameObject>();
 		projectileObjects = new ArrayList<ProjectileObject>();
-
-		objects = new ArrayList<EditableObject>();
 
 		// Create Inventory
 		inventory = new ArrayList<String>();
@@ -139,17 +157,35 @@ public class GameplayScene extends PScene {
 		scrollBarAnchor.stretch = Anchor.Stretch.Vertical;
 		scrollBar = new ScrollBarVertical(scrollBarAnchor);
 		scrollBar.setBarRatio(0.8f);
-		
+
+		// Default Scene
+		collidableObjects.add(new CollidableObject(applet, this, "METAL_WALK_MIDDLE:0", 0, 0));
+
 		// Default Tool
 		tool = Tools.MODIFY;
 
 		// Init Player
 		player = new Player(applet, this);
-		player.pos.set(0, -100); // TODO spawn location
+		player.pos.x = 0; // // TODO set to spawn loc
+		player.pos.y = -100; // // TODO set to spawn loc
 
 		loadLevel(SideScroller.LEVEL); // TODO change level
 
 		windowTabs = new Tab(applet, tabTexts, 3);
+
+
+		//MULTIPLAYER
+		if (isHost) {
+			host = new Multiplayer(this, this.port);
+		} else {
+			client = new Multiplayer(this, this.Ip, this.port);
+		}
+	}
+
+	public void setInfo(String IP, int port, boolean isHost) {
+		this.Ip = IP;
+		this.port = port;
+		this.isHost = isHost;
 	}
 
 	/**
@@ -168,18 +204,51 @@ public class GameplayScene extends PScene {
 			}
 		}
 
-		for (EditableObject o : objects) {
-			if(o instanceof MagicSourceObject){
-				((MagicSourceObject)o).updateEmissionPosition();
-			}
+		// View Background Objects
+		for (int i = 0; i < backgroundObjects.size(); i++) {
 			if (tool == Tools.MODIFY) {
-				o.updateEdit();
-				o.displayEdit();
+				backgroundObjects.get(i).updateEdit();
 			}
-			if (tool == Tools.PLAY && o instanceof GameObject) {
-				((GameObject) o).update();
+
+			backgroundObjects.get(i).display();
+
+			if (backgroundObjects.get(i).focus && applet.keyPress(8) && applet.keyPressEvent) {
+				backgroundObjects.remove(i);
+				applet.keyPressEvent = false;
 			}
-			o.display();
+		}
+
+		// View Collidable objects
+		for (int i = 0; i < collidableObjects.size(); i++) {
+			if (tool == Tools.MODIFY) {
+				collidableObjects.get(i).updateEdit();
+			}
+
+			collidableObjects.get(i).display();
+
+			if (collidableObjects.get(i).focus && applet.keyPress(8) && applet.keyPressEvent) {
+				collidableObjects.remove(i);
+				applet.keyPressEvent = false;
+			}
+		}
+
+		// View Game Objects (player-interactable objects)
+		for (int i = 0; i < gameObjects.size(); i++) {
+			if (tool == Tools.MODIFY) {
+				gameObjects.get(i).updateEdit();
+			}
+
+			if (tool == Tools.PLAY) {
+				gameObjects.get(i).update();
+			}
+
+			gameObjects.get(i).display();
+
+			// Delete
+			if (gameObjects.get(i).focus && applet.keyPress(8) && applet.keyPressEvent) {
+				gameObjects.remove(i);
+				applet.keyPressEvent = false;
+			}
 		}
 
 		// View Projectiles
@@ -191,12 +260,16 @@ public class GameplayScene extends PScene {
 			} else {
 				o.update();
 				o.display();
+
 			}
 		}
 
 		switch (tool) {
 			case MODIFY :
 				editorItem.displayDestination();
+				collidableObjects.forEach(o -> o.displayEdit());
+				backgroundObjects.forEach(o -> o.displayEdit());
+				gameObjects.forEach(o -> o.displayEdit());
 				break;
 			case PLAY :
 			case MOVE :
@@ -220,7 +293,16 @@ public class GameplayScene extends PScene {
 				player.displayEdit();
 				break;
 			case PLAY :
-				player.update();
+				//MULTIPLAYER
+				if (isHost) {
+					host.writeDataServer((int) player.pos.x, (int) player.pos.y, player.animation.name);
+					host.readDataServer();
+					player.update();
+				} else {
+					client.writeDataClient((int) player.pos.x, (int) player.pos.y, player.animation.name);
+					client.readDataClient();
+					player.update();
+				}
 				break;
 			case MOVE :
 			case INVENTORY :
@@ -253,10 +335,8 @@ public class GameplayScene extends PScene {
 				if (applet.mousePressEvent) {
 					float x = 20 * 4 / 2 + 10 + i * (20 * 4 + 10);
 					float y = 20 * 4 / 2 + 10;
-					if (applet.getMouseCoordScreen().x > x - (20 * 4) / 2
-							&& applet.getMouseCoordScreen().x < x + (20 * 4) / 2
-							&& applet.getMouseCoordScreen().y > y - (20 * 4) / 2
-							&& applet.getMouseCoordScreen().y < y + (20 * 4) / 2) {
+					if (applet.getMouseCoordScreen().x > x - (20 * 4) / 2 && applet.getMouseCoordScreen().x < x + (20 * 4) / 2
+							&& applet.getMouseCoordScreen().y > y - (20 * 4) / 2 && applet.getMouseCoordScreen().y < y + (20 * 4) / 2) {
 						editorItem.focus = true;
 						editorItem.setTile(inventory.get(i));
 						editorItem.type = Tileset.getTileType(inventory.get(i));
@@ -266,8 +346,7 @@ public class GameplayScene extends PScene {
 		}
 
 		// GUI Icons
-		if (tool == Tools.MOVE
-				|| (Util.hoverScreen(40, 120, 36, 36) && tool != Tools.SAVE && tool != Tools.INVENTORY)) {
+		if (tool == Tools.MOVE || (Util.hoverScreen(40, 120, 36, 36) && tool != Tools.SAVE && tool != Tools.INVENTORY)) {
 			if (Util.hoverScreen(40, 120, 36, 36) && applet.mousePressEvent) {
 				tool = Tools.MOVE;
 			}
@@ -275,8 +354,7 @@ public class GameplayScene extends PScene {
 		} else {
 			image(icon_eye, 40, 120);
 		}
-		if (tool == Tools.MODIFY
-				|| (Util.hoverScreen(90, 120, 36, 36) && tool != Tools.SAVE && tool != Tools.INVENTORY)) {
+		if (tool == Tools.MODIFY || (Util.hoverScreen(90, 120, 36, 36) && tool != Tools.SAVE && tool != Tools.INVENTORY)) {
 			if (Util.hoverScreen(90, 120, 36, 36) && applet.mousePressEvent) {
 				tool = Tools.MODIFY;
 			}
@@ -324,7 +402,6 @@ public class GameplayScene extends PScene {
 			case MOVE :
 				break;
 			case PLAY :
-				player.displayLife();
 				break;
 			case SAVE :
 				// Save , Load
@@ -384,9 +461,6 @@ public class GameplayScene extends PScene {
 			default :
 				break;
 		}
-		if (selectionBox != null) {
-			selectionBox.draw();
-		}
 	}
 
 	/**
@@ -396,12 +470,20 @@ public class GameplayScene extends PScene {
 		applet.strokeWeight(2);
 		applet.noFill();
 
-		for (EditableObject o : objects) {
-			o.debug();
-			applet.noStroke();
-			applet.fill(255);
-			applet.ellipse(o.pos.x, o.pos.y, 5, 5);
-		}
+		applet.stroke(50, 255, 120);
+		backgroundObjects.forEach(o -> applet.rect(o.pos.x, o.pos.y, o.width, o.height));
+
+		applet.stroke(255, 190, 200);
+		gameObjects.forEach(o -> applet.rect(o.pos.x, o.pos.y, o.width, o.height));
+
+		applet.stroke(50, 120, 255);
+		collidableObjects.forEach(o -> applet.rect(o.pos.x, o.pos.y, o.width, o.height));
+
+		applet.noStroke();
+		applet.fill(255);
+		collidableObjects.forEach(o -> applet.ellipse(o.pos.x, o.pos.y, 5, 5));
+		gameObjects.forEach(o -> applet.ellipse(o.pos.x, o.pos.y, 5, 5));
+		backgroundObjects.forEach(o -> applet.ellipse(o.pos.x, o.pos.y, 5, 5));
 	}
 
 	public Player getPlayer() {
@@ -442,8 +524,7 @@ public class GameplayScene extends PScene {
 				float xx = 20 * 4 / 2 + 10 + x * (20 * 4 + 10);
 				float yy = y * (20 * 4 + 10) + scroll_inventory;
 				if (applet.getMouseCoordScreen().y > 100) {
-					if (applet.getMouseCoordScreen().x > xx - (20 * 4) / 2
-							&& applet.getMouseCoordScreen().x < xx + (20 * 4) / 2
+					if (applet.getMouseCoordScreen().x > xx - (20 * 4) / 2 && applet.getMouseCoordScreen().x < xx + (20 * 4) / 2
 							&& applet.getMouseCoordScreen().y > yy - (20 * 4) / 2
 							&& applet.getMouseCoordScreen().y < yy + (20 * 4) / 2) {
 						editorItem.focus = true;
@@ -483,10 +564,8 @@ public class GameplayScene extends PScene {
 			if (applet.mouseReleaseEvent) {
 				float xx = 20 * 4 / 2 + 10 + i * (20 * 4 + 10);
 				float yy = 20 * 4 / 2 + 10;
-				if (editorItem.focus && applet.getMouseCoordScreen().x > xx - (20 * 4) / 2
-						&& applet.getMouseCoordScreen().x < xx + (20 * 4) / 2
-						&& applet.getMouseCoordScreen().y > yy - (20 * 4) / 2
-						&& applet.getMouseCoordScreen().y < yy + (20 * 4) / 2) {
+				if (editorItem.focus && applet.getMouseCoordScreen().x > xx - (20 * 4) / 2 && applet.getMouseCoordScreen().x < xx + (20 * 4) / 2
+						&& applet.getMouseCoordScreen().y > yy - (20 * 4) / 2 && applet.getMouseCoordScreen().y < yy + (20 * 4) / 2) {
 					editorItem.focus = false;
 					inventory.set(i, editorItem.id);
 				}
@@ -526,50 +605,13 @@ public class GameplayScene extends PScene {
 
 	@Override
 	void mousePressed(MouseEvent e) {
-		origPos = applet.camera.getPosition(); // used for camera panning
+		origPos = applet.camera.getPosition();
 		mouseDown = applet.getMouseCoordScreen();
-		switch (e.getButton()) {
-			case LEFT :
-				boolean overAny = false;
-				for (EditableObject o : objects) {
-					if (o.isFocused()) {
-						o.focus(); // refocus multi-select objects (edit offset)
-					}
-					if (o.mouseHover()) {
-						o.focus();
-						overAny = true;
-					}
-				}
-				if (!overAny) { // if not over any, deselect all
-					objects.forEach(o -> o.unFocus());
-				}
-				break;
-			case RIGHT :
-				if (tool == Tools.MODIFY) {
-					selectionBox = new SelectionBox(mouseDown);
-				}
-				break;
-			default :
-				break;
-		}
-	}
-
-	@Override
-	void mouseReleased(MouseEvent e) {
-		switch (e.getButton()) {
-			case LEFT :
-				break;
-			case RIGHT :
-				selectionBox = null;
-				break;
-			default :
-				break;
-		}
 	}
 
 	@Override
 	void mouseDragged(MouseEvent e) {
-		if (e.getButton() == PConstants.CENTER && tool == Tools.MODIFY) { // pan on MMB; TODO fix when zoom != 1.00
+		if (e.getButton() == PConstants.CENTER && tool==Tools.MODIFY) { // pan on MMB; TODO fix when zoom != 1.00
 			applet.camera.setCameraPositionNoLerp(
 					PVector.add(origPos, PVector.sub(mouseDown, applet.getMouseCoordScreen())));
 		}
@@ -585,10 +627,10 @@ public class GameplayScene extends PScene {
 			}
 		}
 	}
-
+	
 	@Override
 	protected void keyReleased(processing.event.KeyEvent e) {
-		if (tool != Tools.SAVE) { // Change tool
+		if (tool != Tools.SAVE) { // Change tool;
 			editorItem.setMode("CREATE");
 			editorItem.focus = false;
 			switch (e.getKeyCode()) {
@@ -604,7 +646,7 @@ public class GameplayScene extends PScene {
 					break;
 				case 52 : // 4
 					tool = Tools.PLAY;
-					applet.camera.setFollowObject(player);
+                    applet.camera.setFollowObject(player);
 					break;
 				case 53 : // 5
 					tool = Tools.SAVE;
@@ -616,15 +658,6 @@ public class GameplayScene extends PScene {
 						tool = Tools.INVENTORY;
 						editorItem.setMode("ITEM");
 						scroll_inventory = 0;
-					}
-					break;
-				case 8: // BACKSPACE
-				case 46 : // DEL
-					for (Iterator<EditableObject> iterator = objects.iterator(); iterator.hasNext();) {
-						EditableObject o = (EditableObject) iterator.next();
-						if (o.isFocused()) {
-							iterator.remove();
-						}
 					}
 					break;
 				default :
@@ -642,17 +675,48 @@ public class GameplayScene extends PScene {
 	public void saveLevel(String path) {
 		JSONArray data = new JSONArray();
 
+		// MAIN
 		JSONObject main = new JSONObject();
 		main.setString("title", "undefined");
 		main.setString("creator", "undefined");
 		main.setString("version", "alpha 1.0.0");
-		data.append(main); // Add Main
 
-		for (EditableObject o : objects) {
-			if (!(o instanceof ProjectileObject)) {
-				data.append(o.exportToJSON());
-			}
+		// Add Main
+		data.append(main);
+
+		// Add Collisions
+		for (int i = 0; i < collidableObjects.size(); i++) {
+			JSONObject item = new JSONObject();
+			item.setString("id", collidableObjects.get(i).id);
+			item.setString("type", "COLLISION");
+			item.setInt("x", (int) collidableObjects.get(i).pos.x);
+			item.setInt("y", (int) collidableObjects.get(i).pos.y);
+			data.append(item);
 		}
+
+		// Add Background Objects
+		for (int i = 0; i < backgroundObjects.size(); i++) {
+			JSONObject item = new JSONObject();
+			item.setString("id", backgroundObjects.get(i).id);
+			item.setString("type", "BACKGROUND");
+			item.setInt("x", (int) backgroundObjects.get(i).pos.x);
+			item.setInt("y", (int) backgroundObjects.get(i).pos.y);
+			data.append(item);
+		}
+
+		// Add Game Objects
+		for (int i = 0; i < gameObjects.size(); i++) {
+			collidableObjects.remove(gameObjects.get(i).collision);
+
+			JSONObject item = new JSONObject();
+			item.setString("id", gameObjects.get(i).id);
+			item.setString("type", "OBJECT");
+			item.setInt("x", (int) gameObjects.get(i).pos.x);
+			item.setInt("y", (int) gameObjects.get(i).pos.y);
+			data.append(item);
+		}
+
+		// Save Level
 		Util.saveFile(path, Util.encrypt(data.toString()));
 	}
 
@@ -662,17 +726,18 @@ public class GameplayScene extends PScene {
 		if (script == null) {
 			return;
 		}
-
+		
 		String scriptD = Util.decrypt(PApplet.join(script, "\n")); // decrypt save data
 		JSONArray data = JSONArray.parse(scriptD); // Parse JSON
-
+		
 		if (data == null) {
 			System.err.println("Failed to parse level data to JSON. File is probably corrupt.");
 			return;
 		}
 
 		// Clear Object Arrays
-		objects.clear(); // TODO reset method
+		collidableObjects.clear(); // TODO reset method
+		backgroundObjects.clear();
 
 		// Create Level
 		for (int i = 0; i < data.size(); i++) {
@@ -682,7 +747,7 @@ public class GameplayScene extends PScene {
 			if (type == null) {
 				continue;
 			}
-
+			
 			switch (type) { // Read Main
 				case "COLLISION" :
 					CollidableObject collision = new CollidableObject(applet, this);
@@ -695,7 +760,7 @@ public class GameplayScene extends PScene {
 					collision.pos.x = item.getInt("x");
 					collision.pos.y = item.getInt("y");
 
-					objects.add(collision); // SideScrollerend To Level
+					collidableObjects.add(collision); // Append To Level
 					break;
 				case "BACKGROUND" :
 					BackgroundObject backgroundObject = new BackgroundObject(applet, this);
@@ -703,7 +768,7 @@ public class GameplayScene extends PScene {
 					backgroundObject.pos.x = item.getInt("x");
 					backgroundObject.pos.y = item.getInt("y");
 
-					objects.add(backgroundObject); // SideScrollerend To Level
+					backgroundObjects.add(backgroundObject); // Append To Level
 					break;
 				case "OBJECT" :
 					try {
@@ -713,7 +778,7 @@ public class GameplayScene extends PScene {
 						gameObject.pos.x = item.getInt("x");
 						gameObject.pos.y = item.getInt("y");
 
-						objects.add(gameObject); // SideScrollerend To Level
+						gameObjects.add(gameObject); // Append To Level
 						break;
 					} catch (Exception e) {
 						e.printStackTrace();
@@ -724,38 +789,4 @@ public class GameplayScene extends PScene {
 			}
 		}
 	}
-
-	/**
-	 * 
-	 * @author micycle1
-	 *
-	 */
-	private class SelectionBox {
-
-		private final PVector startPosScreen, startPosGame;
-
-		private SelectionBox(PVector startPos) {
-			startPosScreen = startPos;
-			startPosGame = applet.camera.getDispToCoord(startPosScreen);
-		}
-
-		private void draw() {
-			PVector endPos = applet.getMouseCoordScreen();
-			applet.stroke(255, 20, 147);
-			applet.strokeWeight(3);
-			applet.line(startPosScreen.x, startPosScreen.y, startPosScreen.x, endPos.y);
-			applet.line(startPosScreen.x, startPosScreen.y, endPos.x, startPosScreen.y);
-			applet.line(endPos.x, startPosScreen.y, endPos.x, endPos.y);
-			applet.line(startPosScreen.x, endPos.y, endPos.x, endPos.y);
-
-			for (EditableObject o : objects) {
-				if (Util.withinRegion(o.pos, startPosGame, applet.getMouseCoordGame())) {
-					o.focus();
-				} else {
-					o.unFocus();
-				}
-			}
-		}
-	}
-
 }
