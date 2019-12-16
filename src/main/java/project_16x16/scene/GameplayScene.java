@@ -228,8 +228,12 @@ public class GameplayScene extends PScene {
 		this.isHost = isHost;
 	}
 
-	public void setupMultiplayer(boolean isHost) {
-		this.isHost = isHost;
+	/**
+	 * Call when host/connect buttons pressed.
+	 * @param setHost is this client host?
+	 */
+	public void setupMultiplayer(boolean setHost) throws Exception {
+		this.isHost = setHost;
 		isSingleplayer = false;
 		if (this.isHost) {
 			host = new Multiplayer(this, this.port);
@@ -237,8 +241,9 @@ public class GameplayScene extends PScene {
 			try {
 				client = new Multiplayer(this, this.Ip, this.port);
 			} catch (Exception e) {
-				System.err.println("Connection Refused! Host does not exist or couldn't connect."); // TODO UI message
+				System.err.println("Connection Refused! Host does not exist or couldn't connect.");
 				isSingleplayer = true;
+				throw new Exception(); // throw to menu
 			}
 		}
 	}

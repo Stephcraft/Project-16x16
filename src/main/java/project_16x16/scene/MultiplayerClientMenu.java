@@ -14,17 +14,20 @@ public class MultiplayerClientMenu extends PScene {
     public TextInputField ipInput;
     public Button pressMenu;
     public Button pressConnect;
-
-    Pattern p;
-
+    
     private SideScroller game;
+
+    private static final Pattern p;
+    
+	static {
+		p = Pattern.compile("^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\\.)"
+				+ "{3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5]):[0-9]+$");
+	}
 
     public MultiplayerClientMenu(SideScroller a) {
         super(a);
         game = a;
-
-        p = Pattern.compile("^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5]):[0-9]+$");
-
+        
         pressMenu = new Button(a);
         pressConnect = new Button(a);
         ipInput = new TextInputField(a);
@@ -43,13 +46,7 @@ public class MultiplayerClientMenu extends PScene {
         pressMenu.setTextSize(40);
         pressMenu.setSize(300,100);
     }
-
-
-    @Override
-    public void draw() {
-
-    }
-
+    
     @Override
     public void drawUI() {
         background(29, 33, 45);
@@ -59,25 +56,26 @@ public class MultiplayerClientMenu extends PScene {
 
     }
 
-    public void update() {
-        ipInput.update();
+	public void update() {
+		ipInput.update();
 
-        pressMenu.update();
-        if(pressMenu.hover()) {
-            game.swapToScene(game.menu);
-        }
+		pressMenu.update();
+		if (pressMenu.hover()) {
+			game.swapToScene(game.menu);
+		}
 
-        pressConnect.update();
-        // && p.matcher(ipInput.getText()).matches()
-        if (pressConnect.hover()) {
-           // String[] ip = ipInput.getText().split(":");
-            game.game.setupMultiplayer(false);
-            game.swapToScene(game.game);
-        }
-        else {
-            //TODO: Add popup that says Invalid IP
-        }
-    }
+		pressConnect.update();
+		// && p.matcher(ipInput.getText()).matches()
+		if (pressConnect.hover()) {
+			// String[] ip = ipInput.getText().split(":");
+			try {
+				game.game.setupMultiplayer(false);
+				game.swapToScene(game.game);
+			} catch (Exception e) {
+				// TODO: UI MESSAGE
+			}
+		}
+	}
 
     @Override
     void mouseReleased(MouseEvent e) {

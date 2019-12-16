@@ -11,6 +11,7 @@ import javafx.scene.input.KeyCombination;
 import javafx.scene.transform.Scale;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
+
 import processing.core.PApplet;
 import processing.core.PFont;
 import processing.core.PSurface;
@@ -71,6 +72,8 @@ public class SideScroller extends PApplet {
 	 */
 	private PScene currentScene;
 	private PScene previousScene;
+	private int sceneSwapTime = 0;
+	
 	public MainMenu menu;
 	public GameplayScene game;
 	public PauseMenu pmenu;
@@ -78,7 +81,7 @@ public class SideScroller extends PApplet {
 	public MultiplayerMenu mMenu;
 	public MultiplayerHostMenu mHostMenu;
 	public MultiplayerClientMenu mClientMenu;
-
+	
 	// Events
 	private HashSet<Integer> keysDown;
 	public boolean keyPressEvent;
@@ -138,7 +141,7 @@ public class SideScroller extends PApplet {
 	}
 	
 	/**
-	 * Passes JavaFX window closed call to PApplet.
+	 * Passes JavaFX window closed call to game.
 	 * @param event
 	 */
 	private void closeWindowEvent(WindowEvent event) {
@@ -218,14 +221,18 @@ public class SideScroller extends PApplet {
 	 * @see #returnScene()
 	 */
 	public void swapToScene(PScene newScene) {
-		if (currentScene != null) {
-			currentScene.switchFrom();
-			if (!(newScene.equals(previousScene))) {
-				previousScene = currentScene;
+		if (frameCount - sceneSwapTime > 6 || frameCount == 0) {
+			if (currentScene != null) {
+				currentScene.switchFrom();
+				if (!(newScene.equals(previousScene))) {
+					previousScene = currentScene;
+				}
 			}
+
+			currentScene = newScene;
+			currentScene.switchTo();
+			sceneSwapTime = frameCount;
 		}
-		currentScene = newScene;
-		currentScene.switchTo();
 	}
 
 	/**

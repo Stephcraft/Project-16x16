@@ -13,17 +13,20 @@ public class MultiplayerHostMenu extends PScene {
     public TextInputField ipInput;
     public Button pressMenu;
     public Button pressHost;
-    Pattern p;
-
+    
     private SideScroller game;
+    
+    private static final Pattern p;
+    
+	static {
+		p = Pattern.compile("^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\\.)"
+				+ "{3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5]):[0-9]+$");
+	}
 
     public MultiplayerHostMenu(SideScroller a) {
         super(a);
         game = a;
-
-        p = Pattern.compile("^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5]):[0-9]+$");
-
-
+        
         pressMenu = new Button(a);
         ipInput = new TextInputField(a);
         pressHost = new Button(a);
@@ -56,22 +59,25 @@ public class MultiplayerHostMenu extends PScene {
         pressHost.manDisplay();
     }
 
-    public void update() {
+	public void update() {
 
-        pressMenu.update();
-        if(pressMenu.hover()) {
-            game.swapToScene(game.menu);
-        }
+		pressMenu.update();
+		if (pressMenu.hover()) {
+			game.swapToScene(game.menu);
+		}
 
-        ipInput.update();
-        //p.matcher(ipInput.getText()).matches()
-        if (pressHost.hover()) {
-            //String[] ip = ipInput.getText().split(":");
-            game.game.setupMultiplayer(true);
-            game.swapToScene(game.game);
-         }
-
-    }
+		ipInput.update();
+		// p.matcher(ipInput.getText()).matches()
+		if (pressHost.hover()) {
+			// String[] ip = ipInput.getText().split(":");
+			try {
+				game.game.setupMultiplayer(true);
+				game.swapToScene(game.game);
+			} catch (Exception e) {
+				// TODO UI MESSAGE
+			}
+		}
+	}
 
     @Override
     void mouseReleased(MouseEvent e) {
