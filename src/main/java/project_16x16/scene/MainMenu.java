@@ -2,6 +2,7 @@ package project_16x16.scene;
 
 import processing.event.MouseEvent;
 import project_16x16.SideScroller;
+import project_16x16.SideScroller.GameScenes;
 import project_16x16.scene.PScene;
 import project_16x16.ui.Button;
 
@@ -66,14 +67,14 @@ public final class MainMenu extends PScene {
 	private void update() {
 		pressStart.update();
 		if(pressStart.hover()) {
-			game.game.setSingleplayer(true);
-			game.swapToScene(game.game);
+			((GameplayScene) GameScenes.GAME.getScene()).setSingleplayer(true);
+			game.swapToScene(GameScenes.GAME);
 			game.debug = SideScroller.debugType.ALL;
 		}
 
 		pressMultiplayer.update();
 		if (pressMultiplayer.hover()) {
-			game.swapToScene(game.mMenu);
+			game.swapToScene(GameScenes.MULTIPLAYER_MENU);
 		}
 		
 		pressSettings.update();

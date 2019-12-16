@@ -2,6 +2,7 @@ package project_16x16.scene;
 
 import processing.event.MouseEvent;
 import project_16x16.SideScroller;
+import project_16x16.SideScroller.GameScenes;
 import project_16x16.ui.Button;
 import project_16x16.ui.TextInputField;
 
@@ -63,7 +64,7 @@ public class MultiplayerHostMenu extends PScene {
 
 		pressMenu.update();
 		if (pressMenu.hover()) {
-			game.swapToScene(game.menu);
+			game.swapToScene(GameScenes.MAIN_MENU);
 		}
 
 		ipInput.update();
@@ -71,8 +72,8 @@ public class MultiplayerHostMenu extends PScene {
 		if (pressHost.hover()) {
 			// String[] ip = ipInput.getText().split(":");
 			try {
-				game.game.setupMultiplayer(true);
-				game.swapToScene(game.game);
+				((GameplayScene) GameScenes.GAME.getScene()).setupMultiplayer(true);
+				game.swapToScene(GameScenes.GAME);
 			} catch (Exception e) {
 				// TODO UI MESSAGE
 			}

@@ -70,17 +70,32 @@ public class SideScroller extends PApplet {
 	 * Use {@link #swapToScene(PScene)} or {@link #returnScene()} to change the
 	 * scene -- don't reassign this variable directly!
 	 */
-	private PScene currentScene;
-	private PScene previousScene;
+	private GameScenes currentScene;
+	private GameScenes previousScene;
 	private int sceneSwapTime = 0;
 	
-	public MainMenu menu;
-	public GameplayScene game;
-	public PauseMenu pmenu;
-	public Settings settings;
-	public MultiplayerMenu mMenu;
-	public MultiplayerHostMenu mHostMenu;
-	public MultiplayerClientMenu mClientMenu;
+	private static MainMenu menu;
+	private static GameplayScene game;
+	private static PauseMenu pmenu;
+	private static Settings settings;
+	private static MultiplayerMenu mMenu;
+	private static MultiplayerHostMenu mHostMenu;
+	private static MultiplayerClientMenu mClientMenu;
+	
+	public enum GameScenes {
+		MAIN_MENU(menu), GAME(game), PAUSE_MENU(pmenu), SETTINGS_MENU(settings), MULTIPLAYER_MENU(mMenu),
+		HOST_MENU(mHostMenu), CLIENT_MENU(mClientMenu);
+
+		PScene scene;
+
+		private GameScenes(PScene scene) {
+			this.scene = scene;
+		}
+
+		public PScene getScene() {
+			return scene;
+		}
+	}
 	
 	// Events
 	private HashSet<Integer> keysDown;
@@ -195,7 +210,7 @@ public class SideScroller extends PApplet {
 		mMenu = new MultiplayerMenu(this);
 		mHostMenu = new MultiplayerHostMenu(this);
 		mClientMenu = new MultiplayerClientMenu(this);
-		swapToScene(menu);
+		swapToScene(GameScenes.MAIN_MENU);
 
 		// Camera
 		camera = new Camera(this);
@@ -220,17 +235,17 @@ public class SideScroller extends PApplet {
 	 * @param newScene
 	 * @see #returnScene()
 	 */
-	public void swapToScene(PScene newScene) {
+	public void swapToScene(GameScenes newScene) {
 		if (frameCount - sceneSwapTime > 6 || frameCount == 0) {
 			if (currentScene != null) {
-				currentScene.switchFrom();
+				currentScene.getScene().switchFrom();
 				if (!(newScene.equals(previousScene))) {
 					previousScene = currentScene;
 				}
 			}
 
 			currentScene = newScene;
-			currentScene.switchTo();
+			currentScene.getScene().switchTo();
 			sceneSwapTime = frameCount;
 		}
 	}
@@ -283,9 +298,9 @@ public class SideScroller extends PApplet {
 	 * @see {@link Camera#hook()}
 	 */
 	private void drawBelowCamera() {
-		currentScene.draw(); // Handle Draw Scene Method - draws world, etc.
+		currentScene.getScene().draw(); // Handle Draw Scene Method - draws world, etc.
 		if (debug == debugType.ALL) {
-			currentScene.debug();
+			currentScene.getScene().debug();
 			camera.postDebug();
 		}
 	}
@@ -299,7 +314,7 @@ public class SideScroller extends PApplet {
 	 * @see {@link Camera#release()}
 	 */
 	private void drawAboveCamera() {
-		currentScene.drawUI();
+		currentScene.getScene().drawUI();
 		if (debug == debugType.ALL) {
 			camera.post();
 			displayDebugInfo();
@@ -371,7 +386,7 @@ public class SideScroller extends PApplet {
 				loop();
 				break;
 			case ESC : // Pause
-				swapToScene(currentScene == pmenu ? game : pmenu); // TODO interfering with settings menu?
+				swapToScene(currentScene == GameScenes.PAUSE_MENU ? GameScenes.GAME : GameScenes.PAUSE_MENU); // TODO interfering with settings menu?
 				break;
 			case TAB :
 				debug = debug.next();

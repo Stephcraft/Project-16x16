@@ -2,6 +2,7 @@ package project_16x16.scene;
 
 import processing.event.MouseEvent;
 import project_16x16.SideScroller;
+import project_16x16.SideScroller.GameScenes;
 import project_16x16.ui.Button;
 
 public class MultiplayerMenu extends PScene {
@@ -47,17 +48,17 @@ public class MultiplayerMenu extends PScene {
     public void update() {
         pressHost.update();
         if(pressHost.hover()) {
-            game.swapToScene(game.mHostMenu);
+            game.swapToScene(GameScenes.HOST_MENU);
         }
 
         pressClient.update();
         if(pressClient.hover()) {
-            game.swapToScene(game.mClientMenu);
+            game.swapToScene(GameScenes.CLIENT_MENU);
         }
 
         pressMenu.update();
         if(pressMenu.hover()) {
-            game.swapToScene(game.menu);
+            game.swapToScene(GameScenes.MAIN_MENU);
         }
     }
 
