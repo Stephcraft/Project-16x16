@@ -36,12 +36,6 @@ public class MultiplayerMenu extends PScene {
         pressMenu.setSize(300,100);
     }
 
-
-    @Override
-    public void draw() {
-
-    }
-
     @Override
     public void drawUI() {
         background(29, 33, 45);

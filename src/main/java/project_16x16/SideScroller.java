@@ -10,7 +10,7 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.input.KeyCombination;
 import javafx.scene.transform.Scale;
 import javafx.stage.Stage;
-
+import javafx.stage.WindowEvent;
 import processing.core.PApplet;
 import processing.core.PFont;
 import processing.core.PSurface;
@@ -75,7 +75,7 @@ public class SideScroller extends PApplet {
 	public GameplayScene game;
 	public PauseMenu pmenu;
 	public Settings settings;
-	public MultiplayerMenu mmenu;
+	public MultiplayerMenu mMenu;
 	public MultiplayerHostMenu mHostMenu;
 	public MultiplayerClientMenu mClientMenu;
 
@@ -133,7 +133,20 @@ public class SideScroller extends PApplet {
 		stage.setResizable(false); // prevent abitrary user resize
 		stage.setFullScreenExitHint(""); // disable fullscreen toggle hint
 		stage.setFullScreenExitKeyCombination(KeyCombination.NO_MATCH); // prevent ESC toggling fullscreen
+		scene.getWindow().addEventFilter(WindowEvent.WINDOW_CLOSE_REQUEST, this::closeWindowEvent);
 		return surface;
+	}
+	
+	/**
+	 * Passes JavaFX window closed call to PApplet.
+	 * @param event
+	 */
+	private void closeWindowEvent(WindowEvent event) {
+		try {
+			game.exit();
+		} finally {
+			stage.close();
+		}
 	}
 
 	/**
@@ -176,7 +189,7 @@ public class SideScroller extends PApplet {
 		menu = new MainMenu(this);
 		pmenu = new PauseMenu(this);
 		settings = new Settings(this);
-		mmenu = new MultiplayerMenu(this);
+		mMenu = new MultiplayerMenu(this);
 		mHostMenu = new MultiplayerHostMenu(this);
 		mClientMenu = new MultiplayerClientMenu(this);
 		swapToScene(menu);
@@ -511,7 +524,7 @@ public class SideScroller extends PApplet {
 
 	@Override
 	public void exit() {
-		// super.exit(); // commented-out - prevents ESC from closing game
+//		super.exit(); // commented-out - prevents ESC from closing game
 	}
 
 	// Main

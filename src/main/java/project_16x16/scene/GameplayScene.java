@@ -35,15 +35,15 @@ import project_16x16.windows.TestWindow;
 public class GameplayScene extends PScene {
 
 	//Singleplayer
-	private boolean isSingleplayer;
+	private boolean isSingleplayer = true;
 
 	//Multiplayer
 	private Multiplayer host;
 	private Multiplayer client;
 
-	private String Ip = "127.0.0.1";
-	private int port = 25565;
-	private boolean isHost;
+	private String Ip = "127.0.0.1"; // TODO hardcoded
+	private int port = 25565; // TODO hardcoded
+	private boolean isHost = false;
 
 	// Graphics Slots
 	private PImage slot;
@@ -229,14 +229,20 @@ public class GameplayScene extends PScene {
 	}
 
 	public void setupMultiplayer(boolean isHost) {
-		if (isHost) {
-			this.isHost = true;
+		this.isHost = isHost;
+		isSingleplayer = false;
+		if (this.isHost) {
 			host = new Multiplayer(this, this.port);
 		} else {
-			this.isHost = false;
-			client = new Multiplayer(this, this.Ip, this.port);
+			try {
+				client = new Multiplayer(this, this.Ip, this.port);
+			} catch (Exception e) {
+				System.err.println("Connection Refused! Host does not exist or couldn't connect."); // TODO UI message
+				isSingleplayer = true;
+			}
 		}
 	}
+	
 	public void setSingleplayer(boolean value) {
 		this.isSingleplayer = value;
 	}
@@ -450,6 +456,22 @@ public class GameplayScene extends PScene {
 
 	public Player getPlayer() {
 		return player;
+	}
+	
+	/**
+	 * Close server/client connections.
+	 */
+	public void exit() {
+		if (isHost) {
+			if (host != null) {
+				host.exit();
+			}
+		}
+		else {
+			if (client != null) {
+				client.exit();
+			}
+		}
 	}
 
 	private void displayCreativeInventory() {// complete creative inventory

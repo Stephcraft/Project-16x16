@@ -73,7 +73,7 @@ public final class MainMenu extends PScene {
 
 		pressMultiplayer.update();
 		if (pressMultiplayer.hover()) {
-			game.swapToScene(game.mmenu);
+			game.swapToScene(game.mMenu);
 		}
 		
 		pressSettings.update();
