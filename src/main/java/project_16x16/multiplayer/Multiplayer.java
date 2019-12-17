@@ -1,7 +1,10 @@
 package project_16x16.multiplayer;
 
-import processing.core.PApplet;
+import java.util.Arrays;
+
+import processing.data.JSONObject;
 import processing.net.*;
+
 import project_16x16.entities.Player;
 import project_16x16.scene.GameplayScene;
 
@@ -16,8 +19,12 @@ public class Multiplayer {
 	 * programs connected to it)
 	 */
 	private Server s;
+	/**
+	 * Representation of the other player
+	 */
 	private final Player p;
-	private String dataReader;
+	
+	public boolean isHost;
 
 	/**
 	 * Constructor for a connecting client
@@ -30,7 +37,6 @@ public class Multiplayer {
 		if (!c.active()) {
 			throw new java.net.ConnectException();
 		}
-		dataReader = "";
 		p = new Player(host.applet, host);
 	}
 
@@ -41,55 +47,61 @@ public class Multiplayer {
 	 */
 	public Multiplayer(GameplayScene host, int port) {
 		s = new Server(host.applet, port);
-		dataReader = "";
 		p = new Player(host.applet, host);
+		isHost = true;
 	}
 
+	/**
+	 * Called by clients
+	 * @param x
+	 * @param y
+	 * @param name anim name
+	 */
 	public void writeDataClient(float x, float y, String name) {
-		c.write(x + " " + y + ":" + name + "\n");
+		JSONObject data = new JSONObject();
+		data.setFloat("x", x);
+		data.setFloat("y", y);
+		data.setString("anim", name);
+		c.write(data.toString());
 	}
 
+	/**
+	 * Called by clients -- consume server messages.
+	 */
 	public void readDataClient() {
 		if (c.available() > 0) {
-			dataReader = c.readString();
-			if (dataReader.indexOf("\n") != -1) {
-				dataReader = dataReader.substring(0, dataReader.indexOf("\n"));
-			}
-			if (dataReader.indexOf(' ') != -1) {
-				p.pos.x = PApplet.parseFloat(dataReader.substring(0, dataReader.indexOf(' ')));
-			}
-			if (dataReader.indexOf(':') != -1) {
-				p.pos.y = PApplet
-						.parseFloat(dataReader.substring(dataReader.indexOf(' ') + 1, dataReader.indexOf(':')));
-			}
-			if (dataReader.indexOf("\n") != -1) {
-				p.animation.name = dataReader.substring(dataReader.indexOf(':') + 1, dataReader.indexOf('\n'));
-			}
+			JSONObject data = JSONObject.parse(c.readString());
+			p.pos.x = data.getFloat("x");
+			p.pos.y = data.getFloat("y");
+			p.animation.name = data.getString("anim");
 			p.display();
 		}
 	}
 
+	/**
+	 * Called by the host. Writes its data to server.
+	 * @param x
+	 * @param y
+	 * @param name
+	 */
 	public void writeDataServer(float x, float y, String name) {
-		s.write(x + " " + y + ":" + name + "\n");
+		JSONObject data = new JSONObject();
+		data.setFloat("x", x);
+		data.setFloat("y", y);
+		data.setString("anim", name);
+		s.write(data.toString());
 	}
 
+	/**
+	 * Called by host. Reads data from (next available) client
+	 */
 	public void readDataServer() {
 		c = s.available();
 		if (c != null) {
-			dataReader = c.readString();
-			if (dataReader.indexOf("\n") != -1) {
-				dataReader = dataReader.substring(0, dataReader.indexOf("\n"));
-			}
-			if (dataReader.indexOf(' ') != -1) {
-				p.pos.x = PApplet.parseFloat(dataReader.substring(0, dataReader.indexOf(' ')));
-			}
-			if (dataReader.indexOf(':') != -1) {
-				p.pos.y = PApplet
-						.parseFloat(dataReader.substring(dataReader.indexOf(' ') + 1, dataReader.indexOf(':')));
-			}
-			if (dataReader.indexOf("\n") != -1) {
-				p.animation.name = dataReader.substring(dataReader.indexOf(':') + 1, dataReader.indexOf('\n'));
-			}
+			JSONObject data = JSONObject.parse(c.readString());
+			p.pos.x = data.getFloat("x");
+			p.pos.y = data.getFloat("y");
+			p.animation.name = data.getString("anim");
 			p.display();
 		}
 	}
@@ -99,6 +111,7 @@ public class Multiplayer {
 			c.stop();
 		}
 		if (s!= null) {
+			Arrays.asList(s.clients).forEach(client -> s.disconnect(client)); // TODO message clients.
 			s.stop();
 		}
 	}

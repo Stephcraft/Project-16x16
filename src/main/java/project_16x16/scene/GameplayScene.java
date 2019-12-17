@@ -270,7 +270,6 @@ public class GameplayScene extends PScene {
 						host.readDataServer();
 						player.update();
 					} else {
-						System.out.println(player);
 						client.writeDataClient((int) player.pos.x, (int) player.pos.y, player.animation.name);
 						client.readDataClient();
 						player.update();
