@@ -220,24 +220,25 @@ public class SideScroller extends PApplet {
 		camera.setMaxZoomScale(3);
 
 		scaleResolution();
-		
-		if (args[0].equals("host")) {
-			try {
-				((GameplayScene) GameScenes.GAME.getScene()).setupMultiplayer(true);
-				swapToScene(GameScenes.GAME);
-				((GameplayScene) GameScenes.GAME.getScene()).tool = Tools.PLAY;
-				stage.setTitle("host");
-			} catch (Exception e) {
+		if (args != null) {
+			if (args[0].equals("host")) {
+				try {
+					((GameplayScene) GameScenes.GAME.getScene()).setupMultiplayer(true);
+					swapToScene(GameScenes.GAME);
+					((GameplayScene) GameScenes.GAME.getScene()).tool = Tools.PLAY;
+					stage.setTitle("host");
+				} catch (Exception e) {
+				}
 			}
-		}
-		if (args[0].equals("client")) {
-			System.out.println("client path");
-			try {
-				((GameplayScene) (GameScenes.GAME.getScene())).setupMultiplayer(false);
-				swapToScene(GameScenes.GAME);
-				((GameplayScene) GameScenes.GAME.getScene()).tool = Tools.PLAY;
-				stage.setTitle("client");
-			} catch (Exception e) {
+			if (args[0].equals("client")) {
+				System.out.println("client path");
+				try {
+					((GameplayScene) (GameScenes.GAME.getScene())).setupMultiplayer(false);
+					swapToScene(GameScenes.GAME);
+					((GameplayScene) GameScenes.GAME.getScene()).tool = Tools.PLAY;
+					stage.setTitle("client");
+				} catch (Exception e) {
+				}
 			}
 		}
 	}
