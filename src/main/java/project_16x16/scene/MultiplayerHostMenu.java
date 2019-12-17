@@ -3,6 +3,7 @@ package project_16x16.scene;
 import processing.event.MouseEvent;
 import project_16x16.SideScroller;
 import project_16x16.SideScroller.GameScenes;
+import project_16x16.multiplayer.Multiplayer;
 import project_16x16.ui.Button;
 import project_16x16.ui.TextInputField;
 
@@ -18,6 +19,9 @@ public class MultiplayerHostMenu extends PScene {
     private SideScroller game;
     
     private static final Pattern p;
+    
+    private static final String IP = "127.0.0.1"; // TODO hardcoded
+    private static final int port = 25565; // TODO hardcoded
     
 	static {
 		p = Pattern.compile("^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\\.)"
@@ -72,7 +76,8 @@ public class MultiplayerHostMenu extends PScene {
 		if (pressHost.hover()) {
 			// String[] ip = ipInput.getText().split(":");
 			try {
-				((GameplayScene) GameScenes.GAME.getScene()).setupMultiplayer(true);
+				Multiplayer m = new Multiplayer(game, IP, port, true);
+				((GameplayScene) GameScenes.GAME.getScene()).setupMultiplayer(m);
 				game.swapToScene(GameScenes.GAME);
 			} catch (Exception e) {
 				// TODO UI MESSAGE

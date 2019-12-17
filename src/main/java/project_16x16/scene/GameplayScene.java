@@ -35,15 +35,11 @@ import project_16x16.windows.TestWindow;
 public class GameplayScene extends PScene {
 
 	//Singleplayer
-	private boolean isSingleplayer = true;
+	private boolean isSingleplayer = true; // true by default
 
 	//Multiplayer
-	private Multiplayer host;
-	private Multiplayer client;
-
-	private String Ip = "127.0.0.1"; // TODO hardcoded
-	private int port = 25565; // TODO hardcoded
-	private boolean isHost = false;
+//	private Multiplayer host;
+	private Multiplayer multiPlayerClient;
 
 	// Graphics Slots
 	private PImage slot;
@@ -221,31 +217,25 @@ public class GameplayScene extends PScene {
 		}
 		drawPlayer();
 	}
-
-	public void setInfo(String IP, int port, boolean isHost) {
-		this.Ip = IP;
-		this.port = port;
-		this.isHost = isHost;
-	}
-
+	
 	/**
 	 * Call when host/connect buttons pressed.
 	 * @param setHost is this client host?
 	 */
-	public void setupMultiplayer(boolean setHost) throws Exception {
-		this.isHost = setHost;
+	public void setupMultiplayer(Multiplayer multiplayer) throws Exception {
+		multiPlayerClient = multiplayer;
 		isSingleplayer = false;
-		if (this.isHost) {
-			host = new Multiplayer(this, this.port);
-		} else {
-			try {
-				client = new Multiplayer(this, this.Ip, this.port);
-			} catch (Exception e) {
-				System.err.println("Connection Refused! Host does not exist or couldn't connect.");
-				isSingleplayer = true;
-				throw new Exception(); // throw to menu
-			}
-		}
+//		if (this.isHost) {
+//			host = new Multiplayer(this, this.port);
+//		} else {
+//			try {
+//				client = new Multiplayer(this, this.Ip, this.port);
+//			} catch (Exception e) {
+//				System.err.println("Connection Refused! Host does not exist or couldn't connect.");
+//				isSingleplayer = true;
+//				throw new Exception(); // throw to menu
+//			}
+//		}
 	}
 	
 	public void setSingleplayer(boolean value) {
@@ -262,19 +252,24 @@ public class GameplayScene extends PScene {
 				player.displayEdit();
 				break;
 			case PLAY :
-				if (isSingleplayer) {
+				if (!isSingleplayer) {
 					player.update();
-				} else {
-					if (isHost) {
-						host.writeDataServer((int) player.pos.x, (int) player.pos.y, player.animation.name);
-						host.readDataServer();
-						player.update();
-					} else {
-						client.writeDataClient((int) player.pos.x, (int) player.pos.y, player.animation.name);
-						client.readDataClient();
-						player.update();
-					}
-				}
+					multiPlayerClient.writeData(player.pos.x, player.pos.y, player.animation.name);
+					multiPlayerClient.readData();
+				} 
+				/*
+				 * else {
+				 * 
+				 * if (isHost) { host.writeDataServer((int) player.pos.x, (int) player.pos.y,
+				 * player.animation.name); host.readDataServer(); player.update(); } else {
+				 * client.writeDataClient((int) player.pos.x, (int) player.pos.y,
+				 * player.animation.name); client.readDataClient();
+				 * 
+				 * }
+				 * 
+				 * }
+				 */
+				player.update();
 				break;
 			case MOVE :
 			case INVENTORY :
@@ -466,15 +461,8 @@ public class GameplayScene extends PScene {
 	 * Close server/client connections.
 	 */
 	public void exit() {
-		if (isHost) {
-			if (host != null) {
-				host.exit();
-			}
-		}
-		else {
-			if (client != null) {
-				client.exit();
-			}
+		if (!isSingleplayer) {
+			multiPlayerClient.exit();
 		}
 	}
 

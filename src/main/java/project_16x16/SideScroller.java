@@ -23,6 +23,7 @@ import processing.javafx.PSurfaceFX;
 import project_16x16.Options.option;
 import project_16x16.components.AnimationComponent;
 import project_16x16.entities.Player;
+import project_16x16.multiplayer.Multiplayer;
 import project_16x16.scene.*;
 import project_16x16.scene.GameplayScene.Tools;
 
@@ -221,9 +222,11 @@ public class SideScroller extends PApplet {
 
 		scaleResolution();
 		
+		Multiplayer m;
 		if (args[0].equals("host")) {
 			try {
-				((GameplayScene) GameScenes.GAME.getScene()).setupMultiplayer(true);
+				m = new Multiplayer(this, true);
+				((GameplayScene) GameScenes.GAME.getScene()).setupMultiplayer(m);
 				swapToScene(GameScenes.GAME);
 				((GameplayScene) GameScenes.GAME.getScene()).tool = Tools.PLAY;
 				stage.setTitle("host");
@@ -233,7 +236,8 @@ public class SideScroller extends PApplet {
 		if (args[0].equals("client")) {
 			System.out.println("client path");
 			try {
-				((GameplayScene) (GameScenes.GAME.getScene())).setupMultiplayer(false);
+				m = new Multiplayer(this, false);
+				((GameplayScene) (GameScenes.GAME.getScene())).setupMultiplayer(m);
 				swapToScene(GameScenes.GAME);
 				((GameplayScene) GameScenes.GAME.getScene()).tool = Tools.PLAY;
 				stage.setTitle("client");
