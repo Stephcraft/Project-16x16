@@ -4,7 +4,7 @@ Looking forward to contribute to an awesome open source project? Well here is a 
 ## How do I start!
 Wow!! This project seems **EPIC!** Right? And its made in processing, like *whhhooaaahht* ! So how do I get in, how do I start? Simple:  
 
-First, join our [Discord server](https://discord.gg/zDJSCqd) this is where anything and everything (not just code) related to development is discussed.
+First, join our [Discord server](https://discord.gg/zDJSCqd)  this is where anything and everything (not just code) related to development is discussed.
 
 #### Programmers
 1. Want to learn how to code? [dive right in](http://hello.processing.org)
@@ -28,4 +28,6 @@ Art by 0x72 (more [here](https://0x72.itch.io/16x16-industrial-tileset)).
 
 ![image](https://img.itch.zone/aW1hZ2UvMTYyMzY0Lzc3MzkzMy5naWY=/794x1000/K7WB6P.gif) 
 
+![discord](https://img.shields.io/discord/310521827749265409?color=%23738adb&label=Discord&logo=Stephcraft)
 [![Open Source Helpers](https://www.codetriage.com/stephcraft/project-16x16/badges/users.svg)](https://www.codetriage.com/stephcraft/project-16x16) [![Codacy Badge](https://api.codacy.com/project/badge/Grade/968c04792ffc4536ac7b9428ed79997d)](https://www.codacy.com/manual/micycle1/Project-16x16?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=Stephcraft/Project-16x16&amp;utm_campaign=Badge_Grade)
+
