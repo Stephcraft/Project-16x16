@@ -69,6 +69,14 @@ public class AnimationComponent {
 		}
 		return frame;
 	}
+	
+	/**
+	 * Return current frame without animating further.
+	 * @return
+	 */
+	public PImage getFrame() {
+		return frames.get((int) currentFrame);
+	}
 
 	/**
 	 * Retrieves the number of remaining frames
@@ -80,12 +88,22 @@ public class AnimationComponent {
 	}
 
 	/**
-	* Retrieves the current frame
+	* Retrieves the current frame ID
 	*
 	* @return the current frame as a float
 	**/
-	public float getFrame() {
+	public float getFrameID() {
 		return currentFrame;
+	}
+	
+	/**
+	 * Set frame (for multiplayer)
+	 * @param frame
+	 */
+	public void setFrame(float frame) {
+		if (frame >= 0 && frame <= frames.size() - 1) {
+			currentFrame = frame;
+		}
 	}
 	
 	

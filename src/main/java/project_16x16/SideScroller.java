@@ -221,31 +221,9 @@ public class SideScroller extends PApplet {
 		camera.setMaxZoomScale(3);
 
 		scaleResolution();
-		
-		Multiplayer m;
-		if (args[0].equals("host")) {
-			try {
-				m = new Multiplayer(this, true);
-				((GameplayScene) GameScenes.GAME.getScene()).setupMultiplayer(m);
-				swapToScene(GameScenes.GAME);
-				((GameplayScene) GameScenes.GAME.getScene()).tool = Tools.PLAY;
-				stage.setTitle("host");
-			} catch (Exception e) {
-			}
-		}
-		if (args[0].equals("client")) {
-			System.out.println("client path");
-			try {
-				m = new Multiplayer(this, false);
-				((GameplayScene) (GameScenes.GAME.getScene())).setupMultiplayer(m);
-				swapToScene(GameScenes.GAME);
-				((GameplayScene) GameScenes.GAME.getScene()).tool = Tools.PLAY;
-				stage.setTitle("client");
-			} catch (Exception e) {
-			}
-		}
+		launchIntoMultiplayer();
 	}
-
+	
 	/**
 	 * This is where any needed assets will be loaded.
 	 */
@@ -554,7 +532,7 @@ public class SideScroller extends PApplet {
 		text("[" + round(player.pos.x) + ", " + round(player.pos.y) + "]", width - ip, lineOffset * 0 + yOffset);
 		text("[" + round(velocity.x) + ", " + round(velocity.y) + "]", width - ip, lineOffset * 1 + yOffset);
 		text("[" + player.animation.name + "]", width - ip, lineOffset * 2 + yOffset);
-		text("[" + round(player.animation.getFrame()) + " / " + player.animation.getAnimLength() + "]", width - ip,
+		text("[" + round(player.animation.getFrameID()) + " / " + player.animation.getAnimLength() + "]", width - ip,
 				lineOffset * 3 + yOffset);
 		text("[" + PApplet.round(camera.getPosition().x) + ", " + PApplet.round(camera.getPosition().y) + "]",
 				width - ip, lineOffset * 5 + yOffset);
@@ -567,6 +545,37 @@ public class SideScroller extends PApplet {
 			fill(0, 255, 0);
 		}
 		text("[" + round(frameRate) + "]", width - ip, lineOffset * 10 + yOffset);
+	}
+	
+	/**
+	 * Launch into multiplayer mode instantly bases upon program args. Used to test
+	 * & debug multiplayer more quickly.
+	 */
+	private void launchIntoMultiplayer() {
+		if (args != null) {
+			Multiplayer m;
+			if (args[0].equals("host")) {
+				try {
+					m = new Multiplayer(this, true);
+					((GameplayScene) GameScenes.GAME.getScene()).setupMultiplayer(m);
+					swapToScene(GameScenes.GAME);
+					((GameplayScene) GameScenes.GAME.getScene()).tool = Tools.PLAY;
+					stage.setTitle("host");
+				} catch (Exception e) {
+				}
+			}
+			if (args[0].equals("client")) {
+				System.out.println("client path");
+				try {
+					m = new Multiplayer(this, false);
+					((GameplayScene) (GameScenes.GAME.getScene())).setupMultiplayer(m);
+					swapToScene(GameScenes.GAME);
+					((GameplayScene) GameScenes.GAME.getScene()).tool = Tools.PLAY;
+					stage.setTitle("client");
+				} catch (Exception e) {
+				}
+			}
+		}
 	}
 
 	@Override

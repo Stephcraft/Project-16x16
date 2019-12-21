@@ -5,6 +5,7 @@ import java.util.Arrays;
 
 import processing.data.JSONObject;
 import processing.net.*;
+
 import project_16x16.SideScroller;
 import project_16x16.SideScroller.GameScenes;
 import project_16x16.entities.Player;
@@ -50,7 +51,7 @@ public class Multiplayer {
 			}
 		}
 
-		p = new Player(player, (GameplayScene) GameScenes.GAME.getScene());
+		p = new Player(player, (GameplayScene) GameScenes.GAME.getScene(), true);
 	}
 	
 	/**
@@ -64,22 +65,21 @@ public class Multiplayer {
 	}
 	
 	public void readData() {
+
 		if (isHost) {
 			c = s.available();
-			if (c != null) {
-				JSONObject data = JSONObject.parse(c.readString());
-				p.pos.x = data.getFloat("x");
-				p.pos.y = data.getFloat("y");
-				p.animation.name = data.getString("anim");
-				p.display();
-			}
 		}
-		else {
-			if (c.available() > 0) {
-				JSONObject data = JSONObject.parse(c.readString());
+
+		if (c != null && c.available() > 0) {
+			String packet = c.readString();
+			try {
+				JSONObject data = JSONObject.parse(packet);
 				p.pos.x = data.getFloat("x");
 				p.pos.y = data.getFloat("y");
-				p.animation.name = data.getString("anim");
+				p.setAnimation(data.getString("animSequence"));
+				p.animation.setFrame(data.getFloat("animFrame"));
+			} catch (java.lang.RuntimeException e) {
+			} finally {
 				p.display();
 			}
 		}
@@ -89,13 +89,14 @@ public class Multiplayer {
         JSONObject data = new JSONObject();
         data.setFloat("x", x);
         data.setFloat("y", y);
-        data.setString("anim", name);
+        data.setString("animSequence", name);
+        data.setFloat("animFrame", p.animation.getFrameID());
         
 		if (isHost) {
-	        s.write(data.toString());
+			s.write(data.toString()); // write to client(s)
 		}
 		else {
-	        c.write(data.toString());
+	        c.write(data.toString()); // write to server
 		}
 	}
 	

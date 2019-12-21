@@ -38,7 +38,6 @@ public class GameplayScene extends PScene {
 	private boolean isSingleplayer = true; // true by default
 
 	//Multiplayer
-//	private Multiplayer host;
 	private Multiplayer multiPlayerClient;
 
 	// Graphics Slots
@@ -152,7 +151,8 @@ public class GameplayScene extends PScene {
 		tool = Tools.MODIFY;
 
 		// Init Player
-		player = new Player(applet, this);
+		player = new Player(applet, this, false);
+		System.out.println("g scene init");
 		player.pos.set(0, -100); // TODO spawn location
 
 		loadLevel(SideScroller.LEVEL); // TODO change level
@@ -252,24 +252,11 @@ public class GameplayScene extends PScene {
 				player.displayEdit();
 				break;
 			case PLAY :
-				if (!isSingleplayer) {
-					player.update();
-					multiPlayerClient.writeData(player.pos.x, player.pos.y, player.animation.name);
-					multiPlayerClient.readData();
-				} 
-				/*
-				 * else {
-				 * 
-				 * if (isHost) { host.writeDataServer((int) player.pos.x, (int) player.pos.y,
-				 * player.animation.name); host.readDataServer(); player.update(); } else {
-				 * client.writeDataClient((int) player.pos.x, (int) player.pos.y,
-				 * player.animation.name); client.readDataClient();
-				 * 
-				 * }
-				 * 
-				 * }
-				 */
 				player.update();
+				if (!isSingleplayer) {
+					multiPlayerClient.writeData(player.pos.x, player.pos.y, player.animation.name); // write data to server
+					multiPlayerClient.readData(); // read from server & display other player
+				}				
 				break;
 			case MOVE :
 			case INVENTORY :

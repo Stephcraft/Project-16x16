@@ -28,10 +28,10 @@ public final class Player extends EditableObject {
 	/**
 	 * Current player sprite
 	 */
-	private static PImage image;
+	private PImage image;
 
-	private final static PImage lifeOn;
-	private final static PImage lifeOff;
+	private final PImage lifeOn;
+	private final PImage lifeOff;
 
 	private float gravity;
 
@@ -42,6 +42,8 @@ public final class Player extends EditableObject {
 
 	private final int speedWalk;
 	private final int speedJump;
+	
+	private final boolean isMultiplayerPlayer;
 
 	public int life; // public for debugging TODO make private
 	public int lifeCapacity; // public for debugging TODO make private
@@ -64,10 +66,6 @@ public final class Player extends EditableObject {
 	private PlayerState state;
 
 	static {
-		image = Tileset.getTile(0, 258, 14, 14, 4);
-		lifeOn = Tileset.getTile(144, 256, 9, 9, 4);
-		lifeOff = Tileset.getTile(160, 256, 9, 9, 4);
-
 		playerAnimationSequences = new HashMap<ACTION, ArrayList<PImage>>();
 		playerAnimationSequences.put(ACTION.WALK, Tileset.getAnimation("PLAYER::WALK"));
 		playerAnimationSequences.put(ACTION.IDLE, Tileset.getAnimation("PLAYER::IDLE"));
@@ -84,7 +82,7 @@ public final class Player extends EditableObject {
 	 * 
 	 * @param a SideScroller game controller.
 	 */
-	public Player(SideScroller a, GameplayScene g) {
+	public Player(SideScroller a, GameplayScene g , boolean isMultiplayerPlayer) {
 
 		super(a, g);
 
@@ -93,6 +91,9 @@ public final class Player extends EditableObject {
 
 		animation = new AnimationComponent();
 		swings = new ArrayList<Swing>();
+		image = Tileset.getTile(0, 258, 14, 14, 4);
+		lifeOn = Tileset.getTile(144, 256, 9, 9, 4);
+		lifeOff = Tileset.getTile(160, 256, 9, 9, 4);
 
 		// Set life
 		lifeCapacity = 6;
@@ -107,14 +108,17 @@ public final class Player extends EditableObject {
 		state = new PlayerState();
 
 		setAnimation(ACTION.IDLE);
+		this.isMultiplayerPlayer = isMultiplayerPlayer;
 	}
-
+	
 	/**
 	 * The display method controls how to display the character to the screen with
 	 * what animation.
+	 *
+	 * @param player is this player the local player, or a player representation of
+	 *               a multiplayer client?
 	 */
 	public void display() {
-
 		// Display Swing Projectiles
 		for (int i = 0; i < swings.size(); i++) {
 			swings.get(i).display();
@@ -125,7 +129,15 @@ public final class Player extends EditableObject {
 		if (state.facingDir == LEFT) {
 			applet.scale(-1, 1);
 		}
+		if (isMultiplayerPlayer) {
+			applet.tint(255, 125, 0);
+			image = animation.getFrame();
+		}
+		else {
+			image = animation.animate();
+		}
 		applet.image(image, 0, 0);
+		applet.noTint();
 		applet.popMatrix();
 
 		if (applet.debug == debugType.ALL) {
@@ -150,14 +162,14 @@ public final class Player extends EditableObject {
 			state.flying = true;
 		}
 		pos.add(velocity);
+		
+		chooseAnimation();
 
 		if (pos.y > 2000) { // out of bounds check
 			pos.set(0, -100); // TODO set to spawn loc PVector
 			velocity.mult(0);
 		}
-
-		chooseAnimation();
-
+		
 		if (applet.debug == debugType.ALL) {
 			applet.noFill();
 			applet.stroke(255, 0, 0);
@@ -221,7 +233,6 @@ public final class Player extends EditableObject {
 		for (int i = 0; i < swings.size(); i++) { // Update Swing Projectiles
 			swings.get(i).update();
 		}
-		image = animation.animate();
 	}
 
 	private void checkPlayerCollision() {
@@ -356,6 +367,11 @@ public final class Player extends EditableObject {
 				&& pos.x + 0 - width / 2 < collision.pos.x + collision.width / 2)
 				&& (pos.y + velocity.y + height / 2 > collision.pos.y - collision.height / 2
 						&& pos.y + velocity.y - height / 2 < collision.pos.y + collision.height / 2);
+	}
+	
+	public void setAnimation(String anim) {
+		animation.ended = false;
+		setAnimation(ACTION.valueOf(anim));
 	}
 
 	/**
