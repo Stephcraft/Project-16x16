@@ -561,6 +561,7 @@ public class SideScroller extends PApplet {
 					swapToScene(GameScenes.GAME);
 					((GameplayScene) GameScenes.GAME.getScene()).tool = Tools.PLAY;
 					stage.setTitle("host");
+					System.out.println("~HOST~");
 				} catch (Exception e) {
 				}
 			}
@@ -572,6 +573,7 @@ public class SideScroller extends PApplet {
 					swapToScene(GameScenes.GAME);
 					((GameplayScene) GameScenes.GAME.getScene()).tool = Tools.PLAY;
 					stage.setTitle("client");
+					System.out.println("~CLIENT~");
 				} catch (Exception e) {
 				}
 			}

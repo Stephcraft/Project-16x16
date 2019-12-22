@@ -197,6 +197,10 @@ public final class Player extends EditableObject {
 	public PVector getVelocity() {
 		return velocity.copy();
 	}
+	
+	public PlayerState getState() {
+		return state;
+	}
 
 	private void handleKeyboardInput() {
 		state.dashing = applet.isKeyDown(Options.dashKey);
@@ -415,7 +419,7 @@ public final class Player extends EditableObject {
 		animation.name = anim.name();
 	}
 
-	private class PlayerState {
+	public class PlayerState {
 		public boolean flying;
 		public boolean attacking;
 		public boolean dashing;

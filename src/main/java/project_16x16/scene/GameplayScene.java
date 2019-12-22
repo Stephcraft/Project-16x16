@@ -20,7 +20,7 @@ import project_16x16.SideScroller;
 import project_16x16.Tileset;
 import project_16x16.Tileset.tileType;
 import project_16x16.Util;
-
+import project_16x16.SideScroller.GameScenes;
 import project_16x16.ui.Anchor;
 import project_16x16.ui.ScrollBarVertical;
 import project_16x16.ui.Tab;
@@ -38,7 +38,7 @@ public class GameplayScene extends PScene {
 	private boolean isSingleplayer = true; // true by default
 
 	//Multiplayer
-	private Multiplayer multiPlayerClient;
+	private Multiplayer multiplayer;
 
 	// Graphics Slots
 	private PImage slot;
@@ -89,7 +89,14 @@ public class GameplayScene extends PScene {
 
 	private int scroll_inventory;
 
-	private Player player;
+	/**
+	 * Local Player
+	 */
+	private Player localPlayer;
+	/**
+	 * Other Player (multiplayer)
+	 */
+	private Player onlinePlayer;
 
 	private PVector mouseDown, origPos;
 
@@ -151,9 +158,8 @@ public class GameplayScene extends PScene {
 		tool = Tools.MODIFY;
 
 		// Init Player
-		player = new Player(applet, this, false);
-		System.out.println("g scene init");
-		player.pos.set(0, -100); // TODO spawn location
+		localPlayer = new Player(applet, this, false);
+		localPlayer.pos.set(0, -100); // TODO spawn location
 
 		loadLevel(SideScroller.LEVEL); // TODO change level
 
@@ -223,19 +229,9 @@ public class GameplayScene extends PScene {
 	 * @param setHost is this client host?
 	 */
 	public void setupMultiplayer(Multiplayer multiplayer) throws Exception {
-		multiPlayerClient = multiplayer;
+		this.multiplayer = multiplayer;
+		onlinePlayer = new Player(applet, (GameplayScene) GameScenes.GAME.getScene(), true);
 		isSingleplayer = false;
-//		if (this.isHost) {
-//			host = new Multiplayer(this, this.port);
-//		} else {
-//			try {
-//				client = new Multiplayer(this, this.Ip, this.port);
-//			} catch (Exception e) {
-//				System.err.println("Connection Refused! Host does not exist or couldn't connect.");
-//				isSingleplayer = true;
-//				throw new Exception(); // throw to menu
-//			}
-//		}
 	}
 	
 	public void setSingleplayer(boolean value) {
@@ -248,15 +244,11 @@ public class GameplayScene extends PScene {
 	private void drawPlayer() {
 		switch (tool) {
 			case MODIFY :
-				player.updateEdit();
-				player.displayEdit();
+				localPlayer.updateEdit();
+				localPlayer.displayEdit();
 				break;
 			case PLAY :
-				player.update();
-				if (!isSingleplayer) {
-					multiPlayerClient.writeData(player.pos.x, player.pos.y, player.animation.name); // write data to server
-					multiPlayerClient.readData(); // read from server & display other player
-				}				
+				localPlayer.update();
 				break;
 			case MOVE :
 			case INVENTORY :
@@ -266,7 +258,26 @@ public class GameplayScene extends PScene {
 			default :
 				break;
 		}
-		player.display();
+		if (!isSingleplayer) {
+			JSONObject data = new JSONObject();
+			data.setFloat("x", localPlayer.pos.x);
+			data.setFloat("y", localPlayer.pos.y);
+			data.setInt("dir", localPlayer.getState().facingDir);
+			data.setString("animSequence", localPlayer.animation.name);
+			data.setInt("animFrame", localPlayer.animation.getFrameID());
+			multiplayer.writeData(data.toString()); // write data to server
+
+			JSONObject other = multiplayer.readData(); // read from server & display other player
+			if (other != null) {
+				onlinePlayer.pos.x = other.getFloat("x");
+				onlinePlayer.pos.y = other.getFloat("y");
+				onlinePlayer.setAnimation(other.getString("animSequence"));
+				onlinePlayer.animation.setFrame(other.getInt("animFrame"));
+				onlinePlayer.getState().facingDir = other.getInt("dir");
+				onlinePlayer.display();
+			}
+			localPlayer.display();
+		}
 	}
 
 	/**
@@ -332,7 +343,7 @@ public class GameplayScene extends PScene {
 		if (tool == Tools.PLAY
 				|| (Util.hoverScreen(90 + 48 * 2, 120, 36, 36) && tool != Tools.SAVE && tool != Tools.INVENTORY)) {
 			if (Util.hoverScreen(90 + 48 * 2, 120, 36, 36) && applet.mousePressEvent) {
-				applet.camera.setFollowObject(player);
+				applet.camera.setFollowObject(localPlayer);
 				tool = Tools.PLAY;
 			}
 			image(icon_playActive, 90 + 48 * 2, 120);
@@ -360,7 +371,7 @@ public class GameplayScene extends PScene {
 			case MOVE :
 				break;
 			case PLAY :
-				player.displayLife();
+				localPlayer.displayLife();
 				break;
 			case SAVE :
 				// Save , Load
@@ -441,7 +452,7 @@ public class GameplayScene extends PScene {
 	}
 
 	public Player getPlayer() {
-		return player;
+		return localPlayer;
 	}
 	
 	/**
@@ -449,7 +460,7 @@ public class GameplayScene extends PScene {
 	 */
 	public void exit() {
 		if (!isSingleplayer) {
-			multiPlayerClient.exit();
+			multiplayer.exit();
 		}
 	}
 
@@ -649,7 +660,7 @@ public class GameplayScene extends PScene {
 					break;
 				case 52 : // 4
 					tool = Tools.PLAY;
-					applet.camera.setFollowObject(player);
+					applet.camera.setFollowObject(localPlayer);
 					break;
 				case 53 : // 5
 					tool = Tools.SAVE;

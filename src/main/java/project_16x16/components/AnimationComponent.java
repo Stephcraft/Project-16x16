@@ -92,8 +92,8 @@ public class AnimationComponent {
 	*
 	* @return the current frame as a float
 	**/
-	public float getFrameID() {
-		return currentFrame;
+	public int getFrameID() {
+		return (int) currentFrame;
 	}
 	
 	/**

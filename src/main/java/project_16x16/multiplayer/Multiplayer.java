@@ -2,6 +2,7 @@ package project_16x16.multiplayer;
 
 import java.net.ConnectException;
 import java.util.Arrays;
+import java.util.concurrent.ThreadLocalRandom;
 
 import processing.data.JSONObject;
 import processing.net.*;
@@ -22,10 +23,6 @@ public class Multiplayer {
 	 * programs connected to it)
 	 */
 	private Server s;
-	/**
-	 * Representation of the other player
-	 */
-	private final Player p;
 	
 	public boolean isHost;
 
@@ -50,8 +47,6 @@ public class Multiplayer {
 				throw new java.net.ConnectException();
 			}
 		}
-
-		p = new Player(player, (GameplayScene) GameScenes.GAME.getScene(), true);
 	}
 	
 	/**
@@ -64,39 +59,30 @@ public class Multiplayer {
 		this(player, "127.0.0.1", 25565, isHost);
 	}
 	
-	public void readData() {
+	public JSONObject readData() {
 
 		if (isHost) {
 			c = s.available();
 		}
 
+		JSONObject data = null;
 		if (c != null && c.available() > 0) {
 			String packet = c.readString();
 			try {
-				JSONObject data = JSONObject.parse(packet);
-				p.pos.x = data.getFloat("x");
-				p.pos.y = data.getFloat("y");
-				p.setAnimation(data.getString("animSequence"));
-				p.animation.setFrame(data.getFloat("animFrame"));
+				data = JSONObject.parse(packet);
 			} catch (java.lang.RuntimeException e) {
-			} finally {
-				p.display();
 			}
 		}
+		return data;
 	}
-	
-	public void writeData(float x, float y, String name) {
-        JSONObject data = new JSONObject();
-        data.setFloat("x", x);
-        data.setFloat("y", y);
-        data.setString("animSequence", name);
-        data.setFloat("animFrame", p.animation.getFrameID());
-        
+
+	public void writeData(String packet) {
 		if (isHost) {
-			s.write(data.toString()); // write to client(s)
-		}
-		else {
-	        c.write(data.toString()); // write to server
+			s.write(packet); // write to client(s)
+		} else {
+			if (c.active()) {
+				c.write(packet); // write to server
+			}
 		}
 	}
 	
@@ -104,8 +90,7 @@ public class Multiplayer {
 		if (c!= null) {
 			c.stop();
 		}
-		if (s!= null) {
-			Arrays.asList(s.clients).forEach(client -> s.disconnect(client)); // TODO message clients.
+		if (s!= null) { // TODO message clients.
 			s.stop();
 		}
 	}
