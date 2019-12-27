@@ -4,7 +4,7 @@ import processing.core.PApplet;
 import processing.core.PConstants;
 import processing.core.PImage;
 
-import project_16x16.Util;
+import project_16x16.SideScroller.GameScenes;
 
 /**
  * <h1>PClass</h1>

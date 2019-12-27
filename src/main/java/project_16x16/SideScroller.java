@@ -10,6 +10,7 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.input.KeyCombination;
 import javafx.scene.transform.Scale;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 
 import processing.core.PApplet;
 import processing.core.PFont;
@@ -22,11 +23,9 @@ import processing.javafx.PSurfaceFX;
 import project_16x16.Options.option;
 import project_16x16.components.AnimationComponent;
 import project_16x16.entities.Player;
-import project_16x16.scene.GameplayScene;
-import project_16x16.scene.MainMenu;
-import project_16x16.scene.PScene;
-import project_16x16.scene.PauseMenu;
-import project_16x16.scene.Settings;
+import project_16x16.multiplayer.Multiplayer;
+import project_16x16.scene.*;
+import project_16x16.scene.GameplayScene.Tools;
 
 /**
  * <h1>SideScroller Class</h1>
@@ -73,13 +72,33 @@ public class SideScroller extends PApplet {
 	 * Use {@link #swapToScene(PScene)} or {@link #returnScene()} to change the
 	 * scene -- don't reassign this variable directly!
 	 */
-	private PScene currentScene;
-	private PScene previousScene;
-	public MainMenu menu;
-	public GameplayScene game;
-	public PauseMenu pmenu;
-	public Settings settings;
+	private GameScenes currentScene;
+	private GameScenes previousScene;
+	private int sceneSwapTime = 0;
+	
+	private static MainMenu menu;
+	private static GameplayScene game;
+	private static PauseMenu pmenu;
+	private static Settings settings;
+	private static MultiplayerMenu mMenu;
+	private static MultiplayerHostMenu mHostMenu;
+	private static MultiplayerClientMenu mClientMenu;
+	
+	public enum GameScenes {
+		MAIN_MENU(menu), GAME(game), PAUSE_MENU(pmenu), SETTINGS_MENU(settings), MULTIPLAYER_MENU(mMenu),
+		HOST_MENU(mHostMenu), CLIENT_MENU(mClientMenu);
 
+		PScene scene;
+
+		private GameScenes(PScene scene) {
+			this.scene = scene;
+		}
+
+		public PScene getScene() {
+			return scene;
+		}
+	}
+	
 	// Events
 	private HashSet<Integer> keysDown;
 	public boolean keyPressEvent;
@@ -134,7 +153,20 @@ public class SideScroller extends PApplet {
 		stage.setResizable(false); // prevent abitrary user resize
 		stage.setFullScreenExitHint(""); // disable fullscreen toggle hint
 		stage.setFullScreenExitKeyCombination(KeyCombination.NO_MATCH); // prevent ESC toggling fullscreen
+		scene.getWindow().addEventFilter(WindowEvent.WINDOW_CLOSE_REQUEST, this::closeWindowEvent);
 		return surface;
+	}
+	
+	/**
+	 * Passes JavaFX window closed call to game.
+	 * @param event
+	 */
+	private void closeWindowEvent(WindowEvent event) {
+		try {
+			game.exit();
+		} finally {
+			stage.close();
+		}
 	}
 
 	/**
@@ -143,7 +175,7 @@ public class SideScroller extends PApplet {
 	 */
 	@Override
 	public void setup() {
-
+		
 		snapSize = SNAP ? Options.snapSize : 1; // global snap step
 		
 		frameRate(Options.targetFrameRate);
@@ -177,7 +209,10 @@ public class SideScroller extends PApplet {
 		menu = new MainMenu(this);
 		pmenu = new PauseMenu(this);
 		settings = new Settings(this);
-		swapToScene(menu);
+		mMenu = new MultiplayerMenu(this);
+		mHostMenu = new MultiplayerHostMenu(this);
+		mClientMenu = new MultiplayerClientMenu(this);
+		swapToScene(GameScenes.MAIN_MENU);
 
 		// Camera
 		camera = new Camera(this);
@@ -186,8 +221,9 @@ public class SideScroller extends PApplet {
 		camera.setMaxZoomScale(3);
 
 		scaleResolution();
+		launchIntoMultiplayer();
 	}
-
+	
 	/**
 	 * This is where any needed assets will be loaded.
 	 */
@@ -202,15 +238,19 @@ public class SideScroller extends PApplet {
 	 * @param newScene
 	 * @see #returnScene()
 	 */
-	public void swapToScene(PScene newScene) {
-		if (currentScene != null) {
-			currentScene.switchFrom();
-			if (!(newScene.equals(previousScene))) {
-				previousScene = currentScene;
+	public void swapToScene(GameScenes newScene) {
+		if (frameCount - sceneSwapTime > 6 || frameCount == 0) {
+			if (currentScene != null) {
+				currentScene.getScene().switchFrom();
+				if (!(newScene.equals(previousScene))) {
+					previousScene = currentScene;
+				}
 			}
+
+			currentScene = newScene;
+			currentScene.getScene().switchTo();
+			sceneSwapTime = frameCount;
 		}
-		currentScene = newScene;
-		currentScene.switchTo();
 	}
 
 	/**
@@ -261,9 +301,9 @@ public class SideScroller extends PApplet {
 	 * @see {@link Camera#hook()}
 	 */
 	private void drawBelowCamera() {
-		currentScene.draw(); // Handle Draw Scene Method - draws world, etc.
+		currentScene.getScene().draw(); // Handle Draw Scene Method - draws world, etc.
 		if (debug == debugType.ALL) {
-			currentScene.debug();
+			currentScene.getScene().debug();
 			camera.postDebug();
 		}
 	}
@@ -277,7 +317,7 @@ public class SideScroller extends PApplet {
 	 * @see {@link Camera#release()}
 	 */
 	private void drawAboveCamera() {
-		currentScene.drawUI();
+		currentScene.getScene().drawUI();
 		if (debug == debugType.ALL) {
 			camera.post();
 			displayDebugInfo();
@@ -349,7 +389,7 @@ public class SideScroller extends PApplet {
 				loop();
 				break;
 			case ESC : // Pause
-				swapToScene(currentScene == pmenu ? game : pmenu); // TODO interfering with settings menu?
+				swapToScene(currentScene == GameScenes.PAUSE_MENU ? GameScenes.GAME : GameScenes.PAUSE_MENU); // TODO interfering with settings menu?
 				break;
 			case TAB :
 				debug = debug.next();
@@ -492,7 +532,7 @@ public class SideScroller extends PApplet {
 		text("[" + round(player.pos.x) + ", " + round(player.pos.y) + "]", width - ip, lineOffset * 0 + yOffset);
 		text("[" + round(velocity.x) + ", " + round(velocity.y) + "]", width - ip, lineOffset * 1 + yOffset);
 		text("[" + player.animation.name + "]", width - ip, lineOffset * 2 + yOffset);
-		text("[" + round(player.animation.getFrame()) + " / " + player.animation.getAnimLength() + "]", width - ip,
+		text("[" + round(player.animation.getFrameID()) + " / " + player.animation.getAnimLength() + "]", width - ip,
 				lineOffset * 3 + yOffset);
 		text("[" + PApplet.round(camera.getPosition().x) + ", " + PApplet.round(camera.getPosition().y) + "]",
 				width - ip, lineOffset * 5 + yOffset);
@@ -506,14 +546,47 @@ public class SideScroller extends PApplet {
 		}
 		text("[" + round(frameRate) + "]", width - ip, lineOffset * 10 + yOffset);
 	}
+	
+	/**
+	 * Launch into multiplayer mode instantly bases upon program args. Used to test
+	 * & debug multiplayer more quickly.
+	 */
+	private void launchIntoMultiplayer() {
+		if (args != null) {
+			Multiplayer m;
+			if (args[0].equals("host")) {
+				try {
+					m = new Multiplayer(this, true);
+					((GameplayScene) GameScenes.GAME.getScene()).setupMultiplayer(m);
+					swapToScene(GameScenes.GAME);
+					((GameplayScene) GameScenes.GAME.getScene()).tool = Tools.PLAY;
+					stage.setTitle("host");
+					System.out.println("~HOST~");
+				} catch (Exception e) {
+				}
+			}
+			if (args[0].equals("client")) {
+				System.out.println("client path");
+				try {
+					m = new Multiplayer(this, false);
+					((GameplayScene) (GameScenes.GAME.getScene())).setupMultiplayer(m);
+					swapToScene(GameScenes.GAME);
+					((GameplayScene) GameScenes.GAME.getScene()).tool = Tools.PLAY;
+					stage.setTitle("client");
+					System.out.println("~CLIENT~");
+				} catch (Exception e) {
+				}
+			}
+		}
+	}
 
 	@Override
 	public void exit() {
-		// super.exit(); // commented-out - prevents ESC from closing game
+//		super.exit(); // commented-out - prevents ESC from closing game
 	}
 
 	// Main
 	public static void main(String args[]) {
-		PApplet.main(new String[] { SideScroller.class.getName() });
+		PApplet.main(SideScroller.class, args);
 	}
 }

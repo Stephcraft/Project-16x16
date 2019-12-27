@@ -3,6 +3,7 @@ package project_16x16.windows;
 import project_16x16.scene.GameplayScene;
 import project_16x16.PClass;
 import project_16x16.SideScroller;
+import project_16x16.SideScroller.GameScenes;
 import project_16x16.ui.Button;
 import project_16x16.ui.TextInputField;
 //CAN BE IGNORED: ONLY A TESTING WINDOW
@@ -14,12 +15,10 @@ public class TestWindow extends PClass{
 	String path = "Storage/Game/Maps/";
 
 	// Map Editor Scene
-	public GameplayScene scene;
+//	public GameplayScene scene;
 
 	public TestWindow(SideScroller a) {
 		super(a);
-
-		scene = a.game;
 
 		pressLoad = new Button(applet);
 		pressLoad.setText("Test Window");
@@ -79,13 +78,13 @@ public class TestWindow extends PClass{
 		if (pressLoad.event()) {
 			//util.saveLevel(path + input.getText() + ".dat");
 			input.setText("");
-			scene.tool = GameplayScene.Tools.MOVE;
+			((GameplayScene) GameScenes.GAME.getScene()).tool = GameplayScene.Tools.MOVE;
 		}
 
 		pressCancel.update();
 		if (pressCancel.event()) {
 			input.setText("");
-			scene.tool = GameplayScene.Tools.MOVE;
+			((GameplayScene) GameScenes.GAME.getScene()).tool = GameplayScene.Tools.MOVE;
 		}
 	}
 }

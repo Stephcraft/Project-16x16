@@ -5,6 +5,7 @@ package project_16x16.scene;
 
 import project_16x16.SideScroller;
 import project_16x16.Util;
+import project_16x16.SideScroller.GameScenes;
 import project_16x16.ui.Button;
 import processing.core.PImage;
 import processing.event.MouseEvent;
@@ -78,12 +79,12 @@ public class PauseMenu extends PScene {
 		
 		pressSettings.update();
 		if(pressSettings.hover()) {
-			game.swapToScene(game.settings);
+			game.swapToScene(GameScenes.SETTINGS_MENU);
 		}
 		
 		pressMenu.update();
 		if(pressMenu.hover()) {
-			game.swapToScene(game.menu);
+			game.swapToScene(GameScenes.MAIN_MENU);
 		}
 	}
 	
