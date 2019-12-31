@@ -14,16 +14,16 @@ public class SaveLevelWindow extends PClass {
 	Button pressSave;
 	Button pressCancel;
 
-	String path = "src/resources/Storage/Game/Maps/";
+	final String path = "src/main/resources/Storage/Game/Maps/save/";
 
 	// Map Editor Scene
 	public GameplayScene scene;
 
 	public SaveLevelWindow(SideScroller a, GameplayScene scene) {
-		
+
 		super(a);
 
-		this.scene = scene; 
+		this.scene = scene;
 
 		pressSave = new Button(applet);
 		pressSave.setText("Save Level");
@@ -38,14 +38,14 @@ public class SaveLevelWindow extends PClass {
 		input.setWidth(300);
 	}
 
-	//Used to toggle the darkened background, use for buttons at the moment
+	// Used to toggle the darkened background, use for buttons at the moment
 	public void privacyDisplay() {
 		// Display Privacy Area
 		applet.fill(0, 100);
 		applet.noStroke();
 		applet.rect(applet.width / 2, applet.height / 2, applet.width, applet.height);
 	}
-	
+
 	public void display() {
 		// Display Window
 		applet.fill(29, 33, 45);
@@ -77,7 +77,7 @@ public class SaveLevelWindow extends PClass {
 		pressSave.setPosition(applet.width / 2, applet.height / 2 + 150);
 		pressCancel.setPosition(applet.width / 2, applet.height / 2 + 200);
 		input.setPosition(applet.width / 2, applet.height / 2);
-		
+
 		input.update();
 
 		pressSave.update();
