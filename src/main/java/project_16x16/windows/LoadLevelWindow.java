@@ -124,10 +124,10 @@ public class LoadLevelWindow extends PClass {
 			System.err.println("Failed to parse level data to JSON. File is probably corrupt.");
 			return;
 		}
-		int maxX = Integer.MIN_VALUE;
 		int minX = Integer.MAX_VALUE;
-		int maxY = Integer.MIN_VALUE;
 		int minY = Integer.MAX_VALUE;
+		int maxY = Integer.MIN_VALUE;
+		int maxX = Integer.MIN_VALUE;
 		collidableObjects.clear();
 		backgroundObjects.clear();
 		// check for boundaries
@@ -149,11 +149,6 @@ public class LoadLevelWindow extends PClass {
 			if (type == null) {
 				continue;
 			}
-			maxX = Math.max(maxX, item.getInt("x"));
-			minX = Math.min(minX, item.getInt("x"));
-			maxY = Math.max(maxY, item.getInt("y"));
-			minY = Math.min(minY, item.getInt("y"));
-
 			switch (type) { // Read Main
 			case "COLLISION":
 				CollidableObject collision = new CollidableObject(applet, scene);
