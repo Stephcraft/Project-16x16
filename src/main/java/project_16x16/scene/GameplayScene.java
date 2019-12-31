@@ -276,8 +276,9 @@ public class GameplayScene extends PScene {
 				onlinePlayer.getState().facingDir = other.getInt("dir");
 				onlinePlayer.display();
 			}
-			localPlayer.display();
+			
 		}
+		localPlayer.display();
 	}
 
 	/**

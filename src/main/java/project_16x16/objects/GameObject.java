@@ -37,26 +37,25 @@ public class GameObject extends EditableObject {
 	public void delete() {
 	}
 
-
 	/**
-	* Return the animation of a given tile 
-	*
-	* @param the name of a tile
-	* @ return animation of given tile
-	**/
+	 * Return the animation of a given tile
+	 *
+	 * @param the name of a tile @ return animation of given tile
+	 **/
 	protected ArrayList<PImage> getAnimation(String name) {
 		return Tileset.getAnimation(name);
 	}
 
 	/**
-	* Returns a specific tile given its coordinates and dimensions
-	* @param x coordinate
-	* @param y coordinate
-	* @param w width
-	* @param h height
-	*
-	* @return a tile given its coordinates and dimensions
-	**/
+	 * Returns a specific tile given its coordinates and dimensions
+	 * 
+	 * @param x coordinate
+	 * @param y coordinate
+	 * @param w width
+	 * @param h height
+	 *
+	 * @return a tile given its coordinates and dimensions
+	 **/
 	protected PImage g(int x, int y, int w, int h) {
 		return Tileset.getTile(x, y, w, h);
 	}
@@ -81,4 +80,4 @@ public class GameObject extends EditableObject {
 		item.setInt("y", (int) pos.y);
 		return item;
 	}
-} 
+}

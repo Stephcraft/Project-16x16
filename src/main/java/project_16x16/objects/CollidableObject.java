@@ -7,7 +7,6 @@ import project_16x16.SideScroller;
 import project_16x16.SideScroller.debugType;
 import project_16x16.Tileset;
 
-
 public class CollidableObject extends EditableObject {
 
 	private PImage image;
@@ -65,7 +64,7 @@ public class CollidableObject extends EditableObject {
 				applet.rect(pos.x + pixelOffsetX, pos.y + pixelOffsetY, width, height);
 			}
 		} else {
-			applet.image(image, pos.x + pixelOffsetX, pos.y + pixelOffsetY);
+			applet.image(image, pos.x + pixelOffsetX, pos.y + pixelOffsetY, width, height);
 		}
 	}
 
@@ -74,6 +73,15 @@ public class CollidableObject extends EditableObject {
 		id = name;
 		width = image.width;
 		height = image.height;
+	}
+
+	// WARNING: This can distort images
+	public void setImageWidth(int w) {
+		width = w;
+	}
+
+	public void setImageHeight(int h) {
+		height = h;
 	}
 
 	@Override
@@ -92,4 +100,5 @@ public class CollidableObject extends EditableObject {
 		item.setInt("y", (int) pos.y);
 		return item;
 	}
+
 }

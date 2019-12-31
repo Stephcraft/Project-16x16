@@ -41,7 +41,7 @@ public class BackgroundObject extends EditableObject {
 			pixelOffsetX = 2;
 		}
 
-		applet.image(image, pos.x + pixelOffsetX, pos.y + pixelOffsetY);
+		applet.image(image, pos.x + pixelOffsetX, pos.y + pixelOffsetY, width, height);
 	}
 
 	public void update() {
@@ -53,6 +53,15 @@ public class BackgroundObject extends EditableObject {
 		id = name;
 		width = image.width;
 		height = image.height;
+	}
+
+	// WARNING: This can distort images
+	public void setImageWidth(int w) {
+		width = w;
+	}
+
+	public void setImageHeight(int h) {
+		height = h;
 	}
 
 	@Override
