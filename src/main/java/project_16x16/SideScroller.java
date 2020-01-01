@@ -178,6 +178,7 @@ public class SideScroller extends PApplet {
 		
 		snapSize = SNAP ? Options.snapSize : 1; // global snap step
 		
+		// Set frame rate limit
 		frameRate(Options.targetFrameRate);
 
 		// Start Graphics
