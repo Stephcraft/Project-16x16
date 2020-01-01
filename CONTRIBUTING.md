@@ -99,5 +99,5 @@ A pull request is the final step to contribute something. A request should be ma
 | Go to the project 16x16 GitHub repository and click on Pull requests | <img src="https://i.imgur.com/YMSuIvf.png" width="100"/> |
 | Click on the big green Pull request button | <img src="https://i.imgur.com/0taUoAY.png" width="100"/> |
 | Click on **compare across forks**. The Head repository should be your fork, and the Base should be `Stephcraft/Project 16x16`. Be sure to choose the right repository and the correct branch which is usually `master`. | <img src="https://i.imgur.com/QRFl63b.png"/> |
-| Add a title, a description and tags (if necessary). | <img src="https://i.imgur.com/WQ9Q62Z.png" width="100"/> |
+| Add a title, a description and tags (if necessary). | <img src="https://i.imgur.com/WU9hJ3g.png" width="100"/> |
 | Your pull request will be reviewed by a collaborator shortly | 🎉🎉 |
