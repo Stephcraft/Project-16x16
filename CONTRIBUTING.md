@@ -85,7 +85,35 @@ That's it for the GitHub Desktop setup! Now, you are ready to [open up the code 
 
 ## Source tree
 Download [Source tree](https://www.atlassian.com/software/sourcetree)
-> __**TODO**__ Having problems to connect to GitHub from Source tree
+
+> **Warning** [Two-factor authentication](https://help.github.com/en/github/authenticating-to-github/configuring-two-factor-authentication) is required for your GitHub account to continue...
+
+| Step | Screenshot |
+| --- | --- |
+| You need to create a Bitbucket Cloud account<br> to use Source tree. But you have the option<br> to connect with Google or Microsoft. | <img src="https://i.imgur.com/E04JvOd.png" width="200"/> |
+| Follow the installation wizard | <img src="https://i.imgur.com/M4Mdty9.png" width="300"/> |
+| Uncheck Mercurial, we only need git. | <img src="https://i.imgur.com/Cr7j4h2.png" width="300"/> |
+| Click on **Add an account...** | <img src="https://i.imgur.com/orYhkNZ.png" width="300"/> |
+| Set the hosting service to **GitHub**,<br> set the Preferred Protocol to **HTTPS**,<br> set Authentication to **OAuth**,<br> and click on **Refresh OAuth Token** | <img src="https://i.imgur.com/5Gwd4nE.png"  width="300"/> |
+| Link your GitHub account to Source tree | <img src="https://i.imgur.com/8TIrysz.png"  width="100"/> |
+| Select Project-16x16 and click on **Clone** | <img src="https://i.imgur.com/ANmdJ4x.png" width="300"/> |
+| Navigate to where you want to clone the project<br> and **Clone** | <img src="https://i.imgur.com/NISlqY3.png" width="300"/> |
+
+### Refresh
+Every now and then, it is a good practice to sync your local version to the cloud version `origin`. This is particularly useful to stay up to date and avoid merge conflicts:  
+  
+<img src="https://i.imgur.com/mQBwjb5.png" width="50"/>
+
+### Save your contribution
+It is recommended to create a commit every time you complete a task:
+
+| Step | Screenshot |
+| --- | --- |
+| Add the files you modified to the staged files<br> by clicking on the plus. Only staged files will<br> be included in the commit. | <img src="https://i.imgur.com/cklbKBi.png" width="25"/> |
+| Write a description and **commit**.<br> This will create a commit in history on your<br> local computer. | <img src="https://i.imgur.com/8ywlZQf.png" width="200"/> |
+| To update your commit to your fork, simply<br> press on **Push** | <img src="https://i.imgur.com/5DqCEXY.png" width="50"/> |
+
+That's it for the Source tree setup! Now, you are ready to [open up the code editor](wiki). Don't forget to come back to this file when you are ready to know about [the Process of Making Changes](#the-process-of-making-changes).
 
 ## The Process of Making Changes
 ### Issues
@@ -96,8 +124,8 @@ A pull request is the final step to contribute something. A request should be ma
 
 | Step | Screenshot |
 | --- | --- |
-| Go to the project 16x16 GitHub repository and click on Pull requests | <img src="https://i.imgur.com/YMSuIvf.png" width="100"/> |
+| Go to the [project 16x16 GitHub repository](https://github.com/Stephcraft/Project-16x16) and click on Pull requests | <img src="https://i.imgur.com/YMSuIvf.png" width="100"/> |
 | Click on the big green Pull request button | <img src="https://i.imgur.com/0taUoAY.png" width="100"/> |
-| Click on **compare across forks**. The Head repository should be your fork, and the Base should be `Stephcraft/Project 16x16`. Be sure to choose the right repository and the correct branch which is usually `master`. | <img src="https://i.imgur.com/QRFl63b.png"/> |
+| Click on **compare across forks**. The Head repository should be your fork, and the Base should be `Stephcraft/Project-16x16`. Be sure to choose the right repository and the correct branch which is usually `master`. | <img src="https://i.imgur.com/QRFl63b.png"/> |
 | Add a title, a description and tags (if necessary). | <img src="https://i.imgur.com/WU9hJ3g.png" width="100"/> |
 | Your pull request will be reviewed by a collaborator shortly | 🎉🎉 |
