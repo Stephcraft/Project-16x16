@@ -31,11 +31,12 @@ public class ParticleAnimationController implements ParticleEventListener {
 	
 	/**
 	 * Add animation to particle
-	 *
-	 * @param animationName animation ArrayList
-	 * @param rate 			animation speed, high value = slow speed, -1 = match life span of particle
+	 * 
+	 * @param images animation ArrayList
+	 * @param rate   animation speed, high value = slow speed, -1 = match life span
+	 *               of particle
 	 */
-	public ParticleAnimationController(ArrayList<PImage> images, int rate){
+	public ParticleAnimationController(ArrayList<PImage> images, int rate) {
 		this.images = images;
 		this.rate = rate;
 	}

@@ -78,9 +78,11 @@ public class EditorItem extends PClass {
 						default :
 							break;
 					}
-					c.pos.set(realPos);
-					c.focus();
-					gameplayScene.objects.add(c);
+					if (c != null) {
+						c.pos.set(realPos);
+						c.focus();
+						gameplayScene.objects.add(c);
+					}
 				}
 			}
 		}

@@ -224,11 +224,11 @@ public class GameplayScene extends PScene {
 		drawPlayer();
 	}
 	
-	/**
-	 * Call when host/connect buttons pressed.
-	 * @param setHost is this client host?
-	 */
-	public void setupMultiplayer(Multiplayer multiplayer) throws Exception {
+/**
+ * Call when host/connect buttons pressed.
+ * @param multiplayer multiplayer client
+ */
+	public void setupMultiplayer(Multiplayer multiplayer) {
 		this.multiplayer = multiplayer;
 		onlinePlayer = new Player(applet, (GameplayScene) GameScenes.GAME.getScene(), true);
 		isSingleplayer = false;

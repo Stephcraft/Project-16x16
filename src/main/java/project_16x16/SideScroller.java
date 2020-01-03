@@ -3,8 +3,6 @@ package project_16x16;
 import java.awt.event.KeyEvent;
 import java.util.HashSet;
 
-import dm.core.DM;
-
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.input.KeyCombination;
@@ -63,9 +61,6 @@ public class SideScroller extends PApplet {
 																	// via options
 	// Font Resources
 	private static PFont font_pixel;
-
-	// Frame Rate
-	public float deltaTime;
 
 	// Scenes
 	/**
@@ -187,16 +182,11 @@ public class SideScroller extends PApplet {
 		imageMode(CENTER);
 		rectMode(CENTER);
 		strokeCap(SQUARE);
-
-		// Setup DM
-		DM.setup(this); // what is this?
-
+		
 		AnimationComponent.applet = this;
 
 		// Default frameRate
 		frameRate(Options.targetFrameRate);
-
-		deltaTime = 1;
 
 		// Create ArrayList
 		keysDown = new HashSet<Integer>();
@@ -277,14 +267,7 @@ public class SideScroller extends PApplet {
 		drawAboveCamera();
 
 		rectMode(CENTER);
-
-		// Update DeltaTime
-		if (frameRate < Options.targetFrameRate - 20 && frameRate > Options.targetFrameRate + 20) {
-			deltaTime = DM.deltaTime;
-		} else {
-			deltaTime = 1;
-		}
-
+		
 		// Reset Events
 		keyPressEvent = false;
 		keyReleaseEvent = false;
