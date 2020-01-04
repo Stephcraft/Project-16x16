@@ -69,7 +69,6 @@ public final class MainMenu extends PScene {
 		if(pressStart.hover()) {
 			((GameplayScene) GameScenes.GAME.getScene()).setSingleplayer(true);
 			game.swapToScene(GameScenes.GAME);
-			game.debug = SideScroller.debugType.ALL;
 		}
 
 		pressMultiplayer.update();
@@ -78,10 +77,10 @@ public final class MainMenu extends PScene {
 		}
 		
 		pressSettings.update();
-		if(pressSettings.hover()) {
-			
+		if (pressSettings.hover()) {
+			game.swapToScene(GameScenes.SETTINGS_MENU);
 		}
-		
+
 		pressQuit.update();
 		if(pressQuit.hover()) {
 			System.exit(0);

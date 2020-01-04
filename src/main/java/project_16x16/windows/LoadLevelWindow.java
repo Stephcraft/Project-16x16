@@ -3,20 +3,13 @@ package project_16x16.windows;
 import project_16x16.scene.GameplayScene;
 import project_16x16.PClass;
 import project_16x16.SideScroller;
-import project_16x16.Tileset;
 import project_16x16.Util;
 import project_16x16.objects.BackgroundObject;
 import project_16x16.objects.CollidableObject;
-import project_16x16.objects.EditableObject;
-import project_16x16.objects.GameObject;
-import project_16x16.ui.Anchor;
-import project_16x16.ui.Button;
 import project_16x16.ui.List;
-import project_16x16.ui.ScrollBarVertical;
-
+import project_16x16.ui.Notifications;
 import java.io.File;
 import java.io.FileFilter;
-import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -98,6 +91,7 @@ public class LoadLevelWindow extends PClass {
 		}
 		if (list.getConfirmPress() && !list.getElement().isEmpty()) {
 			scene.loadLevel(path + list.getElement());
+			Notifications.addNotification("Level Loaded", "Loaded "+ list.getElement() + ".");
 			list.resetElement();
 			scene.tool = GameplayScene.Tools.MOVE;
 		} else if (list.getConfirmPress() && list.getElement().isEmpty())

@@ -3,8 +3,6 @@ package project_16x16;
 import java.awt.event.KeyEvent;
 import java.util.HashSet;
 
-import dm.core.DM;
-
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.input.KeyCombination;
@@ -26,6 +24,7 @@ import project_16x16.entities.Player;
 import project_16x16.multiplayer.Multiplayer;
 import project_16x16.scene.*;
 import project_16x16.scene.GameplayScene.Tools;
+import project_16x16.ui.Notifications;
 
 /**
  * <h1>SideScroller Class</h1>
@@ -47,12 +46,12 @@ public class SideScroller extends PApplet {
 			return vals[(this.ordinal() + 1) % vals.length];
 		}
 		
-		public static debugType set(int value) {
+		public static debugType get(int value) {
 			return values()[value];
 		}
 	}
 
-	public debugType debug = debugType.set(Options.debugMode);
+	public debugType debug = debugType.get(Options.debugMode);
 
 	public static final boolean SNAP = true; // snap objects to grid when moving; located here for ease of access
 	public static int snapSize;
@@ -63,9 +62,6 @@ public class SideScroller extends PApplet {
 																	// via options
 	// Font Resources
 	private static PFont font_pixel;
-
-	// Frame Rate
-	public float deltaTime;
 
 	// Scenes
 	/**
@@ -188,16 +184,11 @@ public class SideScroller extends PApplet {
 		imageMode(CENTER);
 		rectMode(CENTER);
 		strokeCap(SQUARE);
-
-		// Setup DM
-		DM.setup(this); // what is this?
-
+		
 		AnimationComponent.applet = this;
 
 		// Default frameRate
 		frameRate(Options.targetFrameRate);
-
-		deltaTime = 1;
 
 		// Create ArrayList
 		keysDown = new HashSet<Integer>();
@@ -223,6 +214,8 @@ public class SideScroller extends PApplet {
 
 		scaleResolution();
 		launchIntoMultiplayer();
+		
+		Notifications.assignApplet(this);
 	}
 	
 	/**
@@ -230,6 +223,7 @@ public class SideScroller extends PApplet {
 	 */
 	private void load() {
 		Tileset.load(this);
+		surface.setIcon(Tileset.getAnimation("PLAYER::IDLE").get(0));
 		font_pixel = loadFont("Font/font-pixel-48.vlw"); // Load Font
 		textFont(font_pixel); // SideScrollerly Text Font
 	}
@@ -278,14 +272,7 @@ public class SideScroller extends PApplet {
 		drawAboveCamera();
 
 		rectMode(CENTER);
-
-		// Update DeltaTime
-		if (frameRate < Options.targetFrameRate - 20 && frameRate > Options.targetFrameRate + 20) {
-			deltaTime = DM.deltaTime;
-		} else {
-			deltaTime = 1;
-		}
-
+		
 		// Reset Events
 		keyPressEvent = false;
 		keyReleaseEvent = false;
@@ -319,6 +306,7 @@ public class SideScroller extends PApplet {
 	 */
 	private void drawAboveCamera() {
 		currentScene.getScene().drawUI();
+		Notifications.run();
 		if (debug == debugType.ALL) {
 			camera.post();
 			displayDebugInfo();
@@ -369,6 +357,7 @@ public class SideScroller extends PApplet {
 				camera.setZoomScale(1.0f); // for development
 				break;
 			case KeyEvent.VK_G :
+				Notifications.addNotification("Hello", "World");
 				camera.shake(0.4f); // for development
 				break;
 			case KeyEvent.VK_P :

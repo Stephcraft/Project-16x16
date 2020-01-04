@@ -5,6 +5,7 @@ import project_16x16.SideScroller;
 import project_16x16.SideScroller.GameScenes;
 import project_16x16.multiplayer.Multiplayer;
 import project_16x16.ui.Button;
+import project_16x16.ui.Notifications;
 import project_16x16.ui.TextInputField;
 
 
@@ -19,9 +20,6 @@ public class MultiplayerHostMenu extends PScene {
     private SideScroller game;
     
     private static final Pattern p;
-    
-    private static final String IP = "127.0.0.1"; // TODO hardcoded
-    private static final int port = 25565; // TODO hardcoded
     
 	static {
 		p = Pattern.compile("^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\\.)"
@@ -59,6 +57,7 @@ public class MultiplayerHostMenu extends PScene {
     @Override
     public void drawUI() {
         background(29, 33, 45);
+        ipInput.update();
         ipInput.display();
         pressMenu.manDisplay();
         pressHost.manDisplay();
@@ -71,16 +70,19 @@ public class MultiplayerHostMenu extends PScene {
 			game.swapToScene(GameScenes.MAIN_MENU);
 		}
 
-		ipInput.update();
-		// p.matcher(ipInput.getText()).matches()
 		if (pressHost.hover()) {
-			// String[] ip = ipInput.getText().split(":");
-			try {
-				Multiplayer m = new Multiplayer(game, IP, port, true);
-				((GameplayScene) GameScenes.GAME.getScene()).setupMultiplayer(m);
-				game.swapToScene(GameScenes.GAME);
-			} catch (Exception e) {
-				// TODO UI MESSAGE
+			if (p.matcher(ipInput.getText()).matches()) {
+				String ip = ipInput.getText().split(":")[0]; // TODO does host need to give IP?
+				int port = Integer.valueOf(ipInput.getText().split(":")[1]);
+				try {
+					Multiplayer m = new Multiplayer(game, ip, port, true);
+					((GameplayScene) GameScenes.GAME.getScene()).setupMultiplayer(m);
+					game.swapToScene(GameScenes.GAME);
+				} catch (Exception e) {
+					Notifications.addNotification("ERROR", "todo"); // TODO
+				}
+			} else {
+				Notifications.addNotification("Invalid IP", "Include IP and port, eg:\n127.0.0.1:8080");
 			}
 		}
 	}

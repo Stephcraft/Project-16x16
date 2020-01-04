@@ -36,12 +36,12 @@ public class GameObject extends EditableObject {
 
 	public void delete() {
 	}
-
+	
 	/**
-	 * Return the animation of a given tile
-	 *
-	 * @param the name of a tile @ return animation of given tile
-	 **/
+	 * 
+	 * @param name the name of a tile
+	 * @return the animation of a given tile
+	 */
 	protected ArrayList<PImage> getAnimation(String name) {
 		return Tileset.getAnimation(name);
 	}

@@ -49,7 +49,7 @@ public class EditorItem extends PClass {
 			if (applet.mouseReleaseEvent) {
 				focus = false;
 
-				if (mode == "CREATE") {
+				if (mode.equals("CREATE")) {
 					// transform from screen mouse pos to game pos
 					// Create new instance from dragged icon
 
@@ -78,9 +78,11 @@ public class EditorItem extends PClass {
 						default :
 							break;
 					}
-					c.pos.set(realPos);
-					c.focus();
-					gameplayScene.objects.add(c);
+					if (c != null) {
+						c.pos.set(realPos);
+						c.focus();
+						gameplayScene.objects.add(c);
+					}
 				}
 			}
 		}

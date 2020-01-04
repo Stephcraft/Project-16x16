@@ -59,7 +59,7 @@ public class AnimationComponent {
 		PImage frame = frames.get((int) currentFrame);
 
 		if ((applet.frameCount - firstFrame) % rate == 0) {
-			currentFrame += applet.deltaTime;
+			currentFrame++;
 			if (currentFrame > length) {
 				if (!loop) {
 					ended = true;

@@ -12,7 +12,7 @@ import project_16x16.Util;
  */
 public class ScrollBarHorizontal extends PClass {
 
-public float barLocation = 0f; // between 0-1
+	private float barLocation = 0f; // between 0-1
 	
 	protected Anchor container;
 	protected Anchor barAnchor;
@@ -65,7 +65,7 @@ public float barLocation = 0f; // between 0-1
 	}
 	
 	public void mouseWheel(MouseEvent event) {
-		barLocation += event.getCount() * 0.1;
+		barLocation += event.getCount() * 0.1f;
 		barLocation = Util.clamp(barLocation, 0, 1);
 	}
 }

@@ -114,9 +114,6 @@ public final class Player extends EditableObject {
 	/**
 	 * The display method controls how to display the character to the screen with
 	 * what animation.
-	 *
-	 * @param player is this player the local player, or a player representation of
-	 *               a multiplayer client?
 	 */
 	public void display() {
 		// Display Swing Projectiles
@@ -152,7 +149,7 @@ public final class Player extends EditableObject {
 	 * The update method handles updating the character.
 	 */
 	public void update() {
-		velocity.set(0, velocity.y + gravity * applet.deltaTime);
+		velocity.set(0, velocity.y + gravity);
 
 		handleKeyboardInput();
 		handleMouseInput();
@@ -182,6 +179,7 @@ public final class Player extends EditableObject {
 	 * Displays life capacity as long as the character has health.
 	 */
 	public void displayLife() {
+		applet.noStroke();
 		applet.fill(100, 130, 145, 100);
 		applet.rectMode(CORNER);
 		applet.rect(50 - 20, applet.gameResolution.y - 50 - 20, 40 * lifeCapacity, 40);
@@ -212,18 +210,18 @@ public final class Player extends EditableObject {
 				velocity.y -= speedJump;
 				if (state.dashing) {
 					state.dashing = false;
-					velocity.y *= 1.2;
+					velocity.y *= 1.2f;
 				}
 			}
 		}
 
 		if (applet.isKeyDown(Options.moveRightKey)) { // Move Right
-			velocity.x = speedWalk * applet.deltaTime * (state.dashing ? dashMultiplier : 1);
+			velocity.x = speedWalk * (state.dashing ? dashMultiplier : 1);
 			state.facingDir = RIGHT;
 		}
 
 		if (applet.isKeyDown(Options.moveLeftKey)) { // Move Left
-			velocity.x = -speedWalk * applet.deltaTime * (state.dashing ? dashMultiplier : 1);
+			velocity.x = -speedWalk * (state.dashing ? dashMultiplier : 1);
 			state.facingDir = LEFT;
 		}
 	}

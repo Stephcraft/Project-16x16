@@ -170,11 +170,8 @@ public class GameplayScene extends PScene {
 	 * Draw scene elements that are below (affected by) the camera.
 	 */
 	public void draw() {
-		background(29, 33, 45);
-
-		applet.noStroke();
-		applet.fill(29, 33, 45);
-
+		background(23, 26, 36);
+		
 		if (tool == Tools.MODIFY) {
 			displayGrid();
 			if (applet.mousePressEvent && focusedObject != null) {
@@ -183,9 +180,6 @@ public class GameplayScene extends PScene {
 		}
 
 		for (EditableObject o : objects) {
-			if(o instanceof MagicSourceObject){
-				((MagicSourceObject)o).updateEmissionPosition();
-			}
 			if (tool == Tools.MODIFY) {
 				o.updateEdit();
 				o.displayEdit();
@@ -224,11 +218,11 @@ public class GameplayScene extends PScene {
 		drawPlayer();
 	}
 	
-	/**
-	 * Call when host/connect buttons pressed.
-	 * @param setHost is this client host?
-	 */
-	public void setupMultiplayer(Multiplayer multiplayer) throws Exception {
+/**
+ * Call when host/connect buttons pressed.
+ * @param multiplayer multiplayer client
+ */
+	public void setupMultiplayer(Multiplayer multiplayer) {
 		this.multiplayer = multiplayer;
 		onlinePlayer = new Player(applet, (GameplayScene) GameScenes.GAME.getScene(), true);
 		isSingleplayer = false;
@@ -441,14 +435,11 @@ public class GameplayScene extends PScene {
 	 * Display boundaries of all world objects.
 	 */
 	public void debug() {
-		applet.strokeWeight(2);
-		applet.noFill();
-
 		for (EditableObject o : objects) {
 			o.debug();
-			applet.noStroke();
-			applet.fill(255);
-			applet.ellipse(o.pos.x, o.pos.y, 5, 5);
+		}
+		for (ProjectileObject o : projectileObjects) {
+			o.debug();
 		}
 	}
 
@@ -561,7 +552,7 @@ public class GameplayScene extends PScene {
 		final int xOffset = 32; // to align with rectMode(CENTER)
 		final int yOffset = 32; // to align with rectMode(CENTER)
 		final int l = 6400;
-		for (int i = -l; i < l; i += 64) {
+		for (int i = -l; i < l; i += SideScroller.snapSize) {
 			applet.line(-l, i + yOffset, l, i + yOffset); // horizontal
 			applet.line(i + xOffset, -l, i + xOffset, l); // vertical
 		}

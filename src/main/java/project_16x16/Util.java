@@ -1,5 +1,6 @@
 package project_16x16;
 
+import java.awt.Color;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
@@ -24,6 +25,12 @@ public final class Util {
 		applet = a;
 	}
 
+	/**
+	 * 
+	 * @param img
+	 * @return
+	 * @deprecated
+	 */
 	public static PImage pg(PImage img) {
 		return pg(img, 1);
 	}
@@ -133,6 +140,36 @@ public final class Util {
 
 	public static float smoothMove(float pos, float target, float speed) {
 		return pos + (target - pos) * speed;
+	}
+	
+	/**
+	 * Converts (R,G,B) values to integer representation,
+	 * compatible with Processing.
+	 * @param R Red Value [0-255].
+	 * @param G Green Value [0-255].
+	 * @param B Blue Value [0-255].
+	 * @return Color int.
+	 * @see {@link #colorToRGB(int, int, int, float) colorToRGB(int R, int G, int B, float A)}
+	 */
+	public static int colorToRGB(int R, int G, int B) {
+		int out = 255 << 24; // full transparency
+		out += R << 16;
+		out += G << 8;
+		out += B;
+		return out;
+	}
+
+	/**
+	 * Converts (R,G,B,A) values to integer representation,
+	 * compatible with Processing.
+	 * @param R Red Value [0-255].
+	 * @param G Green Value [0-255].
+	 * @param B Blue Value [0-255].
+	 * @param A Alpha (transparency) [0.0-1.0].
+	 * @return Color int.
+	 */
+	public static int colorToRGB(int R, int G, int B, float A) {
+		return new Color(((float) R) / 255, ((float) G) / 255, ((float) B) / 255, A / 255).getRGB();
 	}
 
 	/**

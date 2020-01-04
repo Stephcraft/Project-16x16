@@ -10,8 +10,8 @@ public class Tab extends PClass{
 	private int activeButton;
 	private int prevButton;
 	private int buttonDistance = 0;
-	private int movingIncrement = 0;
-	private double incrementSpeed;
+	private float movingIncrement = 0;
+	private float incrementSpeed;
 	
 	//Basic constructor for tab
 	public Tab(SideScroller a, String[] texts, int tabs) {
@@ -141,8 +141,8 @@ public class Tab extends PClass{
 	}
 	
 	//Set button's moving speed
-	public void setIncrementSpeed(int speed) {
-		incrementSpeed = (int) Math.pow(speed, .62);
+	public void setIncrementSpeed(float speed) {
+		incrementSpeed = (float) Math.pow(speed, .62f);
 	}
 	
 	//Get current active button

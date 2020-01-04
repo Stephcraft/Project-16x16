@@ -121,7 +121,7 @@ public final class Camera extends ZoomPan {
 	 * 
 	 * @param applet       Target applet ({@link SideScroller}).
 	 * @param followObject Object the camera will follow.
-	 * @param offset       Offset with which the camera will follow the given
+	 * @param followOffset Offset with which the camera will follow the given
 	 *                     object.
 	 */
 	public Camera(SideScroller applet, EditableObject followObject, PVector followOffset) {

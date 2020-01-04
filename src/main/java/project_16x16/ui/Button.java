@@ -95,7 +95,7 @@ public class Button extends PClass {
 	}
 
 	private void displayColors() {
-		if (focus) {
+		if (hover()) {
 			applet.stroke(colorValues[2]);
 			applet.fill(colorValues[3]);
 		} else {
@@ -172,9 +172,6 @@ public class Button extends PClass {
 	
 	/**
 	 * Sets the position for the button
-	 * 
-	 * @param _x the new x component
-	 * @param _y the new y component
 	 */
 	public void intW() {
 		width = (int) applet.textWidth(text) + 40;

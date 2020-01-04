@@ -1,16 +1,10 @@
 package project_16x16.multiplayer;
 
 import java.net.ConnectException;
-import java.util.Arrays;
-import java.util.concurrent.ThreadLocalRandom;
-
 import processing.data.JSONObject;
 import processing.net.*;
 
 import project_16x16.SideScroller;
-import project_16x16.SideScroller.GameScenes;
-import project_16x16.entities.Player;
-import project_16x16.scene.GameplayScene;
 
 public class Multiplayer {
 	
