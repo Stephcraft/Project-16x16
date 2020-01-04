@@ -95,7 +95,7 @@ public class Button extends PClass {
 	}
 
 	private void displayColors() {
-		if (focus) {
+		if (hover()) {
 			applet.stroke(colorValues[2]);
 			applet.fill(colorValues[3]);
 		} else {

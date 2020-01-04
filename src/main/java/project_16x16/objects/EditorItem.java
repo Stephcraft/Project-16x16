@@ -49,7 +49,7 @@ public class EditorItem extends PClass {
 			if (applet.mouseReleaseEvent) {
 				focus = false;
 
-				if (mode == "CREATE") {
+				if (mode.equals("CREATE")) {
 					// transform from screen mouse pos to game pos
 					// Create new instance from dragged icon
 

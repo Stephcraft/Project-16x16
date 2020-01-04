@@ -12,6 +12,7 @@ import project_16x16.objects.GameObject;
 import project_16x16.ui.Anchor;
 import project_16x16.ui.Button;
 import project_16x16.ui.List;
+import project_16x16.ui.Notifications;
 import project_16x16.ui.ScrollBarVertical;
 
 import java.io.File;
@@ -98,6 +99,7 @@ public class LoadLevelWindow extends PClass {
 		}
 		if (list.getConfirmPress() && !list.getElement().isEmpty()) {
 			scene.loadLevel(path + list.getElement());
+			Notifications.addNotification("Level Loaded", "Loaded "+ list.getElement() + ".");
 			list.resetElement();
 			scene.tool = GameplayScene.Tools.MOVE;
 		} else if (list.getConfirmPress() && list.getElement().isEmpty())

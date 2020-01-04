@@ -43,6 +43,7 @@ public class MagicSourceObject extends GameObject {
 
 	@Override
 	public void display() {
+		trail.getEmission().setPosition(pos);
 		trail.run();
 	}
 	
@@ -99,8 +100,5 @@ public class MagicSourceObject extends GameObject {
 			angle += PApplet.radians(PApplet.radians(11));
 			scale -= Math.random() * 0.03;
 		}
-	}
-	public void updateEmissionPosition(){
-		trail.getEmission().setPosition(pos);
 	}
 }

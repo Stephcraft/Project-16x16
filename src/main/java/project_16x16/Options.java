@@ -1,14 +1,20 @@
 package project_16x16;
 
+import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
+
+import project_16x16.ui.Notifications;
 
 /**
  * Handle loading/saving of player settings (game options)
  */
 public class Options {
-	
+
 	private static final Preferences options = Preferences.userNodeForPackage(Options.class);
-	
+
+	/**
+	 * Define the option as an enum, then create the variable.
+	 */
 	public static enum option {
 		moveLeftKey, moveRightKey, jumpKey, dashKey, targetFPS, snapSize, debugMode;
 	}
@@ -20,9 +26,14 @@ public class Options {
 	public static int targetFrameRate = options.getInt(option.targetFPS.toString(), 60);
 	public static int snapSize = options.getInt(option.snapSize.toString(), 32);
 	public static int debugMode = options.getInt(option.debugMode.toString(), 0); // 0 = OFF
-		
+
 	public static void save(option option, int value) {
 		options.putInt(option.toString(), value);
+		try {
+			options.flush();
+		} catch (BackingStoreException e) {
+			Notifications.addNotification("Options Error", "Could not flush user preferences to registry.");
+		}
 	}
-	
+
 }

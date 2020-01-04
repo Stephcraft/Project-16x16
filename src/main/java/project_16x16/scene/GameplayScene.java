@@ -170,11 +170,8 @@ public class GameplayScene extends PScene {
 	 * Draw scene elements that are below (affected by) the camera.
 	 */
 	public void draw() {
-		background(29, 33, 45);
-
-		applet.noStroke();
-		applet.fill(29, 33, 45);
-
+		background(23, 26, 36);
+		
 		if (tool == Tools.MODIFY) {
 			displayGrid();
 			if (applet.mousePressEvent && focusedObject != null) {
@@ -183,9 +180,6 @@ public class GameplayScene extends PScene {
 		}
 
 		for (EditableObject o : objects) {
-			if(o instanceof MagicSourceObject){
-				((MagicSourceObject)o).updateEmissionPosition();
-			}
 			if (tool == Tools.MODIFY) {
 				o.updateEdit();
 				o.displayEdit();

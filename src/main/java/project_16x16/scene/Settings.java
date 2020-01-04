@@ -3,6 +3,7 @@ package project_16x16.scene;
 import processing.event.MouseEvent;
 import project_16x16.SideScroller;
 import project_16x16.ui.Button;
+import project_16x16.ui.Notifications;
 import project_16x16.ui.NumberInputField;
 
 /**
@@ -100,6 +101,7 @@ public class Settings extends PScene {
 		}
 		if (apply.hover()) {
 			game.resizeWindow(windowSizeX.getValue(), 720); // TODO change
+			Notifications.addNotification("Options Applied", "Your configuration has been successfully applied.");
 			return;
 		}
 	}

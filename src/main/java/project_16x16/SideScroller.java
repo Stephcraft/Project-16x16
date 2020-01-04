@@ -24,6 +24,7 @@ import project_16x16.entities.Player;
 import project_16x16.multiplayer.Multiplayer;
 import project_16x16.scene.*;
 import project_16x16.scene.GameplayScene.Tools;
+import project_16x16.ui.Notifications;
 
 /**
  * <h1>SideScroller Class</h1>
@@ -212,6 +213,8 @@ public class SideScroller extends PApplet {
 
 		scaleResolution();
 		launchIntoMultiplayer();
+		
+		Notifications.assignApplet(this);
 	}
 	
 	/**
@@ -219,6 +222,7 @@ public class SideScroller extends PApplet {
 	 */
 	private void load() {
 		Tileset.load(this);
+		surface.setIcon(Tileset.getAnimation("PLAYER::IDLE").get(0));
 		font_pixel = loadFont("Font/font-pixel-48.vlw"); // Load Font
 		textFont(font_pixel); // SideScrollerly Text Font
 	}
@@ -301,6 +305,7 @@ public class SideScroller extends PApplet {
 	 */
 	private void drawAboveCamera() {
 		currentScene.getScene().drawUI();
+		Notifications.run();
 		if (debug == debugType.ALL) {
 			camera.post();
 			displayDebugInfo();
@@ -351,6 +356,7 @@ public class SideScroller extends PApplet {
 				camera.setZoomScale(1.0f); // for development
 				break;
 			case KeyEvent.VK_G :
+				Notifications.addNotification("Hello", "World");
 				camera.shake(0.4f); // for development
 				break;
 			case KeyEvent.VK_P :
