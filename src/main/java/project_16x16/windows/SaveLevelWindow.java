@@ -3,10 +3,8 @@ package project_16x16.windows;
 import project_16x16.scene.GameplayScene;
 import project_16x16.PClass;
 import project_16x16.SideScroller;
-import project_16x16.Util;
 import project_16x16.ui.TextInputField;
 import project_16x16.ui.Button;
-import project_16x16.ui.Tab;
 
 public class SaveLevelWindow extends PClass {
 

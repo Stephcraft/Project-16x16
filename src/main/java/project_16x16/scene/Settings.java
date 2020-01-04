@@ -7,7 +7,7 @@ import project_16x16.ui.Notifications;
 import project_16x16.ui.NumberInputField;
 
 /**
- * WIP
+ * WIP - the settings menu
  * @author micycle1
  *
  */

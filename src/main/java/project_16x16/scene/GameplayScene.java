@@ -435,14 +435,11 @@ public class GameplayScene extends PScene {
 	 * Display boundaries of all world objects.
 	 */
 	public void debug() {
-		applet.strokeWeight(2);
-		applet.noFill();
-
 		for (EditableObject o : objects) {
 			o.debug();
-			applet.noStroke();
-			applet.fill(255);
-			applet.ellipse(o.pos.x, o.pos.y, 5, 5);
+		}
+		for (ProjectileObject o : projectileObjects) {
+			o.debug();
 		}
 	}
 

@@ -2,19 +2,20 @@ package project_16x16.projectiles;
 
 import java.util.ArrayList;
 
+import processing.core.PApplet;
+import processing.core.PImage;
+import processing.core.PVector;
+
+import project_16x16.SideScroller;
+import project_16x16.Tileset;
+import project_16x16.Util;
 import project_16x16.ParticleSystem.ParticleSystem;
 import project_16x16.ParticleSystem.emissions.AreaEmission;
 import project_16x16.ParticleSystem.events.ParticleAnimationController;
 import project_16x16.ParticleSystem.events.ParticleNoLoopController;
 import project_16x16.objects.CollidableObject;
 import project_16x16.objects.EditableObject;
-import processing.core.PApplet;
-import processing.core.PImage;
-import processing.core.PVector;
 import project_16x16.scene.GameplayScene;
-import project_16x16.SideScroller;
-import project_16x16.Tileset;
-import project_16x16.Util;
 
 public class MagicProjectile extends ProjectileObject {
 
@@ -50,9 +51,15 @@ public class MagicProjectile extends ProjectileObject {
 		explode.addEventListener(new ParticleAnimationController(particleAnimation, -1));
 		explode.addEventListener(new ParticleNoLoopController(10));
 	}
-
-	public void display() {
-		//debugMode();
+	
+	@Override
+	public void debug() {
+		applet.stroke(255,0,0);
+		applet.noFill();
+		if (direction == LEFT || direction == RIGHT)
+			applet.rect(pos.x, pos.y, width, height);
+		else
+			applet.rect(pos.x, pos.y, height, width);
 	}
 
 	public void update() {	
@@ -98,24 +105,12 @@ public class MagicProjectile extends ProjectileObject {
 		hit = true;
 		trail.spawn = false;
 	}
-
-	public void debugMode() {
-		applet.stroke(255,0,0);
-		applet.noFill();
-		if(direction == LEFT || direction == RIGHT)applet.rect(pos.x, pos.y, width, height);
-		else applet.rect(pos.x, pos.y, height, width);
-	}
 	
 	private void setParticleAnimation(SideScroller a) {
 		particleAnimation = new ArrayList<PImage>();
 		PImage image = Tileset.getTile("MAGIC_SOURCE");
-		float scale = 0.12f;
-		float angle = PApplet.radians(11);
-		while(scale > 0.025f) {
-			particleAnimation.add(Util.pg(Util.resizeImage(Util.rotateImage(image.copy(), angle), scale),4));
-			angle += PApplet.radians(PApplet.radians(11));
-			scale -= Math.random() * 0.03;
-		}
+		float angle = PApplet.radians((float) (Math.random() * 360));
+		particleAnimation.add(Util.resizeImage(Util.rotateImage(image.copy(), angle), 0.25f));
 	}
 
 }

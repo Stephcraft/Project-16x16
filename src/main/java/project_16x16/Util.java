@@ -25,6 +25,12 @@ public final class Util {
 		applet = a;
 	}
 
+	/**
+	 * 
+	 * @param img
+	 * @return
+	 * @deprecated
+	 */
 	public static PImage pg(PImage img) {
 		return pg(img, 1);
 	}

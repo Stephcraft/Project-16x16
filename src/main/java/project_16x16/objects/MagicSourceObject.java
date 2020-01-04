@@ -93,10 +93,10 @@ public class MagicSourceObject extends GameObject {
 	private void setParticleAnimation(SideScroller a) {
 		particleAnimation = new ArrayList<PImage>();
 		PImage image = Tileset.getTile("MAGIC_SOURCE");
-		float scale = 0.12f;
+		float scale = 0.4f;
 		float angle = PApplet.radians(11);
 		while(scale > 0.025f) {
-			particleAnimation.add(Util.pg(Util.resizeImage(Util.rotateImage(image.copy(), angle), scale),4));
+			particleAnimation.add(Util.resizeImage(Util.rotateImage(image.copy(), angle), scale));
 			angle += PApplet.radians(PApplet.radians(11));
 			scale -= Math.random() * 0.03;
 		}

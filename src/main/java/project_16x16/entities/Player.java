@@ -179,6 +179,7 @@ public final class Player extends EditableObject {
 	 * Displays life capacity as long as the character has health.
 	 */
 	public void displayLife() {
+		applet.noStroke();
 		applet.fill(100, 130, 145, 100);
 		applet.rectMode(CORNER);
 		applet.rect(50 - 20, applet.gameResolution.y - 50 - 20, 40 * lifeCapacity, 40);

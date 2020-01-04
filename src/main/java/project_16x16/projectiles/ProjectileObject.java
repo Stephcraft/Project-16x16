@@ -9,7 +9,6 @@ import processing.core.PImage;
 import processing.core.PVector;
 import processing.data.JSONObject;
 import project_16x16.scene.GameplayScene;
-import project_16x16.PClass;
 import project_16x16.SideScroller;
 import project_16x16.Tileset;
 
