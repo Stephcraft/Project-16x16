@@ -46,12 +46,12 @@ public class SideScroller extends PApplet {
 			return vals[(this.ordinal() + 1) % vals.length];
 		}
 		
-		public static debugType set(int value) {
+		public static debugType get(int value) {
 			return values()[value];
 		}
 	}
 
-	public debugType debug = debugType.set(Options.debugMode);
+	public debugType debug = debugType.get(Options.debugMode);
 
 	public static final boolean SNAP = true; // snap objects to grid when moving; located here for ease of access
 	public static int snapSize;

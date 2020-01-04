@@ -40,12 +40,8 @@ public class BackgroundObject extends EditableObject {
 		if (width / 4 % 2 != 0) {
 			pixelOffsetX = 2;
 		}
-
+		
 		applet.image(image, pos.x + pixelOffsetX, pos.y + pixelOffsetY, width, height);
-	}
-
-	public void update() {
-
 	}
 
 	public void setGraphic(String name) {

@@ -60,31 +60,19 @@ public abstract class EditableObject extends PClass {
 	 * (focused) in MODIFY mode.
 	 */
 	public void displayEdit() {
-		// When Focused
-		if (focus) {
-
-			// Setup Style
-			applet.strokeWeight(3);
-
-			// 16x16 support
-			applet.noFill();
-			applet.stroke(255, 100);
-			applet.rect(pos.x, pos.y, 64, 64);
-
-			// Main Border
+		if (focus) { // focus = held by player
+			// draw border around object
+			applet.strokeWeight(10);
 			applet.noFill();
 			applet.stroke(0, 255, 200);
 			applet.rect(pos.x, pos.y, width, height);
-
-			// Setup Style
-			applet.strokeWeight(4);
-
-			if (child) {
-				return;
-			}
+			applet.strokeWeight(4); // reset style
 		}
 	}
 
+	/**
+	 * Called during modify mode when mouse pressed
+	 */
 	public void updateEdit() {
 		if (child) {
 			return;
@@ -103,9 +91,7 @@ public abstract class EditableObject extends PClass {
 					gameScene.focusedObject = this;
 				}
 			} else {
-				if (focus
-//						&& !mouseHoverX() && !mouseHoverY()
-				) { // Focus Disable
+				if (focus) { // Focus Disable
 					gameScene.focusedObject = null;
 					focus = false;
 				}

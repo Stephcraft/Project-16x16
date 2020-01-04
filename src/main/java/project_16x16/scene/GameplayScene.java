@@ -555,7 +555,7 @@ public class GameplayScene extends PScene {
 		final int xOffset = 32; // to align with rectMode(CENTER)
 		final int yOffset = 32; // to align with rectMode(CENTER)
 		final int l = 6400;
-		for (int i = -l; i < l; i += 64) {
+		for (int i = -l; i < l; i += SideScroller.snapSize) {
 			applet.line(-l, i + yOffset, l, i + yOffset); // horizontal
 			applet.line(i + xOffset, -l, i + xOffset, l); // vertical
 		}
