@@ -17,7 +17,8 @@ import processing.core.PVector;
 
 import processing.event.MouseEvent;
 import processing.javafx.PSurfaceFX;
-
+import project_16x16.Audio.BGM;
+import project_16x16.Audio.SFX;
 import project_16x16.Options.option;
 import project_16x16.components.AnimationComponent;
 import project_16x16.entities.Player;
@@ -159,6 +160,7 @@ public class SideScroller extends PApplet {
 	 */
 	private void closeWindowEvent(WindowEvent event) {
 		try {
+			Audio.exit();
 			game.exit();
 		} finally {
 			stage.close();
@@ -195,6 +197,8 @@ public class SideScroller extends PApplet {
 
 		// Main Load
 		load();
+		Notifications.assignApplet(this);
+		Audio.assignApplet(this);
 
 		// Create scene
 		game = new GameplayScene(this);
@@ -214,8 +218,6 @@ public class SideScroller extends PApplet {
 
 		scaleResolution();
 		launchIntoMultiplayer();
-		
-		Notifications.assignApplet(this);
 	}
 	
 	/**
@@ -379,7 +381,12 @@ public class SideScroller extends PApplet {
 				loop();
 				break;
 			case ESC : // Pause
-				swapToScene(currentScene == GameScenes.PAUSE_MENU ? GameScenes.GAME : GameScenes.PAUSE_MENU); // TODO interfering with settings menu?
+				if (currentScene == GameScenes.GAME) {
+					swapToScene(GameScenes.PAUSE_MENU);
+				}
+				if (currentScene == GameScenes.PAUSE_MENU) {
+					swapToScene(GameScenes.GAME);
+				}
 				break;
 			case TAB :
 				debug = debug.next();
