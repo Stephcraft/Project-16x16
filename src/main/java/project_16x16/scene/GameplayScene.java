@@ -15,11 +15,12 @@ import processing.data.JSONObject;
 import processing.event.MouseEvent;
 
 import project_16x16.projectiles.ProjectileObject;
-
+import project_16x16.Audio;
 import project_16x16.SideScroller;
 import project_16x16.Tileset;
 import project_16x16.Tileset.tileType;
 import project_16x16.Util;
+import project_16x16.Audio.BGM;
 import project_16x16.SideScroller.GameScenes;
 import project_16x16.ui.Anchor;
 import project_16x16.ui.ScrollBarVertical;
@@ -67,7 +68,7 @@ public class GameplayScene extends PScene {
 	// Tabs
 	private Tab windowTabs;
 	// Each button id corresponds with its string id: ex) load = 0, save = 1, etc.
-	String tabTexts[] = new String[] { "load", "save", "long name" };
+	String[] tabTexts = new String[] { "load", "save"};
 
 	// Editor Item
 	private EditorItem editorItem;
@@ -163,9 +164,15 @@ public class GameplayScene extends PScene {
 
 		loadLevel(SideScroller.LEVEL); // TODO change level
 
-		windowTabs = new Tab(applet, tabTexts, 3);
+		windowTabs = new Tab(applet, tabTexts, tabTexts.length);
 	}
 
+	@Override
+	public void switchTo() {
+		super.switchTo();
+		Audio.play(BGM.DEFAULT);
+	}
+	
 	/**
 	 * Draw scene elements that are below (affected by) the camera.
 	 */
@@ -385,10 +392,7 @@ public class GameplayScene extends PScene {
 				if (windowTabs.getButton(0).event()) {
 					windowTabs.moveActive(0);
 					tool = Tools.LOADEXAMPLE;
-				} else if (windowTabs.getButton(2).event()) {
-					windowTabs.moveActive(2);
-					tool = Tools.TEST;
-				}
+				} 
 				break;
 			case LOADEXAMPLE :
 				if (windowTabs.getActiveButton() != 0) {
@@ -401,15 +405,9 @@ public class GameplayScene extends PScene {
 				if (windowTabs.getButton(1).event()) {
 					windowTabs.moveActive(1);
 					tool = Tools.SAVE;
-				} else if (windowTabs.getButton(2).event()) {
-					windowTabs.moveActive(2);
-					tool = Tools.TEST;
 				}
 				break;
 			case TEST :
-				if (windowTabs.getActiveButton() != 2) {
-					windowTabs.moveActive(2);
-				}
 				window_test.privacyDisplay();
 				windowTabs.update();
 				windowTabs.display();
