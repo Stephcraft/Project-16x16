@@ -67,8 +67,9 @@ public class MagicProjectile extends ProjectileObject {
 		if (hit)
 			explode.run();
 		else {
+			System.out.println(speed);
 			moveProjectile();
-			destroyProjectile();
+			//destroyProjectile();
 		}
 	}
 	

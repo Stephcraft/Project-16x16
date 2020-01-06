@@ -21,8 +21,8 @@ public class Settings extends PScene {
 	private final int SOUND_Y_OFFSET =  50;
 	private final int CONTROL_Y_OFFSET =  90;
 	private final int WINDOWSIZE_Y_OFFSET = 130;
-	private final int QUIT_Y_OFFSET = 280;
-	private final int APPLY_Y_OFFSET = 320;
+	private final int QUIT_Y_OFFSET = 320;
+	private final int APPLY_Y_OFFSET = 280;
 	// Text Display
 	
 	private Button quit;
@@ -84,6 +84,7 @@ public class Settings extends PScene {
 		OptionText(dynamicPadding("Aspect Ratio -", 20), -WINDOW_X_POS / 2 + 50, -WINDOW_Y_POS / 2 + 70);
 		OptionText(dynamicPadding("Display Mode -", 20), -WINDOW_X_POS / 2 + 50, -WINDOW_Y_POS / 2 + 90);
 
+		
 		windowSizeX.update();
 		windowSizeX.display();
 	}
@@ -101,7 +102,7 @@ public class Settings extends PScene {
 			return;
 		}
 		if (apply.hover()) {
-			game.resizeWindow(windowSizeX.getValue(), 720); // TODO change
+			//game.resizeWindow(windowSizeX.getValue(), 720); // TODO change
 			Notifications.addNotification("Options Applied", "Your configuration has been successfully applied.");
 			return;
 		}

@@ -57,8 +57,9 @@ public class MirrorBoxObject extends GameObject {
 	}
 
 	public void update() {
-		if (rotating) 
-	      image = animation.animate();
+		if (rotating) {
+			image = animation.animate();
+		}
 		collision.pos = pos;
 
 		// Change Mirror Box Axis
@@ -68,11 +69,8 @@ public class MirrorBoxObject extends GameObject {
 			if (collidesWithSwing(swing)) {
 				if (!swing.activated) {
 					rotating = true;
-
-
-					// Setup Animation					
+					// Setup Animation
 					animation.changeAnimation(Tileset.getAnimation("MIRROR_BOX::ROTATE"), false, 1);
-
 					swing.activated = true;
 				}
 			}
@@ -81,22 +79,21 @@ public class MirrorBoxObject extends GameObject {
 		// Reflect Magic Projectile
 		for (int i = 0; i < gameScene.projectileObjects.size(); i++) {
 			ProjectileObject projectile = gameScene.projectileObjects.get(i);
-
 			activated = false;
 			if (projectile.id.equals("MAGIC")) {
 				if (collidesWithProjectile(projectile) && !projectile.hit) {
 					activated = true;
 					projectileDirection(projectile);
 				}
-				activateMirrorBox();
+				activateMirrorBox(!projectile.hit);
 			}
 		}
 		setMirrorDirection();
 	}
 
-	public void activateMirrorBox() {
+	public void activateMirrorBox(boolean checkHit) {
 		if (!rotating) {
-			if (activated) {
+			if (activated && checkHit) {
 				image = Tileset.getTile("MIRROR_BOX_HIT");
 			} else {
 				image = Tileset.getTile("MIRROR_BOX");
@@ -109,6 +106,7 @@ public class MirrorBoxObject extends GameObject {
 			image = Tileset.getTile("MIRROR_BOX");
 			rotating = false;
 			direction = (direction + 1) % 4;// Allow rotation with the use of modulus
+			animation.ended = false;
 		}
 	}
 
@@ -162,8 +160,9 @@ public class MirrorBoxObject extends GameObject {
 		applet.image(image, 0, 0);
 		applet.popMatrix();
 	}
+
 	public void bounceProjectile(ProjectileObject projectile, int flyDir, int deflectDir, char axisSwitch) {
-		//Deflect the projectile based on how it hitting the mirror
+		// Deflect the projectile based on how it hitting the mirror
 		if (projectile.direction == flyDir) {
 			projectile.prevDirection = projectile.direction;
 			projectile.direction = deflectDir;
