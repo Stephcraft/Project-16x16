@@ -1,5 +1,4 @@
 package project_16x16.scene;
-
 import processing.event.MouseEvent;
 import project_16x16.SideScroller;
 import project_16x16.Audio;
