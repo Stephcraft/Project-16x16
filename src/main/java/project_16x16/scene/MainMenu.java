@@ -10,48 +10,53 @@ import project_16x16.ui.Button;
 
 /**
  * TODO The main menu will be scene
+ * 
  * @author micycle1
  *
  */
 public final class MainMenu extends PScene {
 
+	private int currentFrame;
+
 	public Button pressStart;
 	public Button pressQuit;
 	public Button pressSettings; // TODO add settings menu
 	public Button pressMultiplayer;
-	
+
 	private SideScroller game;
-	
+
 	public MainMenu(SideScroller a) {
-		super(a);		
+		super(a);
 		game = a;
-		
+
+		currentFrame = 0;
+
 		pressStart = new Button(a);
 		pressMultiplayer = new Button(a);
 		pressQuit = new Button(a);
 		pressSettings = new Button(a);
-		
+
 		pressStart.setText("Start Game");
-		pressStart.setPosition(applet.width/2, applet.height/2-240);
+		pressStart.setPosition(applet.width / 2, applet.height / 2 - 240);
 		pressStart.setSize(300, 100);
 		pressStart.setTextSize(40);
 
 		pressMultiplayer.setText("Multiplayer");
-		pressMultiplayer.setPosition(applet.width/2, applet.height/2-80);
+		pressMultiplayer.setPosition(applet.width / 2, applet.height / 2 - 80);
 		pressMultiplayer.setSize(300, 100);
 		pressMultiplayer.setTextSize(40);
-		
+
 		pressSettings.setText("Settings");
-		pressSettings.setPosition(applet.width/2, applet.height/2+80);
+		pressSettings.setPosition(applet.width / 2, applet.height / 2 + 80);
 		pressSettings.setSize(300, 100);
 		pressSettings.setTextSize(40);
-		
+
 		pressQuit.setText("Quit Game");
-		pressQuit.setPosition(applet.width/2, applet.height/2 + 240);
+		pressQuit.setPosition(applet.width / 2, applet.height / 2 + 240);
 		pressQuit.setSize(300, 100);
 		pressQuit.setTextSize(40);
 	}
-	
+
 	@Override
 	public void switchTo() {
 		super.switchTo();
@@ -66,10 +71,10 @@ public final class MainMenu extends PScene {
 		pressSettings.manDisplay();
 		pressQuit.manDisplay();
 	}
-	
+
 	private void update() {
 		pressStart.update();
-		if(pressStart.hover()) {
+		if (pressStart.hover()) {
 			((GameplayScene) GameScenes.GAME.getScene()).setSingleplayer(true);
 			game.swapToScene(GameScenes.GAME);
 		}
@@ -78,20 +83,20 @@ public final class MainMenu extends PScene {
 		if (pressMultiplayer.hover()) {
 			game.swapToScene(GameScenes.MULTIPLAYER_MENU);
 		}
-		
+
 		pressSettings.update();
 		if (pressSettings.hover()) {
 			game.swapToScene(GameScenes.SETTINGS_MENU);
 		}
 
 		pressQuit.update();
-		if(pressQuit.hover()) {
+		if (pressQuit.hover()) {
 			System.exit(0);
 		}
 	}
-	
-    @Override
-    void mouseReleased(MouseEvent e) {
-    	update();
-    }
+
+	@Override
+	void mouseReleased(MouseEvent e) {
+		update();
+	}
 }

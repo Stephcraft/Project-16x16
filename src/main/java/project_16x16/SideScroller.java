@@ -41,12 +41,13 @@ public class SideScroller extends PApplet {
 
 	public enum debugType {
 		OFF, ALL, INFO_ONLY;
+
 		private static debugType[] vals = values();
 
 		public debugType next() {
 			return vals[(this.ordinal() + 1) % vals.length];
 		}
-		
+
 		public static debugType get(int value) {
 			return values()[value];
 		}
@@ -60,7 +61,7 @@ public class SideScroller extends PApplet {
 	// Game Rendering
 	private PVector windowSize = new PVector(1280, 720); // Game window size -- to be set via options
 	public PVector gameResolution = new PVector(1280, 720); // Game rendering resolution -- to be set
-																	// via options
+															// via options
 	// Font Resources
 	private static PFont font_pixel;
 
@@ -72,7 +73,7 @@ public class SideScroller extends PApplet {
 	private GameScenes currentScene;
 	private GameScenes previousScene;
 	private int sceneSwapTime = 0;
-	
+
 	private static MainMenu menu;
 	private static GameplayScene game;
 	private static PauseMenu pmenu;
@@ -80,7 +81,7 @@ public class SideScroller extends PApplet {
 	private static MultiplayerMenu mMenu;
 	private static MultiplayerHostMenu mHostMenu;
 	private static MultiplayerClientMenu mClientMenu;
-	
+
 	public enum GameScenes {
 		MAIN_MENU(menu), GAME(game), PAUSE_MENU(pmenu), SETTINGS_MENU(settings), MULTIPLAYER_MENU(mMenu),
 		HOST_MENU(mHostMenu), CLIENT_MENU(mClientMenu);
@@ -95,7 +96,7 @@ public class SideScroller extends PApplet {
 			return scene;
 		}
 	}
-	
+
 	// Events
 	private HashSet<Integer> keysDown;
 	public boolean keyPressEvent;
@@ -153,9 +154,10 @@ public class SideScroller extends PApplet {
 		scene.getWindow().addEventFilter(WindowEvent.WINDOW_CLOSE_REQUEST, this::closeWindowEvent);
 		return surface;
 	}
-	
+
 	/**
 	 * Passes JavaFX window closed call to game.
+	 * 
 	 * @param event
 	 */
 	private void closeWindowEvent(WindowEvent event) {
@@ -173,9 +175,9 @@ public class SideScroller extends PApplet {
 	 */
 	@Override
 	public void setup() {
-		
+
 		snapSize = SNAP ? Options.snapSize : 1; // global snap step
-		
+
 		// Set frame rate limit
 		frameRate(Options.targetFrameRate);
 
@@ -186,7 +188,7 @@ public class SideScroller extends PApplet {
 		imageMode(CENTER);
 		rectMode(CENTER);
 		strokeCap(SQUARE);
-		
+
 		AnimationComponent.applet = this;
 
 		// Default frameRate
@@ -219,7 +221,7 @@ public class SideScroller extends PApplet {
 		scaleResolution();
 		launchIntoMultiplayer();
 	}
-	
+
 	/**
 	 * This is where any needed assets will be loaded.
 	 */
@@ -267,14 +269,14 @@ public class SideScroller extends PApplet {
 	 */
 	@Override
 	public void draw() {
-		
+
 		camera.hook();
 		drawBelowCamera();
 		camera.release();
 		drawAboveCamera();
 
 		rectMode(CENTER);
-		
+
 		// Reset Events
 		keyPressEvent = false;
 		keyReleaseEvent = false;
@@ -342,58 +344,58 @@ public class SideScroller extends PApplet {
 		keyReleaseEvent = true;
 
 		switch (event.getKeyCode()) {
-			case KeyEvent.VK_Z :
-				frameRate(5000);
-				break;
-			case KeyEvent.VK_X :
-				frameRate(20);
-				break;
-			case KeyEvent.VK_V :
-				camera.toggleDeadZone(); // for development
-				break;
-			case KeyEvent.VK_C :
-				camera.setCameraPosition(camera.getMouseCoord()); // for development
-				break;
-			case KeyEvent.VK_F :
-				camera.setFollowObject(game.getPlayer()); // for development
-				camera.setZoomScale(1.0f); // for development
-				break;
-			case KeyEvent.VK_G :
-				Notifications.addNotification("Hello", "World");
-				camera.shake(0.4f); // for development
-				break;
-			case KeyEvent.VK_P :
-				game.getPlayer().lifeCapacity++;
-				break;
-			case KeyEvent.VK_O :
-				game.getPlayer().lifeCapacity--;
-				break;
-			case KeyEvent.VK_L :
-				game.getPlayer().life++;
-				break;
-			case KeyEvent.VK_K :
-				game.getPlayer().life--;
-				break;
-			case KeyEvent.VK_F11 :
-				noLoop();
-				stage.setFullScreen(!stage.isFullScreen());
-				scaleResolution();
-				loop();
-				break;
-			case ESC : // Pause
-				if (currentScene == GameScenes.GAME) {
-					swapToScene(GameScenes.PAUSE_MENU);
-				}
-				if (currentScene == GameScenes.PAUSE_MENU) {
-					swapToScene(GameScenes.GAME);
-				}
-				break;
-			case TAB :
-				debug = debug.next();
-				Options.save(option.debugMode, debug.ordinal());
-				break;
-			default :
-				break;
+		case KeyEvent.VK_Z:
+			frameRate(5000);
+			break;
+		case KeyEvent.VK_X:
+			frameRate(20);
+			break;
+		case KeyEvent.VK_V:
+			camera.toggleDeadZone(); // for development
+			break;
+		case KeyEvent.VK_C:
+			camera.setCameraPosition(camera.getMouseCoord()); // for development
+			break;
+		case KeyEvent.VK_F:
+			camera.setFollowObject(game.getPlayer()); // for development
+			camera.setZoomScale(1.0f); // for development
+			break;
+		case KeyEvent.VK_G:
+			Notifications.addNotification("Hello", "World");
+			camera.shake(0.4f); // for development
+			break;
+		case KeyEvent.VK_P:
+			game.getPlayer().lifeCapacity++;
+			break;
+		case KeyEvent.VK_O:
+			game.getPlayer().lifeCapacity--;
+			break;
+		case KeyEvent.VK_L:
+			game.getPlayer().life++;
+			break;
+		case KeyEvent.VK_K:
+			game.getPlayer().life--;
+			break;
+		case KeyEvent.VK_F11:
+			noLoop();
+			stage.setFullScreen(!stage.isFullScreen());
+			scaleResolution();
+			loop();
+			break;
+		case ESC: // Pause
+			if (currentScene == GameScenes.GAME) {
+				swapToScene(GameScenes.PAUSE_MENU);
+			}
+			if (currentScene == GameScenes.PAUSE_MENU) {
+				swapToScene(GameScenes.GAME);
+			}
+			break;
+		case TAB:
+			debug = debug.next();
+			Options.save(option.debugMode, debug.ordinal());
+			break;
+		default:
+			break;
 		}
 	}
 
@@ -464,7 +466,7 @@ public class SideScroller extends PApplet {
 	public PVector getMouseCoordScreen() {
 		return new PVector(mouseX, mouseY);
 	}
-	
+
 	public void resizeWindow(int width, int height) {
 		windowSize = new PVector(width, height);
 		gameResolution = windowSize.copy();
@@ -509,10 +511,27 @@ public class SideScroller extends PApplet {
 		noStroke();
 		rectMode(CORNER);
 		rect(width - labelPadding, 0, labelPadding, yOffset + lineOffset * 11);
-		fill(255, 0, 0);
+		rect(width - labelPadding, 0, labelPadding, yOffset + lineOffset * 23);
 		textSize(18);
 
 		textAlign(LEFT, TOP);
+
+		fill(255, 255, 255);
+
+		text("[" + Options.FRAMEREATE_5000 + "]", width - labelPadding, lineOffset * 12 + yOffset);
+		text("[" + Options.FRAMERATE_20 + "]", width - labelPadding, lineOffset * 13 + yOffset);
+		text("[" + Options.TOG_DEADZONE + "]", width - labelPadding, lineOffset * 14 + yOffset);
+		text("[" + Options.CAM_TO_MOUSE + "]", width - labelPadding, lineOffset * 15 + yOffset);
+		text("[" + Options.CAM_TO_PLAYER + "]", width - labelPadding, lineOffset * 16 + yOffset);
+		text("[" + Options.SHAKE_POP_NOTE + "]", width - labelPadding, lineOffset * 17 + yOffset);
+		text("[" + Options.INC_LIFE_CAP + "]", width - labelPadding, lineOffset * 18 + yOffset);
+		text("[" + Options.DEC_LIFE_CAP + "]", width - labelPadding, lineOffset * 19 + yOffset);
+		text("[" + Options.INC_LIFE + "]", width - labelPadding, lineOffset * 20 + yOffset);
+		text("[" + Options.DEC_LIFE + "]", width - labelPadding, lineOffset * 21 + yOffset);
+		text("[" + Options.FULLSCREEN + "]", width - labelPadding, lineOffset * 22 + yOffset);
+
+		fill(255, 0, 0);
+
 		text("Player Pos:", width - labelPadding, lineOffset * 0 + yOffset);
 		text("Player Speed:", width - labelPadding, lineOffset * 1 + yOffset);
 		text("Anim #:", width - labelPadding, lineOffset * 2 + yOffset);
@@ -538,12 +557,15 @@ public class SideScroller extends PApplet {
 		text("[" + round(camera.getMouseCoord().x) + ", " + round(camera.getMouseCoord().y) + "]", width - ip,
 				lineOffset * 8 + yOffset);
 //		text("[" + projectileObjects.size() + "]", width - ip, lineOffset * 9 + yOffset); TODO expose
+
 		if (frameRate >= 59.5) {
 			fill(0, 255, 0);
 		}
 		text("[" + round(frameRate) + "]", width - ip, lineOffset * 10 + yOffset);
+		// Z X V C F G P O L K F11"
+
 	}
-	
+
 	/**
 	 * Launch into multiplayer mode instantly bases upon program args. Used to test
 	 * & debug multiplayer more quickly.
