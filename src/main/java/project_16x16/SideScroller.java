@@ -17,8 +17,7 @@ import processing.core.PVector;
 
 import processing.event.MouseEvent;
 import processing.javafx.PSurfaceFX;
-import project_16x16.Audio.BGM;
-import project_16x16.Audio.SFX;
+
 import project_16x16.Options.option;
 import project_16x16.components.AnimationComponent;
 import project_16x16.entities.Player;
@@ -191,9 +190,6 @@ public class SideScroller extends PApplet {
 
 		AnimationComponent.applet = this;
 
-		// Default frameRate
-		frameRate(Options.targetFrameRate);
-
 		// Create ArrayList
 		keysDown = new HashSet<Integer>();
 
@@ -344,58 +340,63 @@ public class SideScroller extends PApplet {
 		keyReleaseEvent = true;
 
 		switch (event.getKeyCode()) {
-		case KeyEvent.VK_Z:
-			frameRate(5000);
-			break;
-		case KeyEvent.VK_X:
-			frameRate(20);
-			break;
-		case KeyEvent.VK_V:
-			camera.toggleDeadZone(); // for development
-			break;
-		case KeyEvent.VK_C:
-			camera.setCameraPosition(camera.getMouseCoord()); // for development
-			break;
-		case KeyEvent.VK_F:
-			camera.setFollowObject(game.getPlayer()); // for development
-			camera.setZoomScale(1.0f); // for development
-			break;
-		case KeyEvent.VK_G:
-			Notifications.addNotification("Hello", "World");
-			camera.shake(0.4f); // for development
-			break;
-		case KeyEvent.VK_P:
-			game.getPlayer().lifeCapacity++;
-			break;
-		case KeyEvent.VK_O:
-			game.getPlayer().lifeCapacity--;
-			break;
-		case KeyEvent.VK_L:
-			game.getPlayer().life++;
-			break;
-		case KeyEvent.VK_K:
-			game.getPlayer().life--;
-			break;
-		case KeyEvent.VK_F11:
-			noLoop();
-			stage.setFullScreen(!stage.isFullScreen());
-			scaleResolution();
-			loop();
-			break;
-		case ESC: // Pause
-			if (currentScene == GameScenes.GAME) {
-				swapToScene(GameScenes.PAUSE_MENU);
-			}
-			if (currentScene == GameScenes.PAUSE_MENU) {
-				swapToScene(GameScenes.GAME);
-			}
-			break;
-		case TAB:
-			debug = debug.next();
-			Options.save(option.debugMode, debug.ordinal());
-			break;
-		default:
-			break;
+			case Options.frameRateHigh :
+				frameRate(5000);
+				break;
+			case Options.frameRateLow :
+				frameRate(20);
+				break;
+			case Options.frameRateDefault :
+				frameRate(Options.frameRateDefault);
+				break;
+			case Options.toggleDeadzone :
+				camera.toggleDeadZone();
+				break;
+			case Options.cameraToMouse :
+				camera.setCameraPosition(camera.getMouseCoord());
+				break;
+			case Options.cameraToPlayer :
+				camera.setFollowObject(game.getPlayer());
+				camera.setZoomScale(1.0f);
+				break;
+			case Options.shake :
+				camera.shake(0.4f);
+				break;
+			case Options.notify :
+				Notifications.addNotification("Hello", "World");
+				break;
+			case Options.lifeCapInc :
+				game.getPlayer().lifeCapacity++;
+				break;
+			case Options.lifeCapDec :
+				game.getPlayer().lifeCapacity--;
+				break;
+			case Options.lifeInc :
+				game.getPlayer().life++;
+				break;
+			case Options.lifeDec :
+				game.getPlayer().life--;
+				break;
+			case Options.fullscreen :
+				noLoop();
+				stage.setFullScreen(!stage.isFullScreen());
+				scaleResolution();
+				loop();
+				break;
+			case ESC : // Pause
+				if (currentScene == GameScenes.GAME) {
+					swapToScene(GameScenes.PAUSE_MENU);
+				}
+				if (currentScene == GameScenes.PAUSE_MENU) {
+					swapToScene(GameScenes.GAME);
+				}
+				break;
+			case Options.toggleDebug :
+				debug = debug.next();
+				Options.save(option.debugMode, debug.ordinal());
+				break;
+			default :
+				break;
 		}
 	}
 
@@ -510,40 +511,39 @@ public class SideScroller extends PApplet {
 		fill(0, 50);
 		noStroke();
 		rectMode(CORNER);
-		rect(width - labelPadding, 0, labelPadding, yOffset + lineOffset * 11);
-		rect(width - labelPadding, 0, labelPadding, yOffset + lineOffset * 23);
+		rect(width - labelPadding, 0, labelPadding, yOffset + lineOffset * 25);
 		textSize(18);
 
 		textAlign(LEFT, TOP);
-
-		fill(255, 255, 255);
-
-		text("[" + Options.FRAMEREATE_5000 + "]", width - labelPadding, lineOffset * 12 + yOffset);
-		text("[" + Options.FRAMERATE_20 + "]", width - labelPadding, lineOffset * 13 + yOffset);
-		text("[" + Options.TOG_DEADZONE + "]", width - labelPadding, lineOffset * 14 + yOffset);
-		text("[" + Options.CAM_TO_MOUSE + "]", width - labelPadding, lineOffset * 15 + yOffset);
-		text("[" + Options.CAM_TO_PLAYER + "]", width - labelPadding, lineOffset * 16 + yOffset);
-		text("[" + Options.SHAKE_POP_NOTE + "]", width - labelPadding, lineOffset * 17 + yOffset);
-		text("[" + Options.INC_LIFE_CAP + "]", width - labelPadding, lineOffset * 18 + yOffset);
-		text("[" + Options.DEC_LIFE_CAP + "]", width - labelPadding, lineOffset * 19 + yOffset);
-		text("[" + Options.INC_LIFE + "]", width - labelPadding, lineOffset * 20 + yOffset);
-		text("[" + Options.DEC_LIFE + "]", width - labelPadding, lineOffset * 21 + yOffset);
-		text("[" + Options.FULLSCREEN + "]", width - labelPadding, lineOffset * 22 + yOffset);
-
+		
 		fill(255, 0, 0);
-
 		text("Player Pos:", width - labelPadding, lineOffset * 0 + yOffset);
 		text("Player Speed:", width - labelPadding, lineOffset * 1 + yOffset);
 		text("Anim #:", width - labelPadding, lineOffset * 2 + yOffset);
 		text("Anim Frame:", width - labelPadding, lineOffset * 3 + yOffset);
-		text("Player Status:", width - labelPadding, lineOffset * 4 + yOffset);
-		text("Camera Pos:", width - labelPadding, lineOffset * 5 + yOffset);
-		text("Camera Zoom:", width - labelPadding, lineOffset * 6 + yOffset);
-		text("Camera Rot:", width - labelPadding, lineOffset * 7 + yOffset);
-		text("World Mouse:", width - labelPadding, lineOffset * 8 + yOffset);
-		text("Projectiles:", width - labelPadding, lineOffset * 9 + yOffset);
-		text("Framerate:", width - labelPadding, lineOffset * 10 + yOffset);
+		text("Camera Pos:", width - labelPadding, lineOffset * 4 + yOffset);
+		text("Camera Zoom:", width - labelPadding, lineOffset * 5 + yOffset);
+		text("Camera Rot:", width - labelPadding, lineOffset * 6 + yOffset);
+		text("World Mouse:", width - labelPadding, lineOffset * 7 + yOffset);
+		text("Projectiles:", width - labelPadding, lineOffset * 8 + yOffset);
+		text("Framerate:", width - labelPadding, lineOffset * 9 + yOffset);
+		
+		fill(55, 155, 255);
+		text("Framerate HIGH:", width - labelPadding, lineOffset * 12 + yOffset);
+		text("Framerate LOW:", width - labelPadding, lineOffset * 13 + yOffset);
+		text("Toggle Deadzone:", width - labelPadding, lineOffset * 14 + yOffset);
+		text("Camera->Mouse:", width - labelPadding, lineOffset * 15 + yOffset);
+		text("Camera->Player:", width - labelPadding, lineOffset * 16 + yOffset);
+		text("Shake Camera:", width - labelPadding, lineOffset * 17 + yOffset);
+		text("Notification:", width - labelPadding, lineOffset * 18 + yOffset);
+		text("Life cap++:", width - labelPadding, lineOffset * 19 + yOffset);
+		text("Life cap--:", width - labelPadding, lineOffset * 20 + yOffset);
+		text("Life++:", width - labelPadding, lineOffset * 21 + yOffset);
+		text("Life--:", width - labelPadding, lineOffset * 22 + yOffset);
+		text("Fullscreen:", width - labelPadding, lineOffset * 23 + yOffset);
+		text("Toggle Debug:", width - labelPadding, lineOffset * 24 + yOffset);
 
+		fill(255,255,0);
 		textAlign(RIGHT, TOP);
 		text("[" + round(player.pos.x) + ", " + round(player.pos.y) + "]", width - ip, lineOffset * 0 + yOffset);
 		text("[" + round(velocity.x) + ", " + round(velocity.y) + "]", width - ip, lineOffset * 1 + yOffset);
@@ -551,19 +551,34 @@ public class SideScroller extends PApplet {
 		text("[" + round(player.animation.getFrameID()) + " / " + player.animation.getAnimLength() + "]", width - ip,
 				lineOffset * 3 + yOffset);
 		text("[" + PApplet.round(camera.getPosition().x) + ", " + PApplet.round(camera.getPosition().y) + "]",
-				width - ip, lineOffset * 5 + yOffset);
-		text("[" + String.format("%.2f", camera.getZoomScale()) + "]", width - ip, lineOffset * 6 + yOffset);
-		text("[" + round(degrees(camera.getCameraRotation())) + "]", width - ip, lineOffset * 7 + yOffset);
+				width - ip, lineOffset * 4 + yOffset);
+		text("[" + String.format("%.2f", camera.getZoomScale()) + "]", width - ip, lineOffset * 5 + yOffset);
+		text("[" + round(degrees(camera.getCameraRotation())) + "]", width - ip, lineOffset * 6 + yOffset);
 		text("[" + round(camera.getMouseCoord().x) + ", " + round(camera.getMouseCoord().y) + "]", width - ip,
-				lineOffset * 8 + yOffset);
-//		text("[" + projectileObjects.size() + "]", width - ip, lineOffset * 9 + yOffset); TODO expose
+				lineOffset * 7 + yOffset);
+		text("[" + "?" + "]", width - ip, lineOffset * 8 + yOffset); // TODO expose
+		
+		text("['" + (char) Options.frameRateHigh + "']", width - ip, lineOffset * 12 + yOffset);
+		text("['" + (char) Options.frameRateLow + "']", width - ip, lineOffset * 13 + yOffset);
+		text("['" + (char) Options.toggleDeadzone + "']", width - ip, lineOffset * 14 + yOffset);
+		text("['" + (char) Options.cameraToMouse + "']", width - ip, lineOffset * 15 + yOffset);
+		text("['" + (char) Options.cameraToPlayer + "']", width - ip, lineOffset * 16 + yOffset);
+		text("['" + (char) Options.shake + "']", width - ip, lineOffset * 17 + yOffset);
+		text("['" + (char) Options.notify + "']", width - ip, lineOffset * 18 + yOffset);
+		text("['" + (char) Options.lifeCapInc + "']", width - ip, lineOffset * 19 + yOffset);
+		text("['" + (char) Options.lifeCapDec + "']", width - ip, lineOffset * 20 + yOffset);
+		text("['" + (char) Options.lifeInc + "']", width - ip, lineOffset * 21 + yOffset);
+		text("['" + (char) Options.lifeDec + "']", width - ip, lineOffset * 22 + yOffset);
+		text("['" + (char) Options.fullscreen + "']", width - ip, lineOffset * 23 + yOffset);
+		text("['TAB']", width - ip, lineOffset * 24 + yOffset);
 
 		if (frameRate >= 59.5) {
 			fill(0, 255, 0);
 		}
-		text("[" + round(frameRate) + "]", width - ip, lineOffset * 10 + yOffset);
-		// Z X V C F G P O L K F11"
-
+		else {
+			fill(255, 0, 0);
+		}
+		text("[" + round(frameRate) + "]", width - ip, lineOffset * 9 + yOffset);
 	}
 
 	/**
