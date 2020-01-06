@@ -68,7 +68,7 @@ public class MagicProjectile extends ProjectileObject {
 			explode.run();
 		else {
 			moveProjectile();
-			destroyProjectile();
+			//destroyProjectile();
 		}
 	}
 	
