@@ -180,7 +180,6 @@ public class MirrorBoxObject extends GameObject {
 		 * and haven't flew back from the origin deflect then that means, we hit the
 		 * wrong side.
 		 */
-		System.out.println(projectile.direction + " " + projectile.prevDirection);
 		if (projectile.direction == deflectDir && projectile.prevDirection != flyDir) {
 			((MagicProjectile) projectile).hit(collision);
 		}
