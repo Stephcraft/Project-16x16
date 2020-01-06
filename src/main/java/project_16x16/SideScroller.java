@@ -1,6 +1,5 @@
 package project_16x16;
 
-import java.applet.Applet;
 import java.awt.event.KeyEvent;
 import java.util.HashSet;
 
@@ -36,28 +35,13 @@ import project_16x16.ui.Notifications;
  * </p>
  */
 public class SideScroller extends PApplet {
-	// " Z: SET FRAMERATE TO 5000 " + "X: SET FRAMERATE TO 20 " + " V: TOGGLE
-	// DEADZONE " + " C: CAMERA TO MOUSE " + " F: HOOK CAMERA TO PLAYER " + " G:
-	// SHAKE SCREEN , POP NOTE " + " P: INCREASE LIFE CAPACITY " + " O: DECREASE
-	// LIFE CAPACITY " + " L: INCREASE LIFE " + " K: DECREASE LIFE " + " F11
-	// FULLSCREEN "
-	private final String Z = " Z: FRAMERATE TO 5000 ";
-	private final String X = " X: FRAMERATE TO 20 ";
-	private final String V = " V: TOGGLE DEADZONE ";
-	private final String C = " C: CAMERA TO MOUSE ";
-	private final String F = " F: HOOK CAM TO PLAYER ";
-	private final String G = " G: SHAKE , POP NOTE ";
-	private final String P = " P: INCREASE LIFE CAP ";
-	private final String O = " O: DECREASE LIFE CAP ";
-	private final String K = " K: DECREASE LIFE ";
-	private final String L = " L: INCREASE LIFE";
-	private final String F11 = " F11: FULLSCREEN ";
 
 	// Game Dev
 	public static final String LEVEL = "Storage/Game/Maps/gg-2.dat";
 
 	public enum debugType {
 		OFF, ALL, INFO_ONLY;
+
 		private static debugType[] vals = values();
 
 		public debugType next() {
@@ -534,20 +518,20 @@ public class SideScroller extends PApplet {
 
 		fill(255, 255, 255);
 
-		text("[" + Z + "]", width - labelPadding, lineOffset * 12 + yOffset);
-		text("[" + X + "]", width - labelPadding, lineOffset * 13 + yOffset);
-		text("[" + V + "]", width - labelPadding, lineOffset * 14 + yOffset);
-		text("[" + C + "]", width - labelPadding, lineOffset * 15 + yOffset);
-		text("[" + F + "]", width - labelPadding, lineOffset * 16 + yOffset);
-		text("[" + G + "]", width - labelPadding, lineOffset * 17 + yOffset);
-		text("[" + P + "]", width - labelPadding, lineOffset * 18 + yOffset);
-		text("[" + O + "]", width - labelPadding, lineOffset * 19 + yOffset);
-		text("[" + L + "]", width - labelPadding, lineOffset * 20 + yOffset);
-		text("[" + K + "]", width - labelPadding, lineOffset * 21 + yOffset);
-		text("[" + F11 + "]", width - labelPadding, lineOffset * 22 + yOffset);
-		
+		text("[" + Options.FRAMEREATE_5000 + "]", width - labelPadding, lineOffset * 12 + yOffset);
+		text("[" + Options.FRAMERATE_20 + "]", width - labelPadding, lineOffset * 13 + yOffset);
+		text("[" + Options.TOG_DEADZONE + "]", width - labelPadding, lineOffset * 14 + yOffset);
+		text("[" + Options.CAM_TO_MOUSE + "]", width - labelPadding, lineOffset * 15 + yOffset);
+		text("[" + Options.CAM_TO_PLAYER + "]", width - labelPadding, lineOffset * 16 + yOffset);
+		text("[" + Options.SHAKE_POP_NOTE + "]", width - labelPadding, lineOffset * 17 + yOffset);
+		text("[" + Options.INC_LIFE_CAP + "]", width - labelPadding, lineOffset * 18 + yOffset);
+		text("[" + Options.DEC_LIFE_CAP + "]", width - labelPadding, lineOffset * 19 + yOffset);
+		text("[" + Options.INC_LIFE + "]", width - labelPadding, lineOffset * 20 + yOffset);
+		text("[" + Options.DEC_LIFE + "]", width - labelPadding, lineOffset * 21 + yOffset);
+		text("[" + Options.FULLSCREEN + "]", width - labelPadding, lineOffset * 22 + yOffset);
+
 		fill(255, 0, 0);
-		
+
 		text("Player Pos:", width - labelPadding, lineOffset * 0 + yOffset);
 		text("Player Speed:", width - labelPadding, lineOffset * 1 + yOffset);
 		text("Anim #:", width - labelPadding, lineOffset * 2 + yOffset);

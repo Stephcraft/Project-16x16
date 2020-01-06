@@ -9,9 +9,19 @@ import project_16x16.ui.Notifications;
  * Handle loading/saving of player settings (game options)
  */
 public class Options {
-
+	
 	private static final Preferences options = Preferences.userNodeForPackage(Options.class);
-
+	public  static final String FRAMEREATE_5000 = " Z: FRAMERATE TO 5000 ";
+	public static final String FRAMERATE_20 = " X: FRAMERATE TO 20 ";
+	public static final String TOG_DEADZONE = " V: TOGGLE DEADZONE ";
+	public static final String CAM_TO_MOUSE = " C: CAMERA TO MOUSE ";
+	public static final String CAM_TO_PLAYER = " F: HOOK CAM TO PLAYER ";
+	public static final String SHAKE_POP_NOTE = " G: SHAKE , POP NOTE ";
+	public static final String INC_LIFE_CAP = " P: INCREASE LIFE CAP ";
+	public static final String DEC_LIFE_CAP = " O: DECREASE LIFE CAP ";
+	public static final String DEC_LIFE = " K: DECREASE LIFE ";
+	public static final String INC_LIFE = " L: INCREASE LIFE";
+	public static final String FULLSCREEN = " F11: FULLSCREEN ";
 	/**
 	 * Define the option as an enum, then create the variable.
 	 */

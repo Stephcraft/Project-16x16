@@ -130,8 +130,8 @@ public class MirrorBoxObject extends GameObject {
 			bounceProjectile(projectile, UP, RIGHT, 'y');
 			return;
 		case BOX_LEFT:
-			bounceProjectile(projectile, UP, LEFT, 'y');
 			bounceProjectile(projectile, RIGHT, DOWN, 'x');
+			bounceProjectile(projectile, UP, LEFT, 'y');
 			return;
 		case BOX_UP:
 			bounceProjectile(projectile, RIGHT, UP, 'x');
@@ -180,7 +180,9 @@ public class MirrorBoxObject extends GameObject {
 		 * and haven't flew back from the origin deflect then that means, we hit the
 		 * wrong side.
 		 */
-		if (projectile.direction == deflectDir && projectile.prevDirection != flyDir)
+		System.out.println(projectile.direction + " " + projectile.prevDirection);
+		if (projectile.direction == deflectDir && projectile.prevDirection != flyDir) {
 			((MagicProjectile) projectile).hit(collision);
+		}
 	}
 }
