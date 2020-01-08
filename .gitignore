@@ -24,3 +24,6 @@ target
 # Intellij
 .idea/
 Project_16x16.iml
+
+# MACOS file structure
+*.DS_Store
