@@ -60,7 +60,7 @@ public final class MainMenu extends PScene {
 	@Override
 	public void switchTo() {
 		super.switchTo();
-		Audio.play(BGM.DEFAULT1);
+		Audio.play(BGM.TEST3);
 	}
 
 	@Override

@@ -197,6 +197,8 @@ public class SideScroller extends PApplet {
 		load();
 		Notifications.assignApplet(this);
 		Audio.assignApplet(this);
+		Audio.setGainBGM(-6); // TODO
+		Audio.setGainSFX(-6); // TODO
 
 		// Create scene
 		game = new GameplayScene(this);

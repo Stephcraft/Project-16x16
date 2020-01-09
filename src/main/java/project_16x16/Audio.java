@@ -24,8 +24,9 @@ public final class Audio {
 	 * Background music, which are referenced as enums.
 	 */
 	public enum BGM {
-		DEFAULT("first_theme.mp3"), // TODO
-		DEFAULT1("cyberSynthwave.mp3"); // TODO
+		TEST0("first_theme.mp3"), // TODO
+		TEST1("cyberSynthwave.mp3"), // TODO
+		TEST2("First_level_take_1.mp3"), TEST3("Intro_Title_Pause_Screen_Take1_Loopable.mp3");
 
 		private String filename;
 
@@ -67,12 +68,21 @@ public final class Audio {
 		minim = new Minim(s);
 
 		for (SFX sfx : SFX.values()) {
-			SFX_MAP.put(sfx, minim.loadSample(sfx.getPath()));
+			AudioSample sample = minim.loadSample(sfx.getPath());
+			if (sample != null) {
+				SFX_MAP.put(sfx, sample);
+			} else {
+				System.err.println(sfx.getPath() + " not found.");
+			}
 		}
 		for (BGM bgm : BGM.values()) {
-			BGM_MAP.put(bgm, minim.loadFile(bgm.getPath()));
+			AudioPlayer audioPlayer = minim.loadFile(bgm.getPath());
+			if (audioPlayer != null) {
+				BGM_MAP.put(bgm, audioPlayer);
+			} else {
+				System.err.println(bgm.getPath() + " not found.");
+			}
 		}
-
 		setGainBGM(Options.gainBGM);
 		setGainSFX(Options.gainSFX);
 	}
@@ -86,7 +96,11 @@ public final class Audio {
 	 * @see ddf.minim.AudioSample#trigger()
 	 */
 	public static void play(SFX sound) {
-		SFX_MAP.get(sound).trigger();
+		if (SFX_MAP.containsKey(sound)) {
+			SFX_MAP.get(sound).trigger();
+		} else {
+			System.err.println(sound.getPath() + " not found.");
+		}
 	}
 
 	/**
@@ -99,8 +113,12 @@ public final class Audio {
 	 * @see ddf.minim.AudioSample#trigger()
 	 */
 	public static void play(SFX sound, float gain) {
-		SFX_MAP.get(sound).setGain(gain);
-		SFX_MAP.get(sound).trigger();
+		if (SFX_MAP.containsKey(sound)) {
+			SFX_MAP.get(sound).setGain(gain);
+			SFX_MAP.get(sound).trigger();
+		} else {
+			System.err.println(sound.getPath() + " not found.");
+		}
 	}
 
 	/**
@@ -117,7 +135,11 @@ public final class Audio {
 				bgm.rewind();
 			}
 		}
-		BGM_MAP.get(sound).loop();
+		if (BGM_MAP.containsKey(sound)) {
+			BGM_MAP.get(sound).loop();
+		} else {
+			System.err.println(sound.getPath() + " not found.");
+		}
 	}
 
 	/**
@@ -130,8 +152,13 @@ public final class Audio {
 	 * @see #play(BGM)
 	 */
 	public static void play(BGM sound, float gain) {
-		BGM_MAP.get(sound).setGain(gain);
-		play(sound);
+		if (BGM_MAP.containsKey(sound)) {
+			BGM_MAP.get(sound).setGain(gain);
+			play(sound);
+		} else {
+			System.err.println(sound.getPath() + " not found.");
+		}
+
 	}
 
 	/**
