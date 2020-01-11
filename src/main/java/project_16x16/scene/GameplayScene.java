@@ -170,7 +170,7 @@ public class GameplayScene extends PScene {
 	@Override
 	public void switchTo() {
 		super.switchTo();
-		Audio.play(BGM.TEST3);
+		Audio.play(BGM.TEST1);
 	}
 	
 	/**

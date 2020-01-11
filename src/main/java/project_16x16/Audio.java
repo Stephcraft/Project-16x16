@@ -123,12 +123,16 @@ public final class Audio {
 
 	/**
 	 * Plays a background music track. Only one BGM track can play at once -- this
-	 * method stops any existing BGM track. BGM tracks loop by default.
+	 * method stops any existing BGM track if it is different. BGM tracks loop by
+	 * default.
 	 * 
 	 * @param sound BGM track
 	 * @see #play(BGM, float)
 	 */
 	public static void play(BGM sound) {
+		if (BGM_MAP.get(sound).isPlaying()) {
+			return;
+		}
 		for (AudioPlayer bgm : BGM_MAP.values()) {
 			if (bgm.isPlaying()) {
 				bgm.pause();

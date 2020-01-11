@@ -1,6 +1,5 @@
 package project_16x16;
 
-import java.awt.event.KeyEvent;
 import java.util.HashSet;
 
 import javafx.scene.Scene;
@@ -571,7 +570,7 @@ public class SideScroller extends PApplet {
 		text("['" + (char) Options.lifeCapDec + "']", width - ip, lineOffset * 20 + yOffset);
 		text("['" + (char) Options.lifeInc + "']", width - ip, lineOffset * 21 + yOffset);
 		text("['" + (char) Options.lifeDec + "']", width - ip, lineOffset * 22 + yOffset);
-		text("['" + (char) Options.fullscreen + "']", width - ip, lineOffset * 23 + yOffset);
+		text("['F11']", width - ip, lineOffset * 23 + yOffset);
 		text("['TAB']", width - ip, lineOffset * 24 + yOffset);
 
 		if (frameRate >= 59.5) {
