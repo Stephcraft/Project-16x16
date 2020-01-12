@@ -92,6 +92,7 @@ public final class Player extends EditableObject {
 		gravity = 1;
 
 		animation = new AnimationComponent();
+//		animation.setSFX(Audio.SFX.STEP, 2);
 		swings = new ArrayList<Swing>();
 		image = Tileset.getTile(0, 258, 14, 14, 4);
 		lifeOn = Tileset.getTile(144, 256, 9, 9, 4);

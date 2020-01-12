@@ -43,8 +43,10 @@ public final class Audio {
 	 * Sound effects, which are referenced as enums.
 	 */
 	public enum SFX {
-		JUMP("jump.wav");
-
+		JUMP("jump.wav"),
+		STEP("walk_single.wav"),
+		ATTACK("melee_attack.wav");
+		
 		private String filename;
 
 		private SFX(String filename) {

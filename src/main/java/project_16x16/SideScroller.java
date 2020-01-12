@@ -187,13 +187,12 @@ public class SideScroller extends PApplet {
 		rectMode(CENTER);
 		strokeCap(SQUARE);
 
-		AnimationComponent.applet = this;
-
 		// Create ArrayList
 		keysDown = new HashSet<Integer>();
 
 		// Main Load
 		load();
+		AnimationComponent.assignApplet(this);
 		Notifications.assignApplet(this);
 		Audio.assignApplet(this);
 		Audio.setGainBGM(-6); // TODO
