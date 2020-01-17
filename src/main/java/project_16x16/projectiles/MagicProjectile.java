@@ -109,8 +109,13 @@ public class MagicProjectile extends ProjectileObject {
 	private void setParticleAnimation(SideScroller a) {
 		particleAnimation = new ArrayList<PImage>();
 		PImage image = Tileset.getTile("MAGIC_SOURCE");
-		float angle = PApplet.radians((float) (Math.random() * 360));
-		particleAnimation.add(Util.resizeImage(Util.rotateImage(image.copy(), angle), 0.25f));
+		float scale = 0.12f;
+		float angle = PApplet.radians(11);
+		while(scale > 0.025f) {
+			particleAnimation.add(Util.resizeImage(Util.resizeImage(Util.rotateImage(image.copy(), angle), scale), 4));
+			angle += PApplet.radians(11);
+			scale -= Math.random() * 0.03f;
+		}
 	}
 
 }
