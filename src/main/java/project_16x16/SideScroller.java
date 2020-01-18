@@ -35,9 +35,6 @@ import project_16x16.ui.Notifications;
  */
 public class SideScroller extends PApplet {
 
-	// Game Dev
-	public static final String LEVEL = "Storage/Game/Maps/gg-2.dat";
-
 	public enum debugType {
 		OFF, ALL, INFO_ONLY;
 
@@ -54,7 +51,7 @@ public class SideScroller extends PApplet {
 
 	public debugType debug = debugType.get(Options.debugMode);
 
-	public static final boolean SNAP = true; // snap objects to grid when moving; located here for ease of access
+	public static final boolean SNAP = true; // snap objects to grid when moving; TODO move to options
 	public static int snapSize;
 
 	// Game Rendering
@@ -64,14 +61,8 @@ public class SideScroller extends PApplet {
 	// Font Resources
 	private static PFont font_pixel;
 
-	// Scenes
-	/**
-	 * Use {@link #swapToScene(PScene)} or {@link #returnScene()} to change the
-	 * scene -- don't reassign this variable directly!
-	 */
-//	private GameScenes currentScene;
-	
-	private ArrayDeque<GameScenes> previousScenes;
+	// Scenes	
+	private ArrayDeque<GameScenes> sceneHistory;
 	private int sceneSwapTime = 0;
 
 	private static MainMenu menu;
@@ -100,13 +91,13 @@ public class SideScroller extends PApplet {
 
 	// Events
 	private HashSet<Integer> keysDown;
-	public boolean keyPressEvent;
-	public boolean keyReleaseEvent;
-	public boolean mousePressEvent;
-	public boolean mouseReleaseEvent;
+	public boolean keyPressEvent; //     TODO remove -- override keyPressed() instead
+	public boolean keyReleaseEvent; //   TODO remove -- override mouseReleased() instead
+	public boolean mousePressEvent; //   TODO remove -- override mousePressed() instead
+	public boolean mouseReleaseEvent; // TODO remove -- override mouseReleased() instead
 
 	// Camera Variables
-	public Camera camera;
+	public Camera camera; // TODO encapsulate in gamePlayScene
 
 	// Expose JavaFX nodes
 	/**
@@ -181,10 +172,7 @@ public class SideScroller extends PApplet {
 
 		// Set frame rate limit
 		frameRate(Options.targetFrameRate);
-
-		// Start Graphics
-		background(0);
-
+		
 		// Setup modes
 		imageMode(CENTER);
 		rectMode(CENTER);
@@ -202,8 +190,8 @@ public class SideScroller extends PApplet {
 		Audio.setGainSFX(-6); // TODO
 
 		// Create scene
-		previousScenes = new ArrayDeque<>();
-		game = new GameplayScene(this);
+		sceneHistory = new ArrayDeque<>();
+		game = new GameplayScene(this, Constants.DEV_LEVEL);
 		menu = new MainMenu(this);
 		pmenu = new PauseMenu(this);
 		settings = new Settings(this);
@@ -216,8 +204,8 @@ public class SideScroller extends PApplet {
 		// Camera
 		camera = new Camera(this);
 		camera.setMouseMask(CONTROL);
-		camera.setMinZoomScale(0.3);
-		camera.setMaxZoomScale(3);
+		camera.setMinZoomScale(Constants.CAMERA_ZOOM_MIN);
+		camera.setMaxZoomScale(Constants.CAMERA_ZOOM_MAX);
 
 		scaleResolution();
 		launchIntoMultiplayer();
@@ -229,22 +217,23 @@ public class SideScroller extends PApplet {
 	private void load() {
 		Tileset.load(this);
 		surface.setIcon(Tileset.getAnimation("PLAYER::IDLE").get(0));
-		font_pixel = loadFont("Font/font-pixel-48.vlw"); // Load Font
+		font_pixel = loadFont(Constants.GAME_FONT); // Load Font
 		textFont(font_pixel); // SideScrollerly Text Font
 	}
 
 	/**
+	 * Use this method or {@link #returnScene()} to change the running game scene.
 	 * 
 	 * @param newScene
 	 * @see #returnScene()
 	 */
 	public void swapToScene(GameScenes newScene) {
 		if (frameCount - sceneSwapTime > 6 || frameCount == 0) {
-			if (!newScene.equals(previousScenes.peek())) { // if different
-				if (!previousScenes.isEmpty()) {
-					previousScenes.peek().getScene().switchFrom(); // switch from
+			if (!newScene.equals(sceneHistory.peek())) { // if different
+				if (!sceneHistory.isEmpty()) {
+					sceneHistory.peek().getScene().switchFrom(); // switch from
 				}
-				previousScenes.push(newScene);
+				sceneHistory.push(newScene);
 				newScene.getScene().switchTo();
 				sceneSwapTime = frameCount;
 			}
@@ -257,9 +246,9 @@ public class SideScroller extends PApplet {
 	 * returning to the game).
 	 */
 	public void returnScene() {
-		if (previousScenes.size() > 1) {
-			previousScenes.pop().getScene().switchFrom();
-			previousScenes.peek().getScene().switchTo();
+		if (sceneHistory.size() > 1) {
+			sceneHistory.pop().getScene().switchFrom();
+			sceneHistory.peek().getScene().switchTo();
 			sceneSwapTime = frameCount;
 		}
 	}
@@ -294,9 +283,9 @@ public class SideScroller extends PApplet {
 	 * @see {@link Camera#hook()}
 	 */
 	private void drawBelowCamera() {
-		previousScenes.peek().getScene().draw(); // Handle Draw Scene Method - draws world, etc.
+		sceneHistory.peek().getScene().draw(); // Handle Draw Scene Method - draws world, etc.
 		if (debug == debugType.ALL) {
-			previousScenes.peek().getScene().debug();
+			sceneHistory.peek().getScene().debug();
 			camera.postDebug();
 		}
 	}
@@ -310,7 +299,7 @@ public class SideScroller extends PApplet {
 	 * @see {@link Camera#release()}
 	 */
 	private void drawAboveCamera() {
-		previousScenes.peek().getScene().drawUI();
+		sceneHistory.peek().getScene().drawUI();
 		Notifications.run();
 		if (debug == debugType.ALL) {
 			camera.post();

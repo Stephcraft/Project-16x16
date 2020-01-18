@@ -6,6 +6,7 @@ import processing.event.MouseEvent;
 import project_16x16.SideScroller;
 import project_16x16.Audio;
 import project_16x16.Audio.BGM;
+import project_16x16.Constants;
 import project_16x16.SideScroller.GameScenes;
 import project_16x16.scene.PScene;
 import project_16x16.ui.Button;
@@ -67,7 +68,7 @@ public final class MainMenu extends PScene {
 
 	@Override
 	public void drawUI() {
-		background(29, 33, 45);
+		background(Constants.Colors.MENU_GREY);
 		pressStart.manDisplay();
 		pressMultiplayer.manDisplay();
 		pressSettings.manDisplay();

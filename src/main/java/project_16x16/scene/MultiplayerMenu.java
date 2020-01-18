@@ -3,6 +3,7 @@ package project_16x16.scene;
 import processing.core.PConstants;
 import processing.event.KeyEvent;
 import processing.event.MouseEvent;
+import project_16x16.Constants;
 import project_16x16.SideScroller;
 import project_16x16.SideScroller.GameScenes;
 import project_16x16.ui.Button;
@@ -41,7 +42,7 @@ public class MultiplayerMenu extends PScene {
 
     @Override
     public void drawUI() {
-        background(29, 33, 45);
+        background(Constants.Colors.MENU_GREY);
         pressHost.manDisplay();
         pressClient.manDisplay();
         pressMenu.manDisplay();
@@ -72,7 +73,6 @@ public class MultiplayerMenu extends PScene {
 	@Override
 	void keyReleased(KeyEvent e) {
 		switch (e.getKeyCode()) {
-			case 8 : // BACKSPACE
 			case PConstants.ESC : // Pause
 				game.returnScene();
 				break;

@@ -94,7 +94,6 @@ public class PauseMenu extends PScene {
 	@Override
 	void keyReleased(KeyEvent e) {
 		switch (e.getKeyCode()) {
-			case 8 : // BACKSPACE
 			case PConstants.ESC : // Pause
 				game.returnScene();
 				break;

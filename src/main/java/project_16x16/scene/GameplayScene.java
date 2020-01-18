@@ -45,6 +45,8 @@ public class GameplayScene extends PScene {
 	// Graphics Slots
 	private PImage slot;
 	private PImage slotEditor;
+	
+	private final String levelString;
 
 	// Graphics Icon
 	private PImage icon_eye;
@@ -104,8 +106,9 @@ public class GameplayScene extends PScene {
 
 	private SelectionBox selectionBox;
 
-	public GameplayScene(SideScroller a) {
+	public GameplayScene(SideScroller a, String levelString) {
 		super(a);
+		this.levelString = levelString;
 		setup();
 	}
 
@@ -163,7 +166,7 @@ public class GameplayScene extends PScene {
 		localPlayer = new Player(applet, this, false);
 		localPlayer.pos.set(0, -100); // TODO spawn location
 
-		loadLevel(SideScroller.LEVEL); // TODO change level
+		loadLevel(levelString); // TODO change level
 
 		windowTabs = new Tab(applet, tabTexts, tabTexts.length);
 	}

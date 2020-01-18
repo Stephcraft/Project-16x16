@@ -7,6 +7,7 @@ import processing.core.PImage;
 import processing.core.PVector;
 import processing.data.JSONObject;
 import project_16x16.Audio;
+import project_16x16.Constants;
 import project_16x16.Options;
 import project_16x16.SideScroller;
 import project_16x16.SideScroller.debugType;
@@ -34,8 +35,6 @@ public final class Player extends EditableObject {
 
 	private final PImage lifeOn;
 	private final PImage lifeOff;
-
-	private float gravity;
 
 	private final PVector velocity = new PVector(0, 0);
 
@@ -89,7 +88,6 @@ public final class Player extends EditableObject {
 		super(a, g);
 
 		pos = new PVector(100, 300); // Spawn LOC. TODO get from current level
-		gravity = 1;
 
 		animation = new AnimationComponent();
 //		animation.setSFX(Audio.SFX.STEP, 2);
@@ -152,7 +150,7 @@ public final class Player extends EditableObject {
 	 * The update method handles updating the character.
 	 */
 	public void update() {
-		velocity.set(0, velocity.y + gravity);
+		velocity.set(0, velocity.y + Constants.GAME_GRAVITY);
 
 		handleKeyboardInput();
 		handleMouseInput();
