@@ -43,11 +43,12 @@ public class Options {
 	protected static final int cameraToPlayer = KeyEvent.VK_F;
 	protected static final int shake = KeyEvent.VK_G;
 	protected static final int notify = KeyEvent.VK_H;
-	protected static final int lifeCapInc = KeyEvent.VK_P;
-	protected static final int lifeCapDec = KeyEvent.VK_O;
-	protected static final int lifeDec = KeyEvent.VK_K;
-	protected static final int lifeInc = KeyEvent.VK_L;
-	protected static final int fullscreen = KeyEvent.VK_F11;
+	
+	public static final int lifeCapInc = KeyEvent.VK_P;
+	public static final int lifeCapDec = KeyEvent.VK_O;
+	public static final int lifeDec = KeyEvent.VK_K;
+	public static final int lifeInc = KeyEvent.VK_L;
+	public static final int fullscreen = KeyEvent.VK_F11;
 
 	public static void save(option option, int value) {
 		options.putInt(option.toString(), value);

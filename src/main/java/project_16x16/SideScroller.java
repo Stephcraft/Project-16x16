@@ -370,18 +370,6 @@ public class SideScroller extends PApplet {
 			case Options.notify :
 				Notifications.addNotification("Hello", "World");
 				break;
-			case Options.lifeCapInc :
-				game.getPlayer().lifeCapacity++;
-				break;
-			case Options.lifeCapDec :
-				game.getPlayer().lifeCapacity--;
-				break;
-			case Options.lifeInc :
-				game.getPlayer().life++;
-				break;
-			case Options.lifeDec :
-				game.getPlayer().life--;
-				break;
 			case Options.fullscreen :
 				noLoop();
 				stage.setFullScreen(!stage.isFullScreen());

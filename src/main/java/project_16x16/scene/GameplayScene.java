@@ -16,6 +16,7 @@ import processing.event.MouseEvent;
 
 import project_16x16.projectiles.ProjectileObject;
 import project_16x16.Audio;
+import project_16x16.Options;
 import project_16x16.SideScroller;
 import project_16x16.Tileset;
 import project_16x16.Tileset.tileType;
@@ -639,7 +640,22 @@ public class GameplayScene extends PScene {
 			case PConstants.ESC : // Pause
 				applet.swapToScene(GameScenes.PAUSE_MENU);
 				break;
+			case Options.lifeCapInc :
+				localPlayer.lifeCapacity++;
+				break;
+			case Options.lifeCapDec :
+				localPlayer.lifeCapacity--;
+				break;
+			case Options.lifeInc :
+				localPlayer.life++;
+				break;
+			case Options.lifeDec :
+				localPlayer.life--;
+				break;
+			default :
+				break;
 		}
+		
 		if (tool != Tools.SAVE) { // Change tool
 			editorItem.setMode("CREATE");
 			editorItem.focus = false;
