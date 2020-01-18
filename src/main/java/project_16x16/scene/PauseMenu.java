@@ -7,7 +7,9 @@ import project_16x16.SideScroller;
 import project_16x16.Util;
 import project_16x16.SideScroller.GameScenes;
 import project_16x16.ui.Button;
+import processing.core.PConstants;
 import processing.core.PImage;
+import processing.event.KeyEvent;
 import processing.event.MouseEvent;
 
 /**
@@ -22,6 +24,8 @@ public class PauseMenu extends PScene {
 	
 	private SideScroller game;
 	private PImage cache;
+	
+	protected boolean switched = false;
 	
 	public PauseMenu(SideScroller a) {
 		super(a);
@@ -46,17 +50,15 @@ public class PauseMenu extends PScene {
 		pressMenu.setTextSize(40);
 		pressMenu.setSize(300,100);
 	}
-
-	@Override
-	public void draw() {
-
-	}
 	
 	@Override
 	public void switchTo() {
 		super.switchTo();
-		cache = applet.get(); // when game is paused, cache the game screen.
-		cache = Util.blur(cache, 3, 2); // blur game screen
+		if (!switched) {
+			cache = applet.get(); // when game is paused, cache the game screen.
+			cache = Util.blur(cache, 3, 2); // blur game screen
+		}
+		switched = true;
 	}
 
 	@Override
@@ -67,11 +69,7 @@ public class PauseMenu extends PScene {
 		pressMenu.manDisplay();
 	}
 
-	@Override
-	public void debug() {
-	}
-	
-	public void update() {
+	private void update() {
 		pressResume.update();
 		if(pressResume.hover()) {
 			game.returnScene();
@@ -92,4 +90,16 @@ public class PauseMenu extends PScene {
     void mouseReleased(MouseEvent e) {
     	update();
     }
+    
+	@Override
+	void keyReleased(KeyEvent e) {
+		switch (e.getKeyCode()) {
+			case 8 : // BACKSPACE
+			case PConstants.ESC : // Pause
+				game.returnScene();
+				break;
+			default :
+				break;
+		}
+	}
 }

@@ -170,6 +170,7 @@ public class GameplayScene extends PScene {
 	@Override
 	public void switchTo() {
 		super.switchTo();
+		((PauseMenu) GameScenes.PAUSE_MENU.getScene()).switched = false;
 		Audio.play(BGM.TEST1, -10);
 	}
 	
@@ -634,6 +635,11 @@ public class GameplayScene extends PScene {
 
 	@Override
 	protected void keyReleased(processing.event.KeyEvent e) {
+		switch (e.getKeyCode()) { // Global gameplay hotkeys
+			case PConstants.ESC : // Pause
+				applet.swapToScene(GameScenes.PAUSE_MENU);
+				break;
+		}
 		if (tool != Tools.SAVE) { // Change tool
 			editorItem.setMode("CREATE");
 			editorItem.focus = false;

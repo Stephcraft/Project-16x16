@@ -1,5 +1,7 @@
 package project_16x16.scene;
 
+import processing.core.PConstants;
+import processing.event.KeyEvent;
 import processing.event.MouseEvent;
 import project_16x16.SideScroller;
 import project_16x16.Audio;
@@ -98,5 +100,17 @@ public final class MainMenu extends PScene {
 	@Override
 	void mouseReleased(MouseEvent e) {
 		update();
+	}
+	
+	@Override
+	void keyReleased(KeyEvent e) {
+		switch (e.getKeyCode()) {
+			case 8 : // BACKSPACE
+			case PConstants.ESC : // Pause
+				game.returnScene();
+				break;
+			default :
+				break;
+		}
 	}
 }

@@ -1,5 +1,6 @@
 package project_16x16;
 
+import java.util.ArrayDeque;
 import java.util.HashSet;
 
 import javafx.scene.Scene;
@@ -68,8 +69,9 @@ public class SideScroller extends PApplet {
 	 * Use {@link #swapToScene(PScene)} or {@link #returnScene()} to change the
 	 * scene -- don't reassign this variable directly!
 	 */
-	private GameScenes currentScene;
-	private GameScenes previousScene;
+//	private GameScenes currentScene;
+	
+	private ArrayDeque<GameScenes> previousScenes;
 	private int sceneSwapTime = 0;
 
 	private static MainMenu menu;
@@ -79,10 +81,11 @@ public class SideScroller extends PApplet {
 	private static MultiplayerMenu mMenu;
 	private static MultiplayerHostMenu mHostMenu;
 	private static MultiplayerClientMenu mClientMenu;
+	private static AudioSettings audioSettings;
 
 	public enum GameScenes {
 		MAIN_MENU(menu), GAME(game), PAUSE_MENU(pmenu), SETTINGS_MENU(settings), MULTIPLAYER_MENU(mMenu),
-		HOST_MENU(mHostMenu), CLIENT_MENU(mClientMenu);
+		HOST_MENU(mHostMenu), CLIENT_MENU(mClientMenu), AUDIO_SETTINGS(audioSettings);
 
 		PScene scene;
 
@@ -199,6 +202,7 @@ public class SideScroller extends PApplet {
 		Audio.setGainSFX(-6); // TODO
 
 		// Create scene
+		previousScenes = new ArrayDeque<>();
 		game = new GameplayScene(this);
 		menu = new MainMenu(this);
 		pmenu = new PauseMenu(this);
@@ -206,6 +210,7 @@ public class SideScroller extends PApplet {
 		mMenu = new MultiplayerMenu(this);
 		mHostMenu = new MultiplayerHostMenu(this);
 		mClientMenu = new MultiplayerClientMenu(this);
+		audioSettings = new AudioSettings(this);
 		swapToScene(GameScenes.MAIN_MENU);
 
 		// Camera
@@ -235,16 +240,14 @@ public class SideScroller extends PApplet {
 	 */
 	public void swapToScene(GameScenes newScene) {
 		if (frameCount - sceneSwapTime > 6 || frameCount == 0) {
-			if (currentScene != null) {
-				currentScene.getScene().switchFrom();
-				if (!(newScene.equals(previousScene))) {
-					previousScene = currentScene;
+			if (!newScene.equals(previousScenes.peek())) { // if different
+				if (!previousScenes.isEmpty()) {
+					previousScenes.peek().getScene().switchFrom(); // switch from
 				}
+				previousScenes.push(newScene);
+				newScene.getScene().switchTo();
+				sceneSwapTime = frameCount;
 			}
-
-			currentScene = newScene;
-			currentScene.getScene().switchTo();
-			sceneSwapTime = frameCount;
 		}
 	}
 
@@ -254,8 +257,10 @@ public class SideScroller extends PApplet {
 	 * returning to the game).
 	 */
 	public void returnScene() {
-		if (previousScene != null) {
-			swapToScene(previousScene);
+		if (previousScenes.size() > 1) {
+			previousScenes.pop().getScene().switchFrom();
+			previousScenes.peek().getScene().switchTo();
+			sceneSwapTime = frameCount;
 		}
 	}
 
@@ -289,9 +294,9 @@ public class SideScroller extends PApplet {
 	 * @see {@link Camera#hook()}
 	 */
 	private void drawBelowCamera() {
-		currentScene.getScene().draw(); // Handle Draw Scene Method - draws world, etc.
+		previousScenes.peek().getScene().draw(); // Handle Draw Scene Method - draws world, etc.
 		if (debug == debugType.ALL) {
-			currentScene.getScene().debug();
+			previousScenes.peek().getScene().debug();
 			camera.postDebug();
 		}
 	}
@@ -305,7 +310,7 @@ public class SideScroller extends PApplet {
 	 * @see {@link Camera#release()}
 	 */
 	private void drawAboveCamera() {
-		currentScene.getScene().drawUI();
+		previousScenes.peek().getScene().drawUI();
 		Notifications.run();
 		if (debug == debugType.ALL) {
 			camera.post();
@@ -382,14 +387,6 @@ public class SideScroller extends PApplet {
 				stage.setFullScreen(!stage.isFullScreen());
 				scaleResolution();
 				loop();
-				break;
-			case ESC : // Pause
-				if (currentScene == GameScenes.GAME) {
-					swapToScene(GameScenes.PAUSE_MENU);
-				}
-				if (currentScene == GameScenes.PAUSE_MENU) {
-					swapToScene(GameScenes.GAME);
-				}
 				break;
 			case Options.toggleDebug :
 				debug = debug.next();
@@ -582,8 +579,8 @@ public class SideScroller extends PApplet {
 	}
 
 	/**
-	 * Launch into multiplayer mode instantly bases upon program args. Used to test
-	 * & debug multiplayer more quickly.
+	 * Launch into multiplayer mode instantly bases upon program args. Used in
+	 * development to test & debug multiplayer more quickly.
 	 */
 	private void launchIntoMultiplayer() {
 		if (args != null) {
