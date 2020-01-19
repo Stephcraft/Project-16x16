@@ -28,7 +28,7 @@ public final class Camera extends ZoomPan {
 	 * Lerp constant for motion. Used for all motion easing (zoom, position and
 	 * rotation).
 	 */
-	private float lerpSpeed = 0.05f;
+	private float lerpSpeed = Constants.CAMERA_LERP;
 	private float zoom = 1.0f;
 	/**
 	 * Target variables are used as the target for lerping.

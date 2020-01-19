@@ -59,32 +59,7 @@ public final class Util {
 	public static PImage blur(PImage img, int radius, int iterations) {
 		return BlurUtils.blurImage(img, radius, iterations);
 	}
-
-	public static PImage warp(PImage source, float waveAmplitude, float numWaves) {
-		int w = source.width, h = source.height;
-		PImage destination = applet.createImage(w, h, PConstants.ARGB);
-		source.loadPixels();
-		destination.loadPixels();
-
-		float yToPhase = 2 * PConstants.PI * numWaves / h; // conversion factor from y values to radians.
-
-		for (int x = 0; x < w; x++) {
-			for (int y = 0; y < h; y++) {
-				int newX, newY;
-				newX = PApplet.parseInt(x + waveAmplitude * PApplet.sin(y * yToPhase));
-				newY = y;
-				int c;
-				if (newX >= w || newX < 0 || newY >= h || newY < 0) {
-					c = applet.color(0, 0, 0, 0);
-				} else {
-					c = source.pixels[newY * w + newX];
-				}
-				destination.pixels[y * w + x] = c;
-			}
-		}
-		return pg(destination).get();
-	}
-
+	
 	public static PImage scale(PImage pBuffer, int scaling) {
 		PImage originalImage = pBuffer;
 		PImage tempImage = applet.createImage(PApplet.parseInt(originalImage.width * scaling),

@@ -35,10 +35,12 @@ public class NumberInputField extends TextInputField {
 
 		// Focus Event
 		if (Util.hoverScreen(x, y, width, height)) {
+			mouseOver = true;
 			if (applet.mousePressEvent) {
 				focus = true;
 			}
 		} else {
+			mouseOver = false;
 			if (applet.mousePressEvent) {
 				focus = false;
 			}

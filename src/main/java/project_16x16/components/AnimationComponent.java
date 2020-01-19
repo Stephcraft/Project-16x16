@@ -1,16 +1,20 @@
 package project_16x16.components;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import org.apache.commons.collections.map.MultiValueMap;
 
 import processing.core.PImage;
+import project_16x16.Audio;
 import project_16x16.SideScroller;
+import project_16x16.Audio.SFX;
 
 /**
  * The Animation Class
  */
 public class AnimationComponent {
-	
-	public static SideScroller applet;
+
+	private static SideScroller applet;
 
 	private ArrayList<PImage> frames;
 	private boolean loop;
@@ -21,6 +25,17 @@ public class AnimationComponent {
 	private float currentFrame;
 	public String name;
 	public boolean ended;
+
+	private final MultiValueMap sounds;
+	
+
+	public AnimationComponent() {
+		sounds = new MultiValueMap();
+	}
+
+	public static void assignApplet(SideScroller applet) {
+		AnimationComponent.applet = applet;
+	}
 
 	/**
 	 * The most simple method to change current animation sequence.
@@ -34,7 +49,9 @@ public class AnimationComponent {
 	}
 
 	/**
-	 * A method to change current animation sequence. Can specify animation frame length.
+	 * A method to change current animation sequence. Can specify animation frame
+	 * length.
+	 * 
 	 * @param frames PImage frame sequence.
 	 * @param loop   Whether the animation should loop.
 	 * @param rate   Every x frames the next frame is loaded.
@@ -52,10 +69,12 @@ public class AnimationComponent {
 
 	/**
 	 * This method controls the animation of elements (cycles through frames).
+	 * 
 	 * @return PImage image
 	 */
+	@SuppressWarnings("unchecked")
 	public PImage animate() {
-		
+
 		PImage frame = frames.get((int) currentFrame);
 
 		if ((applet.frameCount - firstFrame) % rate == 0) {
@@ -67,11 +86,16 @@ public class AnimationComponent {
 				currentFrame = 0;
 			}
 		}
+		Collection<SFX> coll = (Collection<SFX>) sounds.get((int) currentFrame); // TODO high overhead?
+		if (coll != null) {
+			coll.forEach(sound -> Audio.play(sound));
+		}
 		return frame;
 	}
-	
+
 	/**
 	 * Return current frame without animating further.
+	 * 
 	 * @return
 	 */
 	public PImage getFrame() {
@@ -88,16 +112,17 @@ public class AnimationComponent {
 	}
 
 	/**
-	* Retrieves the current frame ID
-	*
-	* @return the current frame as a float
-	**/
+	 * Retrieves the current frame ID
+	 *
+	 * @return the current frame as a float
+	 **/
 	public int getFrameID() {
 		return (int) currentFrame;
 	}
-	
+
 	/**
 	 * Set frame (for multiplayer)
+	 * 
 	 * @param frame
 	 */
 	public void setFrame(float frame) {
@@ -105,14 +130,24 @@ public class AnimationComponent {
 			currentFrame = frame;
 		}
 	}
-	
-	
+
 	/**
-	*Retrieves the length of the animation
-	*
-	* @return the time of the animation as an int
-	**/
+	 * Retrieves the length of the animation
+	 *
+	 * @return the time of the animation as an int
+	 **/
 	public int getAnimLength() {
 		return length;
+	}
+
+	/**
+	 * Set a SFX to play trigger at a given animation frame.
+	 * TODO frames param
+	 * 
+	 * @param sound
+	 * @param frameNumber
+	 */
+	public void setSFX(SFX sound, int frameNumber) {
+		sounds.put(frameNumber, sound);
 	}
 }

@@ -1,9 +1,12 @@
 package project_16x16.scene;
 
+import processing.core.PConstants;
+import processing.event.KeyEvent;
 import processing.event.MouseEvent;
 import project_16x16.SideScroller;
 import project_16x16.Audio;
 import project_16x16.Audio.BGM;
+import project_16x16.Constants;
 import project_16x16.SideScroller.GameScenes;
 import project_16x16.scene.PScene;
 import project_16x16.ui.Button;
@@ -60,12 +63,12 @@ public final class MainMenu extends PScene {
 	@Override
 	public void switchTo() {
 		super.switchTo();
-		Audio.play(BGM.DEFAULT1);
+		Audio.play(BGM.TEST3);
 	}
 
 	@Override
 	public void drawUI() {
-		background(29, 33, 45);
+		background(Constants.Colors.MENU_GREY);
 		pressStart.manDisplay();
 		pressMultiplayer.manDisplay();
 		pressSettings.manDisplay();
@@ -98,5 +101,17 @@ public final class MainMenu extends PScene {
 	@Override
 	void mouseReleased(MouseEvent e) {
 		update();
+	}
+	
+	@Override
+	void keyReleased(KeyEvent e) {
+		switch (e.getKeyCode()) {
+			case 8 : // BACKSPACE
+			case PConstants.ESC : // Pause
+				game.returnScene();
+				break;
+			default :
+				break;
+		}
 	}
 }

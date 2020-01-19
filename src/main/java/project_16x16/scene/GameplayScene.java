@@ -16,6 +16,7 @@ import processing.event.MouseEvent;
 
 import project_16x16.projectiles.ProjectileObject;
 import project_16x16.Audio;
+import project_16x16.Options;
 import project_16x16.SideScroller;
 import project_16x16.Tileset;
 import project_16x16.Tileset.tileType;
@@ -28,7 +29,6 @@ import project_16x16.ui.Tab;
 
 import project_16x16.windows.LoadLevelWindow;
 import project_16x16.windows.SaveLevelWindow;
-import project_16x16.windows.TestWindow;
 
 /**
  * Gameplay Scene. Both the level editor and gameplay.
@@ -44,15 +44,15 @@ public class GameplayScene extends PScene {
 	// Graphics Slots
 	private PImage slot;
 	private PImage slotEditor;
+	
+	private final String levelString;
 
 	// Graphics Icon
-	private PImage icon_eye;
-	private PImage icon_arrow;
+	private PImage icon_modify;
 	private PImage icon_inventory;
 	private PImage icon_play;
 	private PImage icon_save;
-	private PImage icon_eyeActive;
-	private PImage icon_arrowActive;
+	private PImage icon_modfiyActive;
 	private PImage icon_inventoryActive;
 	private PImage icon_playActive;
 	private PImage icon_saveActive;
@@ -62,7 +62,6 @@ public class GameplayScene extends PScene {
 
 	// Windows
 	private SaveLevelWindow window_saveLevel;
-	private TestWindow window_test;
 	private LoadLevelWindow window_loadLevel;
 
 	// Tabs
@@ -77,7 +76,7 @@ public class GameplayScene extends PScene {
 	private ScrollBarVertical scrollBar;
 
 	public enum Tools {
-		MOVE, MODIFY, INVENTORY, PLAY, SAVE, LOADEXAMPLE, TEST,
+		MODIFY, INVENTORY, PLAY, SAVE, LOADEXAMPLE, TEST,
 	}
 
 	public Tools tool;
@@ -103,8 +102,9 @@ public class GameplayScene extends PScene {
 
 	private SelectionBox selectionBox;
 
-	public GameplayScene(SideScroller a) {
+	public GameplayScene(SideScroller a, String levelString) {
 		super(a);
+		this.levelString = levelString;
 		setup();
 	}
 
@@ -131,14 +131,12 @@ public class GameplayScene extends PScene {
 		slotEditor = Tileset.getTile(310, 256, 20, 21, 4);
 
 		// Get Icon Graphics
-		icon_eye = Tileset.getTile(267, 302, 11, 8, 4);
-		icon_arrow = Tileset.getTile(279, 301, 9, 9, 4);
+		icon_modify = Tileset.getTile(279, 301, 9, 9, 4);
 		icon_inventory = Tileset.getTile(289, 301, 9, 9, 4);
 		icon_play = Tileset.getTile(298, 301, 9, 9, 4);
 		icon_save = Tileset.getTile(307, 301, 9, 9, 4);
 
-		icon_eyeActive = Tileset.getTile(267, 292, 11, 8, 4);
-		icon_arrowActive = Tileset.getTile(279, 291, 9, 9, 4);
+		icon_modfiyActive = Tileset.getTile(279, 291, 9, 9, 4);
 		icon_inventoryActive = Tileset.getTile(289, 291, 9, 9, 4);
 		icon_playActive = Tileset.getTile(298, 291, 9, 9, 4);
 		icon_saveActive = Tileset.getTile(307, 291, 9, 9, 4);
@@ -162,7 +160,7 @@ public class GameplayScene extends PScene {
 		localPlayer = new Player(applet, this, false);
 		localPlayer.pos.set(0, -100); // TODO spawn location
 
-		loadLevel(SideScroller.LEVEL); // TODO change level
+		loadLevel(levelString); // TODO change level
 
 		windowTabs = new Tab(applet, tabTexts, tabTexts.length);
 	}
@@ -170,7 +168,8 @@ public class GameplayScene extends PScene {
 	@Override
 	public void switchTo() {
 		super.switchTo();
-		Audio.play(BGM.DEFAULT);
+		((PauseMenu) GameScenes.PAUSE_MENU.getScene()).switched = false;
+		Audio.play(BGM.TEST1, -10);
 	}
 	
 	/**
@@ -214,7 +213,6 @@ public class GameplayScene extends PScene {
 				editorItem.displayDestination();
 				break;
 			case PLAY :
-			case MOVE :
 			case INVENTORY :
 			case SAVE :
 			case LOADEXAMPLE :
@@ -251,7 +249,6 @@ public class GameplayScene extends PScene {
 			case PLAY :
 				localPlayer.update();
 				break;
-			case MOVE :
 			case INVENTORY :
 			case SAVE :
 			case LOADEXAMPLE :
@@ -314,52 +311,45 @@ public class GameplayScene extends PScene {
 			}
 		}
 
+		int xAnchor = 42;
+		int offset = 48;
 		// GUI Icons
-		if (tool == Tools.MOVE
-				|| (Util.hoverScreen(40, 120, 36, 36) && tool != Tools.SAVE && tool != Tools.INVENTORY)) {
-			if (Util.hoverScreen(40, 120, 36, 36) && applet.mousePressEvent) {
-				tool = Tools.MOVE;
-			}
-			image(icon_eyeActive, 40, 120);
-		} else {
-			image(icon_eye, 40, 120);
-		}
 		if (tool == Tools.MODIFY
-				|| (Util.hoverScreen(90, 120, 36, 36) && tool != Tools.SAVE && tool != Tools.INVENTORY)) {
-			if (Util.hoverScreen(90, 120, 36, 36) && applet.mousePressEvent) {
+				|| (Util.hoverScreen(xAnchor, 120, 36, 36) && tool != Tools.SAVE && tool != Tools.INVENTORY)) {
+			if (Util.hoverScreen(xAnchor, 120, 36, 36) && applet.mousePressEvent) {
 				tool = Tools.MODIFY;
 			}
-			image(icon_arrowActive, 90, 120);
+			image(icon_modfiyActive, xAnchor, 120);
 		} else {
-			image(icon_arrow, 90, 120);
+			image(icon_modify, xAnchor, 120);
 		}
 		if (tool == Tools.INVENTORY
-				|| (Util.hoverScreen(90 + 48, 120, 36, 36) && tool != Tools.SAVE && tool != Tools.INVENTORY)) {
-			if (Util.hoverScreen(90 + 48, 120, 36, 36) && applet.mousePressEvent) {
+				|| (Util.hoverScreen(xAnchor + offset, 120, 36, 36) && tool != Tools.SAVE && tool != Tools.INVENTORY)) {
+			if (Util.hoverScreen(xAnchor + offset, 120, 36, 36) && applet.mousePressEvent) {
 				tool = Tools.INVENTORY;
 			}
-			image(icon_inventoryActive, 90 + 48, 120);
+			image(icon_inventoryActive, xAnchor + offset, 120);
 		} else {
-			image(icon_inventory, 90 + 48, 120);
+			image(icon_inventory, xAnchor + offset, 120);
 		}
-		if (tool == Tools.PLAY
-				|| (Util.hoverScreen(90 + 48 * 2, 120, 36, 36) && tool != Tools.SAVE && tool != Tools.INVENTORY)) {
-			if (Util.hoverScreen(90 + 48 * 2, 120, 36, 36) && applet.mousePressEvent) {
+		if (tool == Tools.PLAY || (Util.hoverScreen(xAnchor + offset * 2, 120, 36, 36) && tool != Tools.SAVE
+				&& tool != Tools.INVENTORY)) {
+			if (Util.hoverScreen(xAnchor + offset * 2, 120, 36, 36) && applet.mousePressEvent) {
 				applet.camera.setFollowObject(localPlayer);
 				tool = Tools.PLAY;
 			}
-			image(icon_playActive, 90 + 48 * 2, 120);
+			image(icon_playActive, xAnchor + offset * 2, 120);
 		} else {
-			image(icon_play, 90 + 48 * 2, 120);
+			image(icon_play, xAnchor + offset * 2, 120);
 		}
-		if (tool == Tools.SAVE
-				|| (Util.hoverScreen(90 + 48 * 3, 120, 36, 36) && tool != Tools.SAVE && tool != Tools.INVENTORY)) {
-			if (Util.hoverScreen(90 + 48 * 3, 120, 36, 36) && applet.mousePressEvent) {
+		if (tool == Tools.SAVE || (Util.hoverScreen(xAnchor + offset * 3, 120, 36, 36) && tool != Tools.SAVE
+				&& tool != Tools.INVENTORY)) {
+			if (Util.hoverScreen(xAnchor + offset * 3, 120, 36, 36) && applet.mousePressEvent) {
 				tool = Tools.SAVE;
 			}
-			image(icon_saveActive, 90 + 48 * 3, 120);
+			image(icon_saveActive, xAnchor + offset * 3, 120);
 		} else {
-			image(icon_save, 90 + 48 * 3, 120);
+			image(icon_save, xAnchor + offset * 3, 120);
 		}
 
 		switch (tool) {
@@ -369,8 +359,6 @@ public class GameplayScene extends PScene {
 			case MODIFY :
 				editorItem.update();
 				editorItem.display();
-				break;
-			case MOVE :
 				break;
 			case PLAY :
 				localPlayer.displayLife();
@@ -403,20 +391,6 @@ public class GameplayScene extends PScene {
 				window_loadLevel.display();
 				window_loadLevel.update();
 				if (windowTabs.getButton(1).event()) {
-					windowTabs.moveActive(1);
-					tool = Tools.SAVE;
-				}
-				break;
-			case TEST :
-				window_test.privacyDisplay();
-				windowTabs.update();
-				windowTabs.display();
-				window_test.update();
-				window_test.display();
-				if (windowTabs.getButton(0).event()) {
-					windowTabs.moveActive(0);
-					tool = Tools.LOADEXAMPLE;
-				} else if (windowTabs.getButton(1).event()) {
 					windowTabs.moveActive(1);
 					tool = Tools.SAVE;
 				}
@@ -634,30 +608,46 @@ public class GameplayScene extends PScene {
 
 	@Override
 	protected void keyReleased(processing.event.KeyEvent e) {
+		switch (e.getKeyCode()) { // Global gameplay hotkeys
+			case PConstants.ESC : // Pause
+				applet.swapToScene(GameScenes.PAUSE_MENU);
+				break;
+			case Options.lifeCapInc :
+				localPlayer.lifeCapacity++;
+				break;
+			case Options.lifeCapDec :
+				localPlayer.lifeCapacity--;
+				break;
+			case Options.lifeInc :
+				localPlayer.life++;
+				break;
+			case Options.lifeDec :
+				localPlayer.life--;
+				break;
+			default :
+				break;
+		}
+		
 		if (tool != Tools.SAVE) { // Change tool
 			editorItem.setMode("CREATE");
 			editorItem.focus = false;
 			switch (e.getKeyCode()) {
 				case 49 : // 1
-					tool = Tools.MOVE;
-					break;
-				case 50 : // 2
 					tool = Tools.MODIFY;
 					break;
-				case 51 : // 3
+				case 50 : // 2
 					tool = Tools.INVENTORY;
 					scroll_inventory = 0;
 					break;
-				case 52 : // 4
+				case 51 : // 3
 					tool = Tools.PLAY;
 					applet.camera.setFollowObject(localPlayer);
 					break;
-				case 53 : // 5
+				case 52 : // 4
 					tool = Tools.SAVE;
 					break;
 				case 69 : // 'e' TODO remove?
 					if (tool == Tools.INVENTORY) {
-						tool = Tools.MOVE;
 					} else {
 						tool = Tools.INVENTORY;
 						editorItem.setMode("ITEM");
