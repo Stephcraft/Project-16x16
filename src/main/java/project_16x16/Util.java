@@ -180,7 +180,7 @@ public final class Util {
 	}
 	
 	/**
-	 * Determine if a point is within a rectangular region.
+	 * Determine if a point is within a rectangular region -- PVector params.
 	 * @param point PVector position to test.
 	 * @param UL Corner one of region.
 	 * @param BR Corner two of region (different X & Y).
@@ -191,6 +191,23 @@ public final class Util {
 				|| (point.x >= BR.x && point.y >= BR.y) && (point.x <= UL.x && point.y <= UL.y) // NW
 				|| (point.x <= UL.x && point.x >= BR.x) && (point.y >= UL.y && point.y <= BR.y) // SW
 				|| (point.x <= BR.x && point.x >= UL.x) && (point.y >= BR.y && point.y <= UL.y); // NE
+	}
+		
+	/**
+	 * Determine if a point is within a rectangular region -- Float params.
+	 * @param pointX X coord of point position to test.
+	 * @param pointY X coord of point position to test.
+	 * @param ULX X coord of corner #1 (upper left) of region.
+	 * @param ULY Y coord of corner #1 (upper left) of region.
+	 * @param BRX X coord of corner #2 (bottom right) of region.
+	 * @param BRY Y coord of corner #2 (bottom right) of region.
+	 * @return True if point contained in region.
+	 */
+	public static boolean withinRegion(float pointX, float pointY, float ULX, float ULY, float BRX, float BRY) {
+		return (pointX >= ULX && pointY >= ULY) && (pointX <= BRX && pointY <= BRY) // SE
+				|| (pointX >= BRX && pointY >= BRY) && (pointX <= ULX && pointY <= ULY) // NW
+				|| (pointX <= ULX && pointX >= BRX) && (pointY >= ULY && pointY <= BRY) // SW
+				|| (pointX <= BRX && pointX >= ULX) && (pointY >= BRY && pointY <= ULY); // NE
 	}
 
 	/**
