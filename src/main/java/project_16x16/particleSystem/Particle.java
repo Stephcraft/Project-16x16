@@ -43,8 +43,7 @@ public class Particle {
 	public boolean isDead() {
 		if (lifespan <= 0.0)
 			return true;
-		else
-			return false;
+		return false;
 	}
 	
 	public void run() {
