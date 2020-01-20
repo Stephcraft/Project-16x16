@@ -62,10 +62,15 @@ public class Particle {
 	}
 	
 	private void draw() {
+		
+		applet.pushMatrix();
+		applet.translate(position.x, position.y);
 		if (useCustomeSize)
-			applet.image(image, position.x, position.y, size, size);
-		else
-			applet.image(image, position.x, position.y);
+			applet.scale(size, size);
+		
+		applet.image(image, 0, 0);
+		applet.noTint();
+		applet.popMatrix();
 	}
 	
 	private void setLifespan(float lifespan)
