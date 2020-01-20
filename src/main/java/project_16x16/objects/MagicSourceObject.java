@@ -2,9 +2,6 @@ package project_16x16.objects;
 
 import java.util.ArrayList;
 
-import project_16x16.ParticleSystem.ParticleSystem;
-import project_16x16.ParticleSystem.emissions.AreaEmission;
-import project_16x16.ParticleSystem.events.ParticleAnimationController;
 import processing.core.PApplet;
 import processing.core.PImage;
 import project_16x16.projectiles.MagicProjectile;
@@ -13,6 +10,9 @@ import project_16x16.scene.GameplayScene;
 import project_16x16.SideScroller;
 import project_16x16.Tileset;
 import project_16x16.Util;
+import project_16x16.particleSystem.ParticleSystem;
+import project_16x16.particleSystem.emissions.AreaEmission;
+import project_16x16.particleSystem.events.ParticleAnimationController;
 
 /**
  * Extends {@link GameObject}.

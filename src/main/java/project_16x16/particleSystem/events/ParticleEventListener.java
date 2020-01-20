@@ -1,6 +1,6 @@
-package project_16x16.ParticleSystem.events;
+package project_16x16.particleSystem.events;
 
-import project_16x16.ParticleSystem.*;
+import project_16x16.particleSystem.*;
 
 public interface ParticleEventListener {
 	

@@ -1,7 +1,7 @@
-package project_16x16.ParticleSystem.events;
+package project_16x16.particleSystem.events;
 
-import project_16x16.ParticleSystem.Particle;
 import processing.core.PVector;
+import project_16x16.particleSystem.Particle;
 
 /**
  * Partical Acceleration Controller

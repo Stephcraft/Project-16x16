@@ -1,9 +1,9 @@
-package project_16x16.ParticleSystem.events;
+package project_16x16.particleSystem.events;
 
 import java.util.ArrayList;
 
-import project_16x16.ParticleSystem.Particle;
-import project_16x16.ParticleSystem.ParticleSystem;
+import project_16x16.particleSystem.Particle;
+import project_16x16.particleSystem.ParticleSystem;
 
 /**
  * Particle Child Controller

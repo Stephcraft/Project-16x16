@@ -1,4 +1,4 @@
-package project_16x16.ParticleSystem;
+package project_16x16.particleSystem;
 
 import java.util.function.Consumer;
 

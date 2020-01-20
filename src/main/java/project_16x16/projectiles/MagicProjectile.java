@@ -9,12 +9,12 @@ import processing.core.PVector;
 import project_16x16.SideScroller;
 import project_16x16.Tileset;
 import project_16x16.Util;
-import project_16x16.ParticleSystem.ParticleSystem;
-import project_16x16.ParticleSystem.emissions.AreaEmission;
-import project_16x16.ParticleSystem.events.ParticleAnimationController;
-import project_16x16.ParticleSystem.events.ParticleNoLoopController;
 import project_16x16.objects.CollidableObject;
 import project_16x16.objects.EditableObject;
+import project_16x16.particleSystem.ParticleSystem;
+import project_16x16.particleSystem.emissions.AreaEmission;
+import project_16x16.particleSystem.events.ParticleAnimationController;
+import project_16x16.particleSystem.events.ParticleNoLoopController;
 import project_16x16.scene.GameplayScene;
 
 public class MagicProjectile extends ProjectileObject {
