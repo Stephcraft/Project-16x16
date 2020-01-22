@@ -41,9 +41,7 @@ public class Particle {
 	}
 	
 	public boolean isDead() {
-		if (lifespan <= 0.0)
-			return true;
-		return false;
+		return lifespan <= 0.0;
 	}
 	
 	public void run() {
@@ -72,8 +70,7 @@ public class Particle {
 		applet.popMatrix();
 	}
 	
-	private void setLifespan(float lifespan)
-	{
+	private void setLifespan(float lifespan) {
 		maxLifespan = lifespan;
 		this.lifespan = lifespan;
 	}
