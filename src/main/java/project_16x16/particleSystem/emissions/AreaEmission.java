@@ -1,73 +1,69 @@
-package project_16x16.ParticleSystem.emissions;
+package project_16x16.particleSystem.emissions;
 
 import java.util.Random;
 import java.util.function.Consumer;
 
-import project_16x16.ParticleSystem.Particle;
 import processing.core.PVector;
+import project_16x16.particleSystem.Particle;
 
 /**
  * AreaEmission
  * <p>
- * Emits particles in a direction given angle (radians).
- * 0 is to the left, PI/2 is down.
+ * Emits particles in a random direction
  *
  * @author petturtle
  */
-public class DirectionalEmission implements ParticleEmission {
+public class AreaEmission implements ParticleEmission {
 
 	private PVector position;
 	private float velocity;
 	private float acceleration;
 	private float spread;
-	private float angle;
 	
 	private PVector newPosition;
 	private PVector newVelocity;
 	private PVector newAcceleration;
 	
 	/**
-     * Create a new DirectionalEmission.
+     * Create a new AreaEmission.
 
      * @param position 	   PVector position, set to a active entities PVector for the particle system to follow
      * @param velocity     Start velocity of particle in random direction;
      * @param acceleration Start acceleration of particle in random direction;
      * @param spread	   Deviation from spawn position
-     * @param angle		   direction angle (radians)
      */
-	public DirectionalEmission(PVector position, float velocity, float acceleration, float spread, float angle) {
+	public AreaEmission(PVector position, float velocity, float acceleration, float spread) {
 		this.position = position;
 		this.velocity = velocity;
 		this.acceleration = acceleration;
 		this.spread = spread;
-		this.angle = angle;
 	}
 	
 	public void generateNew() {
+		float phi = (float) (2*Math.PI*Math.random());
 		newPosition();
-		newVelocity();
-		newAcceleration();
+		newVelocity(phi);
+		newAcceleration(phi);
 	}
 	
 	private void newPosition() {
 		PVector p = position.copy();
 		Random ran = new Random();
-		float offset = (ran.nextFloat()*spread*2f)-spread;
-		p.x += (float) (offset*Math.cos(angle+Math.PI/2));
-		p.y += (float) (offset*Math.sin(angle+Math.PI/2));
+		p.x += (ran.nextFloat()*spread*2f)-spread;
+		p.y += (ran.nextFloat()*spread*2f)-spread;
 		newPosition = p;
 	}
 
-	private void newVelocity() {
+	private void newVelocity(float phi) {
 		newVelocity = new PVector();
-		newVelocity.x = (float) (velocity*Math.cos(angle));
-		newVelocity.y = (float) (velocity*Math.sin(angle));
+		newVelocity.x = (float) (velocity*Math.cos(phi));
+		newVelocity.y = (float) (velocity*Math.sin(phi));
 	}
 
-	private void newAcceleration() {
+	private void newAcceleration(float phi) {
 		newAcceleration = new PVector();
-		newAcceleration.x = (float) (acceleration*Math.cos(angle));
-		newAcceleration.y = (float) (acceleration*Math.sin(angle));
+		newAcceleration.x = (float) (acceleration*Math.cos(phi));
+		newAcceleration.y = (float) (acceleration*Math.sin(phi));
 	}
 	
 	@Override
@@ -84,9 +80,9 @@ public class DirectionalEmission implements ParticleEmission {
 	public void setPosition(PVector position) {
 		this.position = position;
 	}
-	
+
 	@Override
 	public ParticleEmission copy() {
-		return new  DirectionalEmission(position, velocity, acceleration, spread, angle);
+		return new AreaEmission(position, velocity, acceleration, spread);
 	}
-}
+} 

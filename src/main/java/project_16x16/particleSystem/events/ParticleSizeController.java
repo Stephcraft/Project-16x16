@@ -1,6 +1,6 @@
-package project_16x16.ParticleSystem.events;
+package project_16x16.particleSystem.events;
 
-import project_16x16.ParticleSystem.Particle;
+import project_16x16.particleSystem.Particle;
 
 /**
  * Particle Size Controller

@@ -1,10 +1,10 @@
-package project_16x16.ParticleSystem.emissions;
+package project_16x16.particleSystem.emissions;
 
 import java.util.Random;
 import java.util.function.Consumer;
 
-import project_16x16.ParticleSystem.Particle;
 import processing.core.PVector;
+import project_16x16.particleSystem.Particle;
 
 /**
  * Arch Emission

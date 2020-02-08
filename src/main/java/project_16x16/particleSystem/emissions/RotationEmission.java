@@ -1,49 +1,53 @@
-package project_16x16.ParticleSystem.emissions;
+package project_16x16.particleSystem.emissions;
 
 import java.util.Random;
 import java.util.function.Consumer;
 
-import project_16x16.ParticleSystem.Particle;
 import processing.core.PVector;
+import project_16x16.particleSystem.Particle;
 
 /**
- * RectEmission
+ * RotationEmission
  * <p>
- * Spawns particles in a rect given center position, width, height.
+ * A experimental emission (could change)
+ * Emits particles in a direction which increase for each particle.
+ * 0 is to the left, PI/2 is down.
  *
  * @author petturtle
  */
-public class RectEmission implements ParticleEmission {
+public class RotationEmission implements ParticleEmission {
 
 	private PVector position;
 	private float velocity;
 	private float acceleration;
-	private int width;
-	private int height;
+	private float spread;
+	private float div;
+	private float phi;
+	
 	
 	private PVector newPosition;
 	private PVector newVelocity;
 	private PVector newAcceleration;
 	
 	/**
-     * Create a new AreaEmission.
+     * Create a new RotationEmission.
 
-     * @param position 	   PVector center position, set to a active entities PVector for the particle system to follow
-     * @param velocity     Start velocity of particle in random direction;
-     * @param acceleration Start acceleration of particle in random direction;
-     * @param width		   width of rect
-     * @param height	   height of rect
+     * @param position 	   PVector position, set to a active entities PVector for the particle system to follow
+     * @param velocity     Start velocity of particle in facing direction.
+     * @param acceleration Start acceleration of particle in facing direction.
+     * @param spread	   Deviation from spawn position
+     * @param div		   Angle increase for each particle (radians)
      */
-	public RectEmission(PVector position, float velocity, float acceleration, int width, int height) {
+	public RotationEmission(PVector position, float velocity, float acceleration, float spread, float div) {
 		this.position = position;
 		this.velocity = velocity;
 		this.acceleration = acceleration;
-		this.width = width;
-		this.height = height;
+		this.spread = spread;
+		this.div = div;
 	}
 
 	public void generateNew() {
-		float phi = (float) (2*Math.PI*Math.random());
+		phi += div;
 		newPosition();
 		newVelocity(phi);
 		newAcceleration(phi);
@@ -52,8 +56,8 @@ public class RectEmission implements ParticleEmission {
 	private void newPosition() {
 		PVector p = position.copy();
 		Random ran = new Random();
-		p.x += (ran.nextFloat()*width/2f)-width/2;
-		p.y += (ran.nextFloat()*height/2f)-height/2;
+		p.x += (ran.nextFloat()*spread*2f)-spread;
+		p.y += (ran.nextFloat()*spread*2f)-spread;
 		newPosition = p;
 	}
 
@@ -68,7 +72,7 @@ public class RectEmission implements ParticleEmission {
 		newAcceleration.x = (float) (acceleration*Math.cos(phi));
 		newAcceleration.y = (float) (acceleration*Math.sin(phi));
 	}
-	
+
 	@Override
 	public Consumer<Particle> getConsumer() {
 		return p -> {
@@ -86,6 +90,6 @@ public class RectEmission implements ParticleEmission {
 	
 	@Override
 	public ParticleEmission copy() {
-		return new  RectEmission(position, velocity, acceleration, width, height);
+		return new RotationEmission(position, velocity, acceleration, spread, div);
 	}
 }

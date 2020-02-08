@@ -1,14 +1,14 @@
-package project_16x16.ParticleSystem;
+package project_16x16.particleSystem;
 
 import java.util.ArrayList;
 import java.util.function.Consumer;
 
-import project_16x16.ParticleSystem.emissions.*;
-import project_16x16.ParticleSystem.events.*;
 import processing.core.PImage;
 import processing.core.PVector;
 import project_16x16.SideScroller;
 import project_16x16.Tileset;
+import project_16x16.particleSystem.emissions.*;
+import project_16x16.particleSystem.events.*;
 
 /**
  * Particle System

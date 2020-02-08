@@ -1,11 +1,11 @@
-package project_16x16.ParticleSystem.events;
+package project_16x16.particleSystem.events;
 
 import java.util.ArrayList;
 
-import project_16x16.ParticleSystem.Particle;
 import processing.core.PApplet;
 import processing.core.PImage;
 import project_16x16.Tileset;
+import project_16x16.particleSystem.Particle;
 
 /**
  * Particle Animation Controller

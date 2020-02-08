@@ -79,6 +79,7 @@ public final class Util {
 	public static PImage resizeImage(PImage img, float scl) {
 		PGraphics pg = applet.createGraphics((int) (img.width * scl), (int) (img.height * scl));
 
+		pg.noSmooth();
 		pg.beginDraw();
 		pg.clear();
 		pg.scale(scl, scl);

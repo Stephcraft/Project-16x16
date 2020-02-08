@@ -1,4 +1,4 @@
-package project_16x16.ParticleSystem;
+package project_16x16.particleSystem;
 
 import java.util.function.Consumer;
 
@@ -41,10 +41,7 @@ public class Particle {
 	}
 	
 	public boolean isDead() {
-		if (lifespan <= 0.0)
-			return true;
-		else
-			return false;
+		return lifespan <= 0.0;
 	}
 	
 	public void run() {
@@ -62,14 +59,18 @@ public class Particle {
 	}
 	
 	private void draw() {
+		
+		applet.pushMatrix();
+		applet.translate(position.x, position.y);
 		if (useCustomeSize)
-			applet.image(image, position.x, position.y, size, size);
-		else
-			applet.image(image, position.x, position.y);
+			applet.scale(size, size);
+		
+		applet.image(image, 0, 0);
+		applet.noTint();
+		applet.popMatrix();
 	}
 	
-	private void setLifespan(float lifespan)
-	{
+	private void setLifespan(float lifespan) {
 		maxLifespan = lifespan;
 		this.lifespan = lifespan;
 	}
