@@ -248,14 +248,6 @@
     {"name": "Battery:3", "x": 7, "y": 10, "type": "OBJECT"},
     {"name": "Battery_Orb", "x": 21, "y": 9, "type": "OBJECT"},
 
-
-    {"name": "Desk:0", "x": 21, "y": 9, "type": "OBJECT"},
-    {"name": "Desk:1", "x": 21, "y": 9, "type": "OBJECT"},
-    {"name": "Desk:2", "x": 21, "y": 9, "type": "OBJECT"},
-    {"name": "Desk:3", "x": 21, "y": 9, "type": "OBJECT"},
-    {"name": "Desk:4", "x": 21, "y": 9, "type": "OBJECT"},
-    {"name": "Barrier", "x": 21, "y": 9, "type": "OBJECT"},
-
     {"name": "Wheel:0", "x": 1, "y": 2, "type": "OBJECT"},
     {"name": "Wheel:1", "x": 2, "y": 2, "type": "OBJECT"},
     {"name": "Wheel:2", "x": 1, "y": 3, "type": "OBJECT"},
