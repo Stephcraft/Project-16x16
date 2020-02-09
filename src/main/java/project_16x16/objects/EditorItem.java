@@ -7,8 +7,8 @@ import project_16x16.scene.GameplayScene;
 import project_16x16.PClass;
 import project_16x16.SideScroller;
 import project_16x16.Tileset;
-import project_16x16.Tileset.tileType;
 import project_16x16.Util;
+import project_16x16.components.Tile.TileType;
 
 public class EditorItem extends PClass {
 
@@ -18,7 +18,7 @@ public class EditorItem extends PClass {
 	private PImage image;
 
 	public String id;
-	public tileType type;
+	public TileType type;
 
 	private String mode;
 

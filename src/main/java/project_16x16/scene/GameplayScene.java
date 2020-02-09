@@ -18,8 +18,9 @@ import project_16x16.projectiles.ProjectileObject;
 import project_16x16.Audio;
 import project_16x16.SideScroller;
 import project_16x16.Tileset;
-import project_16x16.Tileset.tileType;
 import project_16x16.Util;
+import project_16x16.components.Tile;
+import project_16x16.components.Tile.TileType;
 import project_16x16.Audio.BGM;
 import project_16x16.SideScroller.GameScenes;
 import project_16x16.ui.Anchor;
@@ -465,9 +466,10 @@ public class GameplayScene extends PScene {
 		int x = 0;
 		int y = 1;
 		int index = 0;
-		tileType[] tiles = { tileType.COLLISION, tileType.BACKGROUND, tileType.OBJECT };
-		ArrayList<PImage> inventoryTiles = Tileset.getAllTiles(tiles);
-		for (PImage img : inventoryTiles) {
+		TileType[] tiles = { TileType.COLLISION, TileType.BACKGROUND, TileType.OBJECT };
+		ArrayList<Tile> inventoryTiles = Tileset.getAllTiles(tiles);
+		for (Tile tile : inventoryTiles) {
+			PImage img = tile.getPImage();
 			if (index % 6 == 0) { // show 6 items per row
 				x = 0;
 				y++;
@@ -493,7 +495,7 @@ public class GameplayScene extends PScene {
 							&& applet.getMouseCoordScreen().y > yy - (20 * 4) / 2
 							&& applet.getMouseCoordScreen().y < yy + (20 * 4) / 2) {
 						editorItem.focus = true;
-						editorItem.setTile(Tileset.getTileName(Tileset.getTileId(img)));
+						editorItem.setTile(tile.getName());
 					}
 				}
 			}
@@ -559,8 +561,8 @@ public class GameplayScene extends PScene {
 	private float getInventorySize() {
 		int y = 1;
 
-		tileType[] tiles = { tileType.COLLISION, tileType.BACKGROUND, tileType.OBJECT };
-		ArrayList<PImage> inventoryTiles = Tileset.getAllTiles(tiles);
+		TileType[] tiles = { TileType.COLLISION, TileType.BACKGROUND, TileType.OBJECT };
+		ArrayList<Tile> inventoryTiles = Tileset.getAllTiles(tiles);
 		for (int i = 0; i < inventoryTiles.size(); i++) {
 			if (i % 6 == 0) {
 				y++;

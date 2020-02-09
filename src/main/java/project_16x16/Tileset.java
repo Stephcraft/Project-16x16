@@ -2,7 +2,10 @@ package project_16x16;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
+import project_16x16.components.Tile;
+import project_16x16.components.Tile.TileType;
 import project_16x16.objects.GameObject;
 import project_16x16.objects.MagicSourceObject;
 import project_16x16.objects.MirrorBoxObject;
@@ -18,7 +21,9 @@ import processing.data.JSONArray;
  */
 public class Tileset {
 
-	private static final int TILESETSIZE = 16;
+	public static final int TILESETWIDTH = 32;
+	public static final int TILESETHEIGHT = 32;
+	public static final int TILESETSIZE = 16;
 	private static final String TILESHEETPATH = "Art/graphics-sheet.png";
 	private static final String DATAPATH = "tileData.json";
 	private static final int SCALE = 4;
@@ -26,22 +31,17 @@ public class Tileset {
 	private static SideScroller applet;
 	private static PImage graphicsSheet;
 	
-	private static HashMap<String, Integer> tileRef = new HashMap<String, Integer>();
-	private static ArrayList<PImage> loadedTiles = new ArrayList<PImage>();
+	private static int loadedTiles = 0;
+	private static HashMap<String, Integer> tileRefs = new HashMap<String, Integer>();
+	private static Tile[] tiles;
 	
-	private static JSONObject JSONtileData;
-	private static JSONArray JSONtiles;
 	private static JSONArray JSONanimations;
-	
-	public enum tileType {
-		COLLISION, BACKGROUND, OBJECT, ENTITY;
-	}
 	
 	public static void load(SideScroller app){
 		applet = app;
 		graphicsSheet = applet.loadImage(TILESHEETPATH);
+		tiles = new Tile[TILESETWIDTH * TILESETHEIGHT];
 		try {
-			loadJSON();
 			loadTiles();
 		} catch (Exception e) {
 			System.err.println("Could not load tile data. Exiting...");
@@ -53,11 +53,11 @@ public class Tileset {
 		return getTile(getTileId(name));
 	}
 	
-	public static PImage getTile(int index) {
-		if (loadedTiles.size() > index) {
-			return loadedTiles.get(index);
+	public static PImage getTile(int Id) {
+		if (tiles[Id] != null) {
+			return tiles[Id].getPImage();
 		} else {
-			PApplet.println("<Tileset> Error while loading, null index reference to tile ( " + index + " ) >");
+			PApplet.println("<Tileset> Error while loading, null index reference to tile ( " + Id + " ) >");
 			return null; // TODO return placeholder?
 		}
 	}
@@ -78,55 +78,50 @@ public class Tileset {
 	 * @author micycle1
 	 */
 	public static PImage getTile(int x, int y, int w, int h, int scale) {
-		return resize(graphicsSheet.get(x, y, w, h), scale);
+		return Util.resizeImage(graphicsSheet.get(x, y, w, h), scale);
 	}
 		
-	public static String getTileName(int id)
+	public static String getTileName(int Id)
 	{
-		JSONObject tile = JSONtiles.getJSONObject(id);
-		return tile.getString("name");
+		if (tiles[Id] != null)
+			return tiles[Id].getName();
+		
+		PApplet.println("<Tileset> Error while loading, null ID reference to tile ( " + Id + " ) >");
+		return "";
 	}
 	
 	public static int getTileId(String name){
-		if (tileRef.containsKey(name))
-			return tileRef.get(name);
+		if (tileRefs.containsKey(name))
+			return tileRefs.get(name);
 		
-		PApplet.println("<Tileset> Error while loading, null string reference to tile ( "+name+" ) >");
+		PApplet.println("<Tileset> Error while loading, null string reference to tile ( " + name + " ) >");
 		return 0;
 	}
 	
-	public static int getTileId(PImage image)
-	{
-		for(int i = 0; i < loadedTiles.size(); i++)
-		{
-			if (loadedTiles.get(i).equals(image))
-				return i;
-		}
-		return -1;
-	}
-	
+//	public static int getTileId(PImage image)
+//	{
+//		for(int i = 0; i < loadedTiles.size(); i++)
+//		{
+//			if (loadedTiles.get(i).equals(image))
+//				return i;
+//		}
+//		return -1;
+//	}
+//	
 	public static int getTileCount() {
-		return loadedTiles.size();
+		return loadedTiles;
 	}
 	
-	public static tileType getTileType(String name) {
+	public static TileType getTileType(String name) {
 		return getTileType(getTileId(name));
 	}
 	
-	public static tileType getTileType(int index) {
-		String type = JSONtiles.getJSONObject(index).getString("type", "COLLISION");
-		switch(type) {
-			case "COLLISION":
-				return tileType.COLLISION;
-			case "BACKGROUND":
-				return tileType.BACKGROUND;
-			case "OBJECT":
-				return tileType.OBJECT;
-			case "ENTITY":
-				return tileType.ENTITY;
-			default:
-				return null;
-		}
+	public static TileType getTileType(int Id) {
+		if (tiles[Id] != null)
+			return tiles[Id].getTileType();
+		
+		PApplet.println("<Tileset> Error while loading, null ID reference to tile ( " + Id + " ) >");
+		return null;
 	}
 	
 	public static ArrayList<PImage> getAnimation(String name){
@@ -151,21 +146,23 @@ public class Tileset {
 		return null;
 	}
 	
-	public static ArrayList<PImage> getAllTiles(tileType type) {
-		ArrayList<PImage> images = new ArrayList<PImage>();
-		for(int i = 0; i < getTileCount(); i++) {
-			tileType tileType = getTileType(i);
+	public static ArrayList<Tile> getAllTiles(TileType type) {
+		ArrayList<Tile> tilesArray = new ArrayList<Tile>();
+		for(int i = 0; i < tiles.length; i++) {
+			if (tiles[i] == null)
+				continue;
+			TileType tileType = tiles[i].getTileType();
 			if (tileType == type)
-				images.add(loadedTiles.get(i));
+				tilesArray.add(tiles[i]);
 		}
-		return images;
+		return tilesArray;
 	}
 	
-	public static ArrayList<PImage> getAllTiles(tileType[] types) {
-		ArrayList<PImage> images = new ArrayList<PImage>();
-		for(tileType type : types)
-			images.addAll(getAllTiles(type));
-		return images;
+	public static ArrayList<Tile> getAllTiles(TileType[] types) {
+		ArrayList<Tile> tiles = new ArrayList<Tile>();
+		for(TileType type : types)
+			tiles.addAll(getAllTiles(type));
+		return tiles;
 	}
 	
 	/**
@@ -188,36 +185,41 @@ public class Tileset {
 		}
 	}
 	
-	private static void loadJSON() {
-		JSONtileData = applet.loadJSONObject(DATAPATH);
-		JSONtiles = JSONtileData.getJSONArray("tiles");
-		JSONanimations = JSONtileData.getJSONArray("animations");
-	}
-	
 	private static void loadTiles() {
+		
+		JSONObject JSONtileData = applet.loadJSONObject(DATAPATH);
+		JSONArray JSONtiles = JSONtileData.getJSONArray("tiles");
+		JSONanimations = JSONtileData.getJSONArray("animations");
+		
 		for(int i  = 0; i < JSONtiles.size(); i++) {
 			JSONObject tile = JSONtiles.getJSONObject(i);
 			String name = tile.getString("name");
+			int x = tile.getInt("x");
+			int y = tile.getInt("y");
+			int ID = x + y * TILESETWIDTH;
+			PImage image = getTile( x * TILESETSIZE, y * TILESETSIZE, TILESETSIZE, TILESETSIZE);
 			
-			PImage image = getTile((int) (tile.getFloat("x") * TILESETSIZE),
-							       (int) (tile.getFloat("y") * TILESETSIZE),
-							       TILESETSIZE, TILESETSIZE);
+			image = Util.resizeImage(image, SCALE);
+			TileType tileType;
 			
-			image = resize(image, SCALE);
+			String type = JSONtiles.getJSONObject(i).getString("type", "COLLISION");
+			switch(type) {
+				case "COLLISION":
+					tileType = TileType.COLLISION;
+				case "BACKGROUND":
+					tileType = TileType.BACKGROUND;
+				case "OBJECT":
+					tileType = TileType.OBJECT;
+				case "ENTITY":
+					tileType = TileType.ENTITY;
+				default:
+					tileType = TileType.COLLISION;
+			}
 			
-			tileRef.put(name, i);
-			loadedTiles.add(image);
+			Tile newTile = new Tile(ID, name, image, tileType);
+			tileRefs.put(name, ID);
+			tiles[ID] = newTile;
+			loadedTiles++;
 		}
 	}
-	
-	private static PImage resize(PImage img, int scale) {
-	    PGraphics pg = applet.createGraphics(img.width * SCALE, img.height * SCALE);
-	    pg.noSmooth();
-	    pg.beginDraw();
-	    pg.clear();
-	    pg.image(img, 0, 0, img.width * SCALE, img.height * SCALE);
-	    pg.endDraw();
-	    return pg.get();
-	}
-
 }
