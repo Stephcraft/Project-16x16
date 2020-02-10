@@ -11,6 +11,9 @@ import processing.core.PConstants;
 import processing.core.PGraphics;
 import processing.core.PImage;
 import processing.core.PVector;
+import processing.data.JSONArray;
+import processing.data.JSONObject;
+import project_16x16.components.Tile;
 
 public final class Util {
 
@@ -330,6 +333,38 @@ public final class Util {
 			output += PApplet.parseChar(k);
 		}
 		return output.replaceAll("" + PApplet.parseChar(8202), "\n").replaceAll("" + PApplet.parseChar(8201), "\t");
+	}
+	
+	public static void convertTiledLevel(String filePath) {
+		JSONArray levelSave = new JSONArray();
+		JSONObject main = new JSONObject();
+		main.setString("title", "undefined");
+		main.setString("creator", "undefined");
+		main.setString("version", "alpha 1.0.0");
+		levelSave.append(main);
+		
+		
+		JSONObject JSONtileData = applet.loadJSONObject(filePath);
+		JSONArray JSONlayers = JSONtileData.getJSONArray("layers");
+		
+		for(int i = 0; i < JSONlayers.size(); i++) {
+			JSONObject layer = JSONlayers.getJSONObject(i);
+			int width = layer.getInt("width");
+			JSONArray data = layer.getJSONArray("data");
+			for(int j = 0; j < data.size(); j++) {
+				int tileId = data.getInt(j) - 1;
+				if (tileId >= 0) {
+					Tile tile = Tileset.getTileObject(tileId);
+					JSONObject JSONtile = new JSONObject();
+					JSONtile.setString("id", tile.getName());
+					JSONtile.setString("type", tile.getTileType().toString());
+					JSONtile.setInt("x", (j % width) * 60);
+					JSONtile.setInt("y", (int) (j / width) * 60);
+					levelSave.append(JSONtile);
+				}
+			}
+			Util.saveFile("src/main/resources/tiledMap.dat", Util.encrypt(levelSave.toString()));
+		}
 	}
 }
 
