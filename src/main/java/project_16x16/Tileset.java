@@ -48,7 +48,7 @@ public class Tileset {
 			System.exit(0);
 		}
 	}
-	
+	// TODO: return Tile not PImage
 	public static PImage getTile(String name){
 		return getTile(getTileId(name));
 	}
@@ -56,6 +56,15 @@ public class Tileset {
 	public static PImage getTile(int Id) {
 		if (tiles[Id] != null) {
 			return tiles[Id].getPImage();
+		} else {
+			PApplet.println("<Tileset> Error while loading, null index reference to tile ( " + Id + " ) >");
+			return null; // TODO return placeholder?
+		}
+	}
+	
+	public static Tile getTileObject(int Id) {
+		if (tiles[Id] != null) {
+			return tiles[Id];
 		} else {
 			PApplet.println("<Tileset> Error while loading, null index reference to tile ( " + Id + " ) >");
 			return null; // TODO return placeholder?
@@ -186,7 +195,6 @@ public class Tileset {
 	}
 	
 	private static void loadTiles() {
-		
 		JSONObject JSONtileData = applet.loadJSONObject(DATAPATH);
 		JSONArray JSONtiles = JSONtileData.getJSONArray("tiles");
 		JSONanimations = JSONtileData.getJSONArray("animations");
@@ -201,19 +209,17 @@ public class Tileset {
 			
 			image = Util.resizeImage(image, SCALE);
 			TileType tileType;
-			
-			String type = JSONtiles.getJSONObject(i).getString("type", "COLLISION");
-			switch(type) {
+			switch(tile.getString("type", "COLLISION")) {
 				case "COLLISION":
-					tileType = TileType.COLLISION;
+					tileType = TileType.COLLISION; break;
 				case "BACKGROUND":
-					tileType = TileType.BACKGROUND;
+					tileType = TileType.BACKGROUND; break;
 				case "OBJECT":
-					tileType = TileType.OBJECT;
+					tileType = TileType.OBJECT; break;
 				case "ENTITY":
-					tileType = TileType.ENTITY;
+					tileType = TileType.ENTITY; break;
 				default:
-					tileType = TileType.COLLISION;
+					tileType = TileType.COLLISION; break;
 			}
 			
 			Tile newTile = new Tile(ID, name, image, tileType);
