@@ -335,7 +335,7 @@ public final class Util {
 		return output.replaceAll("" + PApplet.parseChar(8202), "\n").replaceAll("" + PApplet.parseChar(8201), "\t");
 	}
 	
-	public static void convertTiledLevel(String filePath) {
+	public static void convertTiledLevel(String filePath, String mapName) {
 		JSONArray levelSave = new JSONArray();
 		JSONObject main = new JSONObject();
 		main.setString("title", "undefined");
@@ -350,6 +350,7 @@ public final class Util {
 		for(int i = 0; i < JSONlayers.size(); i++) {
 			JSONObject layer = JSONlayers.getJSONObject(i);
 			int width = layer.getInt("width");
+			int height = layer.getInt("height");
 			JSONArray data = layer.getJSONArray("data");
 			for(int j = 0; j < data.size(); j++) {
 				int tileId = data.getInt(j) - 1;
@@ -358,12 +359,12 @@ public final class Util {
 					JSONObject JSONtile = new JSONObject();
 					JSONtile.setString("id", tile.getName());
 					JSONtile.setString("type", tile.getTileType().toString());
-					JSONtile.setInt("x", (j % width) * 60);
-					JSONtile.setInt("y", (int) (j / width) * 60);
+					JSONtile.setInt("x", (j % width) * 60 - (width/2*60));
+					JSONtile.setInt("y", (int) (j / width) * 60 - (height/2*60));
 					levelSave.append(JSONtile);
 				}
 			}
-			Util.saveFile("src/main/resources/tiledMap.dat", Util.encrypt(levelSave.toString()));
+			Util.saveFile("src/main/resources/Storage/Game/Maps/save/" + mapName + ".dat", Util.encrypt(levelSave.toString()));
 		}
 	}
 }
