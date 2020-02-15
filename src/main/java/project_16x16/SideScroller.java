@@ -36,7 +36,7 @@ import project_16x16.ui.Notifications;
 public class SideScroller extends PApplet {
 
 	// Game Dev
-	public static final String LEVEL = "Storage/Game/Maps/gg-2.dat";
+	public static final String LEVEL = "Storage/Game/Maps/tiledMap.dat";
 
 	public enum debugType {
 		OFF, ALL, INFO_ONLY;
@@ -197,6 +197,7 @@ public class SideScroller extends PApplet {
 		load();
 		Notifications.assignApplet(this);
 		Audio.assignApplet(this);
+		//Util.convertTiledLevel("tiledmap.json");
 
 		// Create scene
 		game = new GameplayScene(this);

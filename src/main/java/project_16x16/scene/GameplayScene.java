@@ -26,7 +26,7 @@ import project_16x16.SideScroller.GameScenes;
 import project_16x16.ui.Anchor;
 import project_16x16.ui.ScrollBarVertical;
 import project_16x16.ui.Tab;
-
+import project_16x16.windows.ImportLevelWindow;
 import project_16x16.windows.LoadLevelWindow;
 import project_16x16.windows.SaveLevelWindow;
 import project_16x16.windows.TestWindow;
@@ -63,13 +63,14 @@ public class GameplayScene extends PScene {
 
 	// Windows
 	private SaveLevelWindow window_saveLevel;
+	private ImportLevelWindow window_importlevel;
 	private TestWindow window_test;
 	private LoadLevelWindow window_loadLevel;
 
 	// Tabs
 	private Tab windowTabs;
 	// Each button id corresponds with its string id: ex) load = 0, save = 1, etc.
-	String[] tabTexts = new String[] { "load", "save"};
+	String[] tabTexts = new String[] { "load", "save", "import"};
 
 	// Editor Item
 	private EditorItem editorItem;
@@ -78,7 +79,7 @@ public class GameplayScene extends PScene {
 	private ScrollBarVertical scrollBar;
 
 	public enum Tools {
-		MOVE, MODIFY, INVENTORY, PLAY, SAVE, LOADEXAMPLE, TEST,
+		MOVE, MODIFY, INVENTORY, PLAY, SAVE, IMPORT, LOADEXAMPLE, TEST,
 	}
 
 	public Tools tool;
@@ -146,6 +147,8 @@ public class GameplayScene extends PScene {
 
 		// Init Window
 		window_saveLevel = new SaveLevelWindow(applet, this);
+		// Import Window
+		window_importlevel = new ImportLevelWindow(applet, this);
 //		window_test = new TestWindow(applet);
 		window_loadLevel = new LoadLevelWindow(applet, this);
 
@@ -393,7 +396,31 @@ public class GameplayScene extends PScene {
 				if (windowTabs.getButton(0).event()) {
 					windowTabs.moveActive(0);
 					tool = Tools.LOADEXAMPLE;
+				}
+				if (windowTabs.getButton(2).event()) {
+					windowTabs.moveActive(2);
+					tool = Tools.IMPORT;
 				} 
+				break;
+			case IMPORT :
+				// Import Level
+				if (windowTabs.getActiveButton() != 2) {
+					windowTabs.moveActive(2);
+				}
+				window_importlevel.privacyDisplay();
+				windowTabs.update();
+				windowTabs.display();
+				window_importlevel.update();
+				window_importlevel.display();
+				
+				if (windowTabs.getButton(0).event()) {
+					windowTabs.moveActive(0);
+					tool = Tools.LOADEXAMPLE;
+				}
+				if (windowTabs.getButton(1).event()) {
+					windowTabs.moveActive(1);
+					tool = Tools.SAVE;
+				}
 				break;
 			case LOADEXAMPLE :
 				if (windowTabs.getActiveButton() != 0) {
@@ -406,6 +433,10 @@ public class GameplayScene extends PScene {
 				if (windowTabs.getButton(1).event()) {
 					windowTabs.moveActive(1);
 					tool = Tools.SAVE;
+				}
+				if (windowTabs.getButton(2).event()) {
+					windowTabs.moveActive(2);
+					tool = Tools.IMPORT;
 				}
 				break;
 			case TEST :
@@ -656,6 +687,9 @@ public class GameplayScene extends PScene {
 					break;
 				case 53 : // 5
 					tool = Tools.SAVE;
+					break;
+				case 54 : // 6
+					tool = Tools.IMPORT;
 					break;
 				case 69 : // 'e' TODO remove?
 					if (tool == Tools.INVENTORY) {
