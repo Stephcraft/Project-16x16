@@ -1,7 +1,10 @@
 package project_16x16.scene;
 
+import processing.core.PConstants;
+import processing.event.KeyEvent;
 import processing.event.MouseEvent;
 import project_16x16.SideScroller;
+import project_16x16.SideScroller.GameScenes;
 import project_16x16.ui.Button;
 import project_16x16.ui.Notifications;
 import project_16x16.ui.NumberInputField;
@@ -97,6 +100,7 @@ public class Settings extends PScene {
 	private void update() {
 		quit.update();
 		apply.update();
+		pressSoundOptions.update();
 		if (quit.hover()) {
 			game.returnScene();
 			return;
@@ -105,6 +109,9 @@ public class Settings extends PScene {
 			//game.resizeWindow(windowSizeX.getValue(), 720); // TODO change
 			Notifications.addNotification("Options Applied", "Your configuration has been successfully applied.");
 			return;
+		}
+		if (pressSoundOptions.hover()) {
+			game.swapToScene(GameScenes.AUDIO_SETTINGS);
 		}
 	}
 
@@ -131,6 +138,17 @@ public class Settings extends PScene {
 			textPad = " " + textPad;
 		}
 		return textPad;
+	}
+	
+	@Override
+	void keyReleased(KeyEvent e) {
+		switch (e.getKeyCode()) {
+			case PConstants.ESC : // Pause
+				game.returnScene();
+				break;
+			default :
+				break;
+		}
 	}
 
 }

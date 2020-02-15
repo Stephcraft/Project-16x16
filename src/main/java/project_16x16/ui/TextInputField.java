@@ -18,7 +18,7 @@ public class TextInputField extends PClass {
 
 	protected String text;
 
-	protected boolean focus;
+	protected boolean focus, mouseOver;
 
 	/**
 	 * Constructor for PInput
@@ -49,7 +49,13 @@ public class TextInputField extends PClass {
 
 		// Display Box
 		applet.strokeWeight(4);
-		applet.stroke(74, 81, 99);
+		if (mouseOver) {
+			applet.stroke(115, 126, 154);
+		}
+		else {
+			applet.stroke(74, 81, 99);
+		}
+		
 		applet.fill(0);
 		applet.rect(x, y, width, height);
 
@@ -73,10 +79,12 @@ public class TextInputField extends PClass {
 
 		// Focus Event
 		if (Util.hoverScreen(x, y, width, height)) {
+			mouseOver = true;
 			if (applet.mousePressEvent) {
 				focus = true;
 			}
 		} else {
+			mouseOver = false;
 			if (applet.mousePressEvent) {
 				focus = false;
 			}

@@ -1,6 +1,6 @@
 package project_16x16;
 
-import java.awt.event.KeyEvent;
+import java.util.ArrayDeque;
 import java.util.HashSet;
 
 import javafx.scene.Scene;
@@ -54,7 +54,7 @@ public class SideScroller extends PApplet {
 
 	public debugType debug = debugType.get(Options.debugMode);
 
-	public static final boolean SNAP = true; // snap objects to grid when moving; located here for ease of access
+	public static final boolean SNAP = true; // snap objects to grid when moving; TODO move to options
 	public static int snapSize;
 
 	// Game Rendering
@@ -64,13 +64,8 @@ public class SideScroller extends PApplet {
 	// Font Resources
 	private static PFont font_pixel;
 
-	// Scenes
-	/**
-	 * Use {@link #swapToScene(PScene)} or {@link #returnScene()} to change the
-	 * scene -- don't reassign this variable directly!
-	 */
-	private GameScenes currentScene;
-	private GameScenes previousScene;
+	// Scenes	
+	private ArrayDeque<GameScenes> sceneHistory;
 	private int sceneSwapTime = 0;
 
 	private static MainMenu menu;
@@ -80,10 +75,11 @@ public class SideScroller extends PApplet {
 	private static MultiplayerMenu mMenu;
 	private static MultiplayerHostMenu mHostMenu;
 	private static MultiplayerClientMenu mClientMenu;
+	private static AudioSettings audioSettings;
 
 	public enum GameScenes {
 		MAIN_MENU(menu), GAME(game), PAUSE_MENU(pmenu), SETTINGS_MENU(settings), MULTIPLAYER_MENU(mMenu),
-		HOST_MENU(mHostMenu), CLIENT_MENU(mClientMenu);
+		HOST_MENU(mHostMenu), CLIENT_MENU(mClientMenu), AUDIO_SETTINGS(audioSettings);
 
 		PScene scene;
 
@@ -98,13 +94,13 @@ public class SideScroller extends PApplet {
 
 	// Events
 	private HashSet<Integer> keysDown;
-	public boolean keyPressEvent;
-	public boolean keyReleaseEvent;
-	public boolean mousePressEvent;
-	public boolean mouseReleaseEvent;
+	public boolean keyPressEvent; //     TODO remove -- override keyPressed() instead
+	public boolean keyReleaseEvent; //   TODO remove -- override mouseReleased() instead
+	public boolean mousePressEvent; //   TODO remove -- override mousePressed() instead
+	public boolean mouseReleaseEvent; // TODO remove -- override mouseReleased() instead
 
 	// Camera Variables
-	public Camera camera;
+	public Camera camera; // TODO encapsulate in gamePlayScene
 
 	// Expose JavaFX nodes
 	/**
@@ -179,41 +175,40 @@ public class SideScroller extends PApplet {
 
 		// Set frame rate limit
 		frameRate(Options.targetFrameRate);
-
-		// Start Graphics
-		background(0);
-
+		
 		// Setup modes
 		imageMode(CENTER);
 		rectMode(CENTER);
 		strokeCap(SQUARE);
-
-		AnimationComponent.applet = this;
 
 		// Create ArrayList
 		keysDown = new HashSet<Integer>();
 
 		// Main Load
 		load();
+		AnimationComponent.assignApplet(this);
 		Notifications.assignApplet(this);
 		Audio.assignApplet(this);
-		//Util.convertTiledLevel("tiledmap.json");
+		Audio.setGainBGM(-6); // TODO
+		Audio.setGainSFX(-6); // TODO
 
 		// Create scene
-		game = new GameplayScene(this);
+		sceneHistory = new ArrayDeque<>();
+		game = new GameplayScene(this, Constants.DEV_LEVEL);
 		menu = new MainMenu(this);
 		pmenu = new PauseMenu(this);
 		settings = new Settings(this);
 		mMenu = new MultiplayerMenu(this);
 		mHostMenu = new MultiplayerHostMenu(this);
 		mClientMenu = new MultiplayerClientMenu(this);
+		audioSettings = new AudioSettings(this);
 		swapToScene(GameScenes.MAIN_MENU);
 
 		// Camera
 		camera = new Camera(this);
 		camera.setMouseMask(CONTROL);
-		camera.setMinZoomScale(0.3);
-		camera.setMaxZoomScale(3);
+		camera.setMinZoomScale(Constants.CAMERA_ZOOM_MIN);
+		camera.setMaxZoomScale(Constants.CAMERA_ZOOM_MAX);
 
 		scaleResolution();
 		launchIntoMultiplayer();
@@ -225,27 +220,26 @@ public class SideScroller extends PApplet {
 	private void load() {
 		Tileset.load(this);
 		surface.setIcon(Tileset.getAnimation("PLAYER::IDLE").get(0));
-		font_pixel = loadFont("Font/font-pixel-48.vlw"); // Load Font
+		font_pixel = loadFont(Constants.GAME_FONT); // Load Font
 		textFont(font_pixel); // SideScrollerly Text Font
 	}
 
 	/**
+	 * Use this method or {@link #returnScene()} to change the running game scene.
 	 * 
 	 * @param newScene
 	 * @see #returnScene()
 	 */
 	public void swapToScene(GameScenes newScene) {
 		if (frameCount - sceneSwapTime > 6 || frameCount == 0) {
-			if (currentScene != null) {
-				currentScene.getScene().switchFrom();
-				if (!(newScene.equals(previousScene))) {
-					previousScene = currentScene;
+			if (!newScene.equals(sceneHistory.peek())) { // if different
+				if (!sceneHistory.isEmpty()) {
+					sceneHistory.peek().getScene().switchFrom(); // switch from
 				}
+				sceneHistory.push(newScene);
+				newScene.getScene().switchTo();
+				sceneSwapTime = frameCount;
 			}
-
-			currentScene = newScene;
-			currentScene.getScene().switchTo();
-			sceneSwapTime = frameCount;
 		}
 	}
 
@@ -255,8 +249,10 @@ public class SideScroller extends PApplet {
 	 * returning to the game).
 	 */
 	public void returnScene() {
-		if (previousScene != null) {
-			swapToScene(previousScene);
+		if (sceneHistory.size() > 1) {
+			sceneHistory.pop().getScene().switchFrom();
+			sceneHistory.peek().getScene().switchTo();
+			sceneSwapTime = frameCount;
 		}
 	}
 
@@ -290,9 +286,9 @@ public class SideScroller extends PApplet {
 	 * @see {@link Camera#hook()}
 	 */
 	private void drawBelowCamera() {
-		currentScene.getScene().draw(); // Handle Draw Scene Method - draws world, etc.
+		sceneHistory.peek().getScene().draw(); // Handle Draw Scene Method - draws world, etc.
 		if (debug == debugType.ALL) {
-			currentScene.getScene().debug();
+			sceneHistory.peek().getScene().debug();
 			camera.postDebug();
 		}
 	}
@@ -306,7 +302,7 @@ public class SideScroller extends PApplet {
 	 * @see {@link Camera#release()}
 	 */
 	private void drawAboveCamera() {
-		currentScene.getScene().drawUI();
+		sceneHistory.peek().getScene().drawUI();
 		Notifications.run();
 		if (debug == debugType.ALL) {
 			camera.post();
@@ -366,31 +362,11 @@ public class SideScroller extends PApplet {
 			case Options.notify :
 				Notifications.addNotification("Hello", "World");
 				break;
-			case Options.lifeCapInc :
-				game.getPlayer().lifeCapacity++;
-				break;
-			case Options.lifeCapDec :
-				game.getPlayer().lifeCapacity--;
-				break;
-			case Options.lifeInc :
-				game.getPlayer().life++;
-				break;
-			case Options.lifeDec :
-				game.getPlayer().life--;
-				break;
 			case Options.fullscreen :
 				noLoop();
 				stage.setFullScreen(!stage.isFullScreen());
 				scaleResolution();
 				loop();
-				break;
-			case ESC : // Pause
-				if (currentScene == GameScenes.GAME) {
-					swapToScene(GameScenes.PAUSE_MENU);
-				}
-				if (currentScene == GameScenes.PAUSE_MENU) {
-					swapToScene(GameScenes.GAME);
-				}
 				break;
 			case Options.toggleDebug :
 				debug = debug.next();
@@ -570,7 +546,7 @@ public class SideScroller extends PApplet {
 		text("['" + (char) Options.lifeCapDec + "']", width - ip, lineOffset * 20 + yOffset);
 		text("['" + (char) Options.lifeInc + "']", width - ip, lineOffset * 21 + yOffset);
 		text("['" + (char) Options.lifeDec + "']", width - ip, lineOffset * 22 + yOffset);
-		text("['" + (char) Options.fullscreen + "']", width - ip, lineOffset * 23 + yOffset);
+		text("['F11']", width - ip, lineOffset * 23 + yOffset);
 		text("['TAB']", width - ip, lineOffset * 24 + yOffset);
 
 		if (frameRate >= 59.5) {
@@ -583,8 +559,8 @@ public class SideScroller extends PApplet {
 	}
 
 	/**
-	 * Launch into multiplayer mode instantly bases upon program args. Used to test
-	 * & debug multiplayer more quickly.
+	 * Launch into multiplayer mode instantly bases upon program args. Used in
+	 * development to test & debug multiplayer more quickly.
 	 */
 	private void launchIntoMultiplayer() {
 		if (args != null) {
