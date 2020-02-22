@@ -35,6 +35,9 @@ import project_16x16.ui.Notifications;
  */
 public class SideScroller extends PApplet {
 
+	// Game Dev
+	public static final String LEVEL = "Storage/Game/Maps/tiledMap.dat";
+
 	public enum debugType {
 		OFF, ALL, INFO_ONLY;
 
