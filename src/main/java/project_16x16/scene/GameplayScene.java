@@ -72,6 +72,9 @@ public class GameplayScene extends PScene {
 	// Each button id corresponds with its string id: ex) load = 0, save = 1, etc.
 	String[] tabTexts = new String[] { "load", "save", "import"};
 
+	// Camera Zoom State
+	private boolean zoomable = true; // Camera can zoom by default
+
 	// Editor Item
 	private EditorItem editorItem;
 
@@ -360,13 +363,16 @@ public class GameplayScene extends PScene {
 		switch (tool) {
 			case INVENTORY :
 				displayCreativeInventory();
+				zoomable = false;
 				break;
 			case MODIFY :
 				editorItem.update();
 				editorItem.display();
+				zoomable = true;
 				break;
 			case PLAY :
 				localPlayer.displayLife();
+				zoomable = true;
 				break;
 			case SAVE :
 				// Save , Load
@@ -389,7 +395,8 @@ public class GameplayScene extends PScene {
 				if (windowTabs.getButton(2).event()) {
 					windowTabs.moveActive(2);
 					tool = Tools.IMPORT;
-				} 
+				}
+				zoomable = false;
 				break;
 			case IMPORT :
 				// Import Level
@@ -576,6 +583,10 @@ public class GameplayScene extends PScene {
 			}
 		}
 		return 20 * 4 + 10 + y * (20 * 4 + 10);
+	}
+
+	public boolean isZoomable() {
+		return zoomable;
 	}
 
 	@Override
