@@ -399,10 +399,12 @@ public class SideScroller extends PApplet {
 	@Override
 	public void mouseWheel(MouseEvent event) {
 		game.mouseWheel(event);
-		if (event.getCount() == -1) { // for development
-			camera.zoomIn(0.02f);
-		} else {
-			camera.zoomOut(0.02f);
+		if(game.isZoomable()) {
+			if (event.getCount() == -1) { // for development
+				camera.zoomIn(0.02f);
+			} else {
+				camera.zoomOut(0.02f);
+			}
 		}
 	}
 

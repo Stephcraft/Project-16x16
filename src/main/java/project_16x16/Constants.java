@@ -15,7 +15,7 @@ import static project_16x16.Util.colorToRGB;
 public final class Constants {
 
 	public static final float CAMERA_LERP = 0.05f;
-	public static final float CAMERA_ZOOM_MAX = 0.3f;
+	public static final float CAMERA_ZOOM_MAX = 3.0f;
 	public static final float CAMERA_ZOOM_MIN = 0.3f;
 	public static final float GAME_GRAVITY = 1;
 	
