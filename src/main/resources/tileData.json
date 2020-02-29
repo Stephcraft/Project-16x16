@@ -151,21 +151,24 @@
     {"name": "Weed:1", "x": 9, "y": 5, "type": "BACKGROUND"},
     {"name": "Weed:2", "x": 10, "y": 5, "type": "BACKGROUND"},
     
-    {"name": "Sign:1", "x": 16, "y": 4, "type": "BACKGROUND"},
-    {"name": "Sign:2", "x": 16, "y": 5, "type": "BACKGROUND"},
-    {"name": "Sign:3", "x": 16, "y": 6, "type": "BACKGROUND"},
-    {"name": "Sign:4", "x": 18, "y": 4, "type": "BACKGROUND"},
+    {"name": "Sign:0", "x": 16, "y": 4, "type": "BACKGROUND"},
+    {"name": "Sign:1", "x": 16, "y": 5, "type": "BACKGROUND"},
+    {"name": "Sign:2", "x": 16, "y": 6, "type": "BACKGROUND"},
+    {"name": "Sign:3", "x": 18, "y": 4, "type": "BACKGROUND"},
+    {"name": "Sign:4", "x": 18, "y": 5, "type": "BACKGROUND"},
     {"name": "Sign:5", "x": 18, "y": 5, "type": "BACKGROUND"},
 
+    {"name": "SignWriting", "x": 11, "y": 7, "type": "BACKGROUND"},
+    
     {"name": "Desk_Left:0", "x": 17, "y": 6, "type": "BACKGROUND"},
-    {"name": "Desk_Left:1", "x": 17, "y": 7, "type": "BACKGROUND"},
-    {"name": "Desk_Left:2", "x": 19, "y": 7, "type": "BACKGROUND"},
-    {"name": "Desk_Left:3", "x": 17, "y": 8, "type": "BACKGROUND"},
-    {"name": "Desk_Left:4", "x": 19, "y": 8, "type": "BACKGROUND"},
     {"name": "Desk_Right:0", "x": 18, "y": 6, "type": "BACKGROUND"},
+    {"name": "Desk_Left:1", "x": 17, "y": 7, "type": "BACKGROUND"},
     {"name": "Desk_Right:1", "x": 18, "y": 7, "type": "BACKGROUND"},
+    {"name": "Desk_Left:2", "x": 19, "y": 7, "type": "BACKGROUND"},
     {"name": "Desk_Right:2", "x": 20, "y": 7, "type": "BACKGROUND"},
+    {"name": "Desk_Left:3", "x": 17, "y": 8, "type": "BACKGROUND"},
     {"name": "Desk_Right:3", "x": 18, "y": 8, "type": "BACKGROUND"},
+    {"name": "Desk_Left:4", "x": 19, "y": 8, "type": "BACKGROUND"},
     {"name": "Desk_Right:4", "x": 20, "y": 8, "type": "BACKGROUND"},
 
     {"name": "Tube_Big:0", "x": 12, "y": 7, "type": "BACKGROUND"},
@@ -220,7 +223,10 @@
     {"name": "Spikes", "x": 12, "y": 2, "type": "OBJECT"},
     
     {"name": "Door", "x": 0, "y": 6, "type": "OBJECT"},
-    {"name": "Platform", "x": 0, "y": 11, "type": "OBJECT"},
+    {"name": "Platform:0", "x": 0, "y": 11, "type": "OBJECT"},
+    {"name": "Platform:1", "x": 1, "y": 11, "type": "OBJECT"},
+    {"name": "Platform:2", "x": 2, "y": 11, "type": "OBJECT"},
+    {"name": "Platform:3", "x": 3, "y": 11, "type": "OBJECT"},
     {"name": "Trampoline", "x": 1, "y": 5, "type": "OBJECT"},
 
     {"name": "Conveyor_Left", "x": 0, "y": 8, "type": "OBJECT"},
@@ -228,12 +234,57 @@
     {"name": "Conveyor_Gear", "x": 2, "y": 8, "type": "OBJECT"},
     {"name": "Conveyor_Right", "x": 3, "y": 8, "type": "OBJECT"},
 
-    {"name": "Lever", "x": 5, "y": 8, "type": "OBJECT"},
+    {"name": "Lever:0", "x": 5, "y": 8, "type": "OBJECT"},
+    {"name": "Lever:1", "x": 6, "y": 8, "type": "OBJECT"},
+    {"name": "Lever:2", "x": 7, "y": 8, "type": "OBJECT"},
+    {"name": "Lever:3", "x": 8, "y": 8, "type": "OBJECT"},
+    {"name": "Lever:4", "x": 9, "y": 8, "type": "OBJECT"},
     {"name": "Box_Physics", "x": 4, "y": 8, "type": "OBJECT"},
     {"name": "Pressure_Plate", "x": 4, "y": 11, "type": "OBJECT"},
     
-    {"name": "Battery", "x": 4, "y": 10, "type": "OBJECT"},
+    {"name": "Battery:0", "x": 4, "y": 10, "type": "OBJECT"},
+    {"name": "Battery:1", "x": 5, "y": 10, "type": "OBJECT"},
+    {"name": "Battery:2", "x": 6, "y": 10, "type": "OBJECT"},
+    {"name": "Battery:3", "x": 7, "y": 10, "type": "OBJECT"},
     {"name": "Battery_Orb", "x": 21, "y": 9, "type": "OBJECT"},
+
+    {"name": "Decoration_0:0", "x": 8, "y": 11, "type": "OBJECT"},
+    {"name": "Decoration_0:1", "x": 9, "y": 11, "type": "OBJECT"},
+    {"name": "Decoration_0:2", "x": 8, "y": 12, "type": "OBJECT"},
+    {"name": "Decoration_0:3", "x": 9, "y": 12, "type": "OBJECT"},
+
+    {"name": "Decoration_1:0", "x": 8, "y": 13, "type": "OBJECT"},
+    {"name": "Decoration_1:1", "x": 9, "y": 13, "type": "OBJECT"},
+    {"name": "Decoration_1:2", "x": 8, "y": 14, "type": "OBJECT"},
+    {"name": "Decoration_1:3", "x": 9, "y": 14, "type": "OBJECT"},
+
+
+    {"name": "Decoration_2:00", "x": 5, "y": 13, "type": "OBJECT"},
+    {"name": "Decoration_2:01", "x": 6, "y": 12, "type": "OBJECT"},
+    {"name": "Decoration_2:0", "x": 6, "y": 13, "type": "OBJECT"},
+
+    {"name": "Decoration_2:10", "x": 7, "y": 12, "type": "OBJECT"},
+    {"name": "Decoration_2:11", "x": 8, "y": 13, "type": "OBJECT"},
+    {"name": "Decoration_2:1", "x": 7, "y": 13, "type": "OBJECT"},
+
+    {"name": "Decoration_2:20", "x": 5, "y": 14, "type": "OBJECT"},
+    {"name": "Decoration_2:0", "x": 6, "y": 15, "type": "OBJECT"},
+    {"name": "Decoration_2:2", "x": 6, "y": 14, "type": "OBJECT"},
+
+    {"name": "Decoration_2:30", "x": 8, "y": 15, "type": "OBJECT"},
+    {"name": "Decoration_2:0", "x": 6, "y": 14, "type": "OBJECT"},
+    {"name": "Decoration_2:3", "x": 7, "y": 14, "type": "OBJECT"},
+
+
+    {"name": "Decoration_3:0", "x": 10, "y": 13, "type": "OBJECT"},
+    {"name": "Decoration_3:1", "x": 11, "y": 13, "type": "OBJECT"},
+    {"name": "Decoration_3:2", "x": 10, "y": 14, "type": "OBJECT"},
+    {"name": "Decoration_3:3", "x": 11, "y": 14, "type": "OBJECT"},
+
+    {"name": "Wheel:0", "x": 1, "y": 2, "type": "OBJECT"},
+    {"name": "Wheel:1", "x": 2, "y": 2, "type": "OBJECT"},
+    {"name": "Wheel:2", "x": 1, "y": 3, "type": "OBJECT"},
+    {"name": "Wheel:3", "x": 2, "y": 3, "type": "OBJECT"},
 
     {"name": "Light_Ceiling", "x": 7, "y": 9, "type": "OBJECT"},
     {"name": "Light", "x": 8, "y": 10, "type": "OBJECT"},
