@@ -17,13 +17,13 @@ import processing.event.MouseEvent;
 import project_16x16.projectiles.ProjectileObject;
 import project_16x16.Audio;
 import project_16x16.Options;
-import project_16x16.SideScroller;
+import project_16x16.Main;
 import project_16x16.Tileset;
 import project_16x16.Util;
 import project_16x16.components.Tile;
 import project_16x16.components.Tile.TileType;
 import project_16x16.Audio.BGM;
-import project_16x16.SideScroller.GameScenes;
+import project_16x16.Main.GameScenes;
 import project_16x16.ui.Anchor;
 import project_16x16.ui.ScrollBarVertical;
 import project_16x16.ui.Tab;
@@ -108,7 +108,7 @@ public class GameplayScene extends PScene {
 
 	private SelectionBox selectionBox;
 
-	public GameplayScene(SideScroller a, String levelString) {
+	public GameplayScene(Main a, String levelString) {
 		super(a);
 		this.levelString = levelString;
 		setup();
@@ -116,12 +116,12 @@ public class GameplayScene extends PScene {
 
 	private void setup() {
 
-		projectileObjects = new ArrayList<ProjectileObject>();
+		projectileObjects = new ArrayList<>();
 
-		objects = new ArrayList<EditableObject>();
+		objects = new ArrayList<>();
 
 		// Create Inventory
-		inventory = new ArrayList<String>();
+		inventory = new ArrayList<>();
 		inventory.add("Metal");
 		inventory.add("Metal_Walk_Left:0");
 		inventory.add("Metal_Walk_Middle:0");
@@ -296,21 +296,21 @@ public class GameplayScene extends PScene {
 		if (tool != Tools.INVENTORY) {
 			for (int i = 0; i < 6; i++) {
 				// Display Slot
-				image(slot, 20 * 4 / 2 + 10 + i * (20 * 4 + 10), 20 * 4 / 2 + 10);
+				image(slot, 20 * 4 / 2.0f + 10 + i * (20 * 4 + 10), 20 * 4 / 2.0f + 10);
 
 				// Display Item
 				PImage img = Tileset.getTile(inventory.get(i));
-				applet.image(img, 20 * 4 / 2 + 10 + i * (20 * 4 + 10), 20 * 4 / 2 + 10, img.width * (float) 0.5,
+				applet.image(img, 20 * 4 / 2.0f + 10 + i * (20 * 4 + 10), 20 * 4 / 2.0f + 10, img.width * (float) 0.5,
 						img.height * (float) 0.5);
 
 				// Focus Event
 				if (applet.mousePressEvent) {
-					float x = 20 * 4 / 2 + 10 + i * (20 * 4 + 10);
-					float y = 20 * 4 / 2 + 10;
-					if (applet.getMouseCoordScreen().x > x - (20 * 4) / 2
-							&& applet.getMouseCoordScreen().x < x + (20 * 4) / 2
-							&& applet.getMouseCoordScreen().y > y - (20 * 4) / 2
-							&& applet.getMouseCoordScreen().y < y + (20 * 4) / 2) {
+					float x = 20 * 4 / 2.0f + 10 + i * (20 * 4 + 10);
+					float y = 20 * 4 / 2.0f + 10;
+					if (applet.getMouseCoordScreen().x > x - (20 * 4) / 2.0f
+							&& applet.getMouseCoordScreen().x < x + (20 * 4) / 2.0f
+							&& applet.getMouseCoordScreen().y > y - (20 * 4) / 2.0f
+							&& applet.getMouseCoordScreen().y < y + (20 * 4) / 2.0f) {
 						editorItem.focus = true;
 						editorItem.setTile(inventory.get(i));
 						editorItem.type = Tileset.getTileType(inventory.get(i));
@@ -473,7 +473,7 @@ public class GameplayScene extends PScene {
 		// Display Background
 		applet.stroke(50);
 		applet.fill(0, 100);
-		applet.rect(applet.width / 2, applet.height / 2, applet.width, applet.height);
+		applet.rect(applet.width / 2.0f, applet.height / 2.0f, applet.width, applet.height);
 
 		// Display Editor Mode Items
 		int x = 0;
@@ -489,24 +489,24 @@ public class GameplayScene extends PScene {
 			} else {
 				x++;
 			}
-			applet.image(slotEditor, 20 * 4 / 2 + 10 + x * (20 * 4 + 10), y * (20 * 4 + 10) + scroll_inventory);
+			applet.image(slotEditor, 20 * 4 / 2.0f + 10 + x * (20 * 4 + 10), y * (20 * 4 + 10) + scroll_inventory);
 			if (img.width > 20 * 4 || img.height > 20 * 4) {
-				applet.image(img, 20 * 4 / 2 + 10 + x * (20 * 4 + 10), y * (20 * 4 + 10) + scroll_inventory,
-						img.width / 4, img.height / 4);
+				applet.image(img, 20 * 4 / 2.0f + 10 + x * (20 * 4 + 10), y * (20 * 4 + 10) + scroll_inventory,
+						img.width / 4.0f, img.height / 4.0f);
 			} else {
-				applet.image(img, 20 * 4 / 2 + 10 + x * (20 * 4 + 10), y * (20 * 4 + 10) + scroll_inventory,
-						img.width / 2, img.height / 2);
+				applet.image(img, 20 * 4 / 2.0f + 10 + x * (20 * 4 + 10), y * (20 * 4 + 10) + scroll_inventory,
+						img.width / 2.0f, img.height / 2.0f);
 			}
 
 			// Grab Item
 			if (applet.mousePressEvent) {
-				float xx = 20 * 4 / 2 + 10 + x * (20 * 4 + 10);
+				float xx = 20 * 4 / 2.0f + 10 + x * (20 * 4 + 10);
 				float yy = y * (20 * 4 + 10) + scroll_inventory;
 				if (applet.getMouseCoordScreen().y > 100) {
-					if (applet.getMouseCoordScreen().x > xx - (20 * 4) / 2
-							&& applet.getMouseCoordScreen().x < xx + (20 * 4) / 2
-							&& applet.getMouseCoordScreen().y > yy - (20 * 4) / 2
-							&& applet.getMouseCoordScreen().y < yy + (20 * 4) / 2) {
+					if (applet.getMouseCoordScreen().x > xx - (20 * 4) / 2.0f
+							&& applet.getMouseCoordScreen().x < xx + (20 * 4) / 2.0f
+							&& applet.getMouseCoordScreen().y > yy - (20 * 4) / 2.0f
+							&& applet.getMouseCoordScreen().y < yy + (20 * 4) / 2.0f) {
 						editorItem.focus = true;
 						editorItem.setTile(tile.getName());
 					}
@@ -533,21 +533,21 @@ public class GameplayScene extends PScene {
 		// Display Inventory Slots
 		for (int i = 0; i < 6; i++) {
 			// Display Slot
-			image(slot, 20 * 4 / 2 + 10 + i * (20 * 4 + 10), 20 * 4 / 2 + 10);
+			image(slot, 20 * 4 / 2.0f + 10 + i * (20 * 4 + 10), 20 * 4 / 2.0f + 10);
 
 			// Display Item
 			PImage img = Tileset.getTile(inventory.get(i));
-			applet.image(img, 20 * 4 / 2 + 10 + i * (20 * 4 + 10), 20 * 4 / 2 + 10, img.width * (float) 0.5,
+			applet.image(img, 20 * 4 / 2.0f + 10 + i * (20 * 4 + 10), 20 * 4 / 2.0f + 10, img.width * (float) 0.5,
 					img.height * (float) 0.5);
 
 			// Focus Event
 			if (applet.mouseReleaseEvent) {
-				float xx = 20 * 4 / 2 + 10 + i * (20 * 4 + 10);
-				float yy = 20 * 4 / 2 + 10;
-				if (editorItem.focus && applet.getMouseCoordScreen().x > xx - (20 * 4) / 2
-						&& applet.getMouseCoordScreen().x < xx + (20 * 4) / 2
-						&& applet.getMouseCoordScreen().y > yy - (20 * 4) / 2
-						&& applet.getMouseCoordScreen().y < yy + (20 * 4) / 2) {
+				float xx = 20 * 4 / 2.0f + 10 + i * (20 * 4 + 10);
+				float yy = 20 * 4 / 2.0f + 10;
+				if (editorItem.focus && applet.getMouseCoordScreen().x > xx - (20 * 4) / 2.0f
+						&& applet.getMouseCoordScreen().x < xx + (20 * 4) / 2.0f
+						&& applet.getMouseCoordScreen().y > yy - (20 * 4) / 2.0f
+						&& applet.getMouseCoordScreen().y < yy + (20 * 4) / 2.0f) {
 					editorItem.focus = false;
 					inventory.set(i, editorItem.id);
 				}
@@ -565,7 +565,7 @@ public class GameplayScene extends PScene {
 		final int xOffset = 32; // to align with rectMode(CENTER)
 		final int yOffset = 32; // to align with rectMode(CENTER)
 		final int l = 6400;
-		for (int i = -l; i < l; i += SideScroller.snapSize) {
+		for (int i = -l; i < l; i += Main.snapSize) {
 			applet.line(-l, i + yOffset, l, i + yOffset); // horizontal
 			applet.line(i + xOffset, -l, i + xOffset, l); // vertical
 		}
@@ -577,10 +577,7 @@ public class GameplayScene extends PScene {
 		TileType[] tiles = { TileType.COLLISION, TileType.BACKGROUND, TileType.OBJECT };
 		ArrayList<Tile> inventoryTiles = Tileset.getAllTiles(tiles);
 		for (int i = 0; i < inventoryTiles.size(); i++) {
-			if (i % 6 == 0) {
-				y++;
-			} else {
-			}
+			if (i % 6 == 0) y++;
 		}
 		return 20 * 4 + 10 + y * (20 * 4 + 10);
 	}
@@ -606,7 +603,7 @@ public class GameplayScene extends PScene {
 					}
 				}
 				if (!overAny) { // if not over any, deselect all
-					objects.forEach(o -> o.unFocus());
+					objects.forEach(EditableObject::unFocus);
 				}
 				break;
 			case RIGHT :
@@ -641,8 +638,7 @@ public class GameplayScene extends PScene {
 	}
 
 	public void mouseWheel(MouseEvent event) {
-		if (event.isShiftDown()) {
-		} else {
+		if (!event.isShiftDown()) {
 			if (tool == Tools.INVENTORY) {
 				scrollBar.mouseWheel(event);
 				scroll_inventory = (int) PApplet.map(scrollBar.barLocation, 1, 0,
@@ -695,8 +691,7 @@ public class GameplayScene extends PScene {
 					tool = Tools.IMPORT;
 					break;
 				case 69 : // 'e' TODO remove?
-					if (tool == Tools.INVENTORY) {
-					} else {
+					if (tool != Tools.INVENTORY) {
 						tool = Tools.INVENTORY;
 						editorItem.setMode("ITEM");
 						scroll_inventory = 0;
@@ -704,12 +699,7 @@ public class GameplayScene extends PScene {
 					break;
 				case 8: // BACKSPACE
 				case 46 : // DEL
-					for (Iterator<EditableObject> iterator = objects.iterator(); iterator.hasNext();) {
-						EditableObject o = (EditableObject) iterator.next();
-						if (o.isFocused()) {
-							iterator.remove();
-						}
-					}
+					objects.removeIf(EditableObject::isFocused);
 					break;
 				default :
 					break;

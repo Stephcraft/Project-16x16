@@ -3,7 +3,7 @@ package project_16x16.ui;
 import java.util.Arrays;
 import java.util.HashSet;
 
-import project_16x16.SideScroller;
+import project_16x16.Main;
 import project_16x16.Util;
 
 /**
@@ -14,7 +14,7 @@ import project_16x16.Util;
  */
 public class NumberInputField extends TextInputField {
 
-	private static final HashSet<Character> keys = new HashSet<Character>(
+	private static final HashSet<Character> keys = new HashSet<>(
 			Arrays.asList('0', '1', '2', '3', '4', '5', '6', '7', '8', '9'));
 
 	/**
@@ -23,7 +23,7 @@ public class NumberInputField extends TextInputField {
 	 * @param a This a reference to the game //TODO: having variable names that are
 	 *          just letters can be confusing to new contributors
 	 */
-	public NumberInputField(SideScroller a) {
+	public NumberInputField(Main a) {
 		super(a);
 	}
 	
@@ -72,7 +72,7 @@ public class NumberInputField extends TextInputField {
 	public int getValue() {
 		int returnVal;
 		try {
-			returnVal = Integer.valueOf(text);
+			returnVal = Integer.parseInt(text);
 		} catch (NumberFormatException e) {
 			returnVal = 0;
 		}

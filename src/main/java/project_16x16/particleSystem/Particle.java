@@ -4,7 +4,7 @@ import java.util.function.Consumer;
 
 import processing.core.PImage;
 import processing.core.PVector;
-import project_16x16.SideScroller;
+import project_16x16.Main;
 
 /**
  * Particle
@@ -15,7 +15,7 @@ import project_16x16.SideScroller;
  */
 public class Particle {
 
-	private SideScroller applet;
+	private Main applet;
 	
 	public PImage image;
 	public PVector position;
@@ -29,7 +29,7 @@ public class Particle {
 	public float lifespan;
 	public int frameCount;
 	
-	public Particle (SideScroller applet, PImage image) {
+	public Particle (Main applet, PImage image) {
 		this.applet = applet;
 		this.image = image;
 		frameCount = 0;

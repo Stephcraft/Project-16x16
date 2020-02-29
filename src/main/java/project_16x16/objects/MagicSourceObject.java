@@ -4,10 +4,10 @@ import java.util.ArrayList;
 
 import processing.core.PApplet;
 import processing.core.PImage;
+import project_16x16.Main;
 import project_16x16.projectiles.MagicProjectile;
 import project_16x16.projectiles.Swing;
 import project_16x16.scene.GameplayScene;
-import project_16x16.SideScroller;
 import project_16x16.Tileset;
 import project_16x16.Util;
 import project_16x16.particleSystem.ParticleSystem;
@@ -22,7 +22,7 @@ public class MagicSourceObject extends GameObject {
 	private static ArrayList<PImage> particleAnimation;
 	private ParticleSystem trail;
 
-	public MagicSourceObject(SideScroller a, GameplayScene g) {
+	public MagicSourceObject(Main a, GameplayScene g) {
 		super(a, g);
 
 		type = type.OBJECT;
@@ -75,23 +75,23 @@ public class MagicSourceObject extends GameObject {
 	}
 
 	public boolean collidesWithSwing(Swing swing) {
-		return (swing.pos.x + swing.width / 2 > pos.x - width / 2
-				&& swing.pos.x - swing.width / 2 < pos.x + width / 2)
-				&& (swing.pos.y + swing.height / 2 > pos.y - height / 2
-						&& swing.pos.y - swing.height / 2 < pos.y + height / 2);
+		return (swing.pos.x + swing.width / 2.0f > pos.x - width / 2.0f
+				&& swing.pos.x - swing.width / 2.0f < pos.x + width / 2.0f)
+				&& (swing.pos.y + swing.height / 2.0f > pos.y - height / 2.0f
+						&& swing.pos.y - swing.height / 2.0f < pos.y + height / 2.0f);
 	}
 
 	public boolean collidesWithPlayer() {
-		return (gameScene.getPlayer().pos.x + gameScene.getPlayer().width / 2 > pos.x - width / 2
-				&& gameScene.getPlayer().pos.x - gameScene.getPlayer().width / 2 < pos.x + width / 2)
-				&& (gameScene.getPlayer().pos.y + gameScene.getPlayer().height / 2 > pos.y
-						- height / 2
-						&& gameScene.getPlayer().pos.y - gameScene.getPlayer().height / 2 < pos.y
-								+ height / 2);
+		return (gameScene.getPlayer().pos.x + gameScene.getPlayer().width / 2.0f > pos.x - width / 2.0f
+				&& gameScene.getPlayer().pos.x - gameScene.getPlayer().width / 2.0f < pos.x + width / 2.0f)
+				&& (gameScene.getPlayer().pos.y + gameScene.getPlayer().height / 2.0f > pos.y
+						- height / 2.0f
+						&& gameScene.getPlayer().pos.y - gameScene.getPlayer().height / 2.0f < pos.y
+								+ height / 2.0f);
 	}
 	
-	private void setParticleAnimation(SideScroller a) {
-		particleAnimation = new ArrayList<PImage>();
+	private void setParticleAnimation(Main a) {
+		particleAnimation = new ArrayList<>();
 		PImage image = Tileset.getTile("MAGIC_SOURCE");
 		float scale = 0.12f;
 		float angle = PApplet.radians(11);

@@ -9,13 +9,12 @@ import processing.core.PGraphics;
 import processing.event.KeyEvent;
 import processing.event.MouseEvent;
 
-import project_16x16.SideScroller;
+import project_16x16.Main;
 import project_16x16.Util;
 import project_16x16.Audio;
 import project_16x16.Audio.BGM;
 import project_16x16.Constants;
-import project_16x16.SideScroller.GameScenes;
-import project_16x16.scene.PScene;
+import project_16x16.Main.GameScenes;
 import project_16x16.ui.Button;
 
 /**
@@ -30,11 +29,11 @@ public final class MainMenu extends PScene {
 	public Button pressSettings; // TODO add settings menu
 	public Button pressMultiplayer;
 
-	private SideScroller game;
+	private Main game;
 
 	private PGraphics background;
 
-	public MainMenu(SideScroller a) {
+	public MainMenu(Main a) {
 		super(a);
 		game = a;
 
@@ -138,7 +137,7 @@ public final class MainMenu extends PScene {
 	 */
 	private static class Particles {
 
-		private static SideScroller game;
+		private static Main game;
 
 		private static ArrayList<Particle> particles;
 
@@ -149,7 +148,7 @@ public final class MainMenu extends PScene {
 		private static final float STEP = 0.05f;
 		private static final int TRANSITION_TIME = 360;
 
-		static void assignApplet(SideScroller s) {
+		static void assignApplet(Main s) {
 			particles = new ArrayList<>();
 			game = s;
 			centerX = (int) (game.gameResolution.x / 2);

@@ -2,7 +2,7 @@ package project_16x16.ui;
 
 import processing.core.PApplet;
 import project_16x16.PClass;
-import project_16x16.SideScroller;
+import project_16x16.Main;
 import project_16x16.Util;
 
 /**
@@ -24,7 +24,7 @@ public class TextInputField extends PClass {
 	 * Constructor for PInput
 	 * @param  a This a reference to the game //TODO: having variable names that are just letters can be confusing to new contributors
 	 */
-	public TextInputField(SideScroller a) {
+	public TextInputField(Main a) {
 		super(a);
 
 		width = 200;
@@ -63,12 +63,12 @@ public class TextInputField extends PClass {
 		applet.fill(255);
 		applet.textSize(20);
 		applet.textAlign(LEFT, CENTER);
-		applet.text(text, x - width / 2 + 8, y);
+		applet.text(text, x - width / 2.0f + 8, y);
 
 		// Display Cursor
 		if (focus) {
 			applet.fill(255, PApplet.map(PApplet.sin(applet.frameCount * (float) 0.1), 0, 1, 100, 255));
-			applet.text("_", x - width / 2 + 8 + applet.textWidth(text), y);
+			applet.text("_", x - width / 2.0f + 8 + applet.textWidth(text), y);
 		}
 	}
 

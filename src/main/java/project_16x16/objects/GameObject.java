@@ -6,7 +6,7 @@ import project_16x16.components.AnimationComponent;
 import processing.core.PImage;
 import processing.data.JSONObject;
 import project_16x16.scene.GameplayScene;
-import project_16x16.SideScroller;
+import project_16x16.Main;
 import project_16x16.Tileset;
 
 /**
@@ -22,7 +22,7 @@ public class GameObject extends EditableObject {
 
 	public PImage image;
 
-	public GameObject(SideScroller a, GameplayScene g) {
+	public GameObject(Main a, GameplayScene g) {
 		super(a, g);
 
 		animation = new AnimationComponent();

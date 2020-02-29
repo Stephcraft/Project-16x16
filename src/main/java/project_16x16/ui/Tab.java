@@ -1,7 +1,7 @@
 package project_16x16.ui;
 
+import project_16x16.Main;
 import project_16x16.PClass;
-import project_16x16.SideScroller;
 
 public class Tab extends PClass{
 	
@@ -10,11 +10,11 @@ public class Tab extends PClass{
 	private int activeButton;
 	private int prevButton;
 	private int buttonDistance = 0;
-	private float movingIncrement = 0;
+	private float movingIncrement;
 	private float incrementSpeed;
 	
 	//Basic constructor for tab
-	public Tab(SideScroller a, String[] texts, int tabs) {
+	public Tab(Main a, String[] texts, int tabs) {
 		super(a);
 		tabCount = tabs;
 		buttons = new Button[tabCount];

@@ -15,15 +15,15 @@ import static processing.core.PApplet.cos;
  * camera uses {@link PApplet#lerp(float, float, float) lerp()} to follow
  * objects or go to target position.
  * 
- * @todo deadzone mode can be choppy when tracking; zoom-to-fit (multiple
+ * TODO deadzone mode can be choppy when tracking; zoom-to-fit (multiple
  *       entities); setting position to mouse when camera is rotated [bugged]
  * @author micycle1
- * @see {@link org.gicentre.utils.move.ZoomPan ZoomPan}
- * @see {@link #update() run()} - the main method
+ * @see org.gicentre.utils.move.ZoomPan
+ * @see #update() - the main method
  */
 public final class Camera extends ZoomPan {
 
-	private SideScroller applet;
+	private Main applet;
 	/**
 	 * Lerp constant for motion. Used for all motion easing (zoom, position and
 	 * rotation).
@@ -60,7 +60,7 @@ public final class Camera extends ZoomPan {
 	/**
 	 * Deadzone coordinate points. Can correspond to either screen or world
 	 * coordinates, depending on which method was used to set them
-	 * ({@link #setWorldDeadZone()} vs {@link #setScreenDeadZone()}.
+	 * ({@link Camera#setWorldDeadZone(PVector, PVector)} vs {@link #setScreenDeadZone(PVector, PVector)}.
 	 */
 	private PVector deadZoneP1, deadZoneP2;
 	private boolean following = false, deadZoneScreen = false, deadZoneWorld = false;
@@ -82,9 +82,9 @@ public final class Camera extends ZoomPan {
 	/**
 	 * The most basic constructor. Initialises the camera at position (0, 0).
 	 * 
-	 * @param applet Target applet ({@link SideScroller}).
+	 * @param applet Target applet ({@link Main}).
 	 */
-	public Camera(SideScroller applet) {
+	public Camera(Main applet) {
 		super(applet);
 		this.applet = applet;
 		targetPosition = new PVector(0, 0); // default position
@@ -93,10 +93,10 @@ public final class Camera extends ZoomPan {
 	/**
 	 * Constructor. Specify camera's initial fixed position.
 	 * 
-	 * @param applet        Target applet ({@link SideScroller}).
+	 * @param applet        Target applet ({@link Main}).
 	 * @param startPosition Initial camera position.
 	 */
-	public Camera(SideScroller applet, PVector startPosition) {
+	public Camera(Main applet, PVector startPosition) {
 		super(applet);
 		this.applet = applet;
 		targetPosition = new PVector(-startPosition.x, -startPosition.y);
@@ -105,10 +105,10 @@ public final class Camera extends ZoomPan {
 	/**
 	 * Constructor. Specify the object to track from initialisation.
 	 * 
-	 * @param applet       Target applet ({@link SideScroller}).
+	 * @param applet       Target applet ({@link Main}).
 	 * @param followObject Object the camera will follow.
 	 */
-	public Camera(SideScroller applet, EditableObject followObject) {
+	public Camera(Main applet, EditableObject followObject) {
 		super(applet);
 		this.applet = applet;
 		this.followObject = followObject;
@@ -119,12 +119,12 @@ public final class Camera extends ZoomPan {
 	 * Constructor. Specify both the object to track and the translation offset with
 	 * which to track it from initialisation.
 	 * 
-	 * @param applet       Target applet ({@link SideScroller}).
+	 * @param applet       Target applet ({@link Main}).
 	 * @param followObject Object the camera will follow.
 	 * @param followOffset Offset with which the camera will follow the given
 	 *                     object.
 	 */
-	public Camera(SideScroller applet, EditableObject followObject, PVector followOffset) {
+	public Camera(Main applet, EditableObject followObject, PVector followOffset) {
 		super(applet);
 		this.applet = applet;
 		this.followObject = followObject;
@@ -141,20 +141,20 @@ public final class Camera extends ZoomPan {
 		applet.stroke(0, 150, 255);
 		applet.strokeWeight(2);
 		final int length = 20;
-		applet.line(applet.width / 2 - length, applet.height / 2, applet.width / 2 + length, applet.height / 2);
-		applet.line(applet.width / 2, applet.height / 2 - length, applet.width / 2, applet.height / 2 + length);
+		applet.line(applet.width / 2.0f - length, applet.height / 2.0f, applet.width / 2.0f + length, applet.height / 2.0f);
+		applet.line(applet.width / 2.0f, applet.height / 2.0f - length, applet.width / 2.0f, applet.height / 2.0f + length);
 		applet.pushMatrix();
 		applet.translate(offset.x, offset.y);
 		applet.rotate(rotation);
 		applet.translate(-offset.x, -offset.y);
-		applet.line(applet.width / 2 - length * 2, applet.height / 2, applet.width / 2 + length * 2, applet.height / 2);
+		applet.line(applet.width / 2.0f - length * 2, applet.height / 2.0f, applet.width / 2.0f + length * 2, applet.height / 2.0f);
 		applet.popMatrix();
 		if (following) {
 			applet.rectMode(PApplet.CENTER);
 			applet.rect(getCoordToDisp(followObject.pos).x, getCoordToDisp(followObject.pos).y, length * 2, length * 2);
-			applet.strokeWeight(PApplet.map(PApplet.dist(applet.width / 2, applet.height / 2,
+			applet.strokeWeight(PApplet.map(PApplet.dist(applet.width / 2.0f, applet.height / 2.0f,
 					getCoordToDisp(followObject.pos).x, getCoordToDisp(followObject.pos).y), 0, 100, 2, 10));
-			applet.line(applet.width / 2, applet.height / 2, getCoordToDisp(followObject.pos).x,
+			applet.line(applet.width / 2.0f, applet.height / 2.0f, getCoordToDisp(followObject.pos).x,
 					getCoordToDisp(followObject.pos).y);
 			if (deadZoneScreen) {
 				applet.rectMode(PApplet.CORNER);
@@ -169,7 +169,7 @@ public final class Camera extends ZoomPan {
 	 * called will be affected by the camera.
 	 * <p>
 	 * If you wish for the entire sketch to be affected by the camera, you can call
-	 * this method in the first line of the {@link SideScroller#Draw draw()} method.
+	 * this method in the first line of the {@link Main#draw()}  draw()} method.
 	 * This results in all subsequent drawing being affected by the camera.
 	 * Occasionally though there may be a need to have some display activity that is
 	 * independent of the camera -- see {@link #release()}.
@@ -196,10 +196,10 @@ public final class Camera extends ZoomPan {
 	/**
 	 * Updates the camera - this method is the heart of the {@link Camera} class.
 	 * 
-	 * @see {@linkplain ZoomPan#transform() transform()}
+	 * @see ZoomPan#transform()
 	 */
 	private void update() {
-		offset = new PVector(applet.width / 2, applet.height / 2);
+		offset = new PVector(applet.width / 2.0f, applet.height / 2.0f);
 
 		if (zoom != zoomTarget) {
 			zoom = PApplet.lerp(zoom, zoomTarget, lerpSpeed);
@@ -312,7 +312,7 @@ public final class Camera extends ZoomPan {
 	 * 
 	 * @param point1 Coordinate 1 (Screen coordinate)
 	 * @param point2 Coordinate 2 (Screen coordinate - the point opposite point1)
-	 * @see {@link #setWorldDeadZone(PVector, PVector) setWorldDeadZone()}
+	 * @see Camera#setWorldDeadZone(PVector, PVector)
 	 */
 	public void setScreenDeadZone(PVector point1, PVector point2) {
 		deadZoneScreen = true;
@@ -339,7 +339,7 @@ public final class Camera extends ZoomPan {
 	 * 
 	 * @param point1 Coordinate 1 (Screen coordinate)
 	 * @param point2 Coordinate 2 (Screen coordinate - the point opposite point1)
-	 * @see {@link #setScreenDeadZone(PVector, PVector) setScreenDeadZone()}
+	 * @see Camera#setScreenDeadZone(PVector, PVector)
 	 */
 	public void setWorldDeadZone(PVector point1, PVector point2) {
 		deadZoneWorld = true;
@@ -381,7 +381,7 @@ public final class Camera extends ZoomPan {
 	 * be used to reveal a boss, then snap back to the player.
 	 * 
 	 * @param position World position camera will center on.
-	 * @see {@link ZoomPan#getDispToCoord(PVector) getDispToCoord()}
+	 * @see ZoomPan#getDispToCoord(PVector)
 	 */
 	public void setCameraPosition(PVector position) {
 		following = false;
@@ -450,7 +450,7 @@ public final class Camera extends ZoomPan {
 	 * snappy, slower camera.
 	 * 
 	 * @param lerpSpeed Range = [0-1.0]
-	 * @see {@link PApplet#lerp(float, float, float) lerp()}
+	 * @see PApplet#lerp(float, float, float)
 	 */
 	public void setLerpSpeed(float lerpSpeed) {
 		this.lerpSpeed = lerpSpeed;
@@ -478,7 +478,7 @@ public final class Camera extends ZoomPan {
 	 * 
 	 * @return Representation of camera position (the point the camera is centered
 	 *         on).
-	 * @see {@link ZoomPan#getPanOffset() getPanOffset()} (not adjusted for
+	 * @see ZoomPan#getPanOffset() (not adjusted for
 	 *      centering and translation)
 	 */
 	public PVector getPosition() {

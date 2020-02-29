@@ -2,9 +2,9 @@ package project_16x16.objects;
 
 import processing.core.*;
 import processing.data.JSONObject;
+import project_16x16.Main;
 import project_16x16.scene.GameplayScene;
-import project_16x16.SideScroller;
-import project_16x16.SideScroller.debugType;
+import project_16x16.Main.debugType;
 import project_16x16.Tileset;
 
 public class CollidableObject extends EditableObject {
@@ -16,7 +16,7 @@ public class CollidableObject extends EditableObject {
 	private float pixelOffsetX = 0;
 	private float pixelOffsetY = 0;
 
-	public CollidableObject(SideScroller a, GameplayScene g) {
+	public CollidableObject(Main a, GameplayScene g) {
 		super(a, g);
 
 		flag = "";
@@ -24,13 +24,13 @@ public class CollidableObject extends EditableObject {
 		pos = new PVector(0, 0);
 	}
 
-	public CollidableObject(SideScroller a, GameplayScene g, int w, int h, int x, int y, boolean ch) {
+	public CollidableObject(Main a, GameplayScene g, int w, int h, int x, int y, boolean ch) {
 		this(a, g, w, h, x, y);
 
 		child = ch;
 	}
 
-	public CollidableObject(SideScroller a, GameplayScene g, int w, int h, int x, int y) {
+	public CollidableObject(Main a, GameplayScene g, int w, int h, int x, int y) {
 		this(a, g);
 
 		// Get From Game Graphics Image
@@ -39,7 +39,7 @@ public class CollidableObject extends EditableObject {
 		height = h;
 	}
 
-	public CollidableObject(SideScroller a, GameplayScene g, String t, int x, int y) {
+	public CollidableObject(Main a, GameplayScene g, String t, int x, int y) {
 		this(a, g);
 
 		// Get From Game Graphics Image

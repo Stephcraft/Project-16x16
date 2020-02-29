@@ -17,14 +17,14 @@ import project_16x16.components.Tile;
 
 public final class Util {
 
-	private static SideScroller applet;
+	private static Main applet;
 
 	/**
 	 * The Util class provides static functions, but uses a PApplet (SideScroller)
 	 * instance within the static methods. This instance must be assigned in a
 	 * static method, here, before anything else uses this class.
 	 */
-	public static void assignApplet(SideScroller a) {
+	public static void assignApplet(Main a) {
 		applet = a;
 	}
 
@@ -57,23 +57,22 @@ public final class Util {
 	}
 
 	/**
-	 * @see {@link BlurUtils#blurImage(PImage, int, int) blurImage()}.
+	 * @see BlurUtils#blurImage(PImage, int, int)
 	 */
 	public static PImage blur(PImage img, int radius, int iterations) {
 		return BlurUtils.blurImage(img, radius, iterations);
 	}
 	
 	public static PImage scale(PImage pBuffer, int scaling) {
-		PImage originalImage = pBuffer;
-		PImage tempImage = applet.createImage(PApplet.parseInt(originalImage.width * scaling),
-				PApplet.parseInt(originalImage.height * scaling), PConstants.ARGB);
+		PImage tempImage = applet.createImage(PApplet.parseInt(pBuffer.width * scaling),
+				PApplet.parseInt(pBuffer.height * scaling), PConstants.ARGB);
 		tempImage.loadPixels();
-		originalImage.loadPixels();
-		for (int i = 0; i < originalImage.pixels.length; i++) {
-			tempImage.pixels[i * scaling] = originalImage.pixels[i];
-			tempImage.pixels[i * scaling + 1] = originalImage.pixels[i];
-			tempImage.pixels[i * scaling + originalImage.width] = originalImage.pixels[i];
-			tempImage.pixels[i * scaling + originalImage.width + 1] = originalImage.pixels[i];
+		pBuffer.loadPixels();
+		for (int i = 0; i < pBuffer.pixels.length; i++) {
+			tempImage.pixels[i * scaling] = pBuffer.pixels[i];
+			tempImage.pixels[i * scaling + 1] = pBuffer.pixels[i];
+			tempImage.pixels[i * scaling + pBuffer.width] = pBuffer.pixels[i];
+			tempImage.pixels[i * scaling + pBuffer.width + 1] = pBuffer.pixels[i];
 		}
 		tempImage.updatePixels();
 		return pg(tempImage).get();
@@ -98,7 +97,7 @@ public final class Util {
 		pg.beginDraw();
 		pg.clear();
 		pg.imageMode(PApplet.CENTER);
-		pg.translate(pg.width / 2, pg.height / 2);
+		pg.translate(pg.width / 2.0f, pg.height / 2.0f);
 		pg.rotate(angle);
 		pg.image(img, 0, 0);
 		pg.endDraw();
@@ -128,7 +127,7 @@ public final class Util {
 	 * @param G Green Value [0-255].
 	 * @param B Blue Value [0-255].
 	 * @return Color int.
-	 * @see {@link #colorToRGB(int, int, int, float) colorToRGB(int R, int G, int B, float A)}
+	 * @see #colorToRGB(int, int, int, float)
 	 */
 	public static int colorToRGB(int R, int G, int B) {
 		int out = 255 << 24; // full transparency
@@ -282,7 +281,7 @@ public final class Util {
 	}
 
 	public static boolean fileExists(String src) {
-		boolean condition = false;
+		boolean condition;
 		try {
 			String[] file = applet.loadStrings(src);
 			if (file[0].length() == 0) {
@@ -301,13 +300,13 @@ public final class Util {
 	 * @return
 	 */
 	public static String encrypt(String str) {
-		String output = "";
+		StringBuilder output = new StringBuilder();
 		for (int i = 0; i < str.length(); i++) {
 			int k = PApplet.parseInt(str.charAt(i));
 			k = (k * 8) - 115; // Encrypt Key
-			output += PApplet.parseChar(k);
+			output.append(PApplet.parseChar(k));
 		}
-		return output;
+		return output.toString();
 
 	}
 
@@ -318,13 +317,13 @@ public final class Util {
 	 * @return
 	 */
 	public static String decrypt(String str) {
-		String output = "";
+		StringBuilder output = new StringBuilder();
 		for (int i = 0; i < str.length(); i++) {
 			int k = PApplet.parseInt(str.charAt(i));
 			k = (k + 115) / 8; // Encrypt Key
-			output += PApplet.parseChar(k);
+			output.append(PApplet.parseChar(k));
 		}
-		return output.replaceAll("" + PApplet.parseChar(8202), "\n").replaceAll("" + PApplet.parseChar(8201), "\t");
+		return output.toString().replaceAll("" + PApplet.parseChar(8202), "\n").replaceAll("" + PApplet.parseChar(8201), "\t");
 	}
 	
 	public static void convertTiledLevel(String filePath, String mapName) {
@@ -349,10 +348,11 @@ public final class Util {
 				if (tileId >= 0) {
 					Tile tile = Tileset.getTileObject(tileId);
 					JSONObject JSONtile = new JSONObject();
+					assert tile != null;
 					JSONtile.setString("id", tile.getName());
 					JSONtile.setString("type", tile.getTileType().toString());
 					JSONtile.setInt("x", (j % width) * 60 - (width/2*60));
-					JSONtile.setInt("y", (int) (j / width) * 60 - (height/2*60));
+					JSONtile.setInt("y", (j / width) * 60 - (height/2*60));
 					levelSave.append(JSONtile);
 				}
 			}

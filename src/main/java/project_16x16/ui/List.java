@@ -2,7 +2,7 @@ package project_16x16.ui;
 
 import processing.core.PApplet;
 import project_16x16.PClass;
-import project_16x16.SideScroller;
+import project_16x16.Main;
 
 public class List extends PClass {
 
@@ -13,11 +13,11 @@ public class List extends PClass {
 	String getElement;
 	Button confirm;
 	Button cancel;
-	Button elements[];
+	Button[] elements;
 	ScrollBarVertical scrollBar;
 	int elementOffSet;
 
-	public List(SideScroller a, String ar[], int elementOffset) {
+	public List(Main a, String[] ar, int elementOffset) {
 		super(a);
 		x = 0;
 		y = 0;
@@ -36,7 +36,7 @@ public class List extends PClass {
 			elements[i] = new Button(applet);
 	}
 
-	public void refreshElements(String ar[]) {
+	public void refreshElements(String[] ar) {
 		int getLargestW = 0;
 		for (int i = 0; i < ar.length; i++) {
 			elements[i].setText(ar[i]);
@@ -78,12 +78,12 @@ public class List extends PClass {
 	public void update() {
 		confirm.update();
 		cancel.update();
-		for (int i = 0; i < elements.length; i++) {
-			elements[i].updateOnPress();
+		for (Button element : elements) {
+			element.updateOnPress();
 			// requires the !getConfirm as there is an event glitch when confiriming your choice
 			//within the list
-			if (elements[i].event() && !getConfirmPress()) {
-				getElement = elements[i].getText();
+			if (element.event() && !getConfirmPress()) {
+				getElement = element.getText();
 				System.out.println(getElement);
 			}
 		}
@@ -114,8 +114,8 @@ public class List extends PClass {
 	public void setCover() {
 		applet.fill(89, 89, 89);
 		applet.noStroke();
-		applet.rect(x, y + h / 2, w, COVER_H);// Hardcoded as height of buttons doesn't change only width
-		applet.rect(x, y - h / 2, w, COVER_H);
+		applet.rect(x, y + h / 2.0f, w, COVER_H);// Hardcoded as height of buttons doesn't change only width
+		applet.rect(x, y - h / 2.0f, w, COVER_H);
 	}
 
 	public boolean inListBox(int elementPosY, int elementPosY2) {

@@ -1,24 +1,16 @@
 package project_16x16.entities;
 
 import java.awt.event.KeyEvent;
-import java.util.ArrayList;
-import java.util.HashMap;
 
 import processing.core.PImage;
 import processing.core.PVector;
 import processing.data.JSONObject;
-import project_16x16.Audio;
-import project_16x16.Options;
-import project_16x16.SideScroller;
-import project_16x16.SideScroller.debugType;
+import project_16x16.Main;
+import project_16x16.Main.debugType;
 import project_16x16.Tileset;
 import project_16x16.Util;
-import project_16x16.Audio.SFX;
-import project_16x16.components.AnimationComponent;
 import project_16x16.objects.CollidableObject;
 import project_16x16.objects.EditableObject;
-import project_16x16.objects.GameObject;
-import project_16x16.projectiles.Swing;
 import project_16x16.scene.GameplayScene;
 
 /**
@@ -51,7 +43,7 @@ public class Enemy extends CollidableObject {
 	 * 
 	 * @param a SideScroller game controller.
 	 */
-	public Enemy(SideScroller a, GameplayScene g) {
+	public Enemy(Main a, GameplayScene g) {
 		super(a,g);
 		gravity = 1;
 		image = Tileset.getTile(0, 258, 14, 14, 4);
@@ -142,10 +134,10 @@ public class Enemy extends CollidableObject {
 					if (collidesFuturX(collision)) {
 						// enemy left of collision
 						if (pos.x < collision.pos.x) {
-							pos.x = collision.pos.x - collision.width / 2 - width / 2;
+							pos.x = collision.pos.x - collision.width / 2.0f - width / 2.0f;
 							// enemy right of collision
 						} else {
-							pos.x = collision.pos.x + collision.width / 2 + width / 2;
+							pos.x = collision.pos.x + collision.width / 2.0f + width / 2.0f;
 						}
 						velocity.x = 0;
 						enemyState.dashing = false;
@@ -156,11 +148,11 @@ public class Enemy extends CollidableObject {
 							if (enemyState.flying) {
 								enemyState.landing = true;
 							}
-							pos.y = collision.pos.y - collision.height / 2 - height / 2;
+							pos.y = collision.pos.y - collision.height / 2.0f - height / 2.0f;
 							enemyState.flying = false;
 							// enemy below collision
 						} else {
-							pos.y = collision.pos.y + collision.height / 2 + height / 2;
+							pos.y = collision.pos.y + collision.height / 2.0f + height / 2.0f;
 							enemyState.jumping = false;
 						}
 						velocity.y = 0;
@@ -178,39 +170,39 @@ public class Enemy extends CollidableObject {
 	 * @return boolean if it has or has not collided with the object.
 	 */
 	private boolean collides(CollidableObject collision) {
-		return (pos.x + width / 2 > collision.pos.x - collision.width / 2
-				&& pos.x - width / 2 < collision.pos.x + collision.width / 2)
-				&& (pos.y + height / 2 > collision.pos.y - collision.height / 2
-						&& pos.y - height / 2 < collision.pos.y + collision.height / 2);
+		return (pos.x + width / 2.0f > collision.pos.x - collision.width / 2.0f
+				&& pos.x - width / 2.0f < collision.pos.x + collision.width / 2.0f)
+				&& (pos.y + height / 2.0f > collision.pos.y - collision.height / 2.0f
+						&& pos.y - height / 2.0f < collision.pos.y + collision.height / 2.0f);
 	}
 
 	// TODO: optimize these (unused)
 	private boolean collidesEqual(CollidableObject collision) {
-		return (pos.x + width / 2 >= collision.pos.x - collision.width / 2
-				&& pos.x - width / 2 <= collision.pos.x + collision.width / 2)
-				&& (pos.y + height / 2 >= collision.pos.y - collision.height / 2
-						&& pos.y - height / 2 <= collision.pos.y + collision.height / 2);
+		return (pos.x + width / 2.0f >= collision.pos.x - collision.width / 2.0f
+				&& pos.x - width / 2.0f <= collision.pos.x + collision.width / 2.0f)
+				&& (pos.y + height / 2.0f >= collision.pos.y - collision.height / 2.0f
+						&& pos.y - height / 2.0f <= collision.pos.y + collision.height / 2.0);
 	}
 
 	private boolean collidesFutur(CollidableObject collision) {
-		return (pos.x + velocity.x + width / 2 > collision.pos.x - collision.width / 2
-				&& pos.x + velocity.x - width / 2 < collision.pos.x + collision.width / 2)
-				&& (pos.y + velocity.y + height / 2 > collision.pos.y - collision.height / 2
-						&& pos.y + velocity.y - height / 2 < collision.pos.y + collision.height / 2);
+		return (pos.x + velocity.x + width / 2.0f > collision.pos.x - collision.width / 2.0f
+				&& pos.x + velocity.x - width / 2.0f < collision.pos.x + collision.width / 2.0f)
+				&& (pos.y + velocity.y + height / 2.0f > collision.pos.y - collision.height / 2.0f
+						&& pos.y + velocity.y - height / 2.0f < collision.pos.y + collision.height / 2.0f);
 	}
 
 	private boolean collidesFuturX(CollidableObject collision) {
-		return (pos.x + velocity.x + width / 2 > collision.pos.x - collision.width / 2
-				&& pos.x + velocity.x - width / 2 < collision.pos.x + collision.width / 2)
-				&& (pos.y + 0 + height / 2 > collision.pos.y - collision.height / 2
-						&& pos.y + 0 - height / 2 < collision.pos.y + collision.height / 2);
+		return (pos.x + velocity.x + width / 2.0f > collision.pos.x - collision.width / 2.0f
+				&& pos.x + velocity.x - width / 2.0f < collision.pos.x + collision.width / 2.0f)
+				&& (pos.y + 0 + height / 2.0f > collision.pos.y - collision.height / 2.0f
+						&& pos.y + 0 - height / 2.0f < collision.pos.y + collision.height / 2.0f);
 	}
 
 	private boolean collidesFuturY(CollidableObject collision) {
-		return (pos.x + 0 + width / 2 > collision.pos.x - collision.width / 2
-				&& pos.x + 0 - width / 2 < collision.pos.x + collision.width / 2)
-				&& (pos.y + velocity.y + height / 2 > collision.pos.y - collision.height / 2
-						&& pos.y + velocity.y - height / 2 < collision.pos.y + collision.height / 2);
+		return (pos.x + 0 + width / 2.0f > collision.pos.x - collision.width / 2.0f
+				&& pos.x + 0 - width / 2.0f < collision.pos.x + collision.width / 2.0f)
+				&& (pos.y + velocity.y + height / 2.0f > collision.pos.y - collision.height / 2.0f
+						&& pos.y + velocity.y - height / 2.0f < collision.pos.y + collision.height / 2.0f);
 	}
 
 	public class EnemyState {

@@ -2,6 +2,7 @@ package project_16x16;
 
 import java.util.ArrayDeque;
 import java.util.HashSet;
+import java.util.Objects;
 
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
@@ -33,7 +34,7 @@ import project_16x16.ui.Notifications;
  * and is the heart of the game.
  * </p>
  */
-public class SideScroller extends PApplet {
+public class Main extends PApplet {
 
 	// Game Dev
 	public static final String LEVEL = "Storage/Game/Maps/tiledMap.dat";
@@ -83,7 +84,7 @@ public class SideScroller extends PApplet {
 
 		PScene scene;
 
-		private GameScenes(PScene scene) {
+		GameScenes(PScene scene) {
 			this.scene = scene;
 		}
 
@@ -182,7 +183,7 @@ public class SideScroller extends PApplet {
 		strokeCap(SQUARE);
 
 		// Create ArrayList
-		keysDown = new HashSet<Integer>();
+		keysDown = new HashSet<>();
 
 		// Main Load
 		load();
@@ -219,7 +220,7 @@ public class SideScroller extends PApplet {
 	 */
 	private void load() {
 		Tileset.load(this);
-		surface.setIcon(Tileset.getAnimation("PLAYER::IDLE").get(0));
+		surface.setIcon(Objects.requireNonNull(Tileset.getAnimation("PLAYER::IDLE")).get(0));
 		font_pixel = loadFont(Constants.GAME_FONT); // Load Font
 		textFont(font_pixel); // SideScrollerly Text Font
 	}
@@ -251,6 +252,7 @@ public class SideScroller extends PApplet {
 	public void returnScene() {
 		if (sceneHistory.size() > 1) {
 			sceneHistory.pop().getScene().switchFrom();
+			assert sceneHistory.peek() != null;
 			sceneHistory.peek().getScene().switchTo();
 			sceneSwapTime = frameCount;
 		}
@@ -283,11 +285,13 @@ public class SideScroller extends PApplet {
 	 * before {@link #drawAboveCamera()}.
 	 * 
 	 * @see #drawAboveCamera()
-	 * @see {@link Camera#hook()}
+	 * @see Camera#hook()
 	 */
 	private void drawBelowCamera() {
+		assert sceneHistory.peek() != null;
 		sceneHistory.peek().getScene().draw(); // Handle Draw Scene Method - draws world, etc.
 		if (debug == debugType.ALL) {
+			assert sceneHistory.peek() != null;
 			sceneHistory.peek().getScene().debug();
 			camera.postDebug();
 		}
@@ -299,9 +303,10 @@ public class SideScroller extends PApplet {
 	 * after {@link #drawBelowCamera()}.
 	 * 
 	 * @see #drawBelowCamera()
-	 * @see {@link Camera#release()}
+	 * @see Camera#release()
 	 */
 	private void drawAboveCamera() {
+		assert sceneHistory.peek() != null;
 		sceneHistory.peek().getScene().drawUI();
 		Notifications.run();
 		if (debug == debugType.ALL) {
@@ -428,7 +433,7 @@ public class SideScroller extends PApplet {
 	 * variable.
 	 * 
 	 * @return Mouse Coordinate [Game World]
-	 * @see {@link org.gicentre.utils.move.ZoomPan#getMouseCoord() getMouseCoord()}
+	 * @see org.gicentre.utils.move.ZoomPan#getMouseCoord()
 	 * @see #getMouseCoordScreen()
 	 */
 	public PVector getMouseCoordGame() {
@@ -496,8 +501,8 @@ public class SideScroller extends PApplet {
 		textAlign(LEFT, TOP);
 		
 		fill(255, 0, 0);
-		text("Player Pos:", width - labelPadding, lineOffset * 0 + yOffset);
-		text("Player Speed:", width - labelPadding, lineOffset * 1 + yOffset);
+		text("Player Pos:", width - labelPadding, yOffset);
+		text("Player Speed:", width - labelPadding, lineOffset + yOffset);
 		text("Anim #:", width - labelPadding, lineOffset * 2 + yOffset);
 		text("Anim Frame:", width - labelPadding, lineOffset * 3 + yOffset);
 		text("Camera Pos:", width - labelPadding, lineOffset * 4 + yOffset);
@@ -524,8 +529,8 @@ public class SideScroller extends PApplet {
 
 		fill(255,255,0);
 		textAlign(RIGHT, TOP);
-		text("[" + round(player.pos.x) + ", " + round(player.pos.y) + "]", width - ip, lineOffset * 0 + yOffset);
-		text("[" + round(velocity.x) + ", " + round(velocity.y) + "]", width - ip, lineOffset * 1 + yOffset);
+		text("[" + round(player.pos.x) + ", " + round(player.pos.y) + "]", width - ip, yOffset);
+		text("[" + round(velocity.x) + ", " + round(velocity.y) + "]", width - ip, lineOffset + yOffset);
 		text("[" + player.animation.name + "]", width - ip, lineOffset * 2 + yOffset);
 		text("[" + round(player.animation.getFrameID()) + " / " + player.animation.getAnimLength() + "]", width - ip,
 				lineOffset * 3 + yOffset);
@@ -576,6 +581,7 @@ public class SideScroller extends PApplet {
 					stage.setTitle("host");
 					System.out.println("~HOST~");
 				} catch (Exception e) {
+					e.printStackTrace();
 				}
 			}
 			if (args[0].equals("client")) {
@@ -588,6 +594,7 @@ public class SideScroller extends PApplet {
 					stage.setTitle("client");
 					System.out.println("~CLIENT~");
 				} catch (Exception e) {
+					e.printStackTrace();
 				}
 			}
 		}
@@ -599,7 +606,7 @@ public class SideScroller extends PApplet {
 	}
 
 	// Main
-	public static void main(String args[]) {
-		PApplet.main(SideScroller.class, args);
+	public static void main(String[] args) {
+		PApplet.main(Main.class, args);
 	}
 }

@@ -1,7 +1,7 @@
 package project_16x16.ui;
 
+import project_16x16.Main;
 import project_16x16.PClass;
-import project_16x16.SideScroller;
 import project_16x16.Util;
 
 /**
@@ -21,14 +21,14 @@ public class Button extends PClass {
 	private boolean press;
 	public boolean blocked;
 
-	int colorValues[];
+	int[] colorValues;
 
 	/**
 	 * Constructor for Press
 	 * 
 	 * @param a Reference to Game
 	 */
-	public Button(SideScroller a) {
+	public Button(Main a) {
 		super(a);
 		text = "Press me";
 		width = 0;

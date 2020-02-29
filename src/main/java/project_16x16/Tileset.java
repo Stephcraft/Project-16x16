@@ -2,7 +2,6 @@ package project_16x16;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 import project_16x16.components.Tile;
 import project_16x16.components.Tile.TileType;
@@ -11,7 +10,6 @@ import project_16x16.objects.MagicSourceObject;
 import project_16x16.objects.MirrorBoxObject;
 
 import processing.core.PApplet;
-import processing.core.PGraphics;
 import processing.core.PImage;
 import processing.data.JSONObject;
 import processing.data.JSONArray;
@@ -28,16 +26,16 @@ public class Tileset {
 	private static final String DATAPATH = "tileData.json";
 	private static final int SCALE = 4;
 	
-	private static SideScroller applet;
+	private static Main applet;
 	private static PImage graphicsSheet;
 	
 	private static int loadedTiles = 0;
-	private static HashMap<String, Integer> tileRefs = new HashMap<String, Integer>();
+	private static HashMap<String, Integer> tileRefs = new HashMap<>();
 	private static Tile[] tiles;
 	
 	private static JSONArray JSONanimations;
 	
-	public static void load(SideScroller app){
+	public static void load(Main app){
 		applet = app;
 		graphicsSheet = applet.loadImage(TILESHEETPATH);
 		tiles = new Tile[TILESETWIDTH * TILESETHEIGHT];
@@ -139,7 +137,7 @@ public class Tileset {
 			JSONObject animation = JSONanimations.getJSONObject(i);
 			if (animation.getString("name").contentEquals(name))
 			{
-				ArrayList<PImage> tiles = new ArrayList<PImage>();
+				ArrayList<PImage> tiles = new ArrayList<>();
 				JSONArray tileRefs = animation.getJSONArray("tileRef");
 				
 				for(int k = 0; k < tileRefs.size(); k++)
@@ -156,19 +154,19 @@ public class Tileset {
 	}
 	
 	public static ArrayList<Tile> getAllTiles(TileType type) {
-		ArrayList<Tile> tilesArray = new ArrayList<Tile>();
-		for(int i = 0; i < tiles.length; i++) {
-			if (tiles[i] == null)
+		ArrayList<Tile> tilesArray = new ArrayList<>();
+		for (Tile tile : tiles) {
+			if (tile == null)
 				continue;
-			TileType tileType = tiles[i].getTileType();
+			TileType tileType = tile.getTileType();
 			if (tileType == type)
-				tilesArray.add(tiles[i]);
+				tilesArray.add(tile);
 		}
 		return tilesArray;
 	}
 	
 	public static ArrayList<Tile> getAllTiles(TileType[] types) {
-		ArrayList<Tile> tiles = new ArrayList<Tile>();
+		ArrayList<Tile> tiles = new ArrayList<>();
 		for(TileType type : types)
 			tiles.addAll(getAllTiles(type));
 		return tiles;

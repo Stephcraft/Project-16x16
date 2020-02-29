@@ -5,7 +5,7 @@ import project_16x16.projectiles.MagicProjectile;
 import project_16x16.projectiles.ProjectileObject;
 import project_16x16.projectiles.Swing;
 import project_16x16.scene.GameplayScene;
-import project_16x16.SideScroller;
+import project_16x16.Main;
 import project_16x16.Tileset;
 
 public class MirrorBoxObject extends GameObject {
@@ -21,7 +21,7 @@ public class MirrorBoxObject extends GameObject {
 	final int BOX_W = 64;
 	final int BOX_H = 64;
 
-	public MirrorBoxObject(SideScroller a, GameplayScene g) {
+	public MirrorBoxObject(Main a, GameplayScene g) {
 		super(a, g);
 
 		direction = 0;
@@ -136,20 +136,19 @@ public class MirrorBoxObject extends GameObject {
 		case BOX_UP:
 			bounceProjectile(projectile, RIGHT, UP, 'x');
 			bounceProjectile(projectile, DOWN, LEFT, 'y');
-			return;
 		}
 	}
 
 	public boolean collidesWithSwing(Swing swing) {
-		return (swing.pos.x + swing.width / 2 > pos.x - width / 2 && swing.pos.x - swing.width / 2 < pos.x + width / 2)
-				&& (swing.pos.y + swing.height / 2 > pos.y - height / 2
-						&& swing.pos.y - swing.height / 2 < pos.y + height / 2);
+		return (swing.pos.x + swing.width / 2.0f > pos.x - width / 2.0f && swing.pos.x - swing.width / 2.0f < pos.x + width / 2.0f)
+				&& (swing.pos.y + swing.height / 2.0f > pos.y - height / 2.0f
+						&& swing.pos.y - swing.height / 2.0f < pos.y + height / 2.0f);
 	}
 
 	public boolean collidesWithProjectile(ProjectileObject swing) {
-		return (swing.pos.x + swing.width / 2 > pos.x - width / 2 && swing.pos.x - swing.width / 2 < pos.x + width / 2)
-				&& (swing.pos.y + swing.height / 2 > pos.y - height / 2
-						&& swing.pos.y - swing.height / 2 < pos.y + height / 2);
+		return (swing.pos.x + swing.width / 2.0f > pos.x - width / 2.0f && swing.pos.x - swing.width / 2.0f < pos.x + width / 2.0f)
+				&& (swing.pos.y + swing.height / 2.0f > pos.y - height / 2.0f
+						&& swing.pos.y - swing.height / 2.0f < pos.y + height / 2.0f);
 	}
 
 	public void setMirrorBox(float rotate) {

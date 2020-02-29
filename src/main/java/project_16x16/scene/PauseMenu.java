@@ -1,11 +1,8 @@
-/**
- * 
- */
 package project_16x16.scene;
 
-import project_16x16.SideScroller;
+import project_16x16.Main;
 import project_16x16.Util;
-import project_16x16.SideScroller.GameScenes;
+import project_16x16.Main.GameScenes;
 import project_16x16.ui.Button;
 import processing.core.PConstants;
 import processing.core.PImage;
@@ -22,12 +19,12 @@ public class PauseMenu extends PScene {
 	public Button pressMenu;	//Retruns to main menu
 	public Button pressSettings; //TODO add settings menu
 	
-	private SideScroller game;
+	private Main game;
 	private PImage cache;
 	
 	protected boolean switched = false;
 	
-	public PauseMenu(SideScroller a) {
+	public PauseMenu(Main a) {
 		super(a);
 		game = a;
 		
@@ -63,7 +60,7 @@ public class PauseMenu extends PScene {
 
 	@Override
 	public void drawUI() {
-		applet.image(cache, applet.width/2, applet.height/2); // draw cached & blurred game
+		applet.image(cache, applet.width/2.0f, applet.height/2.0f); // draw cached & blurred game
 		pressResume.manDisplay();
 		pressSettings.manDisplay();
 		pressMenu.manDisplay();
@@ -93,12 +90,8 @@ public class PauseMenu extends PScene {
     
 	@Override
 	void keyReleased(KeyEvent e) {
-		switch (e.getKeyCode()) {
-			case PConstants.ESC : // Pause
-				game.returnScene();
-				break;
-			default :
-				break;
+		if (e.getKeyCode() == PConstants.ESC) { // Pause
+			game.returnScene();
 		}
 	}
 }

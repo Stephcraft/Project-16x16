@@ -4,6 +4,7 @@ import java.util.HashMap;
 
 import ddf.minim.AudioPlayer;
 import ddf.minim.AudioSample;
+import ddf.minim.Controller;
 import ddf.minim.Minim;
 
 /**
@@ -30,7 +31,7 @@ public final class Audio {
 
 		private String filename;
 
-		private BGM(String filename) {
+		BGM(String filename) {
 			this.filename = filename;
 		}
 
@@ -49,7 +50,7 @@ public final class Audio {
 		
 		private String filename;
 
-		private SFX(String filename) {
+		SFX(String filename) {
 			this.filename = filename;
 		}
 
@@ -66,7 +67,7 @@ public final class Audio {
 	 * 
 	 * @param s
 	 */
-	public static void assignApplet(SideScroller s) {
+	public static void assignApplet(Main s) {
 		minim = new Minim(s);
 
 		for (SFX sfx : SFX.values()) {
@@ -189,16 +190,16 @@ public final class Audio {
 	 * Global mute.
 	 */
 	public static void mute() {
-		SFX_MAP.values().forEach(sound -> sound.mute());
-		BGM_MAP.values().forEach(sound -> sound.mute());
+		SFX_MAP.values().forEach(Controller::mute);
+		BGM_MAP.values().forEach(Controller::mute);
 	}
 
 	/**
 	 * Global unmute.
 	 */
 	public static void unMute() {
-		SFX_MAP.values().forEach(sound -> sound.unmute());
-		BGM_MAP.values().forEach(sound -> sound.unmute());
+		SFX_MAP.values().forEach(Controller::unmute);
+		BGM_MAP.values().forEach(Controller::unmute);
 	}
 
 	/**

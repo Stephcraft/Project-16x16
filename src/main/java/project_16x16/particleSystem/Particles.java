@@ -2,7 +2,7 @@ package project_16x16.particleSystem;
 
 import java.util.ArrayList;
 
-import project_16x16.SideScroller;
+import project_16x16.Main;
 
 /**
  * Particles
@@ -14,18 +14,18 @@ import project_16x16.SideScroller;
  */
 public class Particles {
 
-	private SideScroller applet;
+	private Main applet;
 	private ParticleSystem particleSystem;
 	
 	public ArrayList<Particle> activeParticles;
 	public ArrayList<Particle> inactiveParticles;
 	
-	public Particles(ParticleSystem particleSystem, SideScroller applet) {
+	public Particles(ParticleSystem particleSystem, Main applet) {
 		this.applet = applet;
 		this.particleSystem = particleSystem;
 		
-		activeParticles = new ArrayList<Particle>();
-		inactiveParticles = new ArrayList<Particle>();
+		activeParticles = new ArrayList<>();
+		inactiveParticles = new ArrayList<>();
 	}
 	
 	public void run() {
@@ -50,7 +50,7 @@ public class Particles {
 	}
 	
 	private void runParticles() {
-		ArrayList<Particle> deadParticles = new ArrayList<Particle>();
+		ArrayList<Particle> deadParticles = new ArrayList<>();
 		for(Particle p : activeParticles) {
 			p.run();
 			particleSystem.onParticleRunEvent(p);
@@ -71,7 +71,7 @@ public class Particles {
 	}
 	
 	private int loopParticles(int amount) {
-		ArrayList<Particle> particles = new ArrayList<Particle>();
+		ArrayList<Particle> particles = new ArrayList<>();
 		for(Particle particle : inactiveParticles) {
 			if (particle.isDead()) {
 				respawnParticle(particle);

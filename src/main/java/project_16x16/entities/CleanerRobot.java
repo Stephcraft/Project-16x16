@@ -1,23 +1,7 @@
 package project_16x16.entities;
 
-import java.awt.event.KeyEvent;
-import java.util.ArrayList;
-import java.util.HashMap;
-
-import processing.core.PImage;
 import processing.core.PVector;
-import processing.data.JSONObject;
-import project_16x16.Audio;
-import project_16x16.Options;
-import project_16x16.SideScroller;
-import project_16x16.SideScroller.debugType;
-import project_16x16.Tileset;
-import project_16x16.Util;
-import project_16x16.Audio.SFX;
-import project_16x16.components.AnimationComponent;
-import project_16x16.objects.CollidableObject;
-import project_16x16.objects.EditableObject;
-import project_16x16.projectiles.Swing;
+import project_16x16.Main;
 import project_16x16.scene.GameplayScene;
 
 public class CleanerRobot extends Enemy {
@@ -33,11 +17,11 @@ public class CleanerRobot extends Enemy {
 	private PVector posA, posB;
 	private PVector target;
 	
-	public CleanerRobot(SideScroller a, GameplayScene g) {
+	public CleanerRobot(Main a, GameplayScene g) {
 		super(a, g);
 	}
 	
-	public CleanerRobot(SideScroller a, GameplayScene g, PVector x1, PVector x2) {
+	public CleanerRobot(Main a, GameplayScene g, PVector x1, PVector x2) {
 		this(a, g);
 		posA = x1;
 		posB = x2;
