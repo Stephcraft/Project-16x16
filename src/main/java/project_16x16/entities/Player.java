@@ -230,9 +230,8 @@ public final class Player extends EditableObject {
 			// Create Swing Projectile
 			swings.add(new Swing(applet, gameScene, (int) pos.x, (int) pos.y, state.facingDir));
 		}
-		for (Swing swing : swings) { // Update Swing Projectiles
-			swing.update();
-		}
+		for (int i = 0; i < swings.size(); i++) // Update Swing Projectiles
+			swings.get(i).update();
 	}
 
 	private void checkPlayerCollision() {
@@ -251,10 +250,10 @@ public final class Player extends EditableObject {
 					if (collidesFuturX(collision)) {
 						// player left of collision
 						if (pos.x < collision.pos.x) {
-							pos.x = collision.pos.x - collision.width / 2.0f - width / 2.0f;
+							pos.x = collision.pos.x - collision.width / 2 - width / 2;
 							// player right of collision
 						} else {
-							pos.x = collision.pos.x + collision.width / 2.0f + width / 2.0f;
+							pos.x = collision.pos.x + collision.width / 2 + width / 2;
 						}
 						velocity.x = 0;
 						state.dashing = false;
@@ -265,11 +264,11 @@ public final class Player extends EditableObject {
 							if (state.flying) {
 								state.landing = true;
 							}
-							pos.y = collision.pos.y - collision.height / 2.0f - height / 2.0f;
+							pos.y = collision.pos.y - collision.height / 2 - height / 2;
 							state.flying = false;
 							// player below collision
 						} else {
-							pos.y = collision.pos.y + collision.height / 2.0f + height / 2.0f;
+							pos.y = collision.pos.y + collision.height / 2 + height / 2;
 							state.jumping = false;
 						}
 						velocity.y = 0;
@@ -334,39 +333,39 @@ public final class Player extends EditableObject {
 	 * @return boolean if it has or has not collided with the object.
 	 */
 	private boolean collides(CollidableObject collision) {
-		return (pos.x + width / 2.0f > collision.pos.x - collision.width / 2.0f
-				&& pos.x - width / 2.0f < collision.pos.x + collision.width / 2.0f)
-				&& (pos.y + height / 2.0f > collision.pos.y - collision.height / 2.0f
-						&& pos.y - height / 2.0f < collision.pos.y + collision.height / 2.0f);
+		return (pos.x + width / 2 > collision.pos.x - collision.width / 2
+				&& pos.x - width / 2 < collision.pos.x + collision.width / 2)
+				&& (pos.y + height / 2 > collision.pos.y - collision.height / 2
+						&& pos.y - height / 2 < collision.pos.y + collision.height / 2);
 	}
 
 	// TODO: optimize these (unused)
 	private boolean collidesEqual(CollidableObject collision) {
-		return (pos.x + width / 2.0f >= collision.pos.x - collision.width / 2.0f
-				&& pos.x - width / 2.0f <= collision.pos.x + collision.width / 2.0f)
-				&& (pos.y + height / 2.0f >= collision.pos.y - collision.height / 2.0f
-						&& pos.y - height / 2.0f <= collision.pos.y + collision.height / 2.0f);
+		return (pos.x + width / 2 >= collision.pos.x - collision.width / 2
+				&& pos.x - width / 2 <= collision.pos.x + collision.width / 2)
+				&& (pos.y + height / 2 >= collision.pos.y - collision.height / 2
+						&& pos.y - height / 2 <= collision.pos.y + collision.height / 2);
 	}
 
 	private boolean collidesFutur(CollidableObject collision) {
-		return (pos.x + velocity.x + width / 2.0f > collision.pos.x - collision.width / 2.0f
-				&& pos.x + velocity.x - width / 2.0f < collision.pos.x + collision.width / 2.0f)
-				&& (pos.y + velocity.y + height / 2.0f > collision.pos.y - collision.height / 2.0f
-						&& pos.y + velocity.y - height / 2.0f < collision.pos.y + collision.height / 2.0f);
+		return (pos.x + velocity.x + width / 2 > collision.pos.x - collision.width / 2
+				&& pos.x + velocity.x - width / 2 < collision.pos.x + collision.width / 2)
+				&& (pos.y + velocity.y + height / 2 > collision.pos.y - collision.height / 2
+						&& pos.y + velocity.y - height / 2 < collision.pos.y + collision.height / 2);
 	}
 
 	private boolean collidesFuturX(CollidableObject collision) {
-		return (pos.x + velocity.x + width / 2.0f > collision.pos.x - collision.width / 2.0f
-				&& pos.x + velocity.x - width / 2.0f < collision.pos.x + collision.width / 2.0f)
-				&& (pos.y + 0 + height / 2.0f > collision.pos.y - collision.height / 2.0f
-						&& pos.y + 0 - height / 2.0f < collision.pos.y + collision.height / 2.0f);
+		return (pos.x + velocity.x + width / 2 > collision.pos.x - collision.width / 2
+				&& pos.x + velocity.x - width / 2 < collision.pos.x + collision.width / 2)
+				&& (pos.y + 0 + height / 2 > collision.pos.y - collision.height / 2
+						&& pos.y + 0 - height / 2 < collision.pos.y + collision.height / 2);
 	}
 
 	private boolean collidesFuturY(CollidableObject collision) {
-		return (pos.x + 0 + width / 2.0f > collision.pos.x - collision.width / 2.0f
-				&& pos.x + 0 - width / 2.0f < collision.pos.x + collision.width / 2.0f)
-				&& (pos.y + velocity.y + height / 2.0f > collision.pos.y - collision.height / 2.0f
-						&& pos.y + velocity.y - height / 2.0f < collision.pos.y + collision.height / 2.0f);
+		return (pos.x + 0 + width / 2 > collision.pos.x - collision.width / 2
+				&& pos.x + 0 - width / 2 < collision.pos.x + collision.width / 2)
+				&& (pos.y + velocity.y + height / 2 > collision.pos.y - collision.height / 2
+				&& pos.y + velocity.y - height / 2 < collision.pos.y + collision.height / 2);
 	}
 	
 	public void setAnimation(String anim) {

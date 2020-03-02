@@ -62,9 +62,12 @@ public final class AudioSettings extends PScene {
 	
 	@Override
 	void keyReleased(KeyEvent e) {
-		if (e.getKeyCode() == PConstants.ESC) { // Pause
-			game.returnScene();
+		switch (e.getKeyCode()) {
+			case PConstants.ESC : // Pause
+				game.returnScene();
+				break;
+			default :
+				break;
 		}
 	}
-
 }

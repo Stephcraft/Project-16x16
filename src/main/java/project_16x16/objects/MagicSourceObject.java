@@ -75,19 +75,19 @@ public class MagicSourceObject extends GameObject {
 	}
 
 	public boolean collidesWithSwing(Swing swing) {
-		return (swing.pos.x + swing.width / 2.0f > pos.x - width / 2.0f
-				&& swing.pos.x - swing.width / 2.0f < pos.x + width / 2.0f)
-				&& (swing.pos.y + swing.height / 2.0f > pos.y - height / 2.0f
-						&& swing.pos.y - swing.height / 2.0f < pos.y + height / 2.0f);
+		return (swing.pos.x + swing.width / 2 > pos.x - width / 2
+				&& swing.pos.x - swing.width / 2 < pos.x + width / 2)
+				&& (swing.pos.y + swing.height / 2 > pos.y - height / 2
+						&& swing.pos.y - swing.height / 2 < pos.y + height / 2);
 	}
 
 	public boolean collidesWithPlayer() {
-		return (gameScene.getPlayer().pos.x + gameScene.getPlayer().width / 2.0f > pos.x - width / 2.0f
-				&& gameScene.getPlayer().pos.x - gameScene.getPlayer().width / 2.0f < pos.x + width / 2.0f)
-				&& (gameScene.getPlayer().pos.y + gameScene.getPlayer().height / 2.0f > pos.y
-						- height / 2.0f
-						&& gameScene.getPlayer().pos.y - gameScene.getPlayer().height / 2.0f < pos.y
-								+ height / 2.0f);
+		return (gameScene.getPlayer().pos.x + gameScene.getPlayer().width / 2 > pos.x - width / 2
+				&& gameScene.getPlayer().pos.x - gameScene.getPlayer().width / 2 < pos.x + width / 2)
+				&& (gameScene.getPlayer().pos.y + gameScene.getPlayer().height / 2 > pos.y
+						- height / 2
+						&& gameScene.getPlayer().pos.y - gameScene.getPlayer().height / 2 < pos.y
+								+ height / 2);
 	}
 	
 	private void setParticleAnimation(Main a) {

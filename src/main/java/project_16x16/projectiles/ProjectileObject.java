@@ -49,11 +49,11 @@ public class ProjectileObject extends EditableObject {
 	}
 
 	public boolean collides(CollidableObject collision) {
-		return (pos.x + width / 2.0f > collision.pos.x - collision.width / 2.0f
-				&& pos.x - width / 2.0f < collision.pos.x + collision.width / 2.0f)
-				&& (pos.y + height / 2.0f > collision.pos.y - collision.height / 2.0f
-						&& pos.y - height / 2.0f < collision.pos.y
-								+ collision.height / 2.0f);
+		return (pos.x + width / 2 > collision.pos.x - collision.width / 2
+				&& pos.x - width / 2 < collision.pos.x + collision.width / 2)
+				&& (pos.y + height / 2 > collision.pos.y - collision.height / 2
+						&& pos.y - height / 2 < collision.pos.y
+								+ collision.height / 2);
 	}
 
 	protected ArrayList<PImage> getAnimation(String name) {

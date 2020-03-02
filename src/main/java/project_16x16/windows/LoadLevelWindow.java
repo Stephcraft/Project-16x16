@@ -54,22 +54,22 @@ public class LoadLevelWindow extends PClass {
 		// Display Privacy Area
 		applet.fill(0, 100);
 		applet.noStroke();
-		applet.rect(applet.width / 2.0f, applet.height / 2.0f, applet.width, applet.height);
+		applet.rect(applet.width / 2, applet.height / 2, applet.width, applet.height);
 
 		// Display Window
 		applet.fill(29, 33, 45);
 		applet.stroke(47, 54, 73);
 		applet.strokeWeight(8);
-		applet.rect(applet.width / 2.0f, applet.height / 2.0f, applet.width, applet.height);
+		applet.rect(applet.width / 2, applet.height / 2, applet.width, applet.height);
 		applet.stroke(255, 255, 255);
-		applet.rect(500, applet.height / 2.0f, 800, 600);
+		applet.rect(500, applet.height / 2, 800, 600);
 
 		// Display Window Title
 		applet.pushMatrix();
 		applet.fill(255);
 		applet.textSize(30);
 		applet.textAlign(CENTER, CENTER);
-		applet.text("Load Level", applet.width / 2.0f + 400, applet.height / 2.0f - 200);
+		applet.text("Load Level", applet.width / 2 + 400, applet.height / 2 - 200);
 		applet.popMatrix();
 		// Display Load Press
 		list.display();

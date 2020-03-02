@@ -63,12 +63,12 @@ public class TextInputField extends PClass {
 		applet.fill(255);
 		applet.textSize(20);
 		applet.textAlign(LEFT, CENTER);
-		applet.text(text, x - width / 2.0f + 8, y);
+		applet.text(text, x - width / 2 + 8, y);
 
 		// Display Cursor
 		if (focus) {
 			applet.fill(255, PApplet.map(PApplet.sin(applet.frameCount * (float) 0.1), 0, 1, 100, 255));
-			applet.text("_", x - width / 2.0f + 8 + applet.textWidth(text), y);
+			applet.text("_", x - width / 2 + 8 + applet.textWidth(text), y);
 		}
 	}
 

@@ -141,20 +141,20 @@ public final class Camera extends ZoomPan {
 		applet.stroke(0, 150, 255);
 		applet.strokeWeight(2);
 		final int length = 20;
-		applet.line(applet.width / 2.0f - length, applet.height / 2.0f, applet.width / 2.0f + length, applet.height / 2.0f);
-		applet.line(applet.width / 2.0f, applet.height / 2.0f - length, applet.width / 2.0f, applet.height / 2.0f + length);
+		applet.line(applet.width / 2 - length, applet.height / 2, applet.width / 2 + length, applet.height / 2);
+		applet.line(applet.width / 2, applet.height / 2 - length, applet.width / 2, applet.height / 2 + length);
 		applet.pushMatrix();
 		applet.translate(offset.x, offset.y);
 		applet.rotate(rotation);
 		applet.translate(-offset.x, -offset.y);
-		applet.line(applet.width / 2.0f - length * 2, applet.height / 2.0f, applet.width / 2.0f + length * 2, applet.height / 2.0f);
+		applet.line(applet.width / 2 - length * 2, applet.height / 2, applet.width / 2 + length * 2, applet.height / 2);
 		applet.popMatrix();
 		if (following) {
 			applet.rectMode(PApplet.CENTER);
 			applet.rect(getCoordToDisp(followObject.pos).x, getCoordToDisp(followObject.pos).y, length * 2, length * 2);
-			applet.strokeWeight(PApplet.map(PApplet.dist(applet.width / 2.0f, applet.height / 2.0f,
+			applet.strokeWeight(PApplet.map(PApplet.dist(applet.width / 2, applet.height / 2,
 					getCoordToDisp(followObject.pos).x, getCoordToDisp(followObject.pos).y), 0, 100, 2, 10));
-			applet.line(applet.width / 2.0f, applet.height / 2.0f, getCoordToDisp(followObject.pos).x,
+			applet.line(applet.width / 2, applet.height / 2, getCoordToDisp(followObject.pos).x,
 					getCoordToDisp(followObject.pos).y);
 			if (deadZoneScreen) {
 				applet.rectMode(PApplet.CORNER);
@@ -199,7 +199,7 @@ public final class Camera extends ZoomPan {
 	 * @see ZoomPan#transform()
 	 */
 	private void update() {
-		offset = new PVector(applet.width / 2.0f, applet.height / 2.0f);
+		offset = new PVector(applet.width / 2, applet.height / 2);
 
 		if (zoom != zoomTarget) {
 			zoom = PApplet.lerp(zoom, zoomTarget, lerpSpeed);

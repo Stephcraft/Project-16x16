@@ -41,7 +41,7 @@ public class SaveLevelWindow extends PClass {
 		// Display Privacy Area
 		applet.fill(0, 100);
 		applet.noStroke();
-		applet.rect(applet.width / 2.0f, applet.height / 2.0f, applet.width, applet.height);
+		applet.rect(applet.width / 2, applet.height / 2, applet.width, applet.height);
 	}
 
 	public void display() {
@@ -49,17 +49,17 @@ public class SaveLevelWindow extends PClass {
 		applet.fill(29, 33, 45);
 		applet.stroke(47, 54, 73);
 		applet.strokeWeight(8);
-		applet.rect(applet.width / 2.0f, applet.height / 2.0f, 400, 500);
+		applet.rect(applet.width / 2, applet.height / 2, 400, 500);
 
 		// Display Window Title
 		applet.fill(255);
 		applet.textSize(30);
 		applet.textAlign(CENTER, CENTER);
-		applet.text("Save Level", applet.width / 2.0f, applet.height / 2.0f - 200);
+		applet.text("Save Level", applet.width / 2, applet.height / 2 - 200);
 
 		applet.textSize(20);
 		applet.textAlign(LEFT, TOP);
-		applet.text("Level Name :", applet.width / 2.0f - 150, applet.height / 2.0f - 40);
+		applet.text("Level Name :", applet.width / 2 - 150, applet.height / 2 - 40);
 
 		// Display Save Input
 		input.display();

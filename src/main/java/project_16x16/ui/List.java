@@ -114,8 +114,8 @@ public class List extends PClass {
 	public void setCover() {
 		applet.fill(89, 89, 89);
 		applet.noStroke();
-		applet.rect(x, y + h / 2.0f, w, COVER_H);// Hardcoded as height of buttons doesn't change only width
-		applet.rect(x, y - h / 2.0f, w, COVER_H);
+		applet.rect(x, y + h / 2, w, COVER_H);// Hardcoded as height of buttons doesn't change only width
+		applet.rect(x, y - h / 2, w, COVER_H);
 	}
 
 	public boolean inListBox(int elementPosY, int elementPosY2) {

@@ -296,21 +296,21 @@ public class GameplayScene extends PScene {
 		if (tool != Tools.INVENTORY) {
 			for (int i = 0; i < 6; i++) {
 				// Display Slot
-				image(slot, 20 * 4 / 2.0f + 10 + i * (20 * 4 + 10), 20 * 4 / 2.0f + 10);
+				image(slot, 20 * 4 / 2 + 10 + i * (20 * 4 + 10), 20 * 4 / 2 + 10);
 
 				// Display Item
 				PImage img = Tileset.getTile(inventory.get(i));
-				applet.image(img, 20 * 4 / 2.0f + 10 + i * (20 * 4 + 10), 20 * 4 / 2.0f + 10, img.width * (float) 0.5,
+				applet.image(img, 20 * 4 / 2 + 10 + i * (20 * 4 + 10), 20 * 4 / 2 + 10, img.width * (float) 0.5,
 						img.height * (float) 0.5);
 
 				// Focus Event
 				if (applet.mousePressEvent) {
-					float x = 20 * 4 / 2.0f + 10 + i * (20 * 4 + 10);
-					float y = 20 * 4 / 2.0f + 10;
-					if (applet.getMouseCoordScreen().x > x - (20 * 4) / 2.0f
-							&& applet.getMouseCoordScreen().x < x + (20 * 4) / 2.0f
-							&& applet.getMouseCoordScreen().y > y - (20 * 4) / 2.0f
-							&& applet.getMouseCoordScreen().y < y + (20 * 4) / 2.0f) {
+					float x = 20 * 4 / 2 + 10 + i * (20 * 4 + 10);
+					float y = 20 * 4 / 2 + 10;
+					if (applet.getMouseCoordScreen().x > x - (20 * 4) / 2
+							&& applet.getMouseCoordScreen().x < x + (20 * 4) / 2
+							&& applet.getMouseCoordScreen().y > y - (20 * 4) / 2
+							&& applet.getMouseCoordScreen().y < y + (20 * 4) / 2) {
 						editorItem.focus = true;
 						editorItem.setTile(inventory.get(i));
 						editorItem.type = Tileset.getTileType(inventory.get(i));
@@ -473,7 +473,7 @@ public class GameplayScene extends PScene {
 		// Display Background
 		applet.stroke(50);
 		applet.fill(0, 100);
-		applet.rect(applet.width / 2.0f, applet.height / 2.0f, applet.width, applet.height);
+		applet.rect(applet.width / 2, applet.height / 2, applet.width, applet.height);
 
 		// Display Editor Mode Items
 		int x = 0;
@@ -489,24 +489,24 @@ public class GameplayScene extends PScene {
 			} else {
 				x++;
 			}
-			applet.image(slotEditor, 20 * 4 / 2.0f + 10 + x * (20 * 4 + 10), y * (20 * 4 + 10) + scroll_inventory);
+			applet.image(slotEditor, 20 * 4 / 2 + 10 + x * (20 * 4 + 10), y * (20 * 4 + 10) + scroll_inventory);
 			if (img.width > 20 * 4 || img.height > 20 * 4) {
-				applet.image(img, 20 * 4 / 2.0f + 10 + x * (20 * 4 + 10), y * (20 * 4 + 10) + scroll_inventory,
-						img.width / 4.0f, img.height / 4.0f);
+				applet.image(img, 20 * 4 / 2 + 10 + x * (20 * 4 + 10), y * (20 * 4 + 10) + scroll_inventory,
+						img.width / 4, img.height / 4);
 			} else {
-				applet.image(img, 20 * 4 / 2.0f + 10 + x * (20 * 4 + 10), y * (20 * 4 + 10) + scroll_inventory,
-						img.width / 2.0f, img.height / 2.0f);
+				applet.image(img, 20 * 4 / 2 + 10 + x * (20 * 4 + 10), y * (20 * 4 + 10) + scroll_inventory,
+						img.width / 2, img.height / 2);
 			}
 
 			// Grab Item
 			if (applet.mousePressEvent) {
-				float xx = 20 * 4 / 2.0f + 10 + x * (20 * 4 + 10);
+				float xx = 20 * 4 / 2 + 10 + x * (20 * 4 + 10);
 				float yy = y * (20 * 4 + 10) + scroll_inventory;
 				if (applet.getMouseCoordScreen().y > 100) {
-					if (applet.getMouseCoordScreen().x > xx - (20 * 4) / 2.0f
-							&& applet.getMouseCoordScreen().x < xx + (20 * 4) / 2.0f
-							&& applet.getMouseCoordScreen().y > yy - (20 * 4) / 2.0f
-							&& applet.getMouseCoordScreen().y < yy + (20 * 4) / 2.0f) {
+					if (applet.getMouseCoordScreen().x > xx - (20 * 4) / 2
+							&& applet.getMouseCoordScreen().x < xx + (20 * 4) / 2
+							&& applet.getMouseCoordScreen().y > yy - (20 * 4) / 2
+							&& applet.getMouseCoordScreen().y < yy + (20 * 4) / 2) {
 						editorItem.focus = true;
 						editorItem.setTile(tile.getName());
 					}
@@ -533,21 +533,21 @@ public class GameplayScene extends PScene {
 		// Display Inventory Slots
 		for (int i = 0; i < 6; i++) {
 			// Display Slot
-			image(slot, 20 * 4 / 2.0f + 10 + i * (20 * 4 + 10), 20 * 4 / 2.0f + 10);
+			image(slot, 20 * 4 / 2 + 10 + i * (20 * 4 + 10), 20 * 4 / 2 + 10);
 
 			// Display Item
 			PImage img = Tileset.getTile(inventory.get(i));
-			applet.image(img, 20 * 4 / 2.0f + 10 + i * (20 * 4 + 10), 20 * 4 / 2.0f + 10, img.width * (float) 0.5,
+			applet.image(img, 20 * 4 / 2 + 10 + i * (20 * 4 + 10), 20 * 4 / 2 + 10, img.width * (float) 0.5,
 					img.height * (float) 0.5);
 
 			// Focus Event
 			if (applet.mouseReleaseEvent) {
-				float xx = 20 * 4 / 2.0f + 10 + i * (20 * 4 + 10);
-				float yy = 20 * 4 / 2.0f + 10;
-				if (editorItem.focus && applet.getMouseCoordScreen().x > xx - (20 * 4) / 2.0f
-						&& applet.getMouseCoordScreen().x < xx + (20 * 4) / 2.0f
-						&& applet.getMouseCoordScreen().y > yy - (20 * 4) / 2.0f
-						&& applet.getMouseCoordScreen().y < yy + (20 * 4) / 2.0f) {
+				float xx = 20 * 4 / 2 + 10 + i * (20 * 4 + 10);
+				float yy = 20 * 4 / 2 + 10;
+				if (editorItem.focus && applet.getMouseCoordScreen().x > xx - (20 * 4) / 2
+						&& applet.getMouseCoordScreen().x < xx + (20 * 4) / 2
+						&& applet.getMouseCoordScreen().y > yy - (20 * 4) / 2
+						&& applet.getMouseCoordScreen().y < yy + (20 * 4) / 2) {
 					editorItem.focus = false;
 					inventory.set(i, editorItem.id);
 				}

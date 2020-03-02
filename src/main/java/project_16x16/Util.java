@@ -97,7 +97,7 @@ public final class Util {
 		pg.beginDraw();
 		pg.clear();
 		pg.imageMode(PApplet.CENTER);
-		pg.translate(pg.width / 2.0f, pg.height / 2.0f);
+		pg.translate(pg.width / 2, pg.height / 2);
 		pg.rotate(angle);
 		pg.image(img, 0, 0);
 		pg.endDraw();

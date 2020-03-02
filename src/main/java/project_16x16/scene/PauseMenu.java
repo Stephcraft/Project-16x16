@@ -60,7 +60,7 @@ public class PauseMenu extends PScene {
 
 	@Override
 	public void drawUI() {
-		applet.image(cache, applet.width/2.0f, applet.height/2.0f); // draw cached & blurred game
+		applet.image(cache, applet.width/2, applet.height/2); // draw cached & blurred game
 		pressResume.manDisplay();
 		pressSettings.manDisplay();
 		pressMenu.manDisplay();
