@@ -3,7 +3,7 @@ package project_16x16.ui;
 import processing.core.PApplet;
 import project_16x16.PClass;
 import project_16x16.SideScroller;
-import project_16x16.Util;
+import project_16x16.Utility;
 
 /**
  * The PInput Class extends PClass
@@ -78,7 +78,7 @@ public class TextInputField extends PClass {
 	public void update() {
 
 		// Focus Event
-		if (Util.hoverScreen(x, y, width, height)) {
+		if (Utility.hoverScreen(x, y, width, height)) {
 			mouseOver = true;
 			if (applet.mousePressEvent) {
 				focus = true;

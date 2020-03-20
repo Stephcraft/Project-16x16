@@ -3,7 +3,7 @@ package project_16x16.windows;
 import project_16x16.scene.GameplayScene;
 import project_16x16.PClass;
 import project_16x16.SideScroller;
-import project_16x16.Util;
+import project_16x16.Utility;
 import project_16x16.objects.BackgroundObject;
 import project_16x16.objects.CollidableObject;
 import project_16x16.ui.List;
@@ -111,7 +111,7 @@ public class LoadLevelWindow extends PClass {
 			return;
 		}
 
-		String scriptD = Util.decrypt(PApplet.join(script, "\n")); // decrypt save data
+		String scriptD = Utility.decrypt(PApplet.join(script, "\n")); // decrypt save data
 		JSONArray data = JSONArray.parse(scriptD); // Parse JSON
 
 		if (data == null) {

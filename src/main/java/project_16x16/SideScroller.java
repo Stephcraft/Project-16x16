@@ -127,7 +127,7 @@ public class SideScroller extends PApplet {
 	 */
 	@Override
 	public void settings() {
-		Util.assignApplet(this);
+		Utility.assignApplet(this);
 		size((int) windowSize.x, (int) windowSize.y, FX2D);
 	}
 

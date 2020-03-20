@@ -2,7 +2,7 @@ package project_16x16.windows;
 
 import project_16x16.PClass;
 import project_16x16.SideScroller;
-import project_16x16.Util;
+import project_16x16.Utility;
 import project_16x16.scene.GameplayScene;
 import project_16x16.ui.Button;
 import project_16x16.ui.TextInputField;
@@ -85,7 +85,7 @@ public class ImportLevelWindow extends PClass {
 
 		pressImport.update();
 		if (pressImport.event()) {
-			Util.convertTiledLevel(jsonPath + input.getText() + ".json", input.getText());
+			Utility.convertTiledLevel(jsonPath + input.getText() + ".json", input.getText());
 			input.setText("");
 			scene.tool = GameplayScene.Tools.MOVE;
 		}

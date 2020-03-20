@@ -15,7 +15,7 @@ import processing.data.JSONArray;
 import processing.data.JSONObject;
 import project_16x16.components.Tile;
 
-public final class Util {
+public final class Utility {
 
 	private static SideScroller applet;
 
@@ -356,7 +356,7 @@ public final class Util {
 					levelSave.append(JSONtile);
 				}
 			}
-			Util.saveFile("src/main/resources/Storage/Game/Maps/save/" + mapName + ".dat", Util.encrypt(levelSave.toString()));
+			Utility.saveFile("src/main/resources/Storage/Game/Maps/save/" + mapName + ".dat", Utility.encrypt(levelSave.toString()));
 		}
 	}
 }

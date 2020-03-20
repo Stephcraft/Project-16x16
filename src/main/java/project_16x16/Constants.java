@@ -3,7 +3,7 @@
  */
 package project_16x16;
 
-import static project_16x16.Util.colorToRGB;
+import static project_16x16.Utility.colorToRGB;
 
 /**
  * A place to storing global constants & defaults, to referenced by multiple

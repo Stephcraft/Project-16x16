@@ -4,7 +4,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 
 import project_16x16.SideScroller;
-import project_16x16.Util;
+import project_16x16.Utility;
 
 /**
  * Adapted from TextInputField class.
@@ -34,7 +34,7 @@ public class NumberInputField extends TextInputField {
 	public void update() {
 
 		// Focus Event
-		if (Util.hoverScreen(x, y, width, height)) {
+		if (Utility.hoverScreen(x, y, width, height)) {
 			mouseOver = true;
 			if (applet.mousePressEvent) {
 				focus = true;

@@ -4,7 +4,7 @@
 package project_16x16.scene;
 
 import project_16x16.SideScroller;
-import project_16x16.Util;
+import project_16x16.Utility;
 import project_16x16.SideScroller.GameScenes;
 import project_16x16.ui.Button;
 import processing.core.PConstants;
@@ -56,7 +56,7 @@ public class PauseMenu extends PScene {
 		super.switchTo();
 		if (!switched) {
 			cache = applet.get(); // when game is paused, cache the game screen.
-			cache = Util.blur(cache, 3, 2); // blur game screen
+			cache = Utility.blur(cache, 3, 2); // blur game screen
 		}
 		switched = true;
 	}

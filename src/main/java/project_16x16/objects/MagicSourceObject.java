@@ -9,7 +9,7 @@ import project_16x16.projectiles.Swing;
 import project_16x16.scene.GameplayScene;
 import project_16x16.SideScroller;
 import project_16x16.Tileset;
-import project_16x16.Util;
+import project_16x16.Utility;
 import project_16x16.particleSystem.ParticleSystem;
 import project_16x16.particleSystem.emissions.AreaEmission;
 import project_16x16.particleSystem.events.ParticleAnimationController;
@@ -96,7 +96,7 @@ public class MagicSourceObject extends GameObject {
 		float scale = 0.12f;
 		float angle = PApplet.radians(11);
 		while(scale > 0.025f) {
-			particleAnimation.add(Util.resizeImage(Util.resizeImage(Util.rotateImage(image.copy(), angle), scale), 4));
+			particleAnimation.add(Utility.resizeImage(Utility.resizeImage(Utility.rotateImage(image.copy(), angle), scale), 4));
 			angle += PApplet.radians(PApplet.radians(11));
 			scale -= Math.random() * 0.03;
 		}

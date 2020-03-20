@@ -12,7 +12,7 @@ import project_16x16.Options;
 import project_16x16.SideScroller;
 import project_16x16.SideScroller.debugType;
 import project_16x16.Tileset;
-import project_16x16.Util;
+import project_16x16.Utility;
 import project_16x16.Audio.SFX;
 import project_16x16.components.AnimationComponent;
 import project_16x16.objects.CollidableObject;
