@@ -10,7 +10,7 @@ import processing.event.KeyEvent;
 import processing.event.MouseEvent;
 
 import project_16x16.SideScroller;
-import project_16x16.Util;
+import project_16x16.Utility;
 import project_16x16.Audio;
 import project_16x16.Audio.BGM;
 import project_16x16.Constants;
@@ -161,7 +161,7 @@ public final class MainMenu extends PScene {
 		static void populate(int n) {
 			for (int i = 0; i < n; i++) {
 				particles.add(new Particle(getXPos(game.random(0, game.gameResolution.x)),
-						getYPos(game.random(0, game.gameResolution.y)), (int) game.random(2, 8), Util.colorToRGB(
+						getYPos(game.random(0, game.gameResolution.y)), (int) game.random(2, 8), Utility.colorToRGB(
 								(int) game.random(0, 50), (int) game.random(150, 255), (int) game.random(150, 255))));
 			}
 		}
@@ -191,7 +191,7 @@ public final class MainMenu extends PScene {
 				}
 				p.lastX = x;
 				p.lastY = y;
-				if (!Util.withinRegion(p.lastX, p.lastY, -100, -100, game.gameResolution.x + 100,
+				if (!Utility.withinRegion(p.lastX, p.lastY, -100, -100, game.gameResolution.x + 100,
 						game.gameResolution.y + 100)) {
 					iterator.remove();
 					repopulate++;

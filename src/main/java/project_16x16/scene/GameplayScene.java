@@ -19,7 +19,7 @@ import project_16x16.Audio;
 import project_16x16.Options;
 import project_16x16.SideScroller;
 import project_16x16.Tileset;
-import project_16x16.Util;
+import project_16x16.Utility;
 import project_16x16.components.Tile;
 import project_16x16.components.Tile.TileType;
 import project_16x16.Audio.BGM;
@@ -323,8 +323,8 @@ public class GameplayScene extends PScene {
 		int offset = 48;
 		// GUI Icons
 		if (tool == Tools.MODIFY
-				|| (Util.hoverScreen(xAnchor, 120, 36, 36) && tool != Tools.SAVE && tool != Tools.INVENTORY)) {
-			if (Util.hoverScreen(xAnchor, 120, 36, 36) && applet.mousePressEvent) {
+				|| (Utility.hoverScreen(xAnchor, 120, 36, 36) && tool != Tools.SAVE && tool != Tools.INVENTORY)) {
+			if (Utility.hoverScreen(xAnchor, 120, 36, 36) && applet.mousePressEvent) {
 				tool = Tools.MODIFY;
 			}
 			image(icon_modfiyActive, xAnchor, 120);
@@ -332,17 +332,17 @@ public class GameplayScene extends PScene {
 			image(icon_modify, xAnchor, 120);
 		}
 		if (tool == Tools.INVENTORY
-				|| (Util.hoverScreen(xAnchor + offset, 120, 36, 36) && tool != Tools.SAVE && tool != Tools.INVENTORY)) {
-			if (Util.hoverScreen(xAnchor + offset, 120, 36, 36) && applet.mousePressEvent) {
+				|| (Utility.hoverScreen(xAnchor + offset, 120, 36, 36) && tool != Tools.SAVE && tool != Tools.INVENTORY)) {
+			if (Utility.hoverScreen(xAnchor + offset, 120, 36, 36) && applet.mousePressEvent) {
 				tool = Tools.INVENTORY;
 			}
 			image(icon_inventoryActive, xAnchor + offset, 120);
 		} else {
 			image(icon_inventory, xAnchor + offset, 120);
 		}
-		if (tool == Tools.PLAY || (Util.hoverScreen(xAnchor + offset * 2, 120, 36, 36) && tool != Tools.SAVE
+		if (tool == Tools.PLAY || (Utility.hoverScreen(xAnchor + offset * 2, 120, 36, 36) && tool != Tools.SAVE
 				&& tool != Tools.INVENTORY)) {
-			if (Util.hoverScreen(xAnchor + offset * 2, 120, 36, 36) && applet.mousePressEvent) {
+			if (Utility.hoverScreen(xAnchor + offset * 2, 120, 36, 36) && applet.mousePressEvent) {
 				applet.camera.setFollowObject(localPlayer);
 				tool = Tools.PLAY;
 			}
@@ -350,9 +350,9 @@ public class GameplayScene extends PScene {
 		} else {
 			image(icon_play, xAnchor + offset * 2, 120);
 		}
-		if (tool == Tools.SAVE || (Util.hoverScreen(xAnchor + offset * 3, 120, 36, 36) && tool != Tools.SAVE
+		if (tool == Tools.SAVE || (Utility.hoverScreen(xAnchor + offset * 3, 120, 36, 36) && tool != Tools.SAVE
 				&& tool != Tools.INVENTORY)) {
-			if (Util.hoverScreen(xAnchor + offset * 3, 120, 36, 36) && applet.mousePressEvent) {
+			if (Utility.hoverScreen(xAnchor + offset * 3, 120, 36, 36) && applet.mousePressEvent) {
 				tool = Tools.SAVE;
 			}
 			image(icon_saveActive, xAnchor + offset * 3, 120);
@@ -737,7 +737,7 @@ public class GameplayScene extends PScene {
 				data.append(o.exportToJSON());
 			}
 		}
-		Util.saveFile(path, Util.encrypt(data.toString()));
+		Utility.saveFile(path, Utility.encrypt(data.toString()));
 	}
 
 	public void loadLevel(String path) { // TODO save camera position/settings.
@@ -747,7 +747,7 @@ public class GameplayScene extends PScene {
 			return;
 		}
 
-		String scriptD = Util.decrypt(PApplet.join(script, "\n")); // decrypt save data
+		String scriptD = Utility.decrypt(PApplet.join(script, "\n")); // decrypt save data
 		JSONArray data = JSONArray.parse(scriptD); // Parse JSON
 
 		if (data == null) {
@@ -833,7 +833,7 @@ public class GameplayScene extends PScene {
 			applet.line(startPosScreen.x, endPos.y, endPos.x, endPos.y);
 
 			for (EditableObject o : objects) {
-				if (Util.withinRegion(o.pos, startPosGame, applet.getMouseCoordGame())) {
+				if (Utility.withinRegion(o.pos, startPosGame, applet.getMouseCoordGame())) {
 					o.focus();
 				} else {
 					o.unFocus();

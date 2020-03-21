@@ -5,7 +5,7 @@ import project_16x16.ui.Anchor.AnchorOrigin;
 import processing.core.*;
 import processing.event.MouseEvent;
 import project_16x16.PClass;
-import project_16x16.Util;
+import project_16x16.Utility;
 
 /**
  * Horizontal ScrollBar
@@ -56,7 +56,7 @@ public class ScrollBarHorizontal extends PClass {
 		if (barSelected)
 		{
 			barLocation = (float) PApplet.map(applet.mouseX, container.X() + container.Width() - (barAnchor.localWidth/2), container.X() + (barAnchor.localWidth/2), 1, 0);
-			barLocation = Util.clamp(barLocation, 0, 1);
+			barLocation = Utility.clamp(barLocation, 0, 1);
 		}
 	}
 	
@@ -66,6 +66,6 @@ public class ScrollBarHorizontal extends PClass {
 	
 	public void mouseWheel(MouseEvent event) {
 		barLocation += event.getCount() * 0.1f;
-		barLocation = Util.clamp(barLocation, 0, 1);
+		barLocation = Utility.clamp(barLocation, 0, 1);
 	}
 }

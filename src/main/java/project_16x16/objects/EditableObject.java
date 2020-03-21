@@ -9,7 +9,7 @@ import project_16x16.scene.GameplayScene;
 import project_16x16.PClass;
 import project_16x16.SideScroller;
 import project_16x16.Tileset;
-import project_16x16.Util;
+import project_16x16.Utility;
 
 /**
  * Extends {@link PClass}.
@@ -146,8 +146,8 @@ public abstract class EditableObject extends PClass {
 
 			if (focus && applet.mousePressed && applet.mouseButton == LEFT) {
 				pos = new PVector(
-						Util.roundToNearest(applet.getMouseCoordGame().x + editOffset.x, SideScroller.snapSize),
-						Util.roundToNearest(applet.getMouseCoordGame().y + editOffset.y, SideScroller.snapSize));
+						Utility.roundToNearest(applet.getMouseCoordGame().x + editOffset.x, SideScroller.snapSize),
+						Utility.roundToNearest(applet.getMouseCoordGame().y + editOffset.y, SideScroller.snapSize));
 			}
 		}
 	}
@@ -169,6 +169,6 @@ public abstract class EditableObject extends PClass {
 		if (applet.mouseX < 400 && applet.mouseY < 100) { // Over Inventory Bar -- rough approximation
 			return false;
 		}
-		return Util.hoverGame(pos.x, pos.y, width, height);
+		return Utility.hoverGame(pos.x, pos.y, width, height);
 	}
 }

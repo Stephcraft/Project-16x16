@@ -87,7 +87,7 @@ public class Tileset {
 	 * @author micycle1
 	 */
 	public static PImage getTile(int x, int y, int w, int h, int scale) {
-		return Util.resizeImage(graphicsSheet.get(x, y, w, h), scale);
+		return Utility.resizeImage(graphicsSheet.get(x, y, w, h), scale);
 	}
 		
 	public static String getTileName(int Id)
@@ -207,7 +207,7 @@ public class Tileset {
 			int ID = x + y * TILESETWIDTH;
 			PImage image = getTile( x * TILESETSIZE, y * TILESETSIZE, TILESETSIZE, TILESETSIZE);
 			
-			image = Util.resizeImage(image, SCALE);
+			image = Utility.resizeImage(image, SCALE);
 			TileType tileType;
 			switch(tile.getString("type", "COLLISION")) {
 				case "COLLISION":

@@ -10,7 +10,7 @@ import processing.core.PImage;
 import processing.core.PVector;
 
 import project_16x16.SideScroller;
-import project_16x16.Util;
+import project_16x16.Utility;
 
 /**
  * Handles both drawing and logic of notifications.
@@ -39,7 +39,7 @@ public class Notifications {
 		background = game.createImage(notificationWidth, notificationHeight, PApplet.ARGB);
 		for (int i = 0; i < background.pixels.length; i++) {
 			float a = PApplet.map(i, 0, background.pixels.length, 255, 0);
-			background.pixels[i] = Util.colorToRGB(50, 100, 150, a);
+			background.pixels[i] = Utility.colorToRGB(50, 100, 150, a);
 		}
 	}
 

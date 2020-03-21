@@ -2,7 +2,7 @@ package project_16x16.ui;
 
 import project_16x16.PClass;
 import project_16x16.SideScroller;
-import project_16x16.Util;
+import project_16x16.Utility;
 
 /**
  * The Press Class extends PClass A button for the player to click
@@ -149,7 +149,7 @@ public class Button extends PClass {
 	 * @return response as a boolean
 	 */
 	public boolean hover() {
-		return Util.hoverScreen(x, y, width, height);
+		return Utility.hoverScreen(x, y, width, height);
 	}
 
 	/**

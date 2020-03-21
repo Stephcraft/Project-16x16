@@ -12,7 +12,7 @@ import project_16x16.Options;
 import project_16x16.SideScroller;
 import project_16x16.SideScroller.debugType;
 import project_16x16.Tileset;
-import project_16x16.Util;
+import project_16x16.Utility;
 import project_16x16.Audio.SFX;
 import project_16x16.components.AnimationComponent;
 import project_16x16.objects.CollidableObject;
@@ -243,7 +243,7 @@ public final class Player extends EditableObject {
 		for (EditableObject o : gameScene.objects) {
 			if (o instanceof CollidableObject) {
 				CollidableObject collision = (CollidableObject) o;
-				if (Util.fastInRange(pos, collision.pos, collisionRange)) { // In Player Range
+				if (Utility.fastInRange(pos, collision.pos, collisionRange)) { // In Player Range
 					if (applet.debug == debugType.ALL) {
 						applet.strokeWeight(2);
 						applet.rect(collision.pos.x, collision.pos.y, collision.width, collision.height);

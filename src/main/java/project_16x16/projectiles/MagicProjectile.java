@@ -8,7 +8,7 @@ import processing.core.PVector;
 
 import project_16x16.SideScroller;
 import project_16x16.Tileset;
-import project_16x16.Util;
+import project_16x16.Utility;
 import project_16x16.objects.CollidableObject;
 import project_16x16.objects.EditableObject;
 import project_16x16.particleSystem.ParticleSystem;
@@ -112,7 +112,7 @@ public class MagicProjectile extends ProjectileObject {
 		float scale = 0.12f;
 		float angle = PApplet.radians(11);
 		while(scale > 0.025f) {
-			particleAnimation.add(Util.resizeImage(Util.resizeImage(Util.rotateImage(image.copy(), angle), scale), 4));
+			particleAnimation.add(Utility.resizeImage(Utility.resizeImage(Utility.rotateImage(image.copy(), angle), scale), 4));
 			angle += PApplet.radians(11);
 			scale -= Math.random() * 0.03f;
 		}
