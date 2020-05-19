@@ -3,7 +3,7 @@ package project_16x16.ui;
 import java.util.Arrays;
 import java.util.HashSet;
 
-import project_16x16.SideScroller;
+import project_16x16.Main;
 import project_16x16.Utility;
 
 /**
@@ -23,7 +23,7 @@ public class NumberInputField extends TextInputField {
 	 * @param a This a reference to the game //TODO: having variable names that are
 	 *          just letters can be confusing to new contributors
 	 */
-	public NumberInputField(SideScroller a) {
+	public NumberInputField(Main a) {
 		super(a);
 	}
 	

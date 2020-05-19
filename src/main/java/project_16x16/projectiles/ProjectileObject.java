@@ -2,6 +2,7 @@ package project_16x16.projectiles;
 
 import java.util.ArrayList;
 
+import project_16x16.Main;
 import project_16x16.components.AnimationComponent;
 import project_16x16.objects.CollidableObject;
 import project_16x16.objects.EditableObject;
@@ -9,7 +10,6 @@ import processing.core.PImage;
 import processing.core.PVector;
 import processing.data.JSONObject;
 import project_16x16.scene.GameplayScene;
-import project_16x16.SideScroller;
 import project_16x16.Tileset;
 
 public class ProjectileObject extends EditableObject {
@@ -34,7 +34,7 @@ public class ProjectileObject extends EditableObject {
 
 	public boolean hit;
 
-	public ProjectileObject(SideScroller a, GameplayScene g) {
+	public ProjectileObject(Main a, GameplayScene g) {
 		super(a, g);
 
 		id = "";

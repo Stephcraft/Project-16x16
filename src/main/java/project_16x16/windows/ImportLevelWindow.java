@@ -1,7 +1,7 @@
 package project_16x16.windows;
 
+import project_16x16.Main;
 import project_16x16.PClass;
-import project_16x16.SideScroller;
 import project_16x16.Utility;
 import project_16x16.scene.GameplayScene;
 import project_16x16.ui.Button;
@@ -18,7 +18,7 @@ public class ImportLevelWindow extends PClass {
 	// Map Editor Scene
 	public GameplayScene scene;
 	
-	public ImportLevelWindow(SideScroller a, GameplayScene scene) {
+	public ImportLevelWindow(Main a, GameplayScene scene) {
 		
 		super(a);
 		

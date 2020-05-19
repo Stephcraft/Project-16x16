@@ -6,7 +6,7 @@ import org.apache.commons.collections.map.MultiValueMap;
 
 import processing.core.PImage;
 import project_16x16.Audio;
-import project_16x16.SideScroller;
+import project_16x16.Main;
 import project_16x16.Audio.SFX;
 
 /**
@@ -14,7 +14,7 @@ import project_16x16.Audio.SFX;
  */
 public class AnimationComponent {
 
-	private static SideScroller applet;
+	private static Main applet;
 
 	private ArrayList<PImage> frames;
 	private boolean loop;
@@ -33,7 +33,7 @@ public class AnimationComponent {
 		sounds = new MultiValueMap();
 	}
 
-	public static void assignApplet(SideScroller applet) {
+	public static void assignApplet(Main applet) {
 		AnimationComponent.applet = applet;
 	}
 

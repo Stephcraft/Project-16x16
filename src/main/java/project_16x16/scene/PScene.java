@@ -3,8 +3,8 @@ package project_16x16.scene;
 import processing.event.KeyEvent;
 import processing.event.MouseEvent;
 
+import project_16x16.Main;
 import project_16x16.PClass;
-import project_16x16.SideScroller;
 
 /**
  * Scenes are a way of encapsulating different game states/views (such as menu
@@ -24,7 +24,7 @@ public abstract class PScene extends PClass {
 	 */
 	private boolean registered = false;
 
-	public PScene(SideScroller a) {
+	public PScene(Main a) {
 		super(a);
 	}
 

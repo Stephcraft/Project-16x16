@@ -4,7 +4,7 @@ import java.net.ConnectException;
 import processing.data.JSONObject;
 import processing.net.*;
 
-import project_16x16.SideScroller;
+import project_16x16.Main;
 
 public class Multiplayer {
 
@@ -28,7 +28,7 @@ public class Multiplayer {
 	 * @param hostIP
 	 * @param port
 	 */
-	public Multiplayer(SideScroller player, String hostIP, int port, boolean isHost) throws java.net.ConnectException {
+	public Multiplayer(Main player, String hostIP, int port, boolean isHost) throws java.net.ConnectException {
 		this.isHost = isHost;
 		data = null;
 		if (isHost) {
@@ -51,7 +51,7 @@ public class Multiplayer {
 	 * @param isHost
 	 * @throws ConnectException
 	 */
-	public Multiplayer(SideScroller player, boolean isHost) throws ConnectException {
+	public Multiplayer(Main player, boolean isHost) throws ConnectException {
 		this(player, "127.0.0.1", 25565, isHost);
 	}
 

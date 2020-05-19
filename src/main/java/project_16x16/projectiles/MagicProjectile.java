@@ -6,7 +6,7 @@ import processing.core.PApplet;
 import processing.core.PImage;
 import processing.core.PVector;
 
-import project_16x16.SideScroller;
+import project_16x16.Main;
 import project_16x16.Tileset;
 import project_16x16.Utility;
 import project_16x16.objects.CollidableObject;
@@ -27,7 +27,7 @@ public class MagicProjectile extends ProjectileObject {
 	private ParticleSystem trail;
 	private ParticleSystem explode;
 	
-	public MagicProjectile(SideScroller a, GameplayScene g, int x, int y, int dir) {
+	public MagicProjectile(Main a, GameplayScene g, int x, int y, int dir) {
 		super(a, g);
 		
 		id = "MAGIC";
@@ -106,7 +106,7 @@ public class MagicProjectile extends ProjectileObject {
 		trail.spawn = false;
 	}
 	
-	private void setParticleAnimation(SideScroller a) {
+	private void setParticleAnimation(Main a) {
 		particleAnimation = new ArrayList<PImage>();
 		PImage image = Tileset.getTile("MAGIC_SOURCE");
 		float scale = 0.12f;

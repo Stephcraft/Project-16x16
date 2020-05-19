@@ -4,8 +4,8 @@ import processing.core.PConstants;
 import processing.event.KeyEvent;
 import processing.event.MouseEvent;
 import project_16x16.Constants;
-import project_16x16.SideScroller;
-import project_16x16.SideScroller.GameScenes;
+import project_16x16.Main;
+import project_16x16.Main.GameScenes;
 import project_16x16.multiplayer.Multiplayer;
 import project_16x16.ui.Button;
 import project_16x16.ui.Notifications;
@@ -20,7 +20,7 @@ public class MultiplayerHostMenu extends PScene {
     public Button pressMenu;
     public Button pressHost;
     
-    private SideScroller game;
+    private Main game;
     
     private static final Pattern p;
     
@@ -29,7 +29,7 @@ public class MultiplayerHostMenu extends PScene {
 				+ "{3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5]):[0-9]+$");
 	}
 
-    public MultiplayerHostMenu(SideScroller a) {
+    public MultiplayerHostMenu(Main a) {
         super(a);
         game = a;
         

@@ -9,7 +9,7 @@ import processing.core.PApplet;
 import processing.core.PImage;
 import processing.core.PVector;
 
-import project_16x16.SideScroller;
+import project_16x16.Main;
 import project_16x16.Utility;
 
 /**
@@ -30,9 +30,9 @@ public class Notifications {
 	private final String title, message;
 	private int lifetime, startTime, alpha = 255;
 
-	private static SideScroller game;
+	private static Main game;
 
-	public static void assignApplet(SideScroller s) {
+	public static void assignApplet(Main s) {
 		game = s;
 		positionTarget = new PVector(game.gameResolution.x - notificationWidth,
 				game.gameResolution.y - notificationHeight);

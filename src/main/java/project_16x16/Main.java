@@ -33,7 +33,7 @@ import project_16x16.ui.Notifications;
  * and is the heart of the game.
  * </p>
  */
-public class SideScroller extends PApplet {
+public class Main extends PApplet {
 
 	// Game Dev
 	public static final String LEVEL = "Storage/Game/Maps/tiledMap.dat";
@@ -600,6 +600,6 @@ public class SideScroller extends PApplet {
 
 	// Main
 	public static void main(String args[]) {
-		PApplet.main(SideScroller.class, args);
+		PApplet.main(Main.class, args);
 	}
 }

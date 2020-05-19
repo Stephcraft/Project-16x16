@@ -6,13 +6,9 @@ import java.util.HashMap;
 import processing.core.PImage;
 import processing.core.PVector;
 import processing.data.JSONObject;
-import project_16x16.Audio;
-import project_16x16.Constants;
-import project_16x16.Options;
-import project_16x16.SideScroller;
-import project_16x16.SideScroller.debugType;
-import project_16x16.Tileset;
-import project_16x16.Utility;
+import project_16x16.*;
+import project_16x16.Main;
+import project_16x16.Main.debugType;
 import project_16x16.Audio.SFX;
 import project_16x16.components.AnimationComponent;
 import project_16x16.objects.CollidableObject;
@@ -83,7 +79,7 @@ public final class Player extends EditableObject {
 	 * 
 	 * @param a SideScroller game controller.
 	 */
-	public Player(SideScroller a, GameplayScene g , boolean isMultiplayerPlayer) {
+	public Player(Main a, GameplayScene g , boolean isMultiplayerPlayer) {
 
 		super(a, g);
 

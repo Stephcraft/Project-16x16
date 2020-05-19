@@ -23,7 +23,7 @@ import static processing.core.PApplet.cos;
  */
 public final class Camera extends ZoomPan {
 
-	private SideScroller applet;
+	private Main applet;
 	/**
 	 * Lerp constant for motion. Used for all motion easing (zoom, position and
 	 * rotation).
@@ -82,9 +82,9 @@ public final class Camera extends ZoomPan {
 	/**
 	 * The most basic constructor. Initialises the camera at position (0, 0).
 	 * 
-	 * @param applet Target applet ({@link SideScroller}).
+	 * @param applet Target applet ({@link Main}).
 	 */
-	public Camera(SideScroller applet) {
+	public Camera(Main applet) {
 		super(applet);
 		this.applet = applet;
 		targetPosition = new PVector(0, 0); // default position
@@ -93,10 +93,10 @@ public final class Camera extends ZoomPan {
 	/**
 	 * Constructor. Specify camera's initial fixed position.
 	 * 
-	 * @param applet        Target applet ({@link SideScroller}).
+	 * @param applet        Target applet ({@link Main}).
 	 * @param startPosition Initial camera position.
 	 */
-	public Camera(SideScroller applet, PVector startPosition) {
+	public Camera(Main applet, PVector startPosition) {
 		super(applet);
 		this.applet = applet;
 		targetPosition = new PVector(-startPosition.x, -startPosition.y);
@@ -105,10 +105,10 @@ public final class Camera extends ZoomPan {
 	/**
 	 * Constructor. Specify the object to track from initialisation.
 	 * 
-	 * @param applet       Target applet ({@link SideScroller}).
+	 * @param applet       Target applet ({@link Main}).
 	 * @param followObject Object the camera will follow.
 	 */
-	public Camera(SideScroller applet, EditableObject followObject) {
+	public Camera(Main applet, EditableObject followObject) {
 		super(applet);
 		this.applet = applet;
 		this.followObject = followObject;
@@ -119,12 +119,12 @@ public final class Camera extends ZoomPan {
 	 * Constructor. Specify both the object to track and the translation offset with
 	 * which to track it from initialisation.
 	 * 
-	 * @param applet       Target applet ({@link SideScroller}).
+	 * @param applet       Target applet ({@link Main}).
 	 * @param followObject Object the camera will follow.
 	 * @param followOffset Offset with which the camera will follow the given
 	 *                     object.
 	 */
-	public Camera(SideScroller applet, EditableObject followObject, PVector followOffset) {
+	public Camera(Main applet, EditableObject followObject, PVector followOffset) {
 		super(applet);
 		this.applet = applet;
 		this.followObject = followObject;
@@ -169,7 +169,7 @@ public final class Camera extends ZoomPan {
 	 * called will be affected by the camera.
 	 * <p>
 	 * If you wish for the entire sketch to be affected by the camera, you can call
-	 * this method in the first line of the {@link SideScroller#Draw draw()} method.
+	 * this method in the first line of the {@link Main#Draw draw()} method.
 	 * This results in all subsequent drawing being affected by the camera.
 	 * Occasionally though there may be a need to have some display activity that is
 	 * independent of the camera -- see {@link #release()}.

@@ -1,9 +1,9 @@
 package project_16x16.projectiles;
 
+import project_16x16.Main;
 import project_16x16.components.AnimationComponent;
 import processing.core.PVector;
 import project_16x16.scene.GameplayScene;
-import project_16x16.SideScroller;
 import project_16x16.Tileset;
 
 public class Swing extends ProjectileObject { // PClass
@@ -12,7 +12,7 @@ public class Swing extends ProjectileObject { // PClass
 
 	public boolean activated;
 
-	public Swing(SideScroller a, GameplayScene g, int x, int y, int dir) {
+	public Swing(Main a, GameplayScene g, int x, int y, int dir) {
 		super(a, g);
 		animation = new AnimationComponent();
 

@@ -3,9 +3,9 @@ package project_16x16.objects;
 import java.lang.reflect.Constructor;
 
 import processing.core.*;
+import project_16x16.Main;
 import project_16x16.scene.GameplayScene;
 import project_16x16.PClass;
-import project_16x16.SideScroller;
 import project_16x16.Tileset;
 import project_16x16.Utility;
 import project_16x16.components.Tile.TileType;
@@ -24,7 +24,7 @@ public class EditorItem extends PClass {
 
 	private GameplayScene gameplayScene;
 
-	public EditorItem(SideScroller a, GameplayScene g) {
+	public EditorItem(Main a, GameplayScene g) {
 		super(a);
 
 		gameplayScene = g;
@@ -54,8 +54,8 @@ public class EditorItem extends PClass {
 					// Create new instance from dragged icon
 
 					PVector realPos = applet.camera.getDispToCoord(
-							new PVector(Utility.roundToNearest(applet.getMouseCoordScreen().x, SideScroller.snapSize),
-									Utility.roundToNearest(applet.getMouseCoordScreen().y, SideScroller.snapSize)));
+							new PVector(Utility.roundToNearest(applet.getMouseCoordScreen().x, Main.snapSize),
+									Utility.roundToNearest(applet.getMouseCoordScreen().y, Main.snapSize)));
 					EditableObject c = null;
 					switch (type) {
 						case COLLISION :

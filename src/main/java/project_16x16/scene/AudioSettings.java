@@ -2,7 +2,7 @@ package project_16x16.scene;
 
 import processing.core.PConstants;
 import processing.event.KeyEvent;
-import project_16x16.SideScroller;
+import project_16x16.Main;
 import project_16x16.ui.Button;
 import project_16x16.ui.Notifications;
 
@@ -13,12 +13,12 @@ import project_16x16.ui.Notifications;
  */
 public final class AudioSettings extends PScene {
 
-	private SideScroller game;
+	private Main game;
 	
 	private Button quit;
 	private Button apply;
 
-	public AudioSettings(SideScroller a) {
+	public AudioSettings(Main a) {
 		super(a);
 		
 		game = a;

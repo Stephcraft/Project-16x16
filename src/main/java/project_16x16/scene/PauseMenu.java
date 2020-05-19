@@ -3,9 +3,9 @@
  */
 package project_16x16.scene;
 
-import project_16x16.SideScroller;
+import project_16x16.Main;
 import project_16x16.Utility;
-import project_16x16.SideScroller.GameScenes;
+import project_16x16.Main.GameScenes;
 import project_16x16.ui.Button;
 import processing.core.PConstants;
 import processing.core.PImage;
@@ -22,12 +22,12 @@ public class PauseMenu extends PScene {
 	public Button pressMenu;	//Retruns to main menu
 	public Button pressSettings; //TODO add settings menu
 	
-	private SideScroller game;
+	private Main game;
 	private PImage cache;
 	
 	protected boolean switched = false;
 	
-	public PauseMenu(SideScroller a) {
+	public PauseMenu(Main a) {
 		super(a);
 		game = a;
 		

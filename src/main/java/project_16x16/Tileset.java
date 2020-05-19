@@ -2,7 +2,6 @@ package project_16x16;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 import project_16x16.components.Tile;
 import project_16x16.components.Tile.TileType;
@@ -11,7 +10,6 @@ import project_16x16.objects.MagicSourceObject;
 import project_16x16.objects.MirrorBoxObject;
 
 import processing.core.PApplet;
-import processing.core.PGraphics;
 import processing.core.PImage;
 import processing.data.JSONObject;
 import processing.data.JSONArray;
@@ -28,7 +26,7 @@ public class Tileset {
 	private static final String DATAPATH = "tileData.json";
 	private static final int SCALE = 4;
 	
-	private static SideScroller applet;
+	private static Main applet;
 	private static PImage graphicsSheet;
 	
 	private static int loadedTiles = 0;
@@ -37,7 +35,7 @@ public class Tileset {
 	
 	private static JSONArray JSONanimations;
 	
-	public static void load(SideScroller app){
+	public static void load(Main app){
 		applet = app;
 		graphicsSheet = applet.loadImage(TILESHEETPATH);
 		tiles = new Tile[TILESETWIDTH * TILESETHEIGHT];

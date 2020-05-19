@@ -3,8 +3,8 @@ package project_16x16.scene;
 import processing.core.PConstants;
 import processing.event.KeyEvent;
 import processing.event.MouseEvent;
-import project_16x16.SideScroller;
-import project_16x16.SideScroller.GameScenes;
+import project_16x16.Main;
+import project_16x16.Main.GameScenes;
 import project_16x16.ui.Button;
 import project_16x16.ui.Notifications;
 import project_16x16.ui.NumberInputField;
@@ -37,9 +37,9 @@ public class Settings extends PScene {
 
 	private NumberInputField windowSizeX;
 
-	private SideScroller game;
+	private Main game;
 
-	public Settings(SideScroller a) {
+	public Settings(Main a) {
 		super(a);
 		game = a;
 

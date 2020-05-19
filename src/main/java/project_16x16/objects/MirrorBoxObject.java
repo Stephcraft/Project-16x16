@@ -1,11 +1,11 @@
 package project_16x16.objects;
 
 import processing.core.PApplet;
+import project_16x16.Main;
 import project_16x16.projectiles.MagicProjectile;
 import project_16x16.projectiles.ProjectileObject;
 import project_16x16.projectiles.Swing;
 import project_16x16.scene.GameplayScene;
-import project_16x16.SideScroller;
 import project_16x16.Tileset;
 
 public class MirrorBoxObject extends GameObject {
@@ -21,7 +21,7 @@ public class MirrorBoxObject extends GameObject {
 	final int BOX_W = 64;
 	final int BOX_H = 64;
 
-	public MirrorBoxObject(SideScroller a, GameplayScene g) {
+	public MirrorBoxObject(Main a, GameplayScene g) {
 		super(a, g);
 
 		direction = 0;

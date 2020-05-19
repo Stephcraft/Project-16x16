@@ -2,7 +2,7 @@ package project_16x16.particleSystem;
 
 import java.util.ArrayList;
 
-import project_16x16.SideScroller;
+import project_16x16.Main;
 
 /**
  * Particles
@@ -14,13 +14,13 @@ import project_16x16.SideScroller;
  */
 public class Particles {
 
-	private SideScroller applet;
+	private Main applet;
 	private ParticleSystem particleSystem;
 	
 	public ArrayList<Particle> activeParticles;
 	public ArrayList<Particle> inactiveParticles;
 	
-	public Particles(ParticleSystem particleSystem, SideScroller applet) {
+	public Particles(ParticleSystem particleSystem, Main applet) {
 		this.applet = applet;
 		this.particleSystem = particleSystem;
 		

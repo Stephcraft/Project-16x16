@@ -1,7 +1,7 @@
 package project_16x16.ui;
 
 import processing.core.PApplet;
-import project_16x16.SideScroller;
+import project_16x16.Main;
 
 public class Anchor {
 	
@@ -27,7 +27,7 @@ public class Anchor {
 	public AnchorOrigin anchorOrigin = AnchorOrigin.TopLeft;
 	public Stretch stretch = Stretch.None;
 	
-	private SideScroller applet;
+	private Main applet;
 	private Anchor frame = null;
 	
 	//TODO: add rectmode support
@@ -37,7 +37,7 @@ public class Anchor {
 		this.frame = anchor;
 	}
 	
-	public Anchor(SideScroller applet, int x, int y, int width, int height) {
+	public Anchor(Main applet, int x, int y, int width, int height) {
 		this.applet = applet;
 		this.localX = x;
 		this.localY = y;
@@ -53,12 +53,12 @@ public class Anchor {
 	
 	// PApplet
 	
-	public SideScroller getPApplet(){
+	public Main getPApplet(){
 		if (hasContainer())	return frame.getPApplet();
 		else				return applet;
 	}
 	
-	public void setPApplet(SideScroller applet) {
+	public void setPApplet(Main applet) {
 		this.applet = applet;
 	}
 	

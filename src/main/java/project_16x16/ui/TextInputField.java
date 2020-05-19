@@ -1,8 +1,8 @@
 package project_16x16.ui;
 
 import processing.core.PApplet;
+import project_16x16.Main;
 import project_16x16.PClass;
-import project_16x16.SideScroller;
 import project_16x16.Utility;
 
 /**
@@ -24,7 +24,7 @@ public class TextInputField extends PClass {
 	 * Constructor for PInput
 	 * @param  a This a reference to the game //TODO: having variable names that are just letters can be confusing to new contributors
 	 */
-	public TextInputField(SideScroller a) {
+	public TextInputField(Main a) {
 		super(a);
 
 		width = 200;

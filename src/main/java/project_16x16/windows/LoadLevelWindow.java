@@ -1,8 +1,8 @@
 package project_16x16.windows;
 
+import project_16x16.Main;
 import project_16x16.scene.GameplayScene;
 import project_16x16.PClass;
-import project_16x16.SideScroller;
 import project_16x16.Utility;
 import project_16x16.objects.BackgroundObject;
 import project_16x16.objects.CollidableObject;
@@ -28,7 +28,7 @@ public class LoadLevelWindow extends PClass {
 	public List list;
 	File f;
 
-	public LoadLevelWindow(SideScroller a, GameplayScene scene) {
+	public LoadLevelWindow(Main a, GameplayScene scene) {
 
 		super(a);
 		collidableObjects = new ArrayList<CollidableObject>();
