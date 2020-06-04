@@ -62,7 +62,14 @@ public final class Utility {
 	public static PImage blur(PImage img, int radius, int iterations) {
 		return BlurUtils.blurImage(img, radius, iterations);
 	}
-	
+
+	/**
+	 * Scales a PImage object by a given amount.
+	 *
+	 * @param pBuffer Image to scale.
+	 * @param scaling Times to scale.
+	 * @return new PImage object transformed.
+	 */
 	public static PImage scale(PImage pBuffer, int scaling) {
 		PImage originalImage = pBuffer;
 		PImage tempImage = applet.createImage(PApplet.parseInt(originalImage.width * scaling),
@@ -92,6 +99,13 @@ public final class Utility {
 		return pg;
 	}
 
+	/**
+	 * Rotates a PImage object by a given angle in radians.
+	 *
+	 * @param img PImage image to rotate.
+	 * @param angle Angle in radians.
+	 * @return new PImage object transformed.
+	 */
 	public static PImage rotateImage(PImage img, float angle) {
 		PGraphics pg = applet.createGraphics((int) (img.width * 1.5), (int) (img.height * 1.5));
 
@@ -281,6 +295,12 @@ public final class Utility {
 		}
 	}
 
+	/**
+	 * Verifies the existence of a given file in a path.
+	 *
+	 * @param src Path to the file.
+	 * @return True if file is found.
+	 */
 	public static boolean fileExists(String src) {
 		boolean condition = false;
 		try {
@@ -326,7 +346,7 @@ public final class Utility {
 		}
 		return output.replaceAll("" + PApplet.parseChar(8202), "\n").replaceAll("" + PApplet.parseChar(8201), "\t");
 	}
-	
+
 	public static void convertTiledLevel(String filePath, String mapName) {
 		JSONArray levelSave = new JSONArray();
 		JSONObject main = new JSONObject();
