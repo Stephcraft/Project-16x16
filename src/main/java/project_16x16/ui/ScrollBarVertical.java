@@ -62,7 +62,7 @@ public class ScrollBarVertical extends PClass {
 	}
 	
 	public void mouseWheel(MouseEvent event) {
-		barLocation += event.getCount() * 0.1f;
+		barLocation += event.getCount() * (container.localHeight * 0.0005f); //0.1f
 		barLocation = Utility.clamp(barLocation, 0, 1);
 	}
 }

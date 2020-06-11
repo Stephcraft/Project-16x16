@@ -159,7 +159,7 @@ public class GameplayScene extends PScene {
 		scrollBarAnchor.anchorOrigin = Anchor.AnchorOrigin.TopRight;
 		scrollBarAnchor.stretch = Anchor.Stretch.Vertical;
 		scrollBar = new ScrollBarVertical(scrollBarAnchor);
-		scrollBar.setBarRatio(0.8f);
+		scrollBar.setBarRatio(getBarRatio(getTotalInventoryItems() / 6, 50, 3f));
 		
 		// Default Tool
 		tool = Tools.MODIFY;
@@ -587,6 +587,27 @@ public class GameplayScene extends PScene {
 
 	public boolean isZoomable() {
 		return zoomable;
+	}
+	
+	/**
+	 * Lists the amount of items currently on the inventory.
+	 * Can be refactored in the future to support the actual gameplay inventory.
+	 * @return amount of items currently on the inventory
+	 */
+	private int getTotalInventoryItems() {
+		TileType[] tiles = { TileType.COLLISION, TileType.BACKGROUND, TileType.OBJECT };
+		return Tileset.getAllTiles(tiles).size();
+	}
+	
+	/**
+	 * Calculates the ratio for a scrollbar.
+	 * @param bodyToScroll Approximate relative size of the scrollable body
+	 * @param containerSize Size of the bar container
+	 * @param sizeMultiplier Multiplier for the relative size of the bar
+	 * @return Bar ratio for that specific bar
+	 */
+	private float getBarRatio(float bodyToScroll, int containerSize, float sizeMultiplier) {
+		return bodyToScroll / (containerSize * sizeMultiplier);
 	}
 
 	@Override
