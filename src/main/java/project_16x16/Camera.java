@@ -230,7 +230,8 @@ public final class Camera extends ZoomPan {
 					PApplet.lerp(getPanOffset().x, ((targetPosition.x + offset.x) * zoom), lerpSpeed) - shakeOffset.x,
 					PApplet.lerp(getPanOffset().y, ((targetPosition.y + offset.y) * zoom), lerpSpeed) - shakeOffset.y);
 		}
-		logicalPosition = PVector.mult(PVector.sub(getPanOffset(), offset), -1);
+		logicalPosition = PVector.mult(PVector.sub(getPanOffset(), new PVector(applet.width / 2 * zoom, applet.height / 2 * zoom)),
+				-1 / zoom);
 
 		if (trauma > 0) { // 50 and 0.35 seem suitable values
 			trauma -= traumaDecay;
@@ -472,9 +473,9 @@ public final class Camera extends ZoomPan {
 	}
 
 	/**
-	 * Where is the camera in the world? Accounts for centering the camera (ie. an
-	 * object located at (0, 0) which the camera is following gives a camera
-	 * position of (0, 0) too).
+	 * Where is the camera in the world? Accounts for zooming and centering the
+	 * camera (ie. an object located at (0, 0) which the camera is following gives a
+	 * camera position of (0, 0) too, regardless of zoom level).
 	 * 
 	 * @return Representation of camera position (the point the camera is centered
 	 *         on).
