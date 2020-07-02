@@ -23,7 +23,6 @@ import project_16x16.components.AnimationComponent;
 import project_16x16.entities.Player;
 import project_16x16.multiplayer.Multiplayer;
 import project_16x16.scene.*;
-import project_16x16.scene.GameplayScene.Tools;
 import project_16x16.ui.Notifications;
 
 /**
@@ -572,7 +571,7 @@ public class SideScroller extends PApplet {
 					m = new Multiplayer(this, true);
 					((GameplayScene) GameScenes.GAME.getScene()).setupMultiplayer(m);
 					swapToScene(GameScenes.GAME);
-					((GameplayScene) GameScenes.GAME.getScene()).tool = Tools.PLAY;
+					((GameplayScene) GameScenes.GAME.getScene()).changeMode("PLAY");
 					stage.setTitle("host");
 					System.out.println("~HOST~");
 				} catch (Exception e) {
@@ -584,7 +583,7 @@ public class SideScroller extends PApplet {
 					m = new Multiplayer(this, false);
 					((GameplayScene) (GameScenes.GAME.getScene())).setupMultiplayer(m);
 					swapToScene(GameScenes.GAME);
-					((GameplayScene) GameScenes.GAME.getScene()).tool = Tools.PLAY;
+					((GameplayScene) GameScenes.GAME.getScene()).changeMode("PLAY");
 					stage.setTitle("client");
 					System.out.println("~CLIENT~");
 				} catch (Exception e) {

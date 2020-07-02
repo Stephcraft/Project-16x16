@@ -93,14 +93,14 @@ public class LoadLevelWindow extends PClass {
 			scene.loadLevel(path + list.getElement());
 			Notifications.addNotification("Level Loaded", "Loaded "+ list.getElement() + ".");
 			list.resetElement();
-			scene.tool = GameplayScene.Tools.MODIFY;
+			scene.changeMode("MODIFY");
 		} else if (list.getConfirmPress() && list.getElement().isEmpty())
-			scene.tool = GameplayScene.Tools.MODIFY;
+			scene.changeMode("MODIFY");
 	}
 
 	public void cancelButton() {
 		if (list.getCancelPress()) {
-			scene.tool = GameplayScene.Tools.MODIFY;
+			scene.changeMode("MODIFY");
 			list.resetElement();
 		}
 	}
