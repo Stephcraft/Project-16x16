@@ -87,13 +87,13 @@ public class ImportLevelWindow extends PClass {
 		if (pressImport.event()) {
 			Utility.convertTiledLevel(jsonPath + input.getText() + ".json", input.getText());
 			input.setText("");
-			scene.tool = GameplayScene.Tools.MOVE;
+			scene.changeMode("MOVE");
 		}
 
 		pressCancel.update();
 		if (pressCancel.event()) {
 			input.setText("");
-			scene.tool = GameplayScene.Tools.MOVE;
+			scene.changeMode("MOVE");
 		}
 	}
 }

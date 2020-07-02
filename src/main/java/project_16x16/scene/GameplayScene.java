@@ -2,6 +2,7 @@ package project_16x16.scene;
 
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 
 import project_16x16.entities.Player;
@@ -15,6 +16,15 @@ import processing.data.JSONObject;
 import processing.event.MouseEvent;
 
 import project_16x16.projectiles.ProjectileObject;
+import project_16x16.scene.gameplaymodes.GameplayMode;
+import project_16x16.scene.gameplaymodes.ImportGameMode;
+import project_16x16.scene.gameplaymodes.InventoryGameMode;
+import project_16x16.scene.gameplaymodes.LoadExampleGameMode;
+import project_16x16.scene.gameplaymodes.ModifyGameMode;
+import project_16x16.scene.gameplaymodes.MoveGameMode;
+import project_16x16.scene.gameplaymodes.PlayGameMode;
+import project_16x16.scene.gameplaymodes.SaveGameMode;
+import project_16x16.scene.gameplaymodes.TestGameMode;
 import project_16x16.Audio;
 import project_16x16.Options;
 import project_16x16.SideScroller;
@@ -53,7 +63,7 @@ public class GameplayScene extends PScene {
 	private PImage icon_inventory;
 	private PImage icon_play;
 	private PImage icon_save;
-	private PImage icon_modfiyActive;
+	private PImage icon_modifyActive;
 	private PImage icon_inventoryActive;
 	private PImage icon_playActive;
 	private PImage icon_saveActive;
@@ -80,12 +90,10 @@ public class GameplayScene extends PScene {
 
 	// Scroll Bar
 	private ScrollBarVertical scrollBar;
+	
+	private HashMap<String, GameplayMode> modesMap;
 
-	public enum Tools {
-		MOVE, MODIFY, INVENTORY, PLAY, SAVE, IMPORT, LOADEXAMPLE, TEST,
-	}
-
-	public Tools tool;
+	public GameplayMode currentMode;
 
 	private ArrayList<String> inventory;
 
@@ -142,7 +150,7 @@ public class GameplayScene extends PScene {
 		icon_play = Tileset.getTile(298, 301, 9, 9, 4);
 		icon_save = Tileset.getTile(307, 301, 9, 9, 4);
 
-		icon_modfiyActive = Tileset.getTile(279, 291, 9, 9, 4);
+		icon_modifyActive = Tileset.getTile(279, 291, 9, 9, 4);
 		icon_inventoryActive = Tileset.getTile(289, 291, 9, 9, 4);
 		icon_playActive = Tileset.getTile(298, 291, 9, 9, 4);
 		icon_saveActive = Tileset.getTile(307, 291, 9, 9, 4);
@@ -160,14 +168,25 @@ public class GameplayScene extends PScene {
 		scrollBarAnchor.stretch = Anchor.Stretch.Vertical;
 		scrollBar = new ScrollBarVertical(scrollBarAnchor);
 		scrollBar.setBarRatio(getBarRatio(getTotalInventoryItems() / 6, 50, 3f));
-		
-		// Default Tool
-		tool = Tools.MODIFY;
 
 		// Init Player
 		localPlayer = new Player(applet, this, false);
 		localPlayer.pos.set(0, -100); // TODO spawn location
+		
+		// GameplayModes initialization
+		modesMap = new HashMap<>();
+		modesMap.put("MODIFY", new ModifyGameMode(this, editorItem));
+		modesMap.put("PLAY", new PlayGameMode(this, localPlayer));
+		modesMap.put("INVENTORY", new InventoryGameMode(this));
+		modesMap.put("SAVE", new SaveGameMode(this));
+		modesMap.put("IMPORT", new ImportGameMode(this));
+		modesMap.put("LOADEXAMPLE", new LoadExampleGameMode(this));
+		modesMap.put("MOVE", new MoveGameMode(this));
+		modesMap.put("TEST", new TestGameMode(this));
+		
+		currentMode = modesMap.get("MODIFY");
 
+		
 		loadLevel(levelString); // TODO change level
 
 		windowTabs = new Tab(applet, tabTexts, tabTexts.length);
@@ -186,21 +205,10 @@ public class GameplayScene extends PScene {
 	public void draw() {
 		background(23, 26, 36);
 		
-		if (tool == Tools.MODIFY) {
-			displayGrid();
-			if (applet.mousePressEvent && focusedObject != null) {
-				focusedObject.updateEdit(); // enforce one item selected at once
-			}
-		}
+		currentMode.displayWorldEdit();
 
 		for (EditableObject o : objects) {
-			if (tool == Tools.MODIFY) {
-				o.updateEdit();
-				o.displayEdit();
-			}
-			if (tool == Tools.PLAY && o instanceof GameObject) {
-				((GameObject) o).update();
-			}
+			currentMode.updateEditableObject(o);
 			o.display();
 		}
 
@@ -216,18 +224,7 @@ public class GameplayScene extends PScene {
 			}
 		}
 
-		switch (tool) {
-			case MODIFY :
-				editorItem.displayDestination();
-				break;
-			case PLAY :
-			case INVENTORY :
-			case SAVE :
-			case LOADEXAMPLE :
-			case TEST :
-			default :
-				break;
-		}
+		currentMode.displayDestination();
 		drawPlayer();
 	}
 	
@@ -249,21 +246,9 @@ public class GameplayScene extends PScene {
 	 * Draws and updates the player.
 	 */
 	private void drawPlayer() {
-		switch (tool) {
-			case MODIFY :
-				localPlayer.updateEdit();
-				localPlayer.displayEdit();
-				break;
-			case PLAY :
-				localPlayer.update();
-				break;
-			case INVENTORY :
-			case SAVE :
-			case LOADEXAMPLE :
-			case TEST :
-			default :
-				break;
-		}
+		
+		currentMode.updateLocalPlayer(localPlayer);
+		
 		if (!isSingleplayer) {
 			JSONObject data = new JSONObject();
 			data.setFloat("x", localPlayer.pos.x);
@@ -292,155 +277,20 @@ public class GameplayScene extends PScene {
 	 */
 	public void drawUI() {
 
-		// 6 GUI Slots
-		if (tool != Tools.INVENTORY) {
-			for (int i = 0; i < 6; i++) {
-				// Display Slot
-				image(slot, 20 * 4 / 2 + 10 + i * (20 * 4 + 10), 20 * 4 / 2 + 10);
-
-				// Display Item
-				PImage img = Tileset.getTile(inventory.get(i));
-				applet.image(img, 20 * 4 / 2 + 10 + i * (20 * 4 + 10), 20 * 4 / 2 + 10, img.width * (float) 0.5,
-						img.height * (float) 0.5);
-
-				// Focus Event
-				if (applet.mousePressEvent) {
-					float x = 20 * 4 / 2 + 10 + i * (20 * 4 + 10);
-					float y = 20 * 4 / 2 + 10;
-					if (applet.getMouseCoordScreen().x > x - (20 * 4) / 2
-							&& applet.getMouseCoordScreen().x < x + (20 * 4) / 2
-							&& applet.getMouseCoordScreen().y > y - (20 * 4) / 2
-							&& applet.getMouseCoordScreen().y < y + (20 * 4) / 2) {
-						editorItem.focus = true;
-						editorItem.setTile(inventory.get(i));
-						editorItem.type = Tileset.getTileType(inventory.get(i));
-					}
-				}
-			}
-		}
+		currentMode.displayGUISlots();
 
 		int xAnchor = 42;
 		int offset = 48;
 		// GUI Icons
-		if (tool == Tools.MODIFY
-				|| (Utility.hoverScreen(xAnchor, 120, 36, 36) && tool != Tools.SAVE && tool != Tools.INVENTORY)) {
-			if (Utility.hoverScreen(xAnchor, 120, 36, 36) && applet.mousePressEvent) {
-				tool = Tools.MODIFY;
-			}
-			image(icon_modfiyActive, xAnchor, 120);
-		} else {
-			image(icon_modify, xAnchor, 120);
-		}
-		if (tool == Tools.INVENTORY
-				|| (Utility.hoverScreen(xAnchor + offset, 120, 36, 36) && tool != Tools.SAVE && tool != Tools.INVENTORY)) {
-			if (Utility.hoverScreen(xAnchor + offset, 120, 36, 36) && applet.mousePressEvent) {
-				tool = Tools.INVENTORY;
-			}
-			image(icon_inventoryActive, xAnchor + offset, 120);
-		} else {
-			image(icon_inventory, xAnchor + offset, 120);
-		}
-		if (tool == Tools.PLAY || (Utility.hoverScreen(xAnchor + offset * 2, 120, 36, 36) && tool != Tools.SAVE
-				&& tool != Tools.INVENTORY)) {
-			if (Utility.hoverScreen(xAnchor + offset * 2, 120, 36, 36) && applet.mousePressEvent) {
-				applet.camera.setFollowObject(localPlayer);
-				tool = Tools.PLAY;
-			}
-			image(icon_playActive, xAnchor + offset * 2, 120);
-		} else {
-			image(icon_play, xAnchor + offset * 2, 120);
-		}
-		if (tool == Tools.SAVE || (Utility.hoverScreen(xAnchor + offset * 3, 120, 36, 36) && tool != Tools.SAVE
-				&& tool != Tools.INVENTORY)) {
-			if (Utility.hoverScreen(xAnchor + offset * 3, 120, 36, 36) && applet.mousePressEvent) {
-				tool = Tools.SAVE;
-			}
-			image(icon_saveActive, xAnchor + offset * 3, 120);
-		} else {
-			image(icon_save, xAnchor + offset * 3, 120);
-		}
+		currentMode.updateGUIButton(xAnchor, icon_modifyActive, icon_modify, "MODIFY", Utility.hoverScreen(xAnchor, 120, 36, 36));
+		currentMode.updateGUIButton(xAnchor + offset, icon_inventoryActive, icon_inventory, "INVENTORY", Utility.hoverScreen(xAnchor + offset, 120, 36, 36));
+		currentMode.updateGUIButton(xAnchor + offset * 2, icon_playActive, icon_play, "PLAY", Utility.hoverScreen(xAnchor + offset * 2, 120, 36, 36));
+		currentMode.updateGUIButton(xAnchor + offset * 3, icon_saveActive, icon_save, "SAVE", Utility.hoverScreen(xAnchor + offset * 3, 120, 36, 36));
+		
+		currentMode.updateGUI();
 
-		switch (tool) {
-			case INVENTORY :
-				displayCreativeInventory();
-				zoomable = false;
-				break;
-			case MODIFY :
-				editorItem.update();
-				editorItem.display();
-				zoomable = true;
-				break;
-			case PLAY :
-				localPlayer.displayLife();
-				zoomable = true;
-				break;
-			case SAVE :
-				// Save , Load
-				// The if statement below should be used in each window that includes a tab.
-				// switch the number to the id of the button it's checking for
-				if (windowTabs.getActiveButton() != 1) {
-					windowTabs.moveActive(1);
-				}
-				window_saveLevel.privacyDisplay();
-				windowTabs.update();
-				windowTabs.display();
-				window_saveLevel.update();
-				window_saveLevel.display();
-				// This is an example of how to switch windows when another tab button is
-				// pressed.
-				if (windowTabs.getButton(0).event()) {
-					windowTabs.moveActive(0);
-					tool = Tools.LOADEXAMPLE;
-				}
-				if (windowTabs.getButton(2).event()) {
-					windowTabs.moveActive(2);
-					tool = Tools.IMPORT;
-				}
-				zoomable = false;
-				break;
-			case IMPORT :
-				// Import Level
-				if (windowTabs.getActiveButton() != 2) {
-					windowTabs.moveActive(2);
-				}
-				window_importlevel.privacyDisplay();
-				windowTabs.update();
-				windowTabs.display();
-				window_importlevel.update();
-				window_importlevel.display();
-				
-				if (windowTabs.getButton(0).event()) {
-					windowTabs.moveActive(0);
-					tool = Tools.LOADEXAMPLE;
-				}
-				if (windowTabs.getButton(1).event()) {
-					windowTabs.moveActive(1);
-					tool = Tools.SAVE;
-				}
-				break;
-			case LOADEXAMPLE :
-				if (windowTabs.getActiveButton() != 0) {
-					windowTabs.moveActive(0);
-				}
-				windowTabs.update();
-				windowTabs.display();
-				window_loadLevel.display();
-				window_loadLevel.update();
-				if (windowTabs.getButton(1).event()) {
-					windowTabs.moveActive(1);
-					tool = Tools.SAVE;
-				}
-				if (windowTabs.getButton(2).event()) {
-					windowTabs.moveActive(2);
-					tool = Tools.IMPORT;
-				}
-				break;
-			default :
-				break;
-		}
-		if (selectionBox != null) {
+		if (selectionBox != null)
 			selectionBox.draw();
-		}
 	}
 
 	/**
@@ -468,7 +318,7 @@ public class GameplayScene extends PScene {
 		}
 	}
 
-	private void displayCreativeInventory() {// complete creative inventory
+	public void displayCreativeInventory() {// complete creative inventory
 
 		// Display Background
 		applet.stroke(50);
@@ -631,7 +481,7 @@ public class GameplayScene extends PScene {
 				}
 				break;
 			case RIGHT :
-				if (tool == Tools.MODIFY) {
+				if (currentMode.getModeName().equals("MODIFY")) {
 					selectionBox = new SelectionBox(mouseDown);
 				}
 				break;
@@ -655,20 +505,13 @@ public class GameplayScene extends PScene {
 
 	@Override
 	void mouseDragged(MouseEvent e) {
-		if (e.getButton() == PConstants.CENTER && tool == Tools.MODIFY) { // pan on MMB; TODO fix when zoom != 1.00
-			applet.camera.setCameraPositionNoLerp(
-					PVector.add(origPos, PVector.sub(mouseDown, applet.getMouseCoordScreen())));
-		}
+		currentMode.mouseDraggedEvent(e, origPos, mouseDown);
 	}
 
 	public void mouseWheel(MouseEvent event) {
 		if (event.isShiftDown()) {
 		} else {
-			if (tool == Tools.INVENTORY) {
-				scrollBar.mouseWheel(event);
-				scroll_inventory = (int) PApplet.map(scrollBar.barLocation, 1, 0,
-						-getInventorySize() + applet.height - 8, 0);
-			}
+			currentMode.mouseWheelEvent(event);
 		}
 	}
 
@@ -694,47 +537,49 @@ public class GameplayScene extends PScene {
 				break;
 		}
 		
-		if (tool != Tools.SAVE) { // Change tool
-			editorItem.setMode("CREATE");
-			editorItem.focus = false;
-			switch (e.getKeyCode()) {
-				case 49 : // 1
-					tool = Tools.MODIFY;
-					break;
-				case 50 : // 2
-					tool = Tools.INVENTORY;
+		currentMode.keyReleasedEvent(e);
+	}
+	
+	public void switchModeOnKeyEvent(processing.event.KeyEvent event) {
+		editorItem.setMode("CREATE");
+		editorItem.focus = false;
+		switch (event.getKeyCode()) {
+			case 49 : // 1
+				changeMode("MODIFY");
+				break;
+			case 50 : // 2
+				changeMode("INVENTORY");
+				scroll_inventory = 0;
+				break;
+			case 51 : // 3
+				changeMode("PLAY");
+				applet.camera.setFollowObject(localPlayer);
+				break;
+			case 52 : // 4
+				changeMode("SAVE");
+				break;
+			case 54 : // 6
+				changeMode("IMPORT");
+				break;
+			case 69 : // 'e' TODO remove?
+				if (currentMode.getModeName().equals("INVENTORY")) {
+				} else {
+					changeMode("INVENTORY");
+					editorItem.setMode("ITEM");
 					scroll_inventory = 0;
-					break;
-				case 51 : // 3
-					tool = Tools.PLAY;
-					applet.camera.setFollowObject(localPlayer);
-					break;
-				case 52 : // 4
-					tool = Tools.SAVE;
-					break;
-				case 54 : // 6
-					tool = Tools.IMPORT;
-					break;
-				case 69 : // 'e' TODO remove?
-					if (tool == Tools.INVENTORY) {
-					} else {
-						tool = Tools.INVENTORY;
-						editorItem.setMode("ITEM");
-						scroll_inventory = 0;
+				}
+				break;
+			case 8: // BACKSPACE
+			case 46 : // DEL
+				for (Iterator<EditableObject> iterator = objects.iterator(); iterator.hasNext();) {
+					EditableObject o = (EditableObject) iterator.next();
+					if (o.isFocused()) {
+						iterator.remove();
 					}
-					break;
-				case 8: // BACKSPACE
-				case 46 : // DEL
-					for (Iterator<EditableObject> iterator = objects.iterator(); iterator.hasNext();) {
-						EditableObject o = (EditableObject) iterator.next();
-						if (o.isFocused()) {
-							iterator.remove();
-						}
-					}
-					break;
-				default :
-					break;
-			}
+				}
+				break;
+			default :
+				break;
 		}
 	}
 
@@ -828,6 +673,70 @@ public class GameplayScene extends PScene {
 					break;
 			}
 		}
+	}
+	
+	public void displayWorldEdit() {
+		displayGrid();
+		if (applet.mousePressEvent && focusedObject != null) {
+			focusedObject.updateEdit(); // enforce one item selected at once
+		}
+	}
+	
+	public void displayGUISlots() {
+		for (int i = 0; i < 6; i++) {
+			// Display Slot
+			image(slot, 20 * 4 / 2 + 10 + i * (20 * 4 + 10), 20 * 4 / 2 + 10);
+
+			// Display Item
+			PImage img = Tileset.getTile(inventory.get(i));
+			applet.image(img, 20 * 4 / 2 + 10 + i * (20 * 4 + 10), 20 * 4 / 2 + 10, img.width * (float) 0.5,
+					img.height * (float) 0.5);
+
+			// Focus Event
+			if (applet.mousePressEvent) {
+				float x = 20 * 4 / 2 + 10 + i * (20 * 4 + 10);
+				float y = 20 * 4 / 2 + 10;
+				if (applet.getMouseCoordScreen().x > x - (20 * 4) / 2
+						&& applet.getMouseCoordScreen().x < x + (20 * 4) / 2
+						&& applet.getMouseCoordScreen().y > y - (20 * 4) / 2
+						&& applet.getMouseCoordScreen().y < y + (20 * 4) / 2) {
+					editorItem.focus = true;
+					editorItem.setTile(inventory.get(i));
+					editorItem.type = Tileset.getTileType(inventory.get(i));
+				}
+			}
+		}
+	}
+	
+	public void changeMode(String mode) {
+		currentMode = modesMap.get(mode);
+		currentMode.enter();
+	}
+	
+	public void setZoomable(boolean value) {
+		zoomable = value;
+	}
+	
+	public Tab getWindowTabs() {
+		return windowTabs;
+	}
+
+	public SaveLevelWindow getWindowSaveLevel() {
+		return window_saveLevel;
+	}
+
+	public ImportLevelWindow getWindowImportLevel() {
+		return window_importlevel;
+	}
+
+	public LoadLevelWindow getWindowLoadLevel() {
+		return window_loadLevel;
+	}
+	
+	public void scrollInventoryBar(MouseEvent event) {
+		scrollBar.mouseWheel(event);
+		scroll_inventory = (int) PApplet.map(scrollBar.barLocation, 1, 0,
+				-getInventorySize() + applet.height - 8, 0);
 	}
 
 	/**
