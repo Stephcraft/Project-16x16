@@ -7,6 +7,7 @@ import processing.event.MouseEvent;
 import project_16x16.entities.Player;
 import project_16x16.objects.EditableObject;
 import project_16x16.scene.GameplayScene;
+import project_16x16.scene.GameplayScene.GameModes;
 
 public abstract class GameplayMode {
 
@@ -30,10 +31,10 @@ public abstract class GameplayMode {
 		scene.displayGUISlots();
 	}
 
-	public void updateGUIButton(int xAnchor, PImage activeIcon, PImage inactiveIcon, String mode, boolean isHighlighted) {
-		if (getModeName().equals(mode)) {
+	public void updateGUIButton(int xAnchor, PImage activeIcon, PImage inactiveIcon, GameModes mode, boolean isHighlighted) {
+		if (getModeType().equals(mode)) {
 			drawGUIButton(activeIcon, xAnchor, 120);
-		} else if (isHighlighted){
+		} else if (isNotInvalidGUIButtonMode() && isHighlighted){
 			if (scene.applet.mousePressEvent) {
 				scene.changeMode(mode);
 			}
@@ -51,7 +52,7 @@ public abstract class GameplayMode {
 		scene.image(icon, x, y);
 	}
 	
-	public abstract String getModeName();
+	public abstract GameModes getModeType();
 
 	public void updateGUI() {}
 

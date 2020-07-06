@@ -1,6 +1,7 @@
 package project_16x16.scene.gameplaymodes;
 
 import project_16x16.scene.GameplayScene;
+import project_16x16.scene.GameplayScene.GameModes;
 import project_16x16.ui.Tab;
 import project_16x16.windows.LoadLevelWindow;
 
@@ -11,8 +12,8 @@ public class LoadExampleGameMode extends GameplayMode {
 	}
 
 	@Override
-	public String getModeName() {
-		return "LOADEXAMPLE";
+	public GameModes getModeType() {
+		return GameModes.LOADEXAMPLE;
 	}
 
 	@Override
@@ -29,11 +30,11 @@ public class LoadExampleGameMode extends GameplayMode {
 		window_loadLevel.update();
 		if (windowTabs.getButton(1).event()) {
 			windowTabs.moveActive(1);
-			scene.changeMode("SAVE");
+			scene.changeMode(GameModes.SAVE);
 		}
 		if (windowTabs.getButton(2).event()) {
 			windowTabs.moveActive(2);
-			scene.changeMode("IMPORT");
+			scene.changeMode(GameModes.IMPORT);
 		}
 	}
 }

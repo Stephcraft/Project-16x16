@@ -4,6 +4,7 @@ import project_16x16.PClass;
 import project_16x16.SideScroller;
 import project_16x16.Utility;
 import project_16x16.scene.GameplayScene;
+import project_16x16.scene.GameplayScene.GameModes;
 import project_16x16.ui.Button;
 import project_16x16.ui.TextInputField;
 
@@ -87,13 +88,13 @@ public class ImportLevelWindow extends PClass {
 		if (pressImport.event()) {
 			Utility.convertTiledLevel(jsonPath + input.getText() + ".json", input.getText());
 			input.setText("");
-			scene.changeMode("MOVE");
+			scene.changeMode(GameModes.MOVE);
 		}
 
 		pressCancel.update();
 		if (pressCancel.event()) {
 			input.setText("");
-			scene.changeMode("MOVE");
+			scene.changeMode(GameModes.MOVE);
 		}
 	}
 }
