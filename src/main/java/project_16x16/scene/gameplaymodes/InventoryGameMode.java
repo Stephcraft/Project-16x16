@@ -2,6 +2,7 @@ package project_16x16.scene.gameplaymodes;
 
 import processing.event.MouseEvent;
 import project_16x16.scene.GameplayScene;
+import project_16x16.scene.GameplayScene.GameModes;
 
 public class InventoryGameMode extends GameplayMode {
 
@@ -15,8 +16,8 @@ public class InventoryGameMode extends GameplayMode {
 	}
 	
 	@Override
-	public String getModeName() {
-		return "INVENTORY";
+	public GameModes getModeType() {
+		return GameModes.INVENTORY;
 	}
 	
 	@Override

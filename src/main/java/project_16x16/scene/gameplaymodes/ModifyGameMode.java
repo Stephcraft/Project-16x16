@@ -7,6 +7,7 @@ import project_16x16.entities.Player;
 import project_16x16.objects.EditableObject;
 import project_16x16.objects.EditorItem;
 import project_16x16.scene.GameplayScene;
+import project_16x16.scene.GameplayScene.GameModes;
 
 public class ModifyGameMode extends GameplayMode {
 
@@ -23,8 +24,8 @@ public class ModifyGameMode extends GameplayMode {
 	}
 	
 	@Override
-	public String getModeName() {
-		return "MODIFY";
+	public GameModes getModeType() {
+		return GameModes.MODIFY;
 	}
 
 	@Override

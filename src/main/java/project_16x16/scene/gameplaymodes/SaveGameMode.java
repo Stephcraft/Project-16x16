@@ -2,6 +2,7 @@ package project_16x16.scene.gameplaymodes;
 
 import processing.event.KeyEvent;
 import project_16x16.scene.GameplayScene;
+import project_16x16.scene.GameplayScene.GameModes;
 import project_16x16.ui.Tab;
 import project_16x16.windows.SaveLevelWindow;
 
@@ -17,8 +18,8 @@ public class SaveGameMode extends GameplayMode {
 	}
 	
 	@Override
-	public String getModeName() {
-		return "SAVE";
+	public GameModes getModeType() {
+		return GameModes.SAVE;
 	}
 
 	@Override
@@ -47,11 +48,11 @@ public class SaveGameMode extends GameplayMode {
 		// pressed.
 		if (windowTabs.getButton(0).event()) {
 			windowTabs.moveActive(0);
-			scene.changeMode("LOADEXAMPLE");
+			scene.changeMode(GameModes.LOADEXAMPLE);
 		}
 		if (windowTabs.getButton(2).event()) {
 			windowTabs.moveActive(2);
-			scene.changeMode("IMPORT");
+			scene.changeMode(GameModes.IMPORT);
 		}
 	}
 	

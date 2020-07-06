@@ -91,7 +91,11 @@ public class GameplayScene extends PScene {
 	// Scroll Bar
 	private ScrollBarVertical scrollBar;
 	
-	private HashMap<String, GameplayMode> modesMap;
+	private HashMap<GameModes, GameplayMode> modesMap;
+	
+	public enum GameModes{
+		MODIFY, PLAY, INVENTORY, SAVE, IMPORT, LOADEXAMPLE, MOVE, TEST,
+	}
 
 	public GameplayMode currentMode;
 
@@ -175,16 +179,16 @@ public class GameplayScene extends PScene {
 		
 		// GameplayModes initialization
 		modesMap = new HashMap<>();
-		modesMap.put("MODIFY", new ModifyGameMode(this, editorItem));
-		modesMap.put("PLAY", new PlayGameMode(this, localPlayer));
-		modesMap.put("INVENTORY", new InventoryGameMode(this));
-		modesMap.put("SAVE", new SaveGameMode(this));
-		modesMap.put("IMPORT", new ImportGameMode(this));
-		modesMap.put("LOADEXAMPLE", new LoadExampleGameMode(this));
-		modesMap.put("MOVE", new MoveGameMode(this));
-		modesMap.put("TEST", new TestGameMode(this));
+		modesMap.put(GameModes.MODIFY, new ModifyGameMode(this, editorItem));
+		modesMap.put(GameModes.PLAY, new PlayGameMode(this, localPlayer));
+		modesMap.put(GameModes.INVENTORY, new InventoryGameMode(this));
+		modesMap.put(GameModes.SAVE, new SaveGameMode(this));
+		modesMap.put(GameModes.IMPORT, new ImportGameMode(this));
+		modesMap.put(GameModes.LOADEXAMPLE, new LoadExampleGameMode(this));
+		modesMap.put(GameModes.MOVE, new MoveGameMode(this));
+		modesMap.put(GameModes.TEST, new TestGameMode(this));
 		
-		currentMode = modesMap.get("MODIFY");
+		currentMode = modesMap.get(GameModes.MODIFY);
 
 		
 		loadLevel(levelString); // TODO change level
@@ -282,15 +286,16 @@ public class GameplayScene extends PScene {
 		int xAnchor = 42;
 		int offset = 48;
 		// GUI Icons
-		currentMode.updateGUIButton(xAnchor, icon_modifyActive, icon_modify, "MODIFY", Utility.hoverScreen(xAnchor, 120, 36, 36));
-		currentMode.updateGUIButton(xAnchor + offset, icon_inventoryActive, icon_inventory, "INVENTORY", Utility.hoverScreen(xAnchor + offset, 120, 36, 36));
-		currentMode.updateGUIButton(xAnchor + offset * 2, icon_playActive, icon_play, "PLAY", Utility.hoverScreen(xAnchor + offset * 2, 120, 36, 36));
-		currentMode.updateGUIButton(xAnchor + offset * 3, icon_saveActive, icon_save, "SAVE", Utility.hoverScreen(xAnchor + offset * 3, 120, 36, 36));
+		currentMode.updateGUIButton(xAnchor, icon_modifyActive, icon_modify, GameModes.MODIFY, Utility.hoverScreen(xAnchor, 120, 36, 36));
+		currentMode.updateGUIButton(xAnchor + offset, icon_inventoryActive, icon_inventory, GameModes.INVENTORY, Utility.hoverScreen(xAnchor + offset, 120, 36, 36));
+		currentMode.updateGUIButton(xAnchor + offset * 2, icon_playActive, icon_play, GameModes.PLAY, Utility.hoverScreen(xAnchor + offset * 2, 120, 36, 36));
+		currentMode.updateGUIButton(xAnchor + offset * 3, icon_saveActive, icon_save, GameModes.SAVE, Utility.hoverScreen(xAnchor + offset * 3, 120, 36, 36));
 		
 		currentMode.updateGUI();
 
-		if (selectionBox != null)
+		if (selectionBox != null) {
 			selectionBox.draw();
+		}
 	}
 
 	/**
@@ -481,7 +486,7 @@ public class GameplayScene extends PScene {
 				}
 				break;
 			case RIGHT :
-				if (currentMode.getModeName().equals("MODIFY")) {
+				if (currentMode.getModeType().equals(GameModes.MODIFY)) { //As the SelectionBox class is private, this has to remain as a type-check and cannot delegate to the currentMode
 					selectionBox = new SelectionBox(mouseDown);
 				}
 				break;
@@ -545,26 +550,26 @@ public class GameplayScene extends PScene {
 		editorItem.focus = false;
 		switch (event.getKeyCode()) {
 			case 49 : // 1
-				changeMode("MODIFY");
+				changeMode(GameModes.MODIFY);
 				break;
 			case 50 : // 2
-				changeMode("INVENTORY");
+				changeMode(GameModes.INVENTORY);
 				scroll_inventory = 0;
 				break;
 			case 51 : // 3
-				changeMode("PLAY");
+				changeMode(GameModes.PLAY);
 				applet.camera.setFollowObject(localPlayer);
 				break;
 			case 52 : // 4
-				changeMode("SAVE");
+				changeMode(GameModes.SAVE);
 				break;
 			case 54 : // 6
-				changeMode("IMPORT");
+				changeMode(GameModes.IMPORT);
 				break;
 			case 69 : // 'e' TODO remove?
-				if (currentMode.getModeName().equals("INVENTORY")) {
+				if (currentMode.getModeType().equals(GameModes.INVENTORY)) {
 				} else {
-					changeMode("INVENTORY");
+					changeMode(GameModes.INVENTORY);
 					editorItem.setMode("ITEM");
 					scroll_inventory = 0;
 				}
@@ -708,7 +713,7 @@ public class GameplayScene extends PScene {
 		}
 	}
 	
-	public void changeMode(String mode) {
+	public void changeMode(GameModes mode) {
 		currentMode = modesMap.get(mode);
 		currentMode.enter();
 	}

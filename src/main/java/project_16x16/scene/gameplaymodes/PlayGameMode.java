@@ -4,6 +4,7 @@ import project_16x16.entities.Player;
 import project_16x16.objects.EditableObject;
 import project_16x16.objects.GameObject;
 import project_16x16.scene.GameplayScene;
+import project_16x16.scene.GameplayScene.GameModes;
 
 public class PlayGameMode extends GameplayMode {
 
@@ -20,8 +21,8 @@ public class PlayGameMode extends GameplayMode {
 	}
 
 	@Override
-	public String getModeName() {
-		return "PLAY";
+	public GameModes getModeType() {
+		return GameModes.PLAY;
 	}
 
 	@Override

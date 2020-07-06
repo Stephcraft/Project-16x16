@@ -1,6 +1,7 @@
 package project_16x16.windows;
 
 import project_16x16.scene.GameplayScene;
+import project_16x16.scene.GameplayScene.GameModes;
 import project_16x16.PClass;
 import project_16x16.SideScroller;
 import project_16x16.ui.TextInputField;
@@ -82,13 +83,13 @@ public class SaveLevelWindow extends PClass {
 		if (pressSave.event()) {
 			scene.saveLevel(path + input.getText() + ".dat");
 			input.setText("");
-			scene.changeMode("MODIFY");
+			scene.changeMode(GameModes.MODIFY);
 		}
 
 		pressCancel.update();
 		if (pressCancel.event()) {
 			input.setText("");
-			scene.changeMode("MODIFY");
+			scene.changeMode(GameModes.MODIFY);
 		}
 	}
 }

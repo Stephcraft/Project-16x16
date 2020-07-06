@@ -1,6 +1,7 @@
 package project_16x16.windows;
 
 import project_16x16.scene.GameplayScene;
+import project_16x16.scene.GameplayScene.GameModes;
 import project_16x16.PClass;
 import project_16x16.SideScroller;
 import project_16x16.Utility;
@@ -93,14 +94,14 @@ public class LoadLevelWindow extends PClass {
 			scene.loadLevel(path + list.getElement());
 			Notifications.addNotification("Level Loaded", "Loaded "+ list.getElement() + ".");
 			list.resetElement();
-			scene.changeMode("MODIFY");
+			scene.changeMode(GameModes.MODIFY);
 		} else if (list.getConfirmPress() && list.getElement().isEmpty())
-			scene.changeMode("MODIFY");
+			scene.changeMode(GameModes.MODIFY);
 	}
 
 	public void cancelButton() {
 		if (list.getCancelPress()) {
-			scene.changeMode("MODIFY");
+			scene.changeMode(GameModes.MODIFY);
 			list.resetElement();
 		}
 	}
