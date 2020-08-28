@@ -17,7 +17,7 @@ First, join our [Discord server](https://discord.gg/zDJSCqd)  this is where anyt
 1. Want to learn how to code? [dive right in](http://hello.processing.org)
 2. Don't know processing? [their official website](https://processing.org/)
 3. Still don't know processing? [Epic processing tutorials by the CodingTrain on YouTube](https://www.youtube.com/watch?v=2VLaIr5Ckbs&list=PLRqwX-V7Uu6ZYJC7L-r6rX6utt6wwJCyi)
-4. Now you should know processing, but maybe you've never used the Eclipse IDE before, [tutorial here](https://processing.org/tutorials/eclipse/)
+4. Now you should know processing, but maybe you've never used the Eclipse IDE before, [tutorial here](https://web.archive.org/web/20190316234615/https://processing.org/tutorials/eclipse/)
 5. First time contributing to an open source project? [we made CONTRIBUTING.md just for you](https://github.com/Stephcraft/Project-16x16/blob/master/CONTRIBUTING.md)
 6. Okay, now you are ready to setup the project inside the code editor, [read this wiki](https://github.com/Stephcraft/Project-16x16/wiki/Setting-up-the-project)
 7. Have fun coding and meeting other contributors on discord :D
