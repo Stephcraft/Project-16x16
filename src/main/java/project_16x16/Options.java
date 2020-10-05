@@ -17,7 +17,7 @@ public class Options {
 	 * Define the option as an enum, then create the variable.
 	 */
 	public static enum option {
-		moveLeftKey, moveRightKey, jumpKey, dashKey, targetFPS, snapSize, debugMode, gainBGM, gainSFX, BGMMute, SFXMute;
+		moveLeftKey, moveRightKey, jumpKey, dashKey, targetFPS, snapSize, debugMode, gainBGM, gainSFX, muteBGM, muteSFX , testKey;
 	}
 
 	public static int moveLeftKey = options.getInt(option.moveLeftKey.toString(), KeyEvent.VK_A);
@@ -31,8 +31,8 @@ public class Options {
 
 	public static float gainBGM = options.getFloat(option.gainBGM.toString(), 0);
 	public static float gainSFX = options.getFloat(option.gainSFX.toString(), 0);
-	public static boolean muteBGM = options.getBoolean(option.BGMMute.toString(), false);
-	public static boolean muteSFX = options.getBoolean(option.SFXMute.toString(), false);
+	public static boolean muteBGM = options.getBoolean(option.muteBGM.toString(), false);
+	public static boolean muteSFX = options.getBoolean(option.muteSFX.toString(), false);
 
 	protected static final int frameRateLow = KeyEvent.VK_X;
 	protected static final int frameRateHigh = KeyEvent.VK_Z;
@@ -50,6 +50,15 @@ public class Options {
 	public static final int lifeInc = KeyEvent.VK_L;
 	public static final int fullscreen = KeyEvent.VK_F11;
 
+	public static void save(option option, float value) {
+		options.putFloat(option.toString(), value);
+		try {
+			options.flush();
+		} catch (BackingStoreException e) {
+			Notifications.addNotification("Options Error", "Could not flush user preferences to registry.");
+		}
+	}
+
 	public static void save(option option, int value) {
 		options.putInt(option.toString(), value);
 		try {
@@ -59,8 +68,8 @@ public class Options {
 		}
 	}
 
-	public static void save(option option, float value) {
-		options.putFloat(option.toString(), value);
+	public static void save(option option, boolean value) {
+		options.putBoolean(option.toString(), value);
 		try {
 			options.flush();
 		} catch (BackingStoreException e) {
