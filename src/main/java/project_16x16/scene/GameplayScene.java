@@ -353,18 +353,24 @@ public class GameplayScene extends PScene {
 						img.width / 2, img.height / 2);
 			}
 
-			// Grab Item
-			if (applet.mousePressEvent) {
-				float xx = 20 * 4 / 2 + 10 + x * (20 * 4 + 10);
-				float yy = y * (20 * 4 + 10) + scroll_inventory;
-				if (applet.getMouseCoordScreen().y > 100) {
-					if (applet.getMouseCoordScreen().x > xx - (20 * 4) / 2
-							&& applet.getMouseCoordScreen().x < xx + (20 * 4) / 2
-							&& applet.getMouseCoordScreen().y > yy - (20 * 4) / 2
-							&& applet.getMouseCoordScreen().y < yy + (20 * 4) / 2) {
+			// Detect hover over item
+			float xx = 20 * 4 / 2 + 10 + x * (20 * 4 + 10);
+			float yy = y * (20 * 4 + 10) + scroll_inventory;
+			if (applet.getMouseCoordScreen().y > 100) {
+				if (applet.getMouseCoordScreen().x > xx - (20 * 4) / 2
+						&& applet.getMouseCoordScreen().x < xx + (20 * 4) / 2
+						&& applet.getMouseCoordScreen().y > yy - (20 * 4) / 2
+						&& applet.getMouseCoordScreen().y < yy + (20 * 4) / 2) {
+
+					// Grab Item
+					if (applet.mousePressEvent){
 						editorItem.focus = true;
 						editorItem.setTile(tile.getName());
 					}
+					// Display item name
+					applet.textSize(20);
+					applet.fill(255);
+					applet.text(tile.getName(), applet.mouseX, applet.mouseY);
 				}
 			}
 			index++;
