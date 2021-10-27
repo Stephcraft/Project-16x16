@@ -2,6 +2,7 @@ package project_16x16.scene;
 
 import processing.core.PConstants;
 import processing.event.KeyEvent;
+import processing.event.MouseEvent;
 import project_16x16.Audio;
 import project_16x16.SideScroller;
 import project_16x16.ui.Button;
@@ -55,13 +56,15 @@ public final class AudioSettings extends PScene {
 	}
 
 	@Override
-	void mousePressed(processing.event.MouseEvent e) {
+	void mouseDragged(MouseEvent e) {
 		masterVolume.update();
 		// logarithmic volume control
 		float volume = 20 * (float) Math.log(masterVolume.getValue());
 		Audio.setGainBGM(volume);
 		Audio.setGainSFX(volume);
 	}
+
+
 
 	@Override
 	void mouseReleased(processing.event.MouseEvent e) {
