@@ -9,8 +9,9 @@ import project_16x16.SideScroller;
  */
 public final class Slider extends Button {
 
-	private float value;
+	private float value; // between 0 and 1
 	private float tmpValue;
+    private static final int thumbSize = 10;
 
     public Slider(SideScroller a, float defaultValue) {
         super(a);
@@ -36,8 +37,15 @@ public final class Slider extends Button {
         }
     }
 
+    @Override
+    public void display() {
+        super.display();
 
-	public float getValue() {
+        // display the thumb
+        applet.rect(x - (float) width / 2 + width * value, y, thumbSize, height + (float) thumbSize / 4);
+    }
+
+    public float getValue() {
 		return value;
 	}
 

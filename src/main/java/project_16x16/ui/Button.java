@@ -10,10 +10,10 @@ import project_16x16.Utility;
 public class Button extends PClass {
 
 	protected int width;
-	private int height;
+	protected int height;
 	private String text;
-	private int x;
-	private int y;
+	protected int x;
+	protected int y;
 	
 	private int textSize = 20;
 
