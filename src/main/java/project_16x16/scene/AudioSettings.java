@@ -56,11 +56,11 @@ public final class AudioSettings extends PScene {
 
 	@Override
 	void mousePressed(processing.event.MouseEvent e) {
-		masterVolume.update(e);
+		masterVolume.update();
+		// logarithmic volume control
 		float volume = 20 * (float) Math.log(masterVolume.getValue());
 		Audio.setGainBGM(volume);
 		Audio.setGainSFX(volume);
-		System.out.println(masterVolume.getValue());
 	}
 
 	@Override
