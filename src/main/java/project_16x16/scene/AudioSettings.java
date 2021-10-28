@@ -2,9 +2,12 @@ package project_16x16.scene;
 
 import processing.core.PConstants;
 import processing.event.KeyEvent;
+import processing.event.MouseEvent;
+import project_16x16.Audio;
 import project_16x16.SideScroller;
 import project_16x16.ui.Button;
 import project_16x16.ui.Notifications;
+import project_16x16.ui.Slider;
 
 /**
  * 
@@ -17,6 +20,7 @@ public final class AudioSettings extends PScene {
 	
 	private Button quit;
 	private Button apply;
+	private Slider masterVolume;
 
 	public AudioSettings(SideScroller a) {
 		super(a);
@@ -30,6 +34,11 @@ public final class AudioSettings extends PScene {
 		quit = new Button(a);
 		quit.setText("Quit");
 		quit.setPosition(a.width / 2, 600);
+
+		masterVolume = new Slider(game, 0.75f);
+		masterVolume.setText("Volume");
+		masterVolume.setPosition(a.width/2, 300);
+
 	}
 
 	@Override
@@ -43,13 +52,25 @@ public final class AudioSettings extends PScene {
 		game.background(255);
 		apply.display();
 		quit.display();
+		masterVolume.display();
 	}
-	
+
+	@Override
+	void mouseDragged(MouseEvent e) {
+		masterVolume.update();
+		// logarithmic volume control
+		float volume = 20 * (float) Math.log(masterVolume.getValue());
+		Audio.setGainBGM(volume);
+		Audio.setGainSFX(volume);
+	}
+
+
+
 	@Override
 	void mouseReleased(processing.event.MouseEvent e) {
 		apply.update();
 		quit.update();
-		
+
 		if (quit.hover()) {
 			game.returnScene();
 			return;
@@ -59,6 +80,8 @@ public final class AudioSettings extends PScene {
 			Notifications.addNotification("Sound Settings Applied", "Your configuration has been successfully applied.");
 			return;
 		}
+
+
 	}
 	
 	@Override

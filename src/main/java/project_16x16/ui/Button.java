@@ -9,16 +9,16 @@ import project_16x16.Utility;
  */
 public class Button extends PClass {
 
-	private int width;
-	private int height;
+	protected int width;
+	protected int height;
 	private String text;
-	private int x;
-	private int y;
+	protected int x;
+	protected int y;
 	
 	private int textSize = 20;
 
-	private boolean focus;
-	private boolean press;
+	protected boolean focus;
+	protected boolean press;
 	public boolean blocked;
 
 	int colorValues[];
@@ -116,7 +116,7 @@ public class Button extends PClass {
 		applet.text(text, x, y);
 	}
 
-	private void defaultColors() {
+	private void  defaultColors() {
 		colorValues[0] = applet.color(74, 81, 99);// When not pressed stroke
 		colorValues[1] = applet.color(47, 54, 73);// When not pressed fill
 		colorValues[2] = applet.color(47, 54, 73);// When pressed stroke
