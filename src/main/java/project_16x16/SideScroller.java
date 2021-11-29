@@ -18,7 +18,7 @@ import processing.core.PVector;
 import processing.event.MouseEvent;
 import processing.javafx.PSurfaceFX;
 
-import project_16x16.Options.option;
+import project_16x16.Options.Option;
 import project_16x16.components.AnimationComponent;
 import project_16x16.entities.Player;
 import project_16x16.multiplayer.Multiplayer;
@@ -189,8 +189,6 @@ public class SideScroller extends PApplet {
 		AnimationComponent.assignApplet(this);
 		Notifications.assignApplet(this);
 		Audio.assignApplet(this);
-		Audio.setGainBGM(-6); // TODO
-		Audio.setGainSFX(-6); // TODO
 
 		// Create scene
 		sceneHistory = new ArrayDeque<>();
@@ -370,7 +368,7 @@ public class SideScroller extends PApplet {
 				break;
 			case Options.toggleDebug :
 				debug = debug.next();
-				Options.save(option.debugMode, debug.ordinal());
+				Options.save(Option.debugMode, debug.ordinal());
 				break;
 			default :
 				break;

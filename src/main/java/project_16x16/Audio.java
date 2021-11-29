@@ -17,6 +17,8 @@ public final class Audio {
 
 	private static final String BGM_PATH = "Audio/BGM/";
 	private static final String SFX_PATH = "Audio/SFX/";
+	private static float gainBGM = 0;
+	private static  float gainSFX = 0;
 
 	private static Minim minim;
 
@@ -142,6 +144,7 @@ public final class Audio {
 			}
 		}
 		if (BGM_MAP.containsKey(sound)) {
+			BGM_MAP.get(sound).setGain(gainBGM);
 			BGM_MAP.get(sound).loop();
 		} else {
 			System.err.println(sound.getPath() + " not found.");
@@ -164,7 +167,6 @@ public final class Audio {
 		} else {
 			System.err.println(sound.getPath() + " not found.");
 		}
-
 	}
 
 	/**
@@ -173,7 +175,8 @@ public final class Audio {
 	 * @param gain gain, in decibels (where negative is quieter). Default = 0.
 	 */
 	public static void setGainBGM(float gain) {
-		BGM_MAP.values().forEach(sound -> sound.setGain(gain));
+		gainBGM = gain;
+		BGM_MAP.values().forEach(sound -> sound.setGain(gainBGM));
 	}
 
 	/**
@@ -182,7 +185,8 @@ public final class Audio {
 	 * @param gain gain, in decibels (where negative is quieter). Default = 0.
 	 */
 	public static void setGainSFX(float gain) {
-		SFX_MAP.values().forEach(sound -> sound.setGain(gain));
+		gainSFX = gain;
+		SFX_MAP.values().forEach(sound -> sound.setGain(gainSFX));
 	}
 
 	/**

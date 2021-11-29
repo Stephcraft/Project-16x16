@@ -12,9 +12,9 @@ public class OptionsTest {
         int expected = 5;
         Preferences options = Preferences.userNodeForPackage(Options.class);
 
-        Options.save(Options.option.testKey , expected);
+        Options.save(Options.Option.testKey , expected);
 
-        assertEquals(expected , options.getInt(Options.option.testKey.toString(),0));
+        assertEquals(expected , options.getInt(Options.Option.testKey.toString(),0));
     }
 
     @Test
@@ -22,18 +22,18 @@ public class OptionsTest {
         float expected = 5.5f;
         Preferences options = Preferences.userNodeForPackage(Options.class);
 
-        Options.save(Options.option.testKey , expected);
+        Options.save(Options.Option.testKey , expected);
 
-        assertEquals(expected , options.getFloat(Options.option.testKey.toString(),0));
+        assertEquals(expected , options.getFloat(Options.Option.testKey.toString(),0));
     }
 
     @Test
     public void CallingSaveWithBooleanShouldUpdateOptions(){
         Preferences options = Preferences.userNodeForPackage(Options.class);
 
-        Options.save(Options.option.testKey , true);
+        Options.save(Options.Option.testKey , true);
 
-        assertEquals(true , options.getBoolean(Options.option.testKey.toString(),false));
+        assertEquals(true , options.getBoolean(Options.Option.testKey.toString(),false));
     }
 
 

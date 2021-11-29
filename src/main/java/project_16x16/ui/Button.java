@@ -144,7 +144,7 @@ public class Button extends PClass {
 	}
 
 	/**
-	 * Determins if the mouse is over the button
+	 * Determines if the mouse is over the button
 	 * 
 	 * @return response as a boolean
 	 */
