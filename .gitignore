@@ -28,3 +28,6 @@ Project_16x16.iml
 # MACOS file structure
 *.DS_Store
 /bin/
+src/main/java/project_16x16/scene/MainMenu.java
+src/main/java/project_16x16/scene/MultiplayerClientMenu.java
+src/main/java/project_16x16/scene/MultiplayerHostMenu.java

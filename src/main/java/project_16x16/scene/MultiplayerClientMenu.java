@@ -71,7 +71,8 @@ public class MultiplayerClientMenu extends PScene {
 
 		pressConnect.update();
 		if (pressConnect.hover()) {
-			if (p.matcher(ipInput.getText()).matches()) {
+			// Replaced the if conditional statement with extract method.
+			if (isParticleMatched()) {
 				String ip = ipInput.getText().split(":")[0];
 				int port = Integer.valueOf(ipInput.getText().split(":")[1]);
 				try {
@@ -86,6 +87,10 @@ public class MultiplayerClientMenu extends PScene {
 			}
 
 		}
+	}
+
+	private boolean isParticleMatched() {
+		return p.matcher(ipInput.getText()).matches();
 	}
 
     @Override

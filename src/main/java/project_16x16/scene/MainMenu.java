@@ -44,6 +44,7 @@ public final class MainMenu extends PScene {
 		Particles.populate(1000);
 
 		pressStart = new Button(a);
+		
 		pressMultiplayer = new Button(a);
 		pressQuit = new Button(a);
 		pressSettings = new Button(a);
@@ -167,7 +168,7 @@ public final class MainMenu extends PScene {
 		}
 
 		static void run() {
-
+//171라인 수정 ?
 			if (game.frameCount % TRANSITION_TIME == 0) {
 				function++;
 				function %= 12;
@@ -183,21 +184,27 @@ public final class MainMenu extends PScene {
 
 				x = getXPrint(p.x);
 				y = getYPrint(p.y);
-
-				if (game.frameCount - p.start > 1) {
+				// Replaced the if conditional statement with a single boolean variable.
+				boolean isframeCountPossible = game.frameCount - p.start > 1;
+				if (isframeCountPossible) {
 					game.stroke(p.color);
 					game.strokeWeight(p.size);
 					game.line(PApplet.lerp(x, p.lastX, 0.15f), PApplet.lerp(y, p.lastY, 0.15f), p.lastX, p.lastY);
 				}
 				p.lastX = x;
 				p.lastY = y;
-				if (!Utility.withinRegion(p.lastX, p.lastY, -100, -100, game.gameResolution.x + 100,
-						game.gameResolution.y + 100)) {
+				// Replaced the if conditional statement with extract method.
+				if (isInRegion(p)) {
 					iterator.remove();
 					repopulate++;
 				}
 			}
 			populate(repopulate);
+		}
+
+		private static boolean isInRegion(Particle p) {
+			return !Utility.withinRegion(p.lastX, p.lastY, -100, -100, game.gameResolution.x + 100,
+					game.gameResolution.y + 100);
 		}
 
 		private static double getSlopeX(float x, float y) {

@@ -46,6 +46,10 @@ import project_16x16.windows.SaveLevelWindow;
  */
 public class GameplayScene extends PScene {
 
+	private static final int CoordWeight = 90;
+
+	private static final int CoordBase = 50;
+
 	//Singleplayer
 	private boolean isSingleplayer = true; // true by default
 
@@ -132,23 +136,77 @@ public class GameplayScene extends PScene {
 
 		objects = new ArrayList<EditableObject>();
 
+		// Changed the lines for init to use functions for readability.
+		
 		// Create Inventory
-		inventory = new ArrayList<String>();
-		inventory.add("Metal");
-		inventory.add("Metal_Walk_Left:0");
-		inventory.add("Metal_Walk_Middle:0");
-		inventory.add("Metal_Walk_Middle:1");
-		inventory.add("Metal_Walk_Right:0");
-		inventory.add("XBox");
-
+		inventoryInit();
 		// Init Editor Components
-		editorItem = new EditorItem(applet, this);
-
+		editorItemInit();
 		// Get Slots Graphics
-		slot = Tileset.getTile(289, 256, 20, 21, 4);
-		slotEditor = Tileset.getTile(310, 256, 20, 21, 4);
+		getSlotgraphics();
 
 		// Get Icon Graphics
+		iconInit();
+		// Init Window
+		windowInit();
+		// Import Window
+		windowImport();
+//		window_test = new TestWindow(applet);
+		windowLoad();
+		// Init ScollBar
+		scroolBarInit();
+		// Init Player
+		localPlayerInit();
+		// GameplayModes initialization
+		modesMapInit();
+		
+		currentMode = modesMap.get(GameModes.MODIFY);
+		
+		loadLevel(levelString); // TODO change level
+
+		windowTabs = new Tab(applet, tabTexts, tabTexts.length);
+	}
+
+	public void getSlotgraphics() {
+		slot = Tileset.getTile(289, 256, 20, 21, 4);
+		slotEditor = Tileset.getTile(310, 256, 20, 21, 4);
+	}
+
+	public void windowLoad() {
+		window_loadLevel = new LoadLevelWindow(applet, this);
+	}
+
+	public void windowImport() {
+		// Import Window
+		window_importlevel = new ImportLevelWindow(applet, this);
+	}
+
+	public void windowInit() {
+		// Init Window
+		window_saveLevel = new SaveLevelWindow(applet, this);
+	}
+
+	public void editorItemInit() {
+		// Init Editor Components
+		editorItem = new EditorItem(applet, this);
+	}
+
+	public void scroolBarInit() {
+		// Init ScollBar
+		Anchor scrollBarAnchor = new Anchor(applet, -20, 102, 20, 50);
+		scrollBarAnchor.anchorOrigin = Anchor.AnchorOrigin.TopRight;
+		scrollBarAnchor.stretch = Anchor.Stretch.Vertical;
+		scrollBar = new ScrollBarVertical(scrollBarAnchor);
+		scrollBar.setBarRatio(getBarRatio(getTotalInventoryItems() / 6, 50, 3f));
+	}
+
+	public void localPlayerInit() {
+		// Init Player
+		localPlayer = new Player(applet, this, false);
+		localPlayer.pos.set(0, -100); // TODO spawn location
+	}
+
+	public void iconInit() {
 		icon_modify = Tileset.getTile(279, 301, 9, 9, 4);
 		icon_inventory = Tileset.getTile(289, 301, 9, 9, 4);
 		icon_play = Tileset.getTile(298, 301, 9, 9, 4);
@@ -158,25 +216,9 @@ public class GameplayScene extends PScene {
 		icon_inventoryActive = Tileset.getTile(289, 291, 9, 9, 4);
 		icon_playActive = Tileset.getTile(298, 291, 9, 9, 4);
 		icon_saveActive = Tileset.getTile(307, 291, 9, 9, 4);
+	}
 
-		// Init Window
-		window_saveLevel = new SaveLevelWindow(applet, this);
-		// Import Window
-		window_importlevel = new ImportLevelWindow(applet, this);
-//		window_test = new TestWindow(applet);
-		window_loadLevel = new LoadLevelWindow(applet, this);
-
-		// Init ScollBar
-		Anchor scrollBarAnchor = new Anchor(applet, -20, 102, 20, 50);
-		scrollBarAnchor.anchorOrigin = Anchor.AnchorOrigin.TopRight;
-		scrollBarAnchor.stretch = Anchor.Stretch.Vertical;
-		scrollBar = new ScrollBarVertical(scrollBarAnchor);
-		scrollBar.setBarRatio(getBarRatio(getTotalInventoryItems() / 6, 50, 3f));
-
-		// Init Player
-		localPlayer = new Player(applet, this, false);
-		localPlayer.pos.set(0, -100); // TODO spawn location
-		
+	public void modesMapInit() {
 		// GameplayModes initialization
 		modesMap = new HashMap<>();
 		modesMap.put(GameModes.MODIFY, new ModifyGameMode(this, editorItem));
@@ -187,13 +229,16 @@ public class GameplayScene extends PScene {
 		modesMap.put(GameModes.LOADEXAMPLE, new LoadExampleGameMode(this));
 		modesMap.put(GameModes.MOVE, new MoveGameMode(this));
 		modesMap.put(GameModes.TEST, new TestGameMode(this));
-		
-		currentMode = modesMap.get(GameModes.MODIFY);
+	}
 
-		
-		loadLevel(levelString); // TODO change level
-
-		windowTabs = new Tab(applet, tabTexts, tabTexts.length);
+	public void inventoryInit() {
+		inventory = new ArrayList<String>();
+		inventory.add("Metal");
+		inventory.add("Metal_Walk_Left:0");
+		inventory.add("Metal_Walk_Middle:0");
+		inventory.add("Metal_Walk_Middle:1");
+		inventory.add("Metal_Walk_Right:0");
+		inventory.add("XBox");
 	}
 
 	@Override
@@ -264,16 +309,21 @@ public class GameplayScene extends PScene {
 
 			JSONObject other = multiplayer.readData(); // read from server & display other player
 			if (other != null) {
-				onlinePlayer.pos.x = other.getFloat("x");
-				onlinePlayer.pos.y = other.getFloat("y");
-				onlinePlayer.setAnimation(other.getString("animSequence"));
-				onlinePlayer.animation.setFrame(other.getInt("animFrame"));
-				onlinePlayer.getState().facingDir = other.getInt("dir");
-				onlinePlayer.display();
+				// changed to extract method
+				getOtherPlayer(other);
 			}
 			
 		}
 		localPlayer.display();
+	}
+
+	private void getOtherPlayer(JSONObject other) {
+		onlinePlayer.pos.x = other.getFloat("x");
+		onlinePlayer.pos.y = other.getFloat("y");
+		onlinePlayer.setAnimation(other.getString("animSequence"));
+		onlinePlayer.animation.setFrame(other.getInt("animFrame"));
+		onlinePlayer.getState().facingDir = other.getInt("dir");
+		onlinePlayer.display();
 	}
 
 	/**
@@ -285,17 +335,22 @@ public class GameplayScene extends PScene {
 
 		int xAnchor = 42;
 		int offset = 48;
-		// GUI Icons
-		currentMode.updateGUIButton(xAnchor, icon_modifyActive, icon_modify, GameModes.MODIFY, Utility.hoverScreen(xAnchor, 120, 36, 36));
-		currentMode.updateGUIButton(xAnchor + offset, icon_inventoryActive, icon_inventory, GameModes.INVENTORY, Utility.hoverScreen(xAnchor + offset, 120, 36, 36));
-		currentMode.updateGUIButton(xAnchor + offset * 2, icon_playActive, icon_play, GameModes.PLAY, Utility.hoverScreen(xAnchor + offset * 2, 120, 36, 36));
-		currentMode.updateGUIButton(xAnchor + offset * 3, icon_saveActive, icon_save, GameModes.SAVE, Utility.hoverScreen(xAnchor + offset * 3, 120, 36, 36));
+		//The lines to display the gui icon has been replaced with the extract method. 
+		setupGUI(xAnchor, offset);
 		
-		currentMode.updateGUI();
 
 		if (selectionBox != null) {
 			selectionBox.draw();
 		}
+	}
+
+	private void setupGUI(int xAnchor, int offset) {
+		currentMode.updateGUIButton(xAnchor, icon_modifyActive, icon_modify, GameModes.MODIFY, Utility.hoverScreen(xAnchor, 120, 36, 36));
+		currentMode.updateGUIButton(xAnchor + offset, icon_inventoryActive, icon_inventory, GameModes.INVENTORY, Utility.hoverScreen(xAnchor + offset, 120, 36, 36));
+		currentMode.updateGUIButton(xAnchor + offset * 2, icon_playActive, icon_play, GameModes.PLAY, Utility.hoverScreen(xAnchor + offset * 2, 120, 36, 36));
+		currentMode.updateGUIButton(xAnchor + offset * 3, icon_saveActive, icon_save, GameModes.SAVE, Utility.hoverScreen(xAnchor + offset * 3, 120, 36, 36));
+		currentMode.updateGUI();
+
 	}
 
 	/**
@@ -338,29 +393,31 @@ public class GameplayScene extends PScene {
 		ArrayList<Tile> inventoryTiles = Tileset.getAllTiles(tiles);
 		for (Tile tile : inventoryTiles) {
 			PImage img = tile.getPImage();
+			// Replaced the if conditional statement with a single boolean variable.
+			boolean isImagebig = img.width > 20 * 4 || img.height > 20 * 4;
+			
 			if (index % 6 == 0) { // show 6 items per row
 				x = 0;
 				y++;
 			} else {
 				x++;
 			}
-			applet.image(slotEditor, 20 * 4 / 2 + 10 + x * (20 * 4 + 10), y * (20 * 4 + 10) + scroll_inventory);
-			if (img.width > 20 * 4 || img.height > 20 * 4) {
-				applet.image(img, 20 * 4 / 2 + 10 + x * (20 * 4 + 10), y * (20 * 4 + 10) + scroll_inventory,
+			// Using the constant named as CoordBase,CoordWeight The constant value is substituted through the function that calls it.
+			applet.image(slotEditor, getCoordBase() + x * getCoordWeight(), y * getCoordWeight() + scroll_inventory);
+			if (isImagebig) {
+				applet.image(img, getCoordBase() + x * getCoordWeight(), y * getCoordWeight() + scroll_inventory,
 						img.width / 4, img.height / 4);
 			} else {
-				applet.image(img, 20 * 4 / 2 + 10 + x * (20 * 4 + 10), y * (20 * 4 + 10) + scroll_inventory,
+				applet.image(img, getCoordBase() + x * getCoordWeight(), y * getCoordWeight() + scroll_inventory,
 						img.width / 2, img.height / 2);
 			}
 
 			// Detect hover over item
-			float xx = 20 * 4 / 2 + 10 + x * (20 * 4 + 10);
-			float yy = y * (20 * 4 + 10) + scroll_inventory;
+			float xx = getCoordBase() + x * getCoordWeight();
+			float yy = y * getCoordWeight() + scroll_inventory;
 			if (applet.getMouseCoordScreen().y > 100) {
-				if (applet.getMouseCoordScreen().x > xx - (20 * 4) / 2
-						&& applet.getMouseCoordScreen().x < xx + (20 * 4) / 2
-						&& applet.getMouseCoordScreen().y > yy - (20 * 4) / 2
-						&& applet.getMouseCoordScreen().y < yy + (20 * 4) / 2) {
+				// Duplicate lines were replaced with extract method.
+				if (checkMouseCoordScreen(xx, yy)) {
 
 					// Grab Item
 					if (applet.mousePressEvent){
@@ -394,21 +451,18 @@ public class GameplayScene extends PScene {
 		// Display Inventory Slots
 		for (int i = 0; i < 6; i++) {
 			// Display Slot
-			image(slot, 20 * 4 / 2 + 10 + i * (20 * 4 + 10), 20 * 4 / 2 + 10);
+			image(slot, getCoordBase() + i * getCoordWeight(), getCoordBase());
 
 			// Display Item
 			PImage img = Tileset.getTile(inventory.get(i));
-			applet.image(img, 20 * 4 / 2 + 10 + i * (20 * 4 + 10), 20 * 4 / 2 + 10, img.width * (float) 0.5,
+			applet.image(img, getCoordBase() + i * getCoordWeight(), getCoordBase(), img.width * (float) 0.5,
 					img.height * (float) 0.5);
 
 			// Focus Event
 			if (applet.mouseReleaseEvent) {
-				float xx = 20 * 4 / 2 + 10 + i * (20 * 4 + 10);
-				float yy = 20 * 4 / 2 + 10;
-				if (editorItem.focus && applet.getMouseCoordScreen().x > xx - (20 * 4) / 2
-						&& applet.getMouseCoordScreen().x < xx + (20 * 4) / 2
-						&& applet.getMouseCoordScreen().y > yy - (20 * 4) / 2
-						&& applet.getMouseCoordScreen().y < yy + (20 * 4) / 2) {
+				float xx = getCoordBase() + i * getCoordWeight();
+				float yy = getCoordBase();
+				if (editorItem.focus && checkMouseCoordScreen(xx,yy)) {
 					editorItem.focus = false;
 					inventory.set(i, editorItem.id);
 				}
@@ -418,6 +472,10 @@ public class GameplayScene extends PScene {
 		// Display Editor Object
 		editorItem.update();
 		editorItem.display();
+	}
+
+	private int getCoordWeight() {
+		return CoordWeight;
 	}
 
 	private void displayGrid() {// world edit grid
@@ -443,7 +501,8 @@ public class GameplayScene extends PScene {
 			} else {
 			}
 		}
-		return 20 * 4 + 10 + y * (20 * 4 + 10);
+		// The default unit displayed in the inventory has been changed to constant.
+		return getCoordWeight() + y * getCoordWeight();
 	}
 
 	public boolean isZoomable() {
@@ -696,27 +755,36 @@ public class GameplayScene extends PScene {
 	public void displayGUISlots() {
 		for (int i = 0; i < 6; i++) {
 			// Display Slot
-			image(slot, 20 * 4 / 2 + 10 + i * (20 * 4 + 10), 20 * 4 / 2 + 10);
+			image(slot, getCoordBase() + i * getCoordWeight(), getCoordBase());
 
 			// Display Item
 			PImage img = Tileset.getTile(inventory.get(i));
-			applet.image(img, 20 * 4 / 2 + 10 + i * (20 * 4 + 10), 20 * 4 / 2 + 10, img.width * (float) 0.5,
+			applet.image(img, getCoordBase() + i * getCoordWeight(), getCoordBase(), img.width * (float) 0.5,
 					img.height * (float) 0.5);
 
 			// Focus Event
 			if (applet.mousePressEvent) {
-				float x = 20 * 4 / 2 + 10 + i * (20 * 4 + 10);
-				float y = 20 * 4 / 2 + 10;
-				if (applet.getMouseCoordScreen().x > x - (20 * 4) / 2
-						&& applet.getMouseCoordScreen().x < x + (20 * 4) / 2
-						&& applet.getMouseCoordScreen().y > y - (20 * 4) / 2
-						&& applet.getMouseCoordScreen().y < y + (20 * 4) / 2) {
+				float x = getCoordBase() + i * getCoordWeight();
+				float y = getCoordBase();
+				// 718 extract method 수정. 
+				if (checkMouseCoordScreen(x, y)) {
 					editorItem.focus = true;
 					editorItem.setTile(inventory.get(i));
 					editorItem.type = Tileset.getTileType(inventory.get(i));
 				}
 			}
 		}
+	}
+
+	private int getCoordBase() {
+		return CoordBase;
+	}
+
+	private boolean checkMouseCoordScreen(float x, float y) {
+		return applet.getMouseCoordScreen().x > x - (CoordWeight-10)
+				&& applet.getMouseCoordScreen().x < x + (CoordWeight-10)
+				&& applet.getMouseCoordScreen().y > y - (CoordWeight-10)
+				&& applet.getMouseCoordScreen().y < y + (CoordWeight-10);
 	}
 	
 	public void changeMode(GameModes mode) {

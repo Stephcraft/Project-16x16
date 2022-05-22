@@ -74,7 +74,9 @@ public class MultiplayerHostMenu extends PScene {
 		}
 
 		if (pressHost.hover()) {
-			if (p.matcher(ipInput.getText()).matches()) {
+			// Replaced the if conditional statement with extract method.
+
+			if (isParticleMatched()) {
 				String ip = ipInput.getText().split(":")[0]; // TODO does host need to give IP?
 				int port = Integer.valueOf(ipInput.getText().split(":")[1]);
 				try {
@@ -88,6 +90,11 @@ public class MultiplayerHostMenu extends PScene {
 				Notifications.addNotification("Invalid IP", "Include IP and port, eg:\n127.0.0.1:8080");
 			}
 		}
+	}
+
+
+	private boolean isParticleMatched() {
+		return p.matcher(ipInput.getText()).matches();
 	}
 
     @Override
