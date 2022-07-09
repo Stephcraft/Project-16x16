@@ -8,7 +8,7 @@ import project_16x16.Options;
 public class OptionsTest {
 
     @Test
-    public void CallingSaveWithIntShouldUpdateOptions(){
+    public void callingSaveWithIntShouldUpdateOptions(){
         int expected = 5;
         Preferences options = Preferences.userNodeForPackage(Options.class);
 
@@ -18,7 +18,7 @@ public class OptionsTest {
     }
 
     @Test
-    public void CallingSaveWithFloatShouldUpdateOptions(){
+    public void callingSaveWithFloatShouldUpdateOptions(){
         float expected = 5.5f;
         Preferences options = Preferences.userNodeForPackage(Options.class);
 
@@ -28,7 +28,7 @@ public class OptionsTest {
     }
 
     @Test
-    public void CallingSaveWithBooleanShouldUpdateOptions(){
+    public void callingSaveWithBooleanShouldUpdateOptions(){
         Preferences options = Preferences.userNodeForPackage(Options.class);
 
         Options.save(Options.Option.testKey , true);
