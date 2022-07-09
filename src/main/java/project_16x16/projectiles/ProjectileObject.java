@@ -16,7 +16,7 @@ public class ProjectileObject extends EditableObject {
 
 	public AnimationComponent animation;
 
-	public PVector pos;
+	public PVector position;
 
 	public PImage image;
 
@@ -34,13 +34,13 @@ public class ProjectileObject extends EditableObject {
 
 	public boolean hit;
 
-	public ProjectileObject(SideScroller a, GameplayScene g) {
-		super(a, g);
+	public ProjectileObject(SideScroller sideScroller, GameplayScene gameplayScene) {
+		super(sideScroller, gameplayScene);
 
 		id = "";
 		spawnTime = applet.frameCount;
 		animation = new AnimationComponent();
-		pos = new PVector(0, 0);
+		position = new PVector(0, 0);
 	}
 
 	public void display() {
@@ -49,10 +49,10 @@ public class ProjectileObject extends EditableObject {
 	}
 
 	public boolean collides(CollidableObject collision) {
-		return (pos.x + width / 2 > collision.pos.x - collision.width / 2
-				&& pos.x - width / 2 < collision.pos.x + collision.width / 2)
-				&& (pos.y + height / 2 > collision.pos.y - collision.height / 2
-						&& pos.y - height / 2 < collision.pos.y
+		return (position.x + width / 2 > collision.position.x - collision.width / 2
+				&& position.x - width / 2 < collision.position.x + collision.width / 2)
+				&& (position.y + height / 2 > collision.position.y - collision.height / 2
+						&& position.y - height / 2 < collision.position.y
 								+ collision.height / 2);
 	}
 

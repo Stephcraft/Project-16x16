@@ -26,9 +26,9 @@ public class ParticlePreloadSystem {
 		};
 	}
 	
-	private static PVector positionDeltaIntegral(Particle p, int frames) {
-		float deltaX = (float) (p.position.x + p.velocity.x*frames + 0.5*p.acceleration.x*frames*frames);
-		float deltaY = (float) (p.position.y + p.velocity.y*frames + 0.5*p.acceleration.y*frames*frames);
+	private static PVector positionDeltaIntegral(Particle particle, int frames) {
+		float deltaX = (float) (particle.position.x + particle.velocity.x*frames + 0.5*particle.acceleration.x*frames*frames);
+		float deltaY = (float) (particle.position.y + particle.velocity.y*frames + 0.5*particle.acceleration.y*frames*frames);
 		return new PVector(deltaX, deltaY);
 	}
 }

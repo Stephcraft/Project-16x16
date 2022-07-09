@@ -12,20 +12,25 @@ import project_16x16.scene.GameplayScene.GameModes;
 public abstract class GameplayMode {
 
 	protected GameplayScene scene;
-	
+
 	public GameplayMode(GameplayScene gameplayScene) {
 		this.scene = gameplayScene;
 	}
-	
-	public void enter() {}
 
-	public void displayWorldEdit() {}
+	public void enter() {
+	}
 
-	public void updateEditableObject(EditableObject object) {}
+	public void displayWorldEdit() {
+	}
 
-	public void displayDestination() {}
+	public void updateEditableObject(EditableObject object) {
+	}
 
-	public void updateLocalPlayer(Player localPlayer) {}
+	public void displayDestination() {
+	}
+
+	public void updateLocalPlayer(Player localPlayer) {
+	}
 
 	public void displayGUISlots() {
 		scene.displayGUISlots();
@@ -34,16 +39,18 @@ public abstract class GameplayMode {
 	public void updateGUIButton(int xAnchor, PImage activeIcon, PImage inactiveIcon, GameModes mode, boolean isHighlighted) {
 		if (getModeType().equals(mode)) {
 			drawGUIButton(activeIcon, xAnchor, 120);
-		} else if (isNotInvalidGUIButtonMode() && isHighlighted){
+		}
+		else if (isNotInvalidGUIButtonMode() && isHighlighted) {
 			if (scene.applet.mousePressEvent) {
 				scene.changeMode(mode);
 			}
 			drawGUIButton(activeIcon, xAnchor, 120);
-		} else {
+		}
+		else {
 			drawGUIButton(inactiveIcon, xAnchor, 120);
 		}
 	}
-	
+
 	protected boolean isNotInvalidGUIButtonMode() {
 		return true;
 	}
@@ -51,14 +58,17 @@ public abstract class GameplayMode {
 	protected void drawGUIButton(PImage icon, int x, int y) {
 		scene.image(icon, x, y);
 	}
-	
+
 	public abstract GameModes getModeType();
 
-	public void updateGUI() {}
+	public void updateGUI() {
+	}
 
-	public void mouseDraggedEvent(MouseEvent event, PVector origPos, PVector mouseDown) {}
+	public void mouseDraggedEvent(MouseEvent event, PVector origPos, PVector mouseDown) {
+	}
 
-	public void mouseWheelEvent(MouseEvent event) {}
+	public void mouseWheelEvent(MouseEvent event) {
+	}
 
 	public void keyReleasedEvent(KeyEvent event) {
 		scene.switchModeOnKeyEvent(event);

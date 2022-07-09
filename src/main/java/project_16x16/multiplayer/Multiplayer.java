@@ -1,9 +1,10 @@
 package project_16x16.multiplayer;
 
 import java.net.ConnectException;
-import processing.data.JSONObject;
-import processing.net.*;
 
+import processing.data.JSONObject;
+import processing.net.Client;
+import processing.net.Server;
 import project_16x16.SideScroller;
 
 public class Multiplayer {
@@ -11,15 +12,14 @@ public class Multiplayer {
 	/**
 	 * A client connects to a server and sends data back and forth.
 	 */
-	private Client c;
+	private Client client;
 	/**
 	 * A server sends and receives data to and from its associated clients (other
 	 * programs connected to it)
 	 */
-	private Server s;
-
-	JSONObject data;
-	public boolean isHost;
+	private Server server;
+	private JSONObject data;
+	private boolean isHost;
 
 	/**
 	 * Constructor for a connecting client
@@ -32,13 +32,14 @@ public class Multiplayer {
 		this.isHost = isHost;
 		data = null;
 		if (isHost) {
-			s = new Server(player, port);
-			if (!s.active()) {
+			server = new Server(player, port);
+			if (!server.active()) {
 				throw new java.net.ConnectException();
 			}
-		} else {
-			c = new Client(player, hostIP, port);
-			if (!c.active()) {
+		}
+		else {
+			client = new Client(player, hostIP, port);
+			if (!client.active()) {
 				throw new java.net.ConnectException();
 			}
 		}
@@ -56,37 +57,41 @@ public class Multiplayer {
 	}
 
 	public JSONObject readData() {
-
 		if (isHost) {
-			c = s.available();
+			client = server.available();
 		}
-
-		if (c != null && c.available() > 0) {
-			String packet = c.readString();
+		if (client != null && client.available() > 0) {
+			String packet = client.readString();
 			try {
 				data = JSONObject.parse(packet);
-			} catch (java.lang.RuntimeException e) {
+			}
+			catch (java.lang.RuntimeException e) {
 			}
 		}
+
 		return data;
 	}
 
 	public void writeData(String packet) {
 		if (isHost) {
-			s.write(packet); // write to client(s)
-		} else {
-			if (c.active()) {
-				c.write(packet); // write to server
+			server.write(packet); // write to client(s)
+		}
+		else {
+			if (client.active()) {
+				client.write(packet); // write to server
 			}
 		}
+
 	}
 
 	public void exit() {
-		if (c != null) {
-			c.stop();
+		if (client != null) {
+			client.stop();
 		}
-		if (s != null) { // TODO message clients.
-			s.stop();
+		if (server != null) { // TODO message clients.
+			server.stop();
 		}
+
 	}
+
 }

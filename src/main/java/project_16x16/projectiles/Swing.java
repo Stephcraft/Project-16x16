@@ -12,18 +12,18 @@ public class Swing extends ProjectileObject { // PClass
 
 	public boolean activated;
 
-	public Swing(SideScroller a, GameplayScene g, int x, int y, int dir) {
-		super(a, g);
+	public Swing(SideScroller sideScroller, GameplayScene gameplayScene, int x, int y, int dir) {
+		super(sideScroller, gameplayScene);
 		animation = new AnimationComponent();
 
 		direction = dir;
 
 		switch (direction) {
 			case LEFT :
-				pos = new PVector(x - 60, y);
+				position = new PVector(x - 60, y);
 				break;
 			case RIGHT :
-				pos = new PVector(x + 60, y);
+				position = new PVector(x + 60, y);
 				break;
 		}
 
@@ -38,7 +38,7 @@ public class Swing extends ProjectileObject { // PClass
 	@Override
 	public void display() {
 		applet.pushMatrix();
-		applet.translate(pos.x, pos.y);
+		applet.translate(position.x, position.y);
 		if (direction == LEFT) {
 			applet.scale(-1, 1);
 		}
@@ -51,7 +51,7 @@ public class Swing extends ProjectileObject { // PClass
 		image = animation.animate();
 
 		if (animation.ended) {
-			gameScene.getPlayer().swings.remove(this);
+			gameplayScene.getPlayer().swings.remove(this);
 		}
 	}
 }

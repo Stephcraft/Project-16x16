@@ -1,4 +1,4 @@
-package multiplayer;
+package project_16x16.multiplayer;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -33,7 +33,6 @@ public class MultiplayerTest {
 	@Test
 	public void callingConstructorAsServer_ok() {
 		ConnectException ce = null;
-
 		try {
 			Multiplayer multiplayer = new Multiplayer(player, false);
 		}
@@ -47,7 +46,6 @@ public class MultiplayerTest {
 	@Test
 	public void callingConstructorAsClient_ok() {
 		ConnectException ce = null;
-
 		try {
 			Multiplayer multiplayer = new Multiplayer(player, true);
 		}
@@ -61,11 +59,9 @@ public class MultiplayerTest {
 	@Test
 	public void callingConstructorAsServer_raisesException() {
 		ConnectException ce = null;
-
 		try (MockedConstruction<Server> mocked = mockConstruction(Server.class, (mock, context) -> {
 			when(mock.active()).thenReturn(false);
 		})) {
-
 			try {
 				Multiplayer multiplayer = new Multiplayer(player, true);
 			}
@@ -80,11 +76,9 @@ public class MultiplayerTest {
 	@Test
 	public void callingConstructorAsClient_raisesException() {
 		ConnectException ce = null;
-
 		try (MockedConstruction<Client> mocked = mockConstruction(Client.class, (mock, context) -> {
 			when(mock.active()).thenReturn(false);
 		})) {
-
 			try {
 				Multiplayer multiplayer = new Multiplayer(player, false);
 			}
@@ -100,12 +94,10 @@ public class MultiplayerTest {
 	public void callingReadDataAsServerWithNoClient_returnsNullData() {
 		ConnectException ce = null;
 		JSONObject data = null;
-
 		try (MockedConstruction<Server> mocked = mockConstruction(Server.class, (mock, context) -> {
 			when(mock.active()).thenReturn(true);
 			when(mock.available()).thenReturn(null);
 		})) {
-
 			try {
 				Multiplayer multiplayer = new Multiplayer(player, true);
 				data = multiplayer.readData();
@@ -127,12 +119,10 @@ public class MultiplayerTest {
 		Client client = mock(Client.class);
 		when(client.available()).thenReturn(1);
 		when(client.readString()).thenReturn("{}");
-
 		try (MockedConstruction<Server> mocked = mockConstruction(Server.class, (mock, context) -> {
 			when(mock.active()).thenReturn(true);
 			when(mock.available()).thenReturn(client);
 		})) {
-
 			try {
 				Multiplayer multiplayer = new Multiplayer(player, true);
 				data = multiplayer.readData();
@@ -151,12 +141,10 @@ public class MultiplayerTest {
 	public void callingReadDataAsClientWithNoAvailableData_returnsNullData() {
 		ConnectException ce = null;
 		JSONObject data = null;
-
 		try (MockedConstruction<Client> client = mockConstruction(Client.class, (mock, context) -> {
 			when(mock.active()).thenReturn(true);
 			when(mock.available()).thenReturn(0);
 		})) {
-
 			try {
 				Multiplayer multiplayer = new Multiplayer(player, false);
 				data = multiplayer.readData();
@@ -174,13 +162,11 @@ public class MultiplayerTest {
 	public void callingReadDataAsClient_returnsData() {
 		ConnectException ce = null;
 		JSONObject data = null;
-
 		try (MockedConstruction<Client> client = mockConstruction(Client.class, (mock, context) -> {
 			when(mock.active()).thenReturn(true);
 			when(mock.available()).thenReturn(1);
 			when(mock.readString()).thenReturn("{}");
 		})) {
-
 			try {
 				Multiplayer multiplayer = new Multiplayer(player, false);
 				data = multiplayer.readData();
@@ -198,11 +184,9 @@ public class MultiplayerTest {
 	@Test
 	public void callingWriteDataAsServer() {
 		ConnectException ce = null;
-
 		try (MockedConstruction<Server> mocked = mockConstruction(Server.class, (mock, context) -> {
 			when(mock.active()).thenReturn(true);
 		})) {
-
 			try {
 				Multiplayer multiplayer = new Multiplayer(player, true);
 				multiplayer.writeData("");
@@ -221,11 +205,9 @@ public class MultiplayerTest {
 	@Test
 	public void callingWriteDataAsClient() {
 		ConnectException ce = null;
-
 		try (MockedConstruction<Client> mocked = mockConstruction(Client.class, (mock, context) -> {
 			when(mock.active()).thenReturn(true);
 		})) {
-
 			try {
 				Multiplayer multiplayer = new Multiplayer(player, false);
 				multiplayer.writeData("");
@@ -244,11 +226,9 @@ public class MultiplayerTest {
 	@Test
 	public void callingWriteDataAsClientNotActive_doNotWrites() {
 		ConnectException ce = null;
-
 		try (MockedConstruction<Client> mocked = mockConstruction(Client.class, (mock, context) -> {
 			when(mock.active()).thenReturn(true);
 		})) {
-
 			try {
 				Multiplayer multiplayer = new Multiplayer(player, false);
 
@@ -268,11 +248,9 @@ public class MultiplayerTest {
 	@Test
 	public void callingExitAsServer() {
 		ConnectException ce = null;
-
 		try (MockedConstruction<Server> mocked = mockConstruction(Server.class, (mock, context) -> {
 			when(mock.active()).thenReturn(true);
 		})) {
-
 			try {
 				Multiplayer multiplayer = new Multiplayer(player, true);
 				multiplayer.exit();
@@ -291,11 +269,9 @@ public class MultiplayerTest {
 	@Test
 	public void callingExitAsClient() {
 		ConnectException ce = null;
-
 		try (MockedConstruction<Client> mocked = mockConstruction(Client.class, (mock, context) -> {
 			when(mock.active()).thenReturn(true);
 		})) {
-
 			try {
 				Multiplayer multiplayer = new Multiplayer(player, false);
 				multiplayer.exit();

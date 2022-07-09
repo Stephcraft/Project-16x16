@@ -22,8 +22,8 @@ public class GameObject extends EditableObject {
 
 	public PImage image;
 
-	public GameObject(SideScroller a, GameplayScene g) {
-		super(a, g);
+	public GameObject(SideScroller sideScroller, GameplayScene gameplayScene) {
+		super(sideScroller, gameplayScene);
 
 		animation = new AnimationComponent();
 	}
@@ -68,7 +68,7 @@ public class GameObject extends EditableObject {
 	public void debug() {
 		applet.stroke(255, 190, 200);
 		applet.noFill();
-		applet.rect(pos.x, pos.y, width, height);
+		applet.rect(position.x, position.y, width, height);
 	}
 
 	@Override
@@ -76,8 +76,8 @@ public class GameObject extends EditableObject {
 		JSONObject item = new JSONObject();
 		item.setString("id", id);
 		item.setString("type", "OBJECT");
-		item.setInt("x", (int) pos.x);
-		item.setInt("y", (int) pos.y);
+		item.setInt("x", (int) position.x);
+		item.setInt("y", (int) position.y);
 		return item;
 	}
 }

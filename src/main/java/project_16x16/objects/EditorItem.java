@@ -2,17 +2,18 @@ package project_16x16.objects;
 
 import java.lang.reflect.Constructor;
 
-import processing.core.*;
-import project_16x16.scene.GameplayScene;
+import processing.core.PImage;
+import processing.core.PVector;
 import project_16x16.PClass;
 import project_16x16.SideScroller;
 import project_16x16.Tileset;
 import project_16x16.Utility;
 import project_16x16.components.Tile.TileType;
+import project_16x16.scene.GameplayScene;
 
 public class EditorItem extends PClass {
 
-	private PVector pos;
+	private PVector position;
 	public boolean focus;
 
 	private PImage image;
@@ -24,62 +25,58 @@ public class EditorItem extends PClass {
 
 	private GameplayScene gameplayScene;
 
-	public EditorItem(SideScroller a, GameplayScene g) {
-		super(a);
+	public EditorItem(SideScroller sideScroller, GameplayScene gameplayScene) {
+		super(sideScroller);
 
-		gameplayScene = g;
+		this.gameplayScene = gameplayScene;
 
 		setTile("BOX");
 		setMode("CREATE");
 
-		pos = new PVector(0, 0);
+		position = new PVector(0, 0);
 	}
 
 	public void display() {
 		if (focus) {
-			applet.image(image, pos.x, pos.y, image.width * (float) 0.5, image.height * (float) 0.5);
+			applet.image(image, position.x, position.y, image.width * (float) 0.5, image.height * (float) 0.5);
 		}
 	}
 
 	public void update() {
-
 		if (focus) {
-			pos = applet.getMouseCoordScreen();
-
+			position = applet.getMouseCoordScreen();
 			if (applet.mouseReleaseEvent) {
 				focus = false;
-
 				if (mode.equals("CREATE")) {
 					// transform from screen mouse pos to game pos
 					// Create new instance from dragged icon
 
-					PVector realPos = applet.camera.getDispToCoord(
-							new PVector(Utility.roundToNearest(applet.getMouseCoordScreen().x, SideScroller.snapSize),
-									Utility.roundToNearest(applet.getMouseCoordScreen().y, SideScroller.snapSize)));
+					PVector realPos = applet.camera.getDispToCoord(new PVector(Utility.roundToNearest(applet.getMouseCoordScreen().x, SideScroller.snapSize), Utility.roundToNearest(applet.getMouseCoordScreen().y, SideScroller.snapSize)));
 					EditableObject c = null;
 					switch (type) {
-						case COLLISION :
+						case COLLISION:
 							c = new CollidableObject(applet, gameplayScene, id, 0, 0);
-							c.pos.set(realPos);
+							c.position.set(realPos);
 							break;
-						case BACKGROUND :
+						case BACKGROUND:
 							c = new BackgroundObject(applet, gameplayScene, id, 0, 0);
 							break;
-						case OBJECT :
+						case OBJECT:
 							try {
 								Class<? extends GameObject> gameObjectClass = Tileset.getObjectClass(id);
 								Constructor<?> ctor = gameObjectClass.getDeclaredConstructors()[0];
 								c = (GameObject) ctor.newInstance(new Object[] { applet, gameplayScene });
 								break;
-							} catch (Exception e) {
+							}
+							catch (Exception e) {
 								e.printStackTrace();
 							}
 							break;
-						default :
+						default:
 							break;
 					}
 					if (c != null) {
-						c.pos.set(realPos);
+						c.position.set(realPos);
 						c.focus();
 						gameplayScene.objects.add(c);
 					}
@@ -93,8 +90,7 @@ public class EditorItem extends PClass {
 			applet.strokeWeight(1);
 			applet.stroke(0, 255, 200);
 			applet.noFill();
-			applet.rect(round((applet.getMouseCoordGame().x) / 4) * 4, round((applet.getMouseCoordGame().y) / 4) * 4,
-					image.width, image.height);
+			applet.rect(round((applet.getMouseCoordGame().x) / 4) * 4, round((applet.getMouseCoordGame().y) / 4) * 4, image.width, image.height);
 		}
 	}
 

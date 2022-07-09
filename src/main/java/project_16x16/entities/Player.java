@@ -7,13 +7,13 @@ import processing.core.PImage;
 import processing.core.PVector;
 import processing.data.JSONObject;
 import project_16x16.Audio;
+import project_16x16.Audio.SFX;
 import project_16x16.Constants;
 import project_16x16.Options;
 import project_16x16.SideScroller;
-import project_16x16.SideScroller.debugType;
+import project_16x16.SideScroller.DebugType;
 import project_16x16.Tileset;
 import project_16x16.Utility;
-import project_16x16.Audio.SFX;
 import project_16x16.components.AnimationComponent;
 import project_16x16.objects.CollidableObject;
 import project_16x16.objects.EditableObject;
@@ -38,12 +38,12 @@ public final class Player extends EditableObject {
 
 	private final PVector velocity = new PVector(0, 0);
 
-	private static final int collisionRange = 145;
-	private static final float dashMultiplier = 1.5f; // Movement multiplier from holding dash key
+	private static final int COLLISION_RANGE = 145;
+	private static final float DASH_MULTIPLIER = 1.5f; // Movement multiplier from holding dash key
 
 	private final int speedWalk;
 	private final int speedJump;
-	
+
 	private final boolean isMultiplayerPlayer;
 
 	public int life; // public for debugging TODO make private
@@ -81,13 +81,12 @@ public final class Player extends EditableObject {
 	/**
 	 * Constructor
 	 * 
-	 * @param a SideScroller game controller.
+	 * @param sideScroller SideScroller game controller.
 	 */
-	public Player(SideScroller a, GameplayScene g , boolean isMultiplayerPlayer) {
+	public Player(SideScroller sideScroller, GameplayScene gameplayScene, boolean isMultiplayerPlayer) {
+		super(sideScroller, gameplayScene);
 
-		super(a, g);
-
-		pos = new PVector(100, 300); // Spawn LOC. TODO get from current level
+		position = new PVector(100, 300); // Spawn LOC. TODO get from current level
 
 		animation = new AnimationComponent();
 //		animation.setSFX(Audio.SFX.STEP, 2);
@@ -111,7 +110,7 @@ public final class Player extends EditableObject {
 		setAnimation(ACTION.IDLE);
 		this.isMultiplayerPlayer = isMultiplayerPlayer;
 	}
-	
+
 	/**
 	 * The display method controls how to display the character to the screen with
 	 * what animation.
@@ -123,7 +122,7 @@ public final class Player extends EditableObject {
 		}
 
 		applet.pushMatrix();
-		applet.translate(pos.x, pos.y);
+		applet.translate(position.x, position.y);
 		if (state.facingDir == LEFT) {
 			applet.scale(-1, 1);
 		}
@@ -137,12 +136,11 @@ public final class Player extends EditableObject {
 		applet.image(image, 0, 0);
 		applet.noTint();
 		applet.popMatrix();
-
-		if (applet.debug == debugType.ALL) {
+		if (applet.debug == DebugType.ALL) {
 			applet.strokeWeight(1);
 			applet.stroke(0, 255, 200);
 			applet.noFill();
-			applet.rect(pos.x, pos.y, width, height); // display player bounding box
+			applet.rect(position.x, position.y, width, height); // display player bounding box
 		}
 	}
 
@@ -159,20 +157,18 @@ public final class Player extends EditableObject {
 		if (velocity.y != 0) {
 			state.flying = true;
 		}
-		pos.add(velocity);
-		
-		chooseAnimation();
+		position.add(velocity);
 
-		if (pos.y > 2000) { // out of bounds check
-			pos.set(0, -100); // TODO set to spawn loc PVector
+		chooseAnimation();
+		if (position.y > 2000) { // out of bounds check
+			position.set(0, -100); // TODO set to spawn loc PVector
 			velocity.mult(0);
 		}
-		
-		if (applet.debug == debugType.ALL) {
+		if (applet.debug == DebugType.ALL) {
 			applet.noFill();
 			applet.stroke(255, 0, 0);
 			applet.strokeWeight(1);
-			applet.ellipse(pos.x, pos.y, collisionRange * 2, collisionRange * 2);
+			applet.ellipse(position.x, position.y, COLLISION_RANGE * 2, COLLISION_RANGE * 2);
 		}
 	}
 
@@ -196,14 +192,13 @@ public final class Player extends EditableObject {
 	public PVector getVelocity() {
 		return velocity.copy();
 	}
-	
+
 	public PlayerState getState() {
 		return state;
 	}
 
 	private void handleKeyboardInput() {
 		state.dashing = applet.isKeyDown(Options.dashKey);
-
 		if (applet.isKeyDown(Options.jumpKey)) { // Jump
 			if (!state.flying) {
 				state.flying = true;
@@ -216,14 +211,12 @@ public final class Player extends EditableObject {
 				}
 			}
 		}
-
 		if (applet.isKeyDown(Options.moveRightKey)) { // Move Right
-			velocity.x = speedWalk * (state.dashing ? dashMultiplier : 1);
+			velocity.x = speedWalk * (state.dashing ? DASH_MULTIPLIER : 1);
 			state.facingDir = RIGHT;
 		}
-
 		if (applet.isKeyDown(Options.moveLeftKey)) { // Move Left
-			velocity.x = -speedWalk * (state.dashing ? dashMultiplier : 1);
+			velocity.x = -speedWalk * (state.dashing ? DASH_MULTIPLIER : 1);
 			state.facingDir = LEFT;
 		}
 	}
@@ -232,7 +225,7 @@ public final class Player extends EditableObject {
 		if (applet.mousePressed && applet.mouseButton == LEFT && !state.attacking) { // Attack
 			state.attacking = true;
 			// Create Swing Projectile
-			swings.add(new Swing(applet, gameScene, (int) pos.x, (int) pos.y, state.facingDir));
+			swings.add(new Swing(applet, gameplayScene, (int) position.x, (int) position.y, state.facingDir));
 		}
 		for (int i = 0; i < swings.size(); i++) { // Update Swing Projectiles
 			swings.get(i).update();
@@ -240,40 +233,41 @@ public final class Player extends EditableObject {
 	}
 
 	private void checkPlayerCollision() {
-		for (EditableObject o : gameScene.objects) {
+		for (EditableObject o : gameplayScene.objects) {
 			if (o instanceof CollidableObject) {
 				CollidableObject collision = (CollidableObject) o;
-				if (Utility.fastInRange(pos, collision.pos, collisionRange)) { // In Player Range
-					if (applet.debug == debugType.ALL) {
+				if (Utility.fastInRange(position, collision.position, COLLISION_RANGE)) { // In Player Range
+					if (applet.debug == DebugType.ALL) {
 						applet.strokeWeight(2);
-						applet.rect(collision.pos.x, collision.pos.y, collision.width, collision.height);
+						applet.rect(collision.position.x, collision.position.y, collision.width, collision.height);
 						applet.fill(255, 0, 0);
-						applet.ellipse(collision.pos.x, collision.pos.y, 5, 5);
+						applet.ellipse(collision.position.x, collision.position.y, 5, 5);
 						applet.noFill();
 					}
-
 					if (collidesFuturX(collision)) {
 						// player left of collision
-						if (pos.x < collision.pos.x) {
-							pos.x = collision.pos.x - collision.width / 2 - width / 2;
+						if (position.x < collision.position.x) {
+							position.x = collision.position.x - collision.width / 2 - width / 2;
 							// player right of collision
-						} else {
-							pos.x = collision.pos.x + collision.width / 2 + width / 2;
+						}
+						else {
+							position.x = collision.position.x + collision.width / 2 + width / 2;
 						}
 						velocity.x = 0;
 						state.dashing = false;
 					}
 					if (collidesFuturY(collision)) {
 						// player above collision
-						if (pos.y < collision.pos.y) {
+						if (position.y < collision.position.y) {
 							if (state.flying) {
 								state.landing = true;
 							}
-							pos.y = collision.pos.y - collision.height / 2 - height / 2;
+							position.y = collision.position.y - collision.height / 2 - height / 2;
 							state.flying = false;
 							// player below collision
-						} else {
-							pos.y = collision.pos.y + collision.height / 2 + height / 2;
+						}
+						else {
+							position.y = collision.position.y + collision.height / 2 + height / 2;
 							state.jumping = false;
 						}
 						velocity.y = 0;
@@ -287,45 +281,51 @@ public final class Player extends EditableObject {
 		// End animations
 		if (animation.ended) {
 			switch (animation.name) {
-				case "DASH" :
+				case "DASH":
 					state.dashing = false;
 					break;
-				case "DASH_ATTACK" :
+				case "DASH_ATTACK":
 					state.dashing = false;
 					state.attacking = false;
 					break;
-				case "ATTACK" :
+				case "ATTACK":
 					state.attacking = false;
 					break;
-				case "JUMP" :
+				case "JUMP":
 					state.jumping = false;
 					break;
-				case "LAND" :
+				case "LAND":
 					state.landing = false;
-				default :
+				default:
 					break;
 			}
 		}
-
 		if (state.jumping) {
 			setAnimation(ACTION.JUMP);
-		} else if (state.landing) {
+		}
+		else if (state.landing) {
 			setAnimation(ACTION.LAND);
-		} else if (state.attacking) {
+		}
+		else if (state.attacking) {
 			if (state.dashing) {
 				setAnimation(ACTION.DASH_ATTACK);
-			} else {
+			}
+			else {
 				setAnimation(ACTION.ATTACK);
 			}
-		} else if (state.flying) {
+		}
+		else if (state.flying) {
 			setAnimation(ACTION.FALL);
-		} else if (velocity.x != 0) {
+		}
+		else if (velocity.x != 0) {
 			if (state.dashing) {
 				setAnimation(ACTION.DASH);
-			} else {
+			}
+			else {
 				setAnimation(ACTION.WALK);
 			}
-		} else {
+		}
+		else {
 			setAnimation(ACTION.IDLE);
 		}
 	}
@@ -338,41 +338,41 @@ public final class Player extends EditableObject {
 	 * @return boolean if it has or has not collided with the object.
 	 */
 	private boolean collides(CollidableObject collision) {
-		return (pos.x + width / 2 > collision.pos.x - collision.width / 2
-				&& pos.x - width / 2 < collision.pos.x + collision.width / 2)
-				&& (pos.y + height / 2 > collision.pos.y - collision.height / 2
-						&& pos.y - height / 2 < collision.pos.y + collision.height / 2);
+		return (position.x + width / 2 > collision.position.x - collision.width / 2
+				&& position.x - width / 2 < collision.position.x + collision.width / 2)
+				&& (position.y + height / 2 > collision.position.y - collision.height / 2
+						&& position.y - height / 2 < collision.position.y + collision.height / 2);
 	}
 
 	// TODO: optimize these (unused)
 	private boolean collidesEqual(CollidableObject collision) {
-		return (pos.x + width / 2 >= collision.pos.x - collision.width / 2
-				&& pos.x - width / 2 <= collision.pos.x + collision.width / 2)
-				&& (pos.y + height / 2 >= collision.pos.y - collision.height / 2
-						&& pos.y - height / 2 <= collision.pos.y + collision.height / 2);
+		return (position.x + width / 2 >= collision.position.x - collision.width / 2
+				&& position.x - width / 2 <= collision.position.x + collision.width / 2)
+				&& (position.y + height / 2 >= collision.position.y - collision.height / 2
+						&& position.y - height / 2 <= collision.position.y + collision.height / 2);
 	}
 
 	private boolean collidesFutur(CollidableObject collision) {
-		return (pos.x + velocity.x + width / 2 > collision.pos.x - collision.width / 2
-				&& pos.x + velocity.x - width / 2 < collision.pos.x + collision.width / 2)
-				&& (pos.y + velocity.y + height / 2 > collision.pos.y - collision.height / 2
-						&& pos.y + velocity.y - height / 2 < collision.pos.y + collision.height / 2);
+		return (position.x + velocity.x + width / 2 > collision.position.x - collision.width / 2
+				&& position.x + velocity.x - width / 2 < collision.position.x + collision.width / 2)
+				&& (position.y + velocity.y + height / 2 > collision.position.y - collision.height / 2
+						&& position.y + velocity.y - height / 2 < collision.position.y + collision.height / 2);
 	}
 
 	private boolean collidesFuturX(CollidableObject collision) {
-		return (pos.x + velocity.x + width / 2 > collision.pos.x - collision.width / 2
-				&& pos.x + velocity.x - width / 2 < collision.pos.x + collision.width / 2)
-				&& (pos.y + 0 + height / 2 > collision.pos.y - collision.height / 2
-						&& pos.y + 0 - height / 2 < collision.pos.y + collision.height / 2);
+		return (position.x + velocity.x + width / 2 > collision.position.x - collision.width / 2
+				&& position.x + velocity.x - width / 2 < collision.position.x + collision.width / 2)
+				&& (position.y + 0 + height / 2 > collision.position.y - collision.height / 2
+						&& position.y + 0 - height / 2 < collision.position.y + collision.height / 2);
 	}
 
 	private boolean collidesFuturY(CollidableObject collision) {
-		return (pos.x + 0 + width / 2 > collision.pos.x - collision.width / 2
-				&& pos.x + 0 - width / 2 < collision.pos.x + collision.width / 2)
-				&& (pos.y + velocity.y + height / 2 > collision.pos.y - collision.height / 2
-						&& pos.y + velocity.y - height / 2 < collision.pos.y + collision.height / 2);
+		return (position.x + 0 + width / 2 > collision.position.x - collision.width / 2
+				&& position.x + 0 - width / 2 < collision.position.x + collision.width / 2)
+				&& (position.y + velocity.y + height / 2 > collision.position.y - collision.height / 2
+						&& position.y + velocity.y - height / 2 < collision.position.y + collision.height / 2);
 	}
-	
+
 	public void setAnimation(String anim) {
 		animation.ended = false;
 		setAnimation(ACTION.valueOf(anim));
@@ -388,30 +388,29 @@ public final class Player extends EditableObject {
 			return;
 		}
 		ArrayList<PImage> animSequence = playerAnimationSequences.get(anim);
-
 		switch (anim) {
-			case WALK :
+			case WALK:
 				animation.changeAnimation(animSequence, true, 6);
 				break;
-			case IDLE :
+			case IDLE:
 				animation.changeAnimation(animSequence, true, 20);
 				break;
-			case JUMP :
+			case JUMP:
 				animation.changeAnimation(animSequence, false, 4);
 				break;
-			case LAND :
+			case LAND:
 				animation.changeAnimation(animSequence, false, 2);
 				break;
-			case FALL :
+			case FALL:
 				animation.changeAnimation(animSequence, true, 20);
 				break;
-			case ATTACK :
+			case ATTACK:
 				animation.changeAnimation(animSequence, false, 4);
 				break;
-			case DASH :
+			case DASH:
 				animation.changeAnimation(animSequence, false, 6);
 				break;
-			case DASH_ATTACK :
+			case DASH_ATTACK:
 				animation.changeAnimation(animSequence, false, 2);
 				break;
 		}

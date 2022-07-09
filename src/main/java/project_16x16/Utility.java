@@ -24,8 +24,8 @@ public final class Utility {
 	 * instance within the static methods. This instance must be assigned in a
 	 * static method, here, before anything else uses this class.
 	 */
-	public static void assignApplet(SideScroller a) {
-		applet = a;
+	public static void assignApplet(SideScroller sideScroller) {
+		applet = sideScroller;
 	}
 
 	/**
@@ -42,16 +42,16 @@ public final class Utility {
 	 * Scales a PImage object.
 	 * 
 	 * @param img
-	 * @param scl Scale (probably set to 4).
+	 * @param scale Scale (probably set to 4).
 	 * @deprecated Use {@link Tileset#getTile(int, int, int, int, int) getTile() to
 	 *             load and scale game graphics}.
 	 * @return
 	 */
-	public static PImage pg(PImage img, float scl) {
-		PGraphics pg = applet.createGraphics((int) (img.width * scl), (int) (img.height * scl));
+	public static PImage pg(PImage img, float scale) {
+		PGraphics pg = applet.createGraphics((int) (img.width * scale), (int) (img.height * scale));
 		pg.noSmooth();
 		pg.beginDraw();
-		pg.image(img, 0, 0, (int) (img.width * scl), (int) (img.height * scl));
+		pg.image(img, 0, 0, (int) (img.width * scale), (int) (img.height * scale));
 		pg.endDraw();
 		return pg.get();
 	}
@@ -66,14 +66,13 @@ public final class Utility {
 	/**
 	 * Scales a PImage object by a given amount.
 	 *
-	 * @param pBuffer Image to scale.
+	 * @param buffer  Image to scale.
 	 * @param scaling Times to scale.
 	 * @return new PImage object transformed.
 	 */
-	public static PImage scale(PImage pBuffer, int scaling) {
-		PImage originalImage = pBuffer;
-		PImage tempImage = applet.createImage(PApplet.parseInt(originalImage.width * scaling),
-				PApplet.parseInt(originalImage.height * scaling), PConstants.ARGB);
+	public static PImage scale(PImage buffer, int scaling) {
+		PImage originalImage = buffer;
+		PImage tempImage = applet.createImage(PApplet.parseInt(originalImage.width * scaling), PApplet.parseInt(originalImage.height * scaling), PConstants.ARGB);
 		tempImage.loadPixels();
 		originalImage.loadPixels();
 		for (int i = 0; i < originalImage.pixels.length; i++) {
@@ -86,13 +85,13 @@ public final class Utility {
 		return pg(tempImage).get();
 	}
 
-	public static PImage resizeImage(PImage img, float scl) {
-		PGraphics pg = applet.createGraphics((int) (img.width * scl), (int) (img.height * scl));
+	public static PImage resizeImage(PImage img, float scaling) {
+		PGraphics pg = applet.createGraphics((int) (img.width * scaling), (int) (img.height * scaling));
 
 		pg.noSmooth();
 		pg.beginDraw();
 		pg.clear();
-		pg.scale(scl, scl);
+		pg.scale(scaling, scaling);
 		pg.image(img, 0, 0);
 		pg.endDraw();
 
@@ -102,7 +101,7 @@ public final class Utility {
 	/**
 	 * Rotates a PImage object by a given angle in radians.
 	 *
-	 * @param img PImage image to rotate.
+	 * @param img   PImage image to rotate.
 	 * @param angle Angle in radians.
 	 * @return new PImage object transformed.
 	 */
@@ -131,38 +130,41 @@ public final class Utility {
 		return val;
 	}
 
-	public static float smoothMove(float pos, float target, float speed) {
-		return pos + (target - pos) * speed;
+	public static float smoothMove(float position, float target, float speed) {
+		return position + (target - position) * speed;
 	}
-	
+
 	/**
-	 * Converts (R,G,B) values to integer representation,
-	 * compatible with Processing.
-	 * @param R Red Value [0-255].
-	 * @param G Green Value [0-255].
-	 * @param B Blue Value [0-255].
+	 * Converts (R,G,B) values to integer representation, compatible with
+	 * Processing.
+	 * 
+	 * @param r Red Value [0-255].
+	 * @param g Green Value [0-255].
+	 * @param b Blue Value [0-255].
 	 * @return Color int.
-	 * @see {@link #colorToRGB(int, int, int, float) colorToRGB(int R, int G, int B, float A)}
+	 * @see {@link #colorToRGB(int, int, int, float) colorToRGB(int R, int G, int B,
+	 *      float A)}
 	 */
-	public static int colorToRGB(int R, int G, int B) {
+	public static int colorToRGB(int r, int g, int b) {
 		int out = 255 << 24; // full transparency
-		out += R << 16;
-		out += G << 8;
-		out += B;
+		out += r << 16;
+		out += g << 8;
+		out += b;
 		return out;
 	}
 
 	/**
-	 * Converts (R,G,B,A) values to integer representation,
-	 * compatible with Processing.
-	 * @param R Red Value [0-255].
-	 * @param G Green Value [0-255].
-	 * @param B Blue Value [0-255].
-	 * @param A Alpha (transparency) [0.0-1.0].
+	 * Converts (R,G,B,A) values to integer representation, compatible with
+	 * Processing.
+	 * 
+	 * @param r Red Value [0-255].
+	 * @param g Green Value [0-255].
+	 * @param b Blue Value [0-255].
+	 * @param a Alpha (transparency) [0.0-1.0].
 	 * @return Color int.
 	 */
-	public static int colorToRGB(int R, int G, int B, float A) {
-		return new Color(((float) R) / 255, ((float) G) / 255, ((float) B) / 255, A / 255).getRGB();
+	public static int colorToRGB(int r, int g, int b, float a) {
+		return new Color(((float) r) / 255, ((float) g) / 255, ((float) b) / 255, a / 255).getRGB();
 	}
 
 	/**
@@ -177,8 +179,7 @@ public final class Utility {
 	 * @see #hoverGame(float, float, float, float) hoverGame()
 	 */
 	public static boolean hoverScreen(float x, float y, float w, float h) {
-		return (applet.getMouseCoordScreen().x > x - w / 2 && applet.getMouseCoordScreen().x < x + w / 2
-				&& applet.getMouseCoordScreen().y > y - h / 2 && applet.getMouseCoordScreen().y < y + h / 2);
+		return (applet.getMouseCoordScreen().x > x - w / 2 && applet.getMouseCoordScreen().x < x + w / 2 && applet.getMouseCoordScreen().y > y - h / 2 && applet.getMouseCoordScreen().y < y + h / 2);
 	}
 
 	/**
@@ -193,15 +194,15 @@ public final class Utility {
 	 * @see #hoverScreen(float, float, float, float) hoverScreen()
 	 */
 	public static boolean hoverGame(float x, float y, float w, float h) {
-		return (applet.getMouseCoordGame().x > x - w / 2 && applet.getMouseCoordGame().x < x + w / 2
-				&& applet.getMouseCoordGame().y > y - h / 2 && applet.getMouseCoordGame().y < y + h / 2);
+		return (applet.getMouseCoordGame().x > x - w / 2 && applet.getMouseCoordGame().x < x + w / 2 && applet.getMouseCoordGame().y > y - h / 2 && applet.getMouseCoordGame().y < y + h / 2);
 	}
-	
+
 	/**
 	 * Determine if a point is within a rectangular region -- PVector params.
+	 * 
 	 * @param point PVector position to test.
-	 * @param UL Corner one of region.
-	 * @param BR Corner two of region (different X & Y).
+	 * @param UL    Corner one of region.
+	 * @param BR    Corner two of region (different X & Y).
 	 * @return True if point contained in region.
 	 */
 	public static boolean withinRegion(PVector point, PVector UL, PVector BR) {
@@ -210,15 +211,16 @@ public final class Utility {
 				|| (point.x <= UL.x && point.x >= BR.x) && (point.y >= UL.y && point.y <= BR.y) // SW
 				|| (point.x <= BR.x && point.x >= UL.x) && (point.y >= BR.y && point.y <= UL.y); // NE
 	}
-		
+
 	/**
 	 * Determine if a point is within a rectangular region -- Float params.
+	 * 
 	 * @param pointX X coord of point position to test.
 	 * @param pointY X coord of point position to test.
-	 * @param ULX X coord of corner #1 (upper left) of region.
-	 * @param ULY Y coord of corner #1 (upper left) of region.
-	 * @param BRX X coord of corner #2 (bottom right) of region.
-	 * @param BRY Y coord of corner #2 (bottom right) of region.
+	 * @param ULX    X coord of corner #1 (upper left) of region.
+	 * @param ULY    Y coord of corner #1 (upper left) of region.
+	 * @param BRX    X coord of corner #2 (bottom right) of region.
+	 * @param BRY    Y coord of corner #2 (bottom right) of region.
 	 * @return True if point contained in region.
 	 */
 	public static boolean withinRegion(float pointX, float pointY, float ULX, float ULY, float BRX, float BRY) {
@@ -290,7 +292,8 @@ public final class Utility {
 			OutputStreamWriter o = new OutputStreamWriter(new FileOutputStream(path), StandardCharsets.UTF_8);
 			o.write(content);
 			o.close();
-		} catch (IOException e) {
+		}
+		catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
@@ -308,7 +311,8 @@ public final class Utility {
 			if (file[0].length() == 0) {
 			}
 			condition = true;
-		} catch (Exception e) {
+		}
+		catch (Exception e) {
 			condition = false;
 		}
 		return condition;
@@ -354,25 +358,23 @@ public final class Utility {
 		main.setString("creator", "undefined");
 		main.setString("version", "alpha 1.0.0");
 		levelSave.append(main);
-		
-		
+
 		JSONObject JSONtileData = applet.loadJSONObject(filePath);
 		JSONArray JSONlayers = JSONtileData.getJSONArray("layers");
-		
-		for(int i = 0; i < JSONlayers.size(); i++) {
+		for (int i = 0; i < JSONlayers.size(); i++) {
 			JSONObject layer = JSONlayers.getJSONObject(i);
 			int width = layer.getInt("width");
 			int height = layer.getInt("height");
 			JSONArray data = layer.getJSONArray("data");
-			for(int j = 0; j < data.size(); j++) {
+			for (int j = 0; j < data.size(); j++) {
 				int tileId = data.getInt(j) - 1;
 				if (tileId >= 0) {
 					Tile tile = Tileset.getTileObject(tileId);
 					JSONObject JSONtile = new JSONObject();
 					JSONtile.setString("id", tile.getName());
 					JSONtile.setString("type", tile.getTileType().toString());
-					JSONtile.setInt("x", (j % width) * 60 - (width/2*60));
-					JSONtile.setInt("y", (int) (j / width) * 60 - (height/2*60));
+					JSONtile.setInt("x", (j % width) * 60 - (width / 2 * 60));
+					JSONtile.setInt("y", (int) (j / width) * 60 - (height / 2 * 60));
 					levelSave.append(JSONtile);
 				}
 			}
@@ -455,7 +457,8 @@ final class BlurUtils {
 			for (int i = 0; i < indexLookupTable.length; i++) {
 				indexLookupTable[i] = i;
 			}
-		} else {
+		}
+		else {
 			for (int i = 0; i < width; i++) {
 				indexLookupTable[i] = i;
 			}
@@ -463,7 +466,6 @@ final class BlurUtils {
 				indexLookupTable[i] = width - 1;
 			}
 		}
-
 		for (int y = 0; y < height; y++) {
 			sumAlpha = sumRed = sumGreen = sumBlue = 0;
 			dstIndex = y;
@@ -473,7 +475,6 @@ final class BlurUtils {
 			sumGreen += radiusPlusOne * ((pixel >> 16) & 0xFF);
 			sumBlue += radiusPlusOne * ((pixel >> 8) & 0xFF);
 			sumAlpha += radiusPlusOne * (pixel & 0xFF);
-
 			for (int i = 1; i <= radius; i++) {
 				pixel = srcPixels[srcIndex + indexLookupTable[i]];
 				sumRed += (pixel >> 24) & 0xFF;
@@ -481,10 +482,8 @@ final class BlurUtils {
 				sumBlue += (pixel >> 8) & 0xFF;
 				sumAlpha += pixel & 0xFF;
 			}
-
 			for (int x = 0; x < width; x++) {
-				dstPixels[dstIndex] = sumLookupTable[sumRed] << 24 | sumLookupTable[sumGreen] << 16
-						| sumLookupTable[sumBlue] << 8 | sumLookupTable[sumAlpha];
+				dstPixels[dstIndex] = sumLookupTable[sumRed] << 24 | sumLookupTable[sumGreen] << 16 | sumLookupTable[sumBlue] << 8 | sumLookupTable[sumAlpha];
 				dstIndex += height;
 
 				int nextPixelIndex = x + radiusPlusOne;
@@ -534,7 +533,6 @@ final class BlurUtils {
 		int[] dstPixels = new int[width * height];
 
 		System.arraycopy(inputRGBA, 0, srcPixels, 0, srcPixels.length); // copy input into srcPixels
-
 		for (int i = 0; i < iterations; i++) {
 			blurPass(srcPixels, dstPixels, width, height, radius); // horizontal pass
 			blurPass(dstPixels, srcPixels, height, width, radius); // vertical pass
@@ -546,16 +544,16 @@ final class BlurUtils {
 	 * Blurs the input PImage, producing a copy [the orignal is untouched] (much
 	 * faster than using {@link processing.core.PApplet#filter(int) filter(BLUR)}).
 	 * 
-	 * @param in         source PImage
+	 * @param image      source PImage
 	 * @param radius     radius of blur effect
 	 * @param iterations the number of times to perform the blur; i.e. to increase
 	 *                   quality
 	 * @return PImage blurred PImage object
 	 */
-	public static PImage blurImage(PImage in, int radius, int iterations) {
-		PImage out = new PImage(in.width, in.height);
+	public static PImage blurImage(PImage image, int radius, int iterations) {
+		PImage out = new PImage(image.width, image.height);
 		out.loadPixels();
-		out.pixels = blur(in.pixels, in.width, in.height, radius, iterations);
+		out.pixels = blur(image.pixels, image.width, image.height, radius, iterations);
 		out.updatePixels();
 		return out;
 	}

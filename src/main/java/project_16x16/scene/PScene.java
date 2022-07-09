@@ -24,8 +24,8 @@ public abstract class PScene extends PClass {
 	 */
 	private boolean registered = false;
 
-	public PScene(SideScroller a) {
-		super(a);
+	public PScene(SideScroller sideScroller) {
+		super(sideScroller);
 	}
 
 	/**
