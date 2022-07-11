@@ -2,12 +2,13 @@ package project_16x16.components;
 
 import java.util.ArrayList;
 import java.util.Collection;
+
 import org.apache.commons.collections.map.MultiValueMap;
 
 import processing.core.PImage;
 import project_16x16.Audio;
-import project_16x16.SideScroller;
 import project_16x16.Audio.SFX;
+import project_16x16.SideScroller;
 
 /**
  * The Animation Class
@@ -15,7 +16,6 @@ import project_16x16.Audio.SFX;
 public class AnimationComponent {
 
 	private static SideScroller applet;
-
 	private ArrayList<PImage> frames;
 	private boolean loop;
 	private int length;
@@ -25,9 +25,7 @@ public class AnimationComponent {
 	private float currentFrame;
 	public String name;
 	public boolean ended;
-
 	private final MultiValueMap sounds;
-	
 
 	public AnimationComponent() {
 		sounds = new MultiValueMap();
@@ -74,9 +72,7 @@ public class AnimationComponent {
 	 */
 	@SuppressWarnings("unchecked")
 	public PImage animate() {
-
 		PImage frame = frames.get((int) currentFrame);
-
 		if ((applet.frameCount - firstFrame) % rate == 0) {
 			currentFrame++;
 			if (currentFrame > length) {
@@ -98,9 +94,7 @@ public class AnimationComponent {
 	 * 
 	 * @return
 	 */
-	public PImage getFrame() {
-		return frames.get((int) currentFrame);
-	}
+	public PImage getFrame() { return frames.get((int) currentFrame); }
 
 	/**
 	 * Retrieves the number of remaining frames
@@ -116,16 +110,14 @@ public class AnimationComponent {
 	 *
 	 * @return the current frame as a float
 	 **/
-	public int getFrameID() {
-		return (int) currentFrame;
-	}
+	public int getFrameID() { return (int) currentFrame; }
 
 	/**
 	 * Set frame (for multiplayer)
 	 * 
 	 * @param frame
 	 */
-	public void setFrame(float frame) {
+	public void setFrame(int frame) {
 		if (frame >= 0 && frame <= frames.size() - 1) {
 			currentFrame = frame;
 		}
@@ -136,13 +128,10 @@ public class AnimationComponent {
 	 *
 	 * @return the time of the animation as an int
 	 **/
-	public int getAnimLength() {
-		return length;
-	}
+	public int getAnimLength() { return length; }
 
 	/**
-	 * Set a SFX to play trigger at a given animation frame.
-	 * TODO frames param
+	 * Set a SFX to play trigger at a given animation frame. TODO frames param
 	 * 
 	 * @param sound
 	 * @param frameNumber

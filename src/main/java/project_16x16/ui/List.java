@@ -17,16 +17,16 @@ public class List extends PClass {
 	ScrollBarVertical scrollBar;
 	int elementOffSet;
 
-	public List(SideScroller a, String ar[], int elementOffset) {
-		super(a);
+	public List(SideScroller sideScroller, String[] files, int elementOffset) {
+		super(sideScroller);
 		x = 0;
 		y = 0;
 		w = 0;
 		h = 0;
 		getElement = "";
-		elements = new Button[ar.length];
+		elements = new Button[files.length];
 		initalizeElements();
-		refreshElements(ar);
+		refreshElements(files);
 		this.elementOffSet = elementOffset;
 	}
 
@@ -36,10 +36,10 @@ public class List extends PClass {
 			elements[i] = new Button(applet);
 	}
 
-	public void refreshElements(String ar[]) {
+	public void refreshElements(String[] files) {
 		int getLargestW = 0;
-		for (int i = 0; i < ar.length; i++) {
-			elements[i].setText(ar[i]);
+		for (int i = 0; i < files.length; i++) {
+			elements[i].setText(files[i]);
 			elements[i].setColorsNotPress(applet.color(0), applet.color(0));
 			elements[i].setTextColorNotPressed(applet.color(255));
 			elements[i].setTextColorPressed(applet.color(0));
@@ -60,7 +60,7 @@ public class List extends PClass {
 		scrollBar.display();
 		scrollBar.update();
 		applet.popMatrix();
-		scrollPass = (int) PApplet.map(scrollBar.barLocation, 1, 0, elements.length*30, 0);
+		scrollPass = (int) PApplet.map(scrollBar.barLocation, 1, 0, elements.length * 30, 0);
 	}
 
 	private void displayListArea() {
@@ -70,7 +70,7 @@ public class List extends PClass {
 	}
 
 	private void loadScrollBar() {
-		Anchor scrollBarAnchor = new Anchor(applet, x+w/2, y-h/2-COVER_H/2, 20, h+COVER_H);
+		Anchor scrollBarAnchor = new Anchor(applet, x + w / 2, y - h / 2 - COVER_H / 2, 20, h + COVER_H);
 		scrollBar = new ScrollBarVertical(scrollBarAnchor);
 		scrollBar.setBarRatio(0.5f);
 	}
@@ -80,8 +80,9 @@ public class List extends PClass {
 		cancel.update();
 		for (int i = 0; i < elements.length; i++) {
 			elements[i].updateOnPress();
-			// requires the !getConfirm as there is an event glitch when confiriming your choice
-			//within the list
+			// requires the !getConfirm as there is an event glitch when confiriming your
+			// choice
+			// within the list
 			if (elements[i].event() && !getConfirmPress()) {
 				getElement = elements[i].getText();
 				System.out.println(getElement);
@@ -91,8 +92,7 @@ public class List extends PClass {
 
 	public void displayElements() {
 		for (int i = 0; i < elements.length; i++) {
-			elements[i].setPosition((x - w / 2 ) + (elements[i].getW() / 2),
-					(y - h / 2 + 30) + (i * elementOffSet) - scrollPass);
+			elements[i].setPosition((x - w / 2) + (elements[i].getW() / 2), (y - h / 2 + 30) + (i * elementOffSet) - scrollPass);
 			if (inListBox(elements[i].getY() + elements[i].getH() / 2, elements[i].getY() - elements[i].getH() / 2))
 				elements[i].display();
 		}

@@ -1,14 +1,5 @@
 package project_16x16.windows;
 
-import project_16x16.scene.GameplayScene;
-import project_16x16.scene.GameplayScene.GameModes;
-import project_16x16.PClass;
-import project_16x16.SideScroller;
-import project_16x16.Utility;
-import project_16x16.objects.BackgroundObject;
-import project_16x16.objects.CollidableObject;
-import project_16x16.ui.List;
-import project_16x16.ui.Notifications;
 import java.io.File;
 import java.io.FileFilter;
 import java.util.ArrayList;
@@ -17,6 +8,15 @@ import java.util.Arrays;
 import processing.core.PApplet;
 import processing.data.JSONArray;
 import processing.data.JSONObject;
+import project_16x16.PClass;
+import project_16x16.SideScroller;
+import project_16x16.Utility;
+import project_16x16.objects.BackgroundObject;
+import project_16x16.objects.CollidableObject;
+import project_16x16.scene.GameplayScene;
+import project_16x16.scene.GameplayScene.GameModes;
+import project_16x16.ui.List;
+import project_16x16.ui.Notifications;
 
 public class LoadLevelWindow extends PClass {
 
@@ -29,9 +29,8 @@ public class LoadLevelWindow extends PClass {
 	public List list;
 	File f;
 
-	public LoadLevelWindow(SideScroller a, GameplayScene scene) {
-
-		super(a);
+	public LoadLevelWindow(SideScroller sideScroller, GameplayScene scene) {
+		super(sideScroller);
 		collidableObjects = new ArrayList<CollidableObject>();
 		backgroundObjects = new ArrayList<BackgroundObject>();
 		picked = "";
@@ -46,7 +45,7 @@ public class LoadLevelWindow extends PClass {
 			}
 		});
 
-		list = new List(a, Arrays.stream(files).map(File::getName).toArray(String[]::new), 30);
+		list = new List(sideScroller, Arrays.stream(files).map(File::getName).toArray(String[]::new), 30);
 		list.setSizeH(200);
 		list.setPosition(applet.width / 2 + 400, 325);
 		list.setConfirmButton("Confirm", applet.width / 2 + 400, 500);
@@ -92,10 +91,11 @@ public class LoadLevelWindow extends PClass {
 		}
 		if (list.getConfirmPress() && !list.getElement().isEmpty()) {
 			scene.loadLevel(path + list.getElement());
-			Notifications.addNotification("Level Loaded", "Loaded "+ list.getElement() + ".");
+			Notifications.addNotification("Level Loaded", "Loaded " + list.getElement() + ".");
 			list.resetElement();
 			scene.changeMode(GameModes.MODIFY);
-		} else if (list.getConfirmPress() && list.getElement().isEmpty())
+		}
+		else if (list.getConfirmPress() && list.getElement().isEmpty())
 			scene.changeMode(GameModes.MODIFY);
 	}
 
@@ -114,7 +114,6 @@ public class LoadLevelWindow extends PClass {
 
 		String scriptD = Utility.decrypt(PApplet.join(script, "\n")); // decrypt save data
 		JSONArray data = JSONArray.parse(scriptD); // Parse JSON
-
 		if (data == null) {
 			System.err.println("Failed to parse level data to JSON. File is probably corrupt.");
 			return;
@@ -145,32 +144,33 @@ public class LoadLevelWindow extends PClass {
 				continue;
 			}
 			switch (type) { // Read Main
-			case "COLLISION":
-				CollidableObject collision = new CollidableObject(applet, scene);
-				try {
-					collision.setGraphic(item.getString("id"));
-				} catch (Exception e) {
-					collision.width = 64;
-					collision.height = 64;
-				}
-				collision.setImageWidth(20);
-				collision.setImageHeight(20);
-				collision.pos.x = PApplet.map(item.getInt("x"), minX + 100, maxX - 100, 300, 600);
-				collision.pos.y = PApplet.map(item.getInt("y"), minY + 100, maxY - 100, 300, 600);
+				case "COLLISION":
+					CollidableObject collision = new CollidableObject(applet, scene);
+					try {
+						collision.setGraphic(item.getString("id"));
+					}
+					catch (Exception e) {
+						collision.width = 64;
+						collision.height = 64;
+					}
+					collision.setImageWidth(20);
+					collision.setImageHeight(20);
+					collision.position.x = PApplet.map(item.getInt("x"), minX + 100, maxX - 100, 300, 600);
+					collision.position.y = PApplet.map(item.getInt("y"), minY + 100, maxY - 100, 300, 600);
 
-				collidableObjects.add(collision); // SideScrollerend To Level
-				break;
-			case "BACKGROUND":
-				BackgroundObject backgroundObject = new BackgroundObject(applet, scene);
-				backgroundObject.setGraphic(item.getString("id"));
-				backgroundObject.setImageWidth(20);
-				backgroundObject.setImageHeight(20);
-				backgroundObject.pos.x = PApplet.map(item.getInt("x"), minX + 100, maxX - 100, 300, 600);
-				backgroundObject.pos.y = PApplet.map(item.getInt("y"), minY + 100, maxY - 100, 300, 600);
-				backgroundObjects.add(backgroundObject); // SideScrollerend To Level
-				break;
-			default:
-				break;
+					collidableObjects.add(collision); // SideScrollerend To Level
+					break;
+				case "BACKGROUND":
+					BackgroundObject backgroundObject = new BackgroundObject(applet, scene);
+					backgroundObject.setGraphic(item.getString("id"));
+					backgroundObject.setImageWidth(20);
+					backgroundObject.setImageHeight(20);
+					backgroundObject.position.x = PApplet.map(item.getInt("x"), minX + 100, maxX - 100, 300, 600);
+					backgroundObject.position.y = PApplet.map(item.getInt("y"), minY + 100, maxY - 100, 300, 600);
+					backgroundObjects.add(backgroundObject); // SideScrollerend To Level
+					break;
+				default:
+					break;
 			}
 		}
 	}

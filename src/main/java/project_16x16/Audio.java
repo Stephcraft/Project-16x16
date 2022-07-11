@@ -18,7 +18,7 @@ public final class Audio {
 	private static final String BGM_PATH = "Audio/BGM/";
 	private static final String SFX_PATH = "Audio/SFX/";
 	private static float gainBGM = 0;
-	private static  float gainSFX = 0;
+	private static float gainSFX = 0;
 
 	private static Minim minim;
 
@@ -45,10 +45,8 @@ public final class Audio {
 	 * Sound effects, which are referenced as enums.
 	 */
 	public enum SFX {
-		JUMP("jump.wav"),
-		STEP("walk_single.wav"),
-		ATTACK("melee_attack.wav");
-		
+		JUMP("jump.wav"), STEP("walk_single.wav"), ATTACK("melee_attack.wav");
+
 		private String filename;
 
 		private SFX(String filename) {
@@ -68,14 +66,14 @@ public final class Audio {
 	 * 
 	 * @param s
 	 */
-	public static void assignApplet(SideScroller s) {
-		minim = new Minim(s);
-
+	public static void assignApplet(SideScroller sideScroller) {
+		minim = new Minim(sideScroller);
 		for (SFX sfx : SFX.values()) {
 			AudioSample sample = minim.loadSample(sfx.getPath());
 			if (sample != null) {
 				SFX_MAP.put(sfx, sample);
-			} else {
+			}
+			else {
 				System.err.println(sfx.getPath() + " not found.");
 			}
 		}
@@ -83,7 +81,8 @@ public final class Audio {
 			AudioPlayer audioPlayer = minim.loadFile(bgm.getPath());
 			if (audioPlayer != null) {
 				BGM_MAP.put(bgm, audioPlayer);
-			} else {
+			}
+			else {
 				System.err.println(bgm.getPath() + " not found.");
 			}
 		}
@@ -102,7 +101,8 @@ public final class Audio {
 	public static void play(SFX sound) {
 		if (SFX_MAP.containsKey(sound)) {
 			SFX_MAP.get(sound).trigger();
-		} else {
+		}
+		else {
 			System.err.println(sound.getPath() + " not found.");
 		}
 	}
@@ -120,7 +120,8 @@ public final class Audio {
 		if (SFX_MAP.containsKey(sound)) {
 			SFX_MAP.get(sound).setGain(gain);
 			SFX_MAP.get(sound).trigger();
-		} else {
+		}
+		else {
 			System.err.println(sound.getPath() + " not found.");
 		}
 	}
@@ -146,7 +147,8 @@ public final class Audio {
 		if (BGM_MAP.containsKey(sound)) {
 			BGM_MAP.get(sound).setGain(gainBGM);
 			BGM_MAP.get(sound).loop();
-		} else {
+		}
+		else {
 			System.err.println(sound.getPath() + " not found.");
 		}
 	}
@@ -164,7 +166,8 @@ public final class Audio {
 		if (BGM_MAP.containsKey(sound)) {
 			BGM_MAP.get(sound).setGain(gain);
 			play(sound);
-		} else {
+		}
+		else {
 			System.err.println(sound.getPath() + " not found.");
 		}
 	}

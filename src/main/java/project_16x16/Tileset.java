@@ -53,20 +53,20 @@ public class Tileset {
 		return getTile(getTileId(name));
 	}
 	
-	public static PImage getTile(int Id) {
-		if (tiles[Id] != null) {
-			return tiles[Id].getPImage();
+	public static PImage getTile(int id) {
+		if (tiles[id] != null) {
+			return tiles[id].getPImage();
 		} else {
-			PApplet.println("<Tileset> Error while loading, null index reference to tile ( " + Id + " ) >");
+			PApplet.println("<Tileset> Error while loading, null index reference to tile ( " + id + " ) >");
 			return null; // TODO return placeholder?
 		}
 	}
 	
-	public static Tile getTileObject(int Id) {
-		if (tiles[Id] != null) {
-			return tiles[Id];
+	public static Tile getTileObject(int id) {
+		if (tiles[id] != null) {
+			return tiles[id];
 		} else {
-			PApplet.println("<Tileset> Error while loading, null index reference to tile ( " + Id + " ) >");
+			PApplet.println("<Tileset> Error while loading, null index reference to tile ( " + id + " ) >");
 			return null; // TODO return placeholder?
 		}
 	}
@@ -90,12 +90,12 @@ public class Tileset {
 		return Utility.resizeImage(graphicsSheet.get(x, y, w, h), scale);
 	}
 		
-	public static String getTileName(int Id)
+	public static String getTileName(int id)
 	{
-		if (tiles[Id] != null)
-			return tiles[Id].getName();
+		if (tiles[id] != null)
+			return tiles[id].getName();
 		
-		PApplet.println("<Tileset> Error while loading, null ID reference to tile ( " + Id + " ) >");
+		PApplet.println("<Tileset> Error while loading, null ID reference to tile ( " + id + " ) >");
 		return "";
 	}
 	
@@ -125,11 +125,11 @@ public class Tileset {
 		return getTileType(getTileId(name));
 	}
 	
-	public static TileType getTileType(int Id) {
-		if (tiles[Id] != null)
-			return tiles[Id].getTileType();
+	public static TileType getTileType(int id) {
+		if (tiles[id] != null)
+			return tiles[id].getTileType();
 		
-		PApplet.println("<Tileset> Error while loading, null ID reference to tile ( " + Id + " ) >");
+		PApplet.println("<Tileset> Error while loading, null ID reference to tile ( " + id + " ) >");
 		return null;
 	}
 	

@@ -38,21 +38,21 @@ public class SideScroller extends PApplet {
 	// Game Dev
 	public static final String LEVEL = "Storage/Game/Maps/tiledMap.dat";
 
-	public enum debugType {
+	public enum DebugType {
 		OFF, ALL, INFO_ONLY;
 
-		private static debugType[] vals = values();
+		private static DebugType[] vals = values();
 
-		public debugType next() {
+		public DebugType next() {
 			return vals[(this.ordinal() + 1) % vals.length];
 		}
 
-		public static debugType get(int value) {
+		public static DebugType get(int value) {
 			return values()[value];
 		}
 	}
 
-	public debugType debug = debugType.get(Options.debugMode);
+	public DebugType debug = DebugType.get(Options.debugMode);
 
 	public static final boolean SNAP = true; // snap objects to grid when moving; TODO move to options
 	public static int snapSize;
@@ -285,7 +285,7 @@ public class SideScroller extends PApplet {
 	 */
 	private void drawBelowCamera() {
 		sceneHistory.peek().getScene().draw(); // Handle Draw Scene Method - draws world, etc.
-		if (debug == debugType.ALL) {
+		if (debug == DebugType.ALL) {
 			sceneHistory.peek().getScene().debug();
 			camera.postDebug();
 		}
@@ -302,11 +302,11 @@ public class SideScroller extends PApplet {
 	private void drawAboveCamera() {
 		sceneHistory.peek().getScene().drawUI();
 		Notifications.run();
-		if (debug == debugType.ALL) {
+		if (debug == DebugType.ALL) {
 			camera.post();
 			displayDebugInfo();
 		}
-		if (debug == debugType.INFO_ONLY) {
+		if (debug == DebugType.INFO_ONLY) {
 			displayDebugInfo();
 		}
 	}
@@ -522,7 +522,7 @@ public class SideScroller extends PApplet {
 
 		fill(255,255,0);
 		textAlign(RIGHT, TOP);
-		text("[" + round(player.pos.x) + ", " + round(player.pos.y) + "]", width - ip, lineOffset * 0 + yOffset);
+		text("[" + round(player.position.x) + ", " + round(player.position.y) + "]", width - ip, lineOffset * 0 + yOffset);
 		text("[" + round(velocity.x) + ", " + round(velocity.y) + "]", width - ip, lineOffset * 1 + yOffset);
 		text("[" + player.animation.name + "]", width - ip, lineOffset * 2 + yOffset);
 		text("[" + round(player.animation.getFrameID()) + " / " + player.animation.getAnimLength() + "]", width - ip,

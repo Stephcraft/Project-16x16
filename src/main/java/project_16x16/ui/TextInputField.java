@@ -6,11 +6,10 @@ import project_16x16.SideScroller;
 import project_16x16.Utility;
 
 /**
- * The PInput Class extends PClass
- * An input field 
+ * The PInput Class extends PClass An input field
  */
 public class TextInputField extends PClass {
-	
+
 	protected int width;
 	protected int height;
 	protected int x;
@@ -22,10 +21,12 @@ public class TextInputField extends PClass {
 
 	/**
 	 * Constructor for PInput
-	 * @param  a This a reference to the game //TODO: having variable names that are just letters can be confusing to new contributors
+	 * 
+	 * @param a This a reference to the game //TODO: having variable names that are
+	 *          just letters can be confusing to new contributors
 	 */
-	public TextInputField(SideScroller a) {
-		super(a);
+	public TextInputField(SideScroller sideScroller) {
+		super(sideScroller);
 
 		width = 200;
 		height = 30;
@@ -39,7 +40,6 @@ public class TextInputField extends PClass {
 	 * Display for the PInput
 	 */
 	public void display() {
-
 		// Display Focus Box
 		if (focus) {
 			applet.noStroke();
@@ -55,7 +55,7 @@ public class TextInputField extends PClass {
 		else {
 			applet.stroke(74, 81, 99);
 		}
-		
+
 		applet.fill(0);
 		applet.rect(x, y, width, height);
 
@@ -76,14 +76,14 @@ public class TextInputField extends PClass {
 	 * Updates the window based on different player input
 	 */
 	public void update() {
-
 		// Focus Event
 		if (Utility.hoverScreen(x, y, width, height)) {
 			mouseOver = true;
 			if (applet.mousePressEvent) {
 				focus = true;
 			}
-		} else {
+		}
+		else {
 			mouseOver = false;
 			if (applet.mousePressEvent) {
 				focus = false;
@@ -100,7 +100,8 @@ public class TextInputField extends PClass {
 							text += applet.key;
 						}
 					}
-				} else {
+				}
+				else {
 					if (text.length() > 0) {
 						text = text.substring(0, text.length() - 1);
 					}
@@ -111,38 +112,42 @@ public class TextInputField extends PClass {
 
 	/**
 	 * Changes the object variable text to txt
-	 * @param txt what to update text to as String
+	 * 
+	 * @param text what to update text to as String
 	 */
-	public void setText(String txt) {
-		text = txt;
+	public void setText(String text) {
+		this.text = text;
 	}
 
 	/**
 	 * Changes the position of the window
-	 * @param _x the new x component
-	 * @param _y the new y component
+	 * 
+	 * @param x the new x component
+	 * @param y the new y component
 	 */
-	public void setPosition(int _x, int _y) {
-		x = _x;
-		y = _y;
+	public void setPosition(int x, int y) {
+		this.x = x;
+		this.y = y;
 	}
 
 	/**
 	 * changes size and position
-	 * @param _x new x component
-	 * @param _y new y component
-	 * @param w  new width
-	 * @param h  new height
+	 * 
+	 * @param x new x component
+	 * @param y new y component
+	 * @param w new width
+	 * @param h new height
 	 */
-	public void set(int _x, int _y, int w, int h) {
-		x = _x;
-		y = _y;
-		width = w;
-		height = h;
+	public void set(int x, int y, int w, int h) {
+		this.x = x;
+		this.y = y;
+		this.width = w;
+		this.height = h;
 	}
 
 	/**
-	 * Changes the width 
+	 * Changes the width
+	 * 
 	 * @param w new width
 	 */
 	public void setWidth(int w) {
@@ -151,6 +156,7 @@ public class TextInputField extends PClass {
 
 	/**
 	 * gets the object variable text
+	 * 
 	 * @return text as String
 	 */
 	public String getText() {

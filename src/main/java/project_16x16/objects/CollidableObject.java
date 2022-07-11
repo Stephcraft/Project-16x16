@@ -1,11 +1,12 @@
 package project_16x16.objects;
 
-import processing.core.*;
+import processing.core.PImage;
+import processing.core.PVector;
 import processing.data.JSONObject;
-import project_16x16.scene.GameplayScene;
 import project_16x16.SideScroller;
-import project_16x16.SideScroller.debugType;
+import project_16x16.SideScroller.DebugType;
 import project_16x16.Tileset;
+import project_16x16.scene.GameplayScene;
 
 public class CollidableObject extends EditableObject {
 
@@ -16,55 +17,54 @@ public class CollidableObject extends EditableObject {
 	private float pixelOffsetX = 0;
 	private float pixelOffsetY = 0;
 
-	public CollidableObject(SideScroller a, GameplayScene g) {
-		super(a, g);
+	public CollidableObject(SideScroller sideScroller, GameplayScene gameplayScene) {
+		super(sideScroller, gameplayScene);
 
 		flag = "";
 		type = type.COLLISION;
-		pos = new PVector(0, 0);
+		position = new PVector(0, 0);
 	}
 
-	public CollidableObject(SideScroller a, GameplayScene g, int w, int h, int x, int y, boolean ch) {
-		this(a, g, w, h, x, y);
+	public CollidableObject(SideScroller sideScroller, GameplayScene gameplayScene, int w, int h, int x, int y, boolean child) {
+		this(sideScroller, gameplayScene, w, h, x, y);
 
-		child = ch;
+		super.child = child;
 	}
 
-	public CollidableObject(SideScroller a, GameplayScene g, int w, int h, int x, int y) {
-		this(a, g);
+	public CollidableObject(SideScroller sideScroller, GameplayScene gameplayScene, int w, int h, int x, int y) {
+		this(sideScroller, gameplayScene);
 
 		// Get From Game Graphics Image
-		pos = new PVector(x, y);
+		position = new PVector(x, y);
 		width = w;
 		height = h;
 	}
 
-	public CollidableObject(SideScroller a, GameplayScene g, String t, int x, int y) {
-		this(a, g);
+	public CollidableObject(SideScroller sideScroller, GameplayScene gameplayScene, String t, int x, int y) {
+		this(sideScroller, gameplayScene);
 
 		// Get From Game Graphics Image
 		setGraphic(t);
-		pos = new PVector(x, y);
+		position = new PVector(x, y);
 	}
 
 	public void display() {
-
 		if (height / 4 % 2 != 0) {
 			pixelOffsetY = 2;
 		}
 		if (width / 4 % 2 != 0) {
 			pixelOffsetX = 2;
 		}
-
 		if (id == null) {
-			if (applet.debug == debugType.ALL) {
+			if (applet.debug == DebugType.ALL) {
 				applet.noFill();
 				applet.strokeWeight(1);
 				applet.stroke(0, 255, 200);
-				applet.rect(pos.x + pixelOffsetX, pos.y + pixelOffsetY, width, height);
+				applet.rect(position.x + pixelOffsetX, position.y + pixelOffsetY, width, height);
 			}
-		} else {
-			applet.image(image, pos.x + pixelOffsetX, pos.y + pixelOffsetY, width, height);
+		}
+		else {
+			applet.image(image, position.x + pixelOffsetX, position.y + pixelOffsetY, width, height);
 		}
 	}
 
@@ -88,7 +88,7 @@ public class CollidableObject extends EditableObject {
 	public void debug() {
 		applet.stroke(50, 120, 255);
 		applet.noFill();
-		applet.rect(pos.x, pos.y, width, height);
+		applet.rect(position.x, position.y, width, height);
 	}
 
 	@Override
@@ -96,8 +96,8 @@ public class CollidableObject extends EditableObject {
 		JSONObject item = new JSONObject();
 		item.setString("id", id);
 		item.setString("type", "COLLISION");
-		item.setInt("x", (int) pos.x);
-		item.setInt("y", (int) pos.y);
+		item.setInt("x", (int) position.x);
+		item.setInt("y", (int) position.y);
 		return item;
 	}
 

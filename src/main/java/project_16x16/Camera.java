@@ -151,11 +151,11 @@ public final class Camera extends ZoomPan {
 		applet.popMatrix();
 		if (following) {
 			applet.rectMode(PApplet.CENTER);
-			applet.rect(getCoordToDisp(followObject.pos).x, getCoordToDisp(followObject.pos).y, length * 2, length * 2);
+			applet.rect(getCoordToDisp(followObject.position).x, getCoordToDisp(followObject.position).y, length * 2, length * 2);
 			applet.strokeWeight(PApplet.map(PApplet.dist(applet.width / 2, applet.height / 2,
-					getCoordToDisp(followObject.pos).x, getCoordToDisp(followObject.pos).y), 0, 100, 2, 10));
-			applet.line(applet.width / 2, applet.height / 2, getCoordToDisp(followObject.pos).x,
-					getCoordToDisp(followObject.pos).y);
+					getCoordToDisp(followObject.position).x, getCoordToDisp(followObject.position).y), 0, 100, 2, 10));
+			applet.line(applet.width / 2, applet.height / 2, getCoordToDisp(followObject.position).x,
+					getCoordToDisp(followObject.position).y);
 			if (deadZoneScreen) {
 				applet.rectMode(PApplet.CORNER);
 				applet.rect(deadZoneP1.x, deadZoneP1.y, deadZoneP2.x - deadZoneP1.x, deadZoneP2.y - deadZoneP1.y);
@@ -221,9 +221,9 @@ public final class Camera extends ZoomPan {
 		if (following && ((deadZoneScreen && !withinScreenDeadZone()) || ((deadZoneWorld && !withinWorldDeadZone()))
 				|| (!deadZoneScreen && !deadZoneWorld))) {
 			setPanOffset(
-					PApplet.lerp(getPanOffset().x, ((-followObject.pos.x - followObjectOffset.x + offset.x) * zoom),
+					PApplet.lerp(getPanOffset().x, ((-followObject.position.x - followObjectOffset.x + offset.x) * zoom),
 							lerpSpeed) - shakeOffset.x,
-					PApplet.lerp(getPanOffset().y, ((-followObject.pos.y - followObjectOffset.y + offset.y) * zoom),
+					PApplet.lerp(getPanOffset().y, ((-followObject.position.y - followObjectOffset.y + offset.y) * zoom),
 							lerpSpeed) - shakeOffset.y);
 		} else if (!following) {
 			setPanOffset(
@@ -329,7 +329,7 @@ public final class Camera extends ZoomPan {
 	 * @return
 	 */
 	private boolean withinScreenDeadZone() {
-		PVector coord = getCoordToDisp(followObject.pos); // object screen coord
+		PVector coord = getCoordToDisp(followObject.position); // object screen coord
 		return withinRegion(coord, deadZoneP1, deadZoneP2);
 	}
 
@@ -356,7 +356,7 @@ public final class Camera extends ZoomPan {
 	 * @return
 	 */
 	private boolean withinWorldDeadZone() {
-		PVector coord = followObject.pos;
+		PVector coord = followObject.position;
 		return withinRegion(coord, deadZoneP1, deadZoneP2);
 	}
 

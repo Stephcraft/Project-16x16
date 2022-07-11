@@ -15,16 +15,15 @@ public class ImportLevelWindow extends PClass {
 	Button pressCancel;
 
 	final String jsonPath = "src/main/resources/";
-	
+
 	// Map Editor Scene
 	public GameplayScene scene;
-	
-	public ImportLevelWindow(SideScroller a, GameplayScene scene) {
-		
-		super(a);
-		
+
+	public ImportLevelWindow(SideScroller sideScroller, GameplayScene scene) {
+		super(sideScroller);
+
 		this.scene = scene;
-		
+
 		pressImport = new Button(applet);
 		pressImport.setText("Import Level");
 		pressImport.setPosition(applet.width / 2, applet.height / 2 + 150);
@@ -37,7 +36,7 @@ public class ImportLevelWindow extends PClass {
 		input.setPosition(applet.width / 2, applet.height / 2);
 		input.setWidth(300);
 	}
-	
+
 	// Used to toggle the darkened background, use for buttons at the moment
 	public void privacyDisplay() {
 		// Display Privacy Area
@@ -45,7 +44,7 @@ public class ImportLevelWindow extends PClass {
 		applet.noStroke();
 		applet.rect(applet.width / 2, applet.height / 2, applet.width, applet.height);
 	}
-	
+
 	public void display() {
 		// Display Window
 		applet.fill(29, 33, 45);
@@ -62,7 +61,7 @@ public class ImportLevelWindow extends PClass {
 		applet.textSize(20);
 		applet.textAlign(LEFT, TOP);
 		applet.text("Map Name", applet.width / 2 - 150, applet.height / 2 - 40);
-		
+
 		applet.textSize(20);
 		applet.textAlign(LEFT, TOP);
 		applet.text("Map must be inside resource folder", applet.width / 2 - 180, applet.height / 2 + 30);

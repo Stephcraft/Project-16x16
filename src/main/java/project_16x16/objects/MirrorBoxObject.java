@@ -1,12 +1,12 @@
 package project_16x16.objects;
 
 import processing.core.PApplet;
+import project_16x16.SideScroller;
+import project_16x16.Tileset;
 import project_16x16.projectiles.MagicProjectile;
 import project_16x16.projectiles.ProjectileObject;
 import project_16x16.projectiles.Swing;
 import project_16x16.scene.GameplayScene;
-import project_16x16.SideScroller;
-import project_16x16.Tileset;
 
 public class MirrorBoxObject extends GameObject {
 
@@ -21,8 +21,8 @@ public class MirrorBoxObject extends GameObject {
 	final int BOX_W = 64;
 	final int BOX_H = 64;
 
-	public MirrorBoxObject(SideScroller a, GameplayScene g) {
-		super(a, g);
+	public MirrorBoxObject(SideScroller sideScroller, GameplayScene gameplayScene) {
+		super(sideScroller, gameplayScene);
 
 		direction = 0;
 
@@ -34,25 +34,25 @@ public class MirrorBoxObject extends GameObject {
 		width = BOX_W;
 		height = BOX_H;
 
-		collision = new CollidableObject(applet, g, BOX_W, BOX_H, 0, 0, true);
+		collision = new CollidableObject(applet, gameplayScene, BOX_W, BOX_H, 0, 0, true);
 		collision.flag = "TRANSPARENT_BULLET";
-		g.objects.add(collision);
+		gameplayScene.objects.add(collision);
 	}
 
 	public void display() {
 		switch (direction) {
-		case BOX_RIGHT:
-			setMirrorBox(0);
-			break;
-		case BOX_DOWN:
-			setMirrorBox(90);
-			break;
-		case BOX_LEFT:
-			setMirrorBox(180);
-			break;
-		case BOX_UP:
-			setMirrorBox(270);
-			break;
+			case BOX_RIGHT:
+				setMirrorBox(0);
+				break;
+			case BOX_DOWN:
+				setMirrorBox(90);
+				break;
+			case BOX_LEFT:
+				setMirrorBox(180);
+				break;
+			case BOX_UP:
+				setMirrorBox(270);
+				break;
 		}
 	}
 
@@ -60,12 +60,11 @@ public class MirrorBoxObject extends GameObject {
 		if (rotating) {
 			image = animation.animate();
 		}
-		collision.pos = pos;
+		collision.position = position;
 
 		// Change Mirror Box Axis
-		for (int i = 0; i < gameScene.getPlayer().swings.size(); i++) {
-			Swing swing = gameScene.getPlayer().swings.get(i);
-
+		for (int i = 0; i < gameplayScene.getPlayer().swings.size(); i++) {
+			Swing swing = gameplayScene.getPlayer().swings.get(i);
 			if (collidesWithSwing(swing)) {
 				if (!swing.activated) {
 					rotating = true;
@@ -77,8 +76,8 @@ public class MirrorBoxObject extends GameObject {
 		}
 
 		// Reflect Magic Projectile
-		for (int i = 0; i < gameScene.projectileObjects.size(); i++) {
-			ProjectileObject projectile = gameScene.projectileObjects.get(i);
+		for (int i = 0; i < gameplayScene.projectileObjects.size(); i++) {
+			ProjectileObject projectile = gameplayScene.projectileObjects.get(i);
 			activated = false;
 			if (projectile.id.equals("MAGIC")) {
 				if (collidesWithProjectile(projectile) && !projectile.hit) {
@@ -95,7 +94,8 @@ public class MirrorBoxObject extends GameObject {
 		if (!rotating) {
 			if (activated && checkHit) {
 				image = Tileset.getTile("MIRROR_BOX_HIT");
-			} else {
+			}
+			else {
 				image = Tileset.getTile("MIRROR_BOX");
 			}
 		}
@@ -121,41 +121,37 @@ public class MirrorBoxObject extends GameObject {
 		 * position of the projectile so it is properly alligned with the mirror box.
 		 */
 		switch (direction) {
-		case BOX_RIGHT:
-			bounceProjectile(projectile, LEFT, UP, 'x');
-			bounceProjectile(projectile, DOWN, RIGHT, 'y');
-			return;
-		case BOX_DOWN:
-			bounceProjectile(projectile, LEFT, DOWN, 'x');
-			bounceProjectile(projectile, UP, RIGHT, 'y');
-			return;
-		case BOX_LEFT:
-			bounceProjectile(projectile, RIGHT, DOWN, 'x');
-			bounceProjectile(projectile, UP, LEFT, 'y');
-			return;
-		case BOX_UP:
-			bounceProjectile(projectile, RIGHT, UP, 'x');
-			bounceProjectile(projectile, DOWN, LEFT, 'y');
-			return;
+			case BOX_RIGHT:
+				bounceProjectile(projectile, LEFT, UP, 'x');
+				bounceProjectile(projectile, DOWN, RIGHT, 'y');
+				return;
+			case BOX_DOWN:
+				bounceProjectile(projectile, LEFT, DOWN, 'x');
+				bounceProjectile(projectile, UP, RIGHT, 'y');
+				return;
+			case BOX_LEFT:
+				bounceProjectile(projectile, RIGHT, DOWN, 'x');
+				bounceProjectile(projectile, UP, LEFT, 'y');
+				return;
+			case BOX_UP:
+				bounceProjectile(projectile, RIGHT, UP, 'x');
+				bounceProjectile(projectile, DOWN, LEFT, 'y');
+				return;
 		}
 	}
 
 	public boolean collidesWithSwing(Swing swing) {
-		return (swing.pos.x + swing.width / 2 > pos.x - width / 2 && swing.pos.x - swing.width / 2 < pos.x + width / 2)
-				&& (swing.pos.y + swing.height / 2 > pos.y - height / 2
-						&& swing.pos.y - swing.height / 2 < pos.y + height / 2);
+		return (swing.position.x + swing.width / 2 > position.x - width / 2 && swing.position.x - swing.width / 2 < position.x + width / 2) && (swing.position.y + swing.height / 2 > position.y - height / 2 && swing.position.y - swing.height / 2 < position.y + height / 2);
 	}
 
 	public boolean collidesWithProjectile(ProjectileObject swing) {
-		return (swing.pos.x + swing.width / 2 > pos.x - width / 2 && swing.pos.x - swing.width / 2 < pos.x + width / 2)
-				&& (swing.pos.y + swing.height / 2 > pos.y - height / 2
-						&& swing.pos.y - swing.height / 2 < pos.y + height / 2);
+		return (swing.position.x + swing.width / 2 > position.x - width / 2 && swing.position.x - swing.width / 2 < position.x + width / 2) && (swing.position.y + swing.height / 2 > position.y - height / 2 && swing.position.y - swing.height / 2 < position.y + height / 2);
 	}
 
 	public void setMirrorBox(float rotate) {
 		// Setup image of mirror and rotation
 		applet.pushMatrix();
-		applet.translate(pos.x, pos.y);
+		applet.translate(position.x, position.y);
 		applet.rotate(PApplet.radians(rotate));
 		applet.image(image, 0, 0);
 		applet.popMatrix();
@@ -167,9 +163,9 @@ public class MirrorBoxObject extends GameObject {
 			projectile.prevDirection = projectile.direction;
 			projectile.direction = deflectDir;
 			if (axisSwitch == 'x')
-				projectile.pos.x = pos.x;
+				projectile.position.x = position.x;
 			else if (axisSwitch == 'y')
-				projectile.pos.y = pos.y;
+				projectile.position.y = position.y;
 		}
 		hitWrongSide(projectile, flyDir, deflectDir);
 	}

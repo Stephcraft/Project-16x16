@@ -20,14 +20,14 @@ public class Settings extends PScene {
 	private final int WINDOW_X_POS = (int) applet.gameResolution.x / 2;
 	private final int WINDOW_Y_POS = (int) applet.gameResolution.y / 2;
 	// Buttons
-	private final int GRAPHICS_Y_OFFSET =  10;
-	private final int SOUND_Y_OFFSET =  50;
-	private final int CONTROL_Y_OFFSET =  90;
+	private final int GRAPHICS_Y_OFFSET = 10;
+	private final int SOUND_Y_OFFSET = 50;
+	private final int CONTROL_Y_OFFSET = 90;
 	private final int WINDOWSIZE_Y_OFFSET = 130;
 	private final int QUIT_Y_OFFSET = 320;
 	private final int APPLY_Y_OFFSET = 280;
 	// Text Display
-	
+
 	private Button quit;
 	private Button apply;
 	private Button pressGraphicsOptions;
@@ -39,11 +39,11 @@ public class Settings extends PScene {
 
 	private SideScroller game;
 
-	public Settings(SideScroller a) {
-		super(a);
-		game = a;
+	public Settings(SideScroller sideScroller) {
+		super(sideScroller);
+		game = sideScroller;
 
-		quit = new Button(a);
+		quit = new Button(sideScroller);
 		quit.setText("Quit");
 		quit.setPosition(WINDOW_X_POS, WINDOW_Y_POS + QUIT_Y_OFFSET);
 
@@ -53,18 +53,18 @@ public class Settings extends PScene {
 
 		pressGraphicsOptions = new Button(applet);
 		pressGraphicsOptions.setText("Configure Graphics");
-		pressGraphicsOptions.setPosition(WINDOW_X_POS , WINDOW_Y_POS + GRAPHICS_Y_OFFSET);
+		pressGraphicsOptions.setPosition(WINDOW_X_POS, WINDOW_Y_POS + GRAPHICS_Y_OFFSET);
 
 		pressSoundOptions = new Button(applet);
 		pressSoundOptions.setText("Configure Audio and Volume");
-		pressSoundOptions.setPosition(WINDOW_X_POS , WINDOW_Y_POS + SOUND_Y_OFFSET);
+		pressSoundOptions.setPosition(WINDOW_X_POS, WINDOW_Y_POS + SOUND_Y_OFFSET);
 
 		pressControlsOptions = new Button(applet);
 		pressControlsOptions.setText("Configure Controls");
-		pressControlsOptions.setPosition(WINDOW_X_POS , WINDOW_Y_POS + CONTROL_Y_OFFSET);
+		pressControlsOptions.setPosition(WINDOW_X_POS, WINDOW_Y_POS + CONTROL_Y_OFFSET);
 
-		windowSizeX = new NumberInputField(a);
-		windowSizeX.setPosition(WINDOW_X_POS , WINDOW_Y_POS + WINDOWSIZE_Y_OFFSET);
+		windowSizeX = new NumberInputField(sideScroller);
+		windowSizeX.setPosition(WINDOW_X_POS, WINDOW_Y_POS + WINDOWSIZE_Y_OFFSET);
 	}
 
 	@Override
@@ -87,7 +87,6 @@ public class Settings extends PScene {
 		OptionText(dynamicPadding("Aspect Ratio -", 20), -WINDOW_X_POS / 2 + 50, -WINDOW_Y_POS / 2 + 70);
 		OptionText(dynamicPadding("Display Mode -", 20), -WINDOW_X_POS / 2 + 50, -WINDOW_Y_POS / 2 + 90);
 
-		
 		windowSizeX.update();
 		windowSizeX.display();
 	}
@@ -106,7 +105,7 @@ public class Settings extends PScene {
 			return;
 		}
 		if (apply.hover()) {
-			//game.resizeWindow(windowSizeX.getValue(), 720); // TODO change
+			// game.resizeWindow(windowSizeX.getValue(), 720); // TODO change
 			Notifications.addNotification("Options Applied", "Your configuration has been successfully applied.");
 			return;
 		}
@@ -139,14 +138,14 @@ public class Settings extends PScene {
 		}
 		return textPad;
 	}
-	
+
 	@Override
 	void keyReleased(KeyEvent e) {
 		switch (e.getKeyCode()) {
-			case PConstants.ESC : // Pause
+			case PConstants.ESC: // Pause
 				game.returnScene();
 				break;
-			default :
+			default:
 				break;
 		}
 	}

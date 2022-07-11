@@ -1,14 +1,13 @@
 package project_16x16.ui;
 
-import static processing.core.PConstants.CORNER;
 import static processing.core.PConstants.CENTER;
+import static processing.core.PConstants.CORNER;
 
 import java.util.LinkedList;
 
 import processing.core.PApplet;
 import processing.core.PImage;
 import processing.core.PVector;
-
 import project_16x16.SideScroller;
 import project_16x16.Utility;
 
@@ -23,8 +22,7 @@ public class Notifications {
 	private static PImage background;
 	private static PVector positionTarget;
 
-	private static final int notificationWidth = 275, notificationHeight = 125, notificationTextPadding = 10,
-			notificationLifetime = 240, notificationLifetimeFast = 150, notificationLifetimeVeryFast = 60;
+	private static final int notificationWidth = 275, notificationHeight = 125, notificationTextPadding = 10, notificationLifetime = 240, notificationLifetimeFast = 150, notificationLifetimeVeryFast = 60;
 
 	private final PVector position = new PVector(game.width - notificationWidth, game.height);
 	private final String title, message;
@@ -32,10 +30,9 @@ public class Notifications {
 
 	private static SideScroller game;
 
-	public static void assignApplet(SideScroller s) {
-		game = s;
-		positionTarget = new PVector(game.gameResolution.x - notificationWidth,
-				game.gameResolution.y - notificationHeight);
+	public static void assignApplet(SideScroller sideScroller) {
+		game = sideScroller;
+		positionTarget = new PVector(game.gameResolution.x - notificationWidth, game.gameResolution.y - notificationHeight);
 		background = game.createImage(notificationWidth, notificationHeight, PApplet.ARGB);
 		for (int i = 0; i < background.pixels.length; i++) {
 			float a = PApplet.map(i, 0, background.pixels.length, 255, 0);
@@ -88,10 +85,12 @@ public class Notifications {
 			if (notifications.size() > 2) {
 				if (notifications.size() < 6) {
 					lifetime = notificationLifetimeFast;
-				} else {
+				}
+				else {
 					lifetime = notificationLifetimeVeryFast;
 				}
-			} else {
+			}
+			else {
 				lifetime = notificationLifetime;
 			}
 		}
@@ -105,11 +104,11 @@ public class Notifications {
 				notifications.removeFirst();
 			}
 		}
-		
+
 		game.imageMode(CORNER);
 		game.rectMode(CORNER);
 		game.textAlign(PApplet.LEFT, PApplet.TOP);
-		
+
 		game.fill(255, 255, 255, alpha); // white title
 		game.image(background, position.x, position.y);
 		game.textSize(18);
