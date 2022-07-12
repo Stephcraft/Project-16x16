@@ -14,7 +14,7 @@ public class Button extends PClass {
 	private String text;
 	protected int x;
 	protected int y;
-	
+
 	private int textSize = 20;
 
 	protected boolean focus;
@@ -28,8 +28,8 @@ public class Button extends PClass {
 	 * 
 	 * @param a Reference to Game
 	 */
-	public Button(SideScroller a) {
-		super(a);
+	public Button(SideScroller sideScroller) {
+		super(sideScroller);
 		text = "Press me";
 		width = 0;
 		height = 0;
@@ -51,19 +51,19 @@ public class Button extends PClass {
 		intW();
 		intH();
 	}
-	
-	//Display with custom size
-	
-	public void manDisplay() { 
+
+	// Display with custom size
+
+	public void manDisplay() {
 		applet.strokeWeight(4);
 		displayColors();
 		applet.pushMatrix();
 		displayTextColors();
 		applet.popMatrix();
 	}
-	
-	//Only works with manDisplay
-	
+
+	// Only works with manDisplay
+
 	public void setSize(int w, int h) {
 		width = w;
 		height = h;
@@ -89,7 +89,8 @@ public class Button extends PClass {
 		press = false;
 		if (applet.mousePressEvent) {
 			focus = hover();
-		} else if (applet.mouseReleaseEvent && hover()) {
+		}
+		else if (applet.mouseReleaseEvent && hover()) {
 			press = true;
 		}
 	}
@@ -98,7 +99,8 @@ public class Button extends PClass {
 		if (hover()) {
 			applet.stroke(colorValues[2]);
 			applet.fill(colorValues[3]);
-		} else {
+		}
+		else {
 			applet.stroke(colorValues[0]);
 			applet.fill(colorValues[1]);
 		}
@@ -108,7 +110,8 @@ public class Button extends PClass {
 	public void displayTextColors() {
 		if (focus) {
 			applet.fill(colorValues[5]);
-		} else {
+		}
+		else {
 			applet.fill(colorValues[4]);
 		}
 		applet.textAlign(CENTER, CENTER);
@@ -116,7 +119,7 @@ public class Button extends PClass {
 		applet.text(text, x, y);
 	}
 
-	private void  defaultColors() {
+	private void defaultColors() {
 		colorValues[0] = applet.color(74, 81, 99);// When not pressed stroke
 		colorValues[1] = applet.color(47, 54, 73);// When not pressed fill
 		colorValues[2] = applet.color(47, 54, 73);// When pressed stroke
@@ -169,7 +172,7 @@ public class Button extends PClass {
 	public void setTextSize(int size) {
 		textSize = size;
 	}
-	
+
 	/**
 	 * Sets the position for the button
 	 */
@@ -185,10 +188,11 @@ public class Button extends PClass {
 		x = _x;
 		y = _y;
 	}
+
 	public void setBlocked(boolean blocked) {
 		this.blocked = blocked;
 	}
-	
+
 	public int getX() {
 		return x;
 	}

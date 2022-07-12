@@ -6,25 +6,40 @@ import project_16x16.Tileset;
 
 public class Tile {
 
-	private int ID;
+	private int id;
 	private String name;
 	private PImage pImage;
 	private TileType tileType;
-	
+
 	public enum TileType {
 		COLLISION, BACKGROUND, OBJECT, ENTITY;
 	}
-	
-	public Tile(int ID, String name, PImage pImage, TileType tileType) {
-		this.ID = ID;
+
+	public Tile(int id, String name, PImage pImage, TileType tileType) {
+		this.id = id;
 		this.name = name;
 		this.pImage = pImage;
 		this.tileType = tileType;
 	}
-	
-	public int getID() { return ID; }
-	public String getName() { return name; }
-	public PImage getPImage() { return pImage; }
-	public TileType getTileType() { return tileType; }
-	public PVector getPosition() { return new PVector(Tileset.TILESETWIDTH/ID, Tileset.TILESETWIDTH % ID); }
+
+	public int getId() {
+		return id;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public PImage getPImage() {
+		return pImage;
+	}
+
+	public TileType getTileType() {
+		return tileType;
+	}
+
+	public PVector getPosition() {
+		return new PVector(Tileset.TILESETWIDTH / id, Tileset.TILESETWIDTH % id);
+	}
+
 }

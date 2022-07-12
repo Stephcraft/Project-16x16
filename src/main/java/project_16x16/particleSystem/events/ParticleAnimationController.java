@@ -18,17 +18,18 @@ public class ParticleAnimationController implements ParticleEventListener {
 
 	private ArrayList<PImage> images;
 	private int rate;
-	
+
 	/**
 	 * Add animation to particle
 	 *
 	 * @param animationName animation name
-	 * @param rate 			animation speed, high value = slow speed, -1 = match life span of particle
+	 * @param rate          animation speed, high value = slow speed, -1 = match
+	 *                      life span of particle
 	 */
 	public ParticleAnimationController(String animationName, int rate) {
 		this(Tileset.getAnimation(animationName), rate);
 	}
-	
+
 	/**
 	 * Add animation to particle
 	 * 
@@ -40,39 +41,38 @@ public class ParticleAnimationController implements ParticleEventListener {
 		this.images = images;
 		this.rate = rate;
 	}
-	
+
 	@Override
 	public void onParticleSpawnEvent(Particle particle) {
 		setParticle(particle);
 	};
-	
+
 	@Override
 	public void onParticleRunEvent(Particle particle) {
 		setParticle(particle);
 	}
-	
-	
-	
+
 	@Override
 	public ParticleEventListener copy() {
 		return new ParticleAnimationController(images, rate);
 	}
-	
+
 	private void setParticle(Particle particle) {
 		if (rate == -1) {
 			particle.image = getImage(particle.maxLifespan, particle.lifespan);
-		} else {
+		}
+		else {
 			particle.image = getImage(particle.frameCount);
 		}
 	}
-	
+
 	private PImage getImage(int frameCount) {
-		int id = (frameCount/rate) % images.size();
+		int id = (frameCount / rate) % images.size();
 		return images.get(id);
 	}
-	
+
 	private PImage getImage(float maxLife, float currentLife) {
-		int id = (int) PApplet.map(currentLife, maxLife, 0, 0, images.size()-1);
+		int id = (int) PApplet.map(currentLife, maxLife, 0, 0, images.size() - 1);
 		return images.get(id);
 	}
 }

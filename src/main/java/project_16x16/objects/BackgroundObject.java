@@ -12,21 +12,21 @@ public class BackgroundObject extends EditableObject {
 
 	public PImage image;
 
-	public BackgroundObject(SideScroller a, GameplayScene g) {
-		super(a, g);
+	public BackgroundObject(SideScroller sideScroller, GameplayScene gameplayScene) {
+		super(sideScroller, gameplayScene);
 
 		type = type.BACKGROUND;
 	}
 
-	public BackgroundObject(SideScroller a, GameplayScene g, String id) {
-		this(a, g);
+	public BackgroundObject(SideScroller sideScroller, GameplayScene gameplayScene, String id) {
+		this(sideScroller, gameplayScene);
 		setGraphic(id);
 	}
 
-	public BackgroundObject(SideScroller a, GameplayScene g, String id, int x, int y) {
-		this(a, g);
+	public BackgroundObject(SideScroller sideScroller, GameplayScene gameplayScene, String id, int x, int y) {
+		this(sideScroller, gameplayScene);
 
-		pos = new PVector(x, y);
+		position = new PVector(x, y);
 		setGraphic(id);
 	}
 
@@ -41,7 +41,7 @@ public class BackgroundObject extends EditableObject {
 			pixelOffsetX = 2;
 		}
 		
-		applet.image(image, pos.x + pixelOffsetX, pos.y + pixelOffsetY, width, height);
+		applet.image(image, position.x + pixelOffsetX, position.y + pixelOffsetY, width, height);
 	}
 
 	public void setGraphic(String name) {
@@ -64,7 +64,7 @@ public class BackgroundObject extends EditableObject {
 	public void debug() {
 		applet.stroke(50, 255, 120);
 		applet.noFill();
-		applet.rect(pos.x, pos.y, width, height);
+		applet.rect(position.x, position.y, width, height);
 	}
 
 	@Override
@@ -72,8 +72,8 @@ public class BackgroundObject extends EditableObject {
 		JSONObject item = new JSONObject();
 		item.setString("id", id);
 		item.setString("type", "BACKGROUND");
-		item.setInt("x", (int) pos.x);
-		item.setInt("y", (int) pos.y);
+		item.setInt("x", (int) position.x);
+		item.setInt("y", (int) position.y);
 		return item;
 	}
 }

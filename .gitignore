@@ -28,3 +28,4 @@ Project_16x16.iml
 # MACOS file structure
 *.DS_Store
 /bin/
+/.eclipse-pmd

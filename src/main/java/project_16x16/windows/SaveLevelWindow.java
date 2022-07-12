@@ -1,11 +1,11 @@
 package project_16x16.windows;
 
-import project_16x16.scene.GameplayScene;
-import project_16x16.scene.GameplayScene.GameModes;
 import project_16x16.PClass;
 import project_16x16.SideScroller;
-import project_16x16.ui.TextInputField;
+import project_16x16.scene.GameplayScene;
+import project_16x16.scene.GameplayScene.GameModes;
 import project_16x16.ui.Button;
+import project_16x16.ui.TextInputField;
 
 public class SaveLevelWindow extends PClass {
 
@@ -18,9 +18,8 @@ public class SaveLevelWindow extends PClass {
 	// Map Editor Scene
 	public GameplayScene scene;
 
-	public SaveLevelWindow(SideScroller a, GameplayScene scene) {
-
-		super(a);
+	public SaveLevelWindow(SideScroller sideScroller, GameplayScene scene) {
+		super(sideScroller);
 
 		this.scene = scene;
 
