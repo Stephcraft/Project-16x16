@@ -27,7 +27,7 @@ public class TileTest {
     }
     @Test
     void getIDTest() {
-        assertEquals(tile.getID(), 1);
+        assertEquals(tile.getId(), 1);
     }
     @Test
     void getNameTest() {
