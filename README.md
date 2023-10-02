@@ -8,6 +8,26 @@
 
 Looking forward to contribute to an awesome open source project? Well here is a good one! Project 16x16 is a 2D Platformer game made with java and processing. **You** are able to contribute to this project. The goal is to make a cool game in processing together, that includes **You**. Plus, if you are not a programmer, well this is a game so we need cool ideas for gameplay mechanics, original story concepts, level designers, also people who can create soundtracks/audio, and artists! We are already using the amazing industrial tileset made by [0x72](https://0x72.itch.io/16x16-industrial-tileset), **but!** additional art is needed like UI designs, effects and **epic bosses for epic boss fights** ;)
 
+## About the game
+
+Project 16x16 is a combat-based 2D Platformer containing environment-based puzzles that players must solve to 
+progress through the game. A majority of the puzzles include bouncing energy projectiles off of angled blocks 
+in order to fill orbs that provide the player with a means to progress.
+
+#### Features:
+
+- Basic platforming mechanics - walk, jump, crouch, sneak, attack
+- Interaction with objects to solve puzzles
+- A blade for player combat
+- Collectible items and storage (can hold up to 6 items)
+- Storytelling integrated through collectibles and cutscenes
+- Multiplayer option where players must work together to progress
+- A continuous map with individual rooms for each puzzle
+
+For a more in-depth look into the game mechanics and story (at the risk of spoilers), feel free to visit the
+[idea folder](https://github.com/Stephcraft/Project-16x16/tree/master/idea) and check out the
+[archive](https://github.com/Stephcraft/Project-16x16/tree/master/idea/archive)!
+
 ## How do I start!
 
 Wow!! This project seems **EPIC!** Right? And its made in processing, like _whhhooaaahht_ ! So how do I get in, how do I start? Simple:
@@ -27,6 +47,21 @@ First, join our [Discord server](https://discord.gg/zDJSCqd) this is where anyth
 #### Other developers
 
 -   Write your ideas in the folder `idea`, preferably with the `.md` file format or share on Discord directly!
+
+#### Downloading the software
+
+If you want to download and test the software, here are a few steps to take:
+
+1. Click on the latest release found on the right side of the github page
+2. Download Project_16x16.zip and extract the file
+3. Download one of the [Java editions](https://www.oracle.com/java/technologies/downloads/) between versions 11 
+and 17. You made need to create an Oracle account to download the software.
+4. Run the .exe file, and you're good to go!
+
+Note: If the program won't run with one of the versions, download a different version and run the program on 
+it. You may need to delete the other version if the program tries to run on that version instead. It seems like
+the game won't run on version 17 at this time.
+
 
 ## Overall goal
 
