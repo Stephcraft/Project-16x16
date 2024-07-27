@@ -22,19 +22,18 @@ import processing.data.JSONObject;
 import processing.net.Client;
 import processing.net.Server;
 import project_16x16.SideScroller;
-import project_16x16.multiplayer.Multiplayer;
 
 @ExtendWith(MockitoExtension.class)
-public class MultiplayerTest {
+class MultiplayerTest {
 
 	@Mock
 	private SideScroller player;
 
 	@Test
-	public void callingConstructorAsServer_ok() {
+	void callingConstructorAsServer_ok() {
 		ConnectException ce = null;
 		try {
-			Multiplayer multiplayer = new Multiplayer(player, false);
+			new Multiplayer(player, false);
 		}
 		catch (ConnectException e) {
 			ce = e;
@@ -44,10 +43,10 @@ public class MultiplayerTest {
 	}
 
 	@Test
-	public void callingConstructorAsClient_ok() {
+	void callingConstructorAsClient_ok() {
 		ConnectException ce = null;
 		try {
-			Multiplayer multiplayer = new Multiplayer(player, true);
+			new Multiplayer(player, true);
 		}
 		catch (ConnectException e) {
 			ce = e;
@@ -57,13 +56,13 @@ public class MultiplayerTest {
 	}
 
 	@Test
-	public void callingConstructorAsServer_raisesException() {
+	void callingConstructorAsServer_raisesException() {
 		ConnectException ce = null;
 		try (MockedConstruction<Server> mocked = mockConstruction(Server.class, (mock, context) -> {
 			when(mock.active()).thenReturn(false);
 		})) {
 			try {
-				Multiplayer multiplayer = new Multiplayer(player, true);
+				new Multiplayer(player, true);
 			}
 			catch (ConnectException e) {
 				ce = e;
@@ -74,13 +73,13 @@ public class MultiplayerTest {
 	}
 
 	@Test
-	public void callingConstructorAsClient_raisesException() {
+	void callingConstructorAsClient_raisesException() {
 		ConnectException ce = null;
 		try (MockedConstruction<Client> mocked = mockConstruction(Client.class, (mock, context) -> {
 			when(mock.active()).thenReturn(false);
 		})) {
 			try {
-				Multiplayer multiplayer = new Multiplayer(player, false);
+				new Multiplayer(player, false);
 			}
 			catch (ConnectException e) {
 				ce = e;
@@ -91,7 +90,7 @@ public class MultiplayerTest {
 	}
 
 	@Test
-	public void callingReadDataAsServerWithNoClient_returnsNullData() {
+	void callingReadDataAsServerWithNoClient_returnsNullData() {
 		ConnectException ce = null;
 		JSONObject data = null;
 		try (MockedConstruction<Server> mocked = mockConstruction(Server.class, (mock, context) -> {
@@ -112,7 +111,7 @@ public class MultiplayerTest {
 	}
 
 	@Test
-	public void callingReadDataAsServerWithClient_returnsData() {
+	void callingReadDataAsServerWithClient_returnsData() {
 		ConnectException ce = null;
 		JSONObject data = null;
 
@@ -138,7 +137,7 @@ public class MultiplayerTest {
 	}
 
 	@Test
-	public void callingReadDataAsClientWithNoAvailableData_returnsNullData() {
+	void callingReadDataAsClientWithNoAvailableData_returnsNullData() {
 		ConnectException ce = null;
 		JSONObject data = null;
 		try (MockedConstruction<Client> client = mockConstruction(Client.class, (mock, context) -> {
@@ -159,7 +158,7 @@ public class MultiplayerTest {
 	}
 
 	@Test
-	public void callingReadDataAsClient_returnsData() {
+	void callingReadDataAsClient_returnsData() {
 		ConnectException ce = null;
 		JSONObject data = null;
 		try (MockedConstruction<Client> client = mockConstruction(Client.class, (mock, context) -> {
@@ -182,7 +181,7 @@ public class MultiplayerTest {
 	}
 
 	@Test
-	public void callingWriteDataAsServer() {
+	void callingWriteDataAsServer() {
 		ConnectException ce = null;
 		try (MockedConstruction<Server> mocked = mockConstruction(Server.class, (mock, context) -> {
 			when(mock.active()).thenReturn(true);
@@ -203,7 +202,7 @@ public class MultiplayerTest {
 	}
 
 	@Test
-	public void callingWriteDataAsClient() {
+	void callingWriteDataAsClient() {
 		ConnectException ce = null;
 		try (MockedConstruction<Client> mocked = mockConstruction(Client.class, (mock, context) -> {
 			when(mock.active()).thenReturn(true);
@@ -224,7 +223,7 @@ public class MultiplayerTest {
 	}
 
 	@Test
-	public void callingWriteDataAsClientNotActive_doNotWrites() {
+	void callingWriteDataAsClientNotActive_doNotWrites() {
 		ConnectException ce = null;
 		try (MockedConstruction<Client> mocked = mockConstruction(Client.class, (mock, context) -> {
 			when(mock.active()).thenReturn(true);
@@ -246,7 +245,7 @@ public class MultiplayerTest {
 	}
 
 	@Test
-	public void callingExitAsServer() {
+	void callingExitAsServer() {
 		ConnectException ce = null;
 		try (MockedConstruction<Server> mocked = mockConstruction(Server.class, (mock, context) -> {
 			when(mock.active()).thenReturn(true);
@@ -267,7 +266,7 @@ public class MultiplayerTest {
 	}
 
 	@Test
-	public void callingExitAsClient() {
+	void callingExitAsClient() {
 		ConnectException ce = null;
 		try (MockedConstruction<Client> mocked = mockConstruction(Client.class, (mock, context) -> {
 			when(mock.active()).thenReturn(true);

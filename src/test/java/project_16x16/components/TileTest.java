@@ -11,7 +11,7 @@ import processing.core.PImage;
 import processing.core.PVector;
 import project_16x16.Tileset;
 
-public class TileTest {
+class TileTest {
 
 	private Tile tile;
 	private PImage image;
@@ -23,33 +23,33 @@ public class TileTest {
 	}
 
 	@Test
-	void constructorTest() {
+	void callingConstructor_shouldNotFail() {
 		assertNotNull(tile);
 	}
 
 	@Test
-	void getIDTest() {
-		assertEquals(tile.getId(), 1);
+	void callingGetId_shouldReturnExpected() {
+		assertEquals(1, tile.getId());
 	}
 
 	@Test
-	void getNameTest() {
-		assertEquals(tile.getName(), "tile");
+	void callingGetName_shouldReturnExpected() {
+		assertEquals("tile", tile.getName());
 	}
 
 	@Test
-	void getPImageTest() {
-		assertEquals(tile.getPImage(), image);
+	void callingGetPImage_shouldReturnExpected() {
+		assertEquals(image, tile.getPImage());
 	}
 
 	@Test
-	void getTileTypeTest() {
-		assertEquals(tile.getTileType(), Tile.TileType.BACKGROUND);
+	void callingGetTileType_shouldReturnExpected() {
+		assertEquals(Tile.TileType.BACKGROUND, tile.getTileType());
 	}
 
 	@Test
-	void getPositionTest() {
-		PVector vector = new PVector(Tileset.TILESETWIDTH, 0); // as ID = 1
-		assertEquals(tile.getPosition(), vector);
+	void callingGetPosition_shouldReturnExpected() {
+		PVector vector = new PVector(Tileset.TILESETWIDTH, 0);
+		assertEquals(vector, tile.getPosition());
 	}
 }
