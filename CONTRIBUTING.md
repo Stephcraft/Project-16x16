@@ -116,6 +116,10 @@ It is recommended to create a commit every time you complete a task:
 That's it for the Source tree setup! Now, you are ready to [open up the code editor](wiki). Don't forget to come back to this file when you are ready to know about [the Process of Making Changes](#the-process-of-making-changes).
 
 ## The Process of Making Changes
+### Before starting coding... formatting rules!
+Having a codebase formatted consistently  makes things easier. Code will be easier to understand for new contributors and the risk of mistakes will be reduced.
+Make sure to configure your IDE so that it uses **Eclipse_formatter.xml** file rules. You can also tell your IDE to automatically format the code before each save action. It is importanto to make sure that the code is formatted before any commit.
+
 ### Issues
 You are now ready to contribute! Github represents tasks as issues. You can find all of the issues [here](https://github.com/Stephcraft/Project-16x16/issues) or in the **Issues** tab of the repository. If you found a bug, would like to add a feature or simply do not find something interesting to contribute to, then you can [create your own issue](https://github.com/Stephcraft/Project-16x16/issues/new).
 
