@@ -1,3 +1,4 @@
+package project_16x16.components;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import processing.core.PImage;
