@@ -99,7 +99,9 @@ public class Settings extends PScene {
 	private void update() {
 		quit.update();
 		apply.update();
+		pressGraphicsOptions.update();
 		pressSoundOptions.update();
+		pressControlsOptions.update();
 		if (quit.hover()) {
 			game.returnScene();
 			return;
@@ -109,8 +111,14 @@ public class Settings extends PScene {
 			Notifications.addNotification("Options Applied", "Your configuration has been successfully applied.");
 			return;
 		}
+		if (pressGraphicsOptions.hover()) {
+			game.swapToScene(GameScenes.GRAPHICS_SETTINGS);
+		}
 		if (pressSoundOptions.hover()) {
 			game.swapToScene(GameScenes.AUDIO_SETTINGS);
+		}
+		if (pressControlsOptions.hover()) {
+			game.swapToScene(GameScenes.CONTROLS_SETTINGS);
 		}
 	}
 

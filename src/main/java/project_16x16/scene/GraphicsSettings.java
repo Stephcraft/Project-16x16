@@ -13,19 +13,14 @@ import project_16x16.ui.Button;
 import project_16x16.ui.Notifications;
 import project_16x16.ui.Slider;
 
-public final class AudioSettings extends PScene {
+public final class GraphicsSettings extends PScene {
 
 	private SideScroller game;
 
 	private Button quit;
 	private Button apply;
-	private Slider volumeBGM;
-	private Slider volumeSFX;
 
-	private float originalVolumeBGM;
-	private float originalVolumeSFX;
-
-	public AudioSettings(SideScroller a) {
+	public GraphicsSettings(SideScroller a) {
 		super(a);
 
 		game = a;
@@ -37,21 +32,11 @@ public final class AudioSettings extends PScene {
 		quit = new Button(a);
 		quit.setText("Quit");
 		quit.setPosition(a.width / 2, 600);
-
-		volumeBGM = new Slider(game, 0.75f);
-		volumeBGM.setText("BGM");
-		volumeBGM.setPosition(a.width / 2, 300);
-
-		volumeSFX = new Slider(game, 0.75f);
-		volumeSFX.setText("SFX");
-		volumeSFX.setPosition(a.width / 2, 350);
 		
 	}
 
 	@Override
 	public void switchTo() {
-		originalVolumeBGM = Options.gainBGM;
-		originalVolumeSFX = Options.gainSFX;
 		// TODO properly align audio value and slider position
 		//volumeBGM.setValue(PApplet.map(originalVolumeBGM, -60, 0, 0, 1));
 		//volumeSFX.setValue(PApplet.map(originalVolumeSFX, -60, 0, 0, 1));
@@ -63,19 +48,12 @@ public final class AudioSettings extends PScene {
 		game.background(Constants.Colors.MENU_GREY);
 		apply.display();
 		quit.display();
-		volumeBGM.display();
-		volumeSFX.display();
 		
 	}
 
 	@Override
 	void mouseDragged(MouseEvent e) {
-		volumeBGM.update();
-		volumeSFX.update();
-		float volBGM = 20 * (float) Math.log(volumeBGM.getValue());
-		float volSFX = 20 * (float) Math.log(volumeSFX.getValue());
-		Audio.setGainBGM(volBGM);
-		Audio.setGainSFX(volSFX);
+		
 	}
 
 	@Override
@@ -85,19 +63,11 @@ public final class AudioSettings extends PScene {
 
 		if (quit.hover()) {
 			// revert sound changes if menu is quit
-			Audio.setGainBGM(originalVolumeBGM);
-			Audio.setGainSFX(originalVolumeSFX);
 			game.returnScene();
 			return;
 		}
 		if (apply.hover()) {
-			float volBGM = 20 * (float) Math.log(volumeBGM.getValue());
-			float volSFX = 20 * (float) Math.log(volumeSFX.getValue());
-			Options.save(Option.gainBGM, volBGM);
-			Options.save(Option.gainSFX, volSFX);
-			Options.gainBGM = volBGM;
-			Options.gainSFX = volSFX;
-			Notifications.addNotification("Sound Settings Applied", "Your configuration has been successfully applied.");
+			Notifications.addNotification("Graphics Settings Applied", "Your configuration has been successfully applied.");
 			game.returnScene();
 		}
 
