@@ -13,6 +13,12 @@ import project_16x16.ui.Button;
 import project_16x16.ui.Notifications;
 import project_16x16.ui.Slider;
 
+/**
+ * 
+ * @author micycle1
+ *
+ */
+
 public final class AudioSettings extends PScene {
 
 	private SideScroller game;
