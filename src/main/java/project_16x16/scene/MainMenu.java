@@ -8,14 +8,12 @@ import processing.core.PConstants;
 import processing.core.PGraphics;
 import processing.event.KeyEvent;
 import processing.event.MouseEvent;
-
-import project_16x16.SideScroller;
-import project_16x16.Utility;
-import project_16x16.Audio;
 import project_16x16.Audio.BGM;
 import project_16x16.Constants;
+import project_16x16.SideScroller;
 import project_16x16.SideScroller.GameScenes;
-import project_16x16.scene.PScene;
+import project_16x16.Utility;
+import project_16x16.factory.AudioFactory;
 import project_16x16.ui.Button;
 
 /**
@@ -72,7 +70,7 @@ public final class MainMenu extends PScene {
 	@Override
 	public void switchTo() {
 		super.switchTo();
-		Audio.play(BGM.TEST3);
+		AudioFactory.getInstance().play(BGM.TEST3);
 	}
 
 	@Override

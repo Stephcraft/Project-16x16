@@ -9,21 +9,27 @@ import javafx.scene.input.KeyCombination;
 import javafx.scene.transform.Scale;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
-
 import processing.core.PApplet;
 import processing.core.PFont;
 import processing.core.PSurface;
 import processing.core.PVector;
-
 import processing.event.MouseEvent;
 import processing.javafx.PSurfaceFX;
-
 import project_16x16.Options.Option;
 import project_16x16.components.AnimationComponent;
 import project_16x16.entities.Player;
+import project_16x16.factory.AudioFactory;
 import project_16x16.multiplayer.Multiplayer;
-import project_16x16.scene.*;
+import project_16x16.scene.AudioSettings;
+import project_16x16.scene.GameplayScene;
 import project_16x16.scene.GameplayScene.GameModes;
+import project_16x16.scene.MainMenu;
+import project_16x16.scene.MultiplayerClientMenu;
+import project_16x16.scene.MultiplayerHostMenu;
+import project_16x16.scene.MultiplayerMenu;
+import project_16x16.scene.PScene;
+import project_16x16.scene.PauseMenu;
+import project_16x16.scene.Settings;
 import project_16x16.ui.Notifications;
 
 /**
@@ -157,7 +163,7 @@ public class SideScroller extends PApplet {
 	 */
 	private void closeWindowEvent(WindowEvent event) {
 		try {
-			Audio.exit();
+			AudioFactory.getInstance().exit();
 			game.exit();
 		} finally {
 			stage.close();
@@ -188,7 +194,7 @@ public class SideScroller extends PApplet {
 		load();
 		AnimationComponent.assignApplet(this);
 		Notifications.assignApplet(this);
-		Audio.assignApplet(this);
+		AudioFactory.getInstance().assignApplet(this);
 
 		// Create scene
 		sceneHistory = new ArrayDeque<>();

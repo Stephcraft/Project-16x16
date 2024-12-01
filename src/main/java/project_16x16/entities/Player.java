@@ -6,7 +6,6 @@ import java.util.HashMap;
 import processing.core.PImage;
 import processing.core.PVector;
 import processing.data.JSONObject;
-import project_16x16.Audio;
 import project_16x16.Audio.SFX;
 import project_16x16.Constants;
 import project_16x16.Options;
@@ -15,6 +14,7 @@ import project_16x16.SideScroller.DebugType;
 import project_16x16.Tileset;
 import project_16x16.Utility;
 import project_16x16.components.AnimationComponent;
+import project_16x16.factory.AudioFactory;
 import project_16x16.objects.CollidableObject;
 import project_16x16.objects.EditableObject;
 import project_16x16.projectiles.Swing;
@@ -204,7 +204,7 @@ public final class Player extends EditableObject {
 				state.flying = true;
 				state.jumping = true;
 				velocity.y -= speedJump;
-				Audio.play(SFX.JUMP);
+				AudioFactory.getInstance().play(SFX.JUMP);
 				if (state.dashing) {
 					state.dashing = false;
 					velocity.y *= 1.2f;
