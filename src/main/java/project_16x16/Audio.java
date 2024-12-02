@@ -7,7 +7,7 @@ import ddf.minim.AudioSample;
 import ddf.minim.Minim;
 
 /**
- * Provides static methods for playing game audio: background music and sound
+ * Provides methods for playing game audio: background music and sound
  * effects.
  * 
  * @author micycle1
@@ -20,7 +20,7 @@ public final class Audio {
 	private static float gainBGM = 0;
 	private static float gainSFX = 0;
 
-	private static Minim minim;
+	private Minim minim;
 
 	/**
 	 * Background music, which are referenced as enums.
@@ -58,16 +58,20 @@ public final class Audio {
 		}
 	}
 
-	private static final HashMap<SFX, AudioSample> SFX_MAP = new HashMap<>(); // could load from json
-	private static final HashMap<BGM, AudioPlayer> BGM_MAP = new HashMap<>(); // could load from json
+	private HashMap<SFX, AudioSample> SFX_MAP = new HashMap<>(); // could load from json
+	private HashMap<BGM, AudioPlayer> BGM_MAP = new HashMap<>(); // could load from json
 
+	protected Minim createMinim(SideScroller sideScroller) {
+    	return new Minim(sideScroller);
+	}
+	
 	/**
 	 * Call during setup to instantiate a connection to Minim (the audio backend).
 	 * 
 	 * @param s
 	 */
-	public static void assignApplet(SideScroller sideScroller) {
-		minim = new Minim(sideScroller);
+	public void assignApplet(SideScroller sideScroller) {
+		minim = createMinim(sideScroller);
 		for (SFX sfx : SFX.values()) {
 			AudioSample sample = minim.loadSample(sfx.getPath());
 			if (sample != null) {
@@ -98,7 +102,7 @@ public final class Audio {
 	 * @see #play(SFX, float)
 	 * @see ddf.minim.AudioSample#trigger()
 	 */
-	public static void play(SFX sound) {
+	public void play(SFX sound) {
 		if (SFX_MAP.containsKey(sound)) {
 			SFX_MAP.get(sound).trigger();
 		}
@@ -116,7 +120,7 @@ public final class Audio {
 	 * @see #play(SFX)
 	 * @see ddf.minim.AudioSample#trigger()
 	 */
-	public static void play(SFX sound, float gain) {
+	public void play(SFX sound, float gain) {
 		if (SFX_MAP.containsKey(sound)) {
 			SFX_MAP.get(sound).setGain(gain);
 			SFX_MAP.get(sound).trigger();
@@ -134,7 +138,7 @@ public final class Audio {
 	 * @param sound BGM track
 	 * @see #play(BGM, float)
 	 */
-	public static void play(BGM sound) {
+	public void play(BGM sound) {
 		if (BGM_MAP.get(sound).isPlaying()) {
 			return;
 		}
@@ -162,7 +166,7 @@ public final class Audio {
 	 * @param gain  gain, in decibels (where negative is quieter). Default = 0.
 	 * @see #play(BGM)
 	 */
-	public static void play(BGM sound, float gain) {
+	public void play(BGM sound, float gain) {
 		if (BGM_MAP.containsKey(sound)) {
 			BGM_MAP.get(sound).setGain(gain);
 			play(sound);
@@ -177,7 +181,7 @@ public final class Audio {
 	 * 
 	 * @param gain gain, in decibels (where negative is quieter). Default = 0.
 	 */
-	public static void setGainBGM(float gain) {
+	public void setGainBGM(float gain) {
 		gainBGM = gain;
 		BGM_MAP.values().forEach(sound -> sound.setGain(gainBGM));
 	}
@@ -187,7 +191,7 @@ public final class Audio {
 	 * 
 	 * @param gain gain, in decibels (where negative is quieter). Default = 0.
 	 */
-	public static void setGainSFX(float gain) {
+	public void setGainSFX(float gain) {
 		gainSFX = gain;
 		SFX_MAP.values().forEach(sound -> sound.setGain(gainSFX));
 	}
@@ -195,7 +199,7 @@ public final class Audio {
 	/**
 	 * Global mute.
 	 */
-	public static void mute() {
+	public void mute() {
 		SFX_MAP.values().forEach(sound -> sound.mute());
 		BGM_MAP.values().forEach(sound -> sound.mute());
 	}
@@ -203,7 +207,7 @@ public final class Audio {
 	/**
 	 * Global unmute.
 	 */
-	public static void unMute() {
+	public void unMute() {
 		SFX_MAP.values().forEach(sound -> sound.unmute());
 		BGM_MAP.values().forEach(sound -> sound.unmute());
 	}
@@ -214,7 +218,7 @@ public final class Audio {
 	 * 
 	 * @see Minim#stop()
 	 */
-	public static void exit() {
+	public void exit() {
 		minim.stop();
 	}
 

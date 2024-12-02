@@ -1,14 +1,13 @@
 package project_16x16.scene;
 
-import processing.core.PApplet;
 import processing.core.PConstants;
 import processing.event.KeyEvent;
 import processing.event.MouseEvent;
-import project_16x16.Audio;
 import project_16x16.Constants;
 import project_16x16.Options;
 import project_16x16.Options.Option;
 import project_16x16.SideScroller;
+import project_16x16.factory.AudioFactory;
 import project_16x16.ui.Button;
 import project_16x16.ui.Notifications;
 import project_16x16.ui.Slider;
@@ -79,8 +78,8 @@ public final class AudioSettings extends PScene {
 		volumeSFX.update();
 		float volBGM = 20 * (float) Math.log(volumeBGM.getValue());
 		float volSFX = 20 * (float) Math.log(volumeSFX.getValue());
-		Audio.setGainBGM(volBGM);
-		Audio.setGainSFX(volSFX);
+		AudioFactory.getInstance().setGainBGM(volBGM);
+		AudioFactory.getInstance().setGainSFX(volSFX);
 	}
 
 	@Override
@@ -90,8 +89,8 @@ public final class AudioSettings extends PScene {
 
 		if (quit.hover()) {
 			// revert sound changes if menu is quit
-			Audio.setGainBGM(originalVolumeBGM);
-			Audio.setGainSFX(originalVolumeSFX);
+			AudioFactory.getInstance().setGainBGM(originalVolumeBGM);
+			AudioFactory.getInstance().setGainSFX(originalVolumeSFX);
 			game.returnScene();
 			return;
 		}

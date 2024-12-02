@@ -12,7 +12,6 @@ import processing.core.PVector;
 import processing.data.JSONArray;
 import processing.data.JSONObject;
 import processing.event.MouseEvent;
-import project_16x16.Audio;
 import project_16x16.Audio.BGM;
 import project_16x16.Options;
 import project_16x16.SideScroller;
@@ -22,6 +21,7 @@ import project_16x16.Utility;
 import project_16x16.components.Tile;
 import project_16x16.components.Tile.TileType;
 import project_16x16.entities.Player;
+import project_16x16.factory.AudioFactory;
 import project_16x16.multiplayer.Multiplayer;
 import project_16x16.objects.BackgroundObject;
 import project_16x16.objects.CollidableObject;
@@ -202,7 +202,7 @@ public class GameplayScene extends PScene {
 	public void switchTo() {
 		super.switchTo();
 		((PauseMenu) GameScenes.PAUSE_MENU.getScene()).switched = false;
-		Audio.play(BGM.TEST1);
+		AudioFactory.getInstance().play(BGM.TEST1);
 	}
 
 	/**

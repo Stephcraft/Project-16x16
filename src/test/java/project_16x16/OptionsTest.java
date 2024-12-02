@@ -6,12 +6,10 @@ import java.util.prefs.Preferences;
 
 import org.junit.jupiter.api.Test;
 
-import project_16x16.Options;
-
-public class OptionsTest {
+class OptionsTest {
 
 	@Test
-	public void callingSaveWithIntShouldUpdateOptions() {
+	void callingSaveWithIntShouldUpdateOptions() {
 		int expected = 5;
 		Preferences options = Preferences.userNodeForPackage(Options.class);
 
@@ -21,7 +19,7 @@ public class OptionsTest {
 	}
 
 	@Test
-	public void callingSaveWithFloatShouldUpdateOptions() {
+	void callingSaveWithFloatShouldUpdateOptions() {
 		float expected = 5.5f;
 		Preferences options = Preferences.userNodeForPackage(Options.class);
 
@@ -31,7 +29,7 @@ public class OptionsTest {
 	}
 
 	@Test
-	public void callingSaveWithBooleanShouldUpdateOptions() {
+	void callingSaveWithBooleanShouldUpdateOptions() {
 		Preferences options = Preferences.userNodeForPackage(Options.class);
 
 		Options.save(Options.Option.testKey, true);

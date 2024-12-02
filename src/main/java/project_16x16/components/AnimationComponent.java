@@ -6,9 +6,9 @@ import java.util.Collection;
 import org.apache.commons.collections.map.MultiValueMap;
 
 import processing.core.PImage;
-import project_16x16.Audio;
 import project_16x16.Audio.SFX;
 import project_16x16.SideScroller;
+import project_16x16.factory.AudioFactory;
 
 /**
  * The Animation Class
@@ -84,7 +84,7 @@ public class AnimationComponent {
 		}
 		Collection<SFX> coll = (Collection<SFX>) sounds.get((int) currentFrame); // TODO high overhead?
 		if (coll != null) {
-			coll.forEach(sound -> Audio.play(sound));
+			coll.forEach(sound -> AudioFactory.getInstance().play(sound));
 		}
 		return frame;
 	}
