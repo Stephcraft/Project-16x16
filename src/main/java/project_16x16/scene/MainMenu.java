@@ -27,7 +27,7 @@ public final class MainMenu extends PScene {
 
 	public Button pressStart;
 	public Button pressQuit;
-	public Button pressSettings; // TODO add settings menu
+	public Button pressSettings;
 	public Button pressMultiplayer;
 
 	private SideScroller game;

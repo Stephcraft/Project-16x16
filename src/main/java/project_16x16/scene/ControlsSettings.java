@@ -84,7 +84,7 @@ public final class ControlsSettings extends PScene {
 
 	@Override
 	public void drawUI() {
-		game.background(Constants.Colors.MENU_GREY);
+		displayWindow();
 		apply.display();
 		quit.display();
 
@@ -98,6 +98,15 @@ public final class ControlsSettings extends PScene {
 			game.textAlign(PConstants.CENTER);
 			game.text("Press a key to change the control!", game.width / 2, 100);
 		}
+	}
+	
+	private void displayWindow() {
+		background(19, 23, 35);
+		applet.fill(29, 33, 45);
+		applet.stroke(47, 54, 73);
+		applet.strokeWeight(8);
+		applet.rect(applet.gameResolution.x / 2, applet.gameResolution.y / 2, applet.gameResolution.x * 0.66f - 8,
+				applet.gameResolution.y - 8);
 	}
 
 	@Override

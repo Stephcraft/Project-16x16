@@ -1,17 +1,11 @@
 package project_16x16.scene;
 
-import processing.core.PApplet;
 import processing.core.PConstants;
 import processing.event.KeyEvent;
 import processing.event.MouseEvent;
-import project_16x16.Audio;
-import project_16x16.Constants;
-import project_16x16.Options;
-import project_16x16.Options.Option;
 import project_16x16.SideScroller;
 import project_16x16.ui.Button;
 import project_16x16.ui.Notifications;
-import project_16x16.ui.Slider;
 
 public final class GraphicsSettings extends PScene {
 
@@ -37,18 +31,23 @@ public final class GraphicsSettings extends PScene {
 
 	@Override
 	public void switchTo() {
-		// TODO properly align audio value and slider position
-		//volumeBGM.setValue(PApplet.map(originalVolumeBGM, -60, 0, 0, 1));
-		//volumeSFX.setValue(PApplet.map(originalVolumeSFX, -60, 0, 0, 1));
 		super.switchTo();
 	}
 
 	@Override
 	public void drawUI() {
-		game.background(Constants.Colors.MENU_GREY);
+		displayWindow();
 		apply.display();
 		quit.display();
-		
+	}
+	
+	private void displayWindow() {
+		background(19, 23, 35);
+		applet.fill(29, 33, 45);
+		applet.stroke(47, 54, 73);
+		applet.strokeWeight(8);
+		applet.rect(applet.gameResolution.x / 2, applet.gameResolution.y / 2, applet.gameResolution.x * 0.66f - 8,
+				applet.gameResolution.y - 8);
 	}
 
 	@Override

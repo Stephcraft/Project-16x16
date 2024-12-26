@@ -28,7 +28,8 @@ public final class Audio {
 	public enum BGM {
 		TEST0("first_theme.mp3"), // TODO
 		TEST1("cyberSynthwave.mp3"), // TODO
-		TEST2("First_level_take_1.mp3"), TEST3("Intro_Title_Pause_Screen_Take1_Loopable.mp3");
+		TEST2("First_level_take_1.mp3"),
+		TEST3("Intro_Title_Pause_Screen_Take1_Loopable.mp3");
 
 		private String filename;
 

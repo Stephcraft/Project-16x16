@@ -51,7 +51,7 @@ public final class AudioSettings extends PScene {
 		volumeSFX = new Slider(game, 0.75f);
 		volumeSFX.setText("SFX");
 		volumeSFX.setPosition(a.width / 2, 350);
-		
+
 	}
 
 	@Override
@@ -59,19 +59,28 @@ public final class AudioSettings extends PScene {
 		originalVolumeBGM = Options.gainBGM;
 		originalVolumeSFX = Options.gainSFX;
 		// TODO properly align audio value and slider position
-		//volumeBGM.setValue(PApplet.map(originalVolumeBGM, -60, 0, 0, 1));
-		//volumeSFX.setValue(PApplet.map(originalVolumeSFX, -60, 0, 0, 1));
+		// volumeBGM.setValue(PApplet.map(originalVolumeBGM, -60, 0, 0, 1));
+		// volumeSFX.setValue(PApplet.map(originalVolumeSFX, -60, 0, 0, 1));
 		super.switchTo();
 	}
 
 	@Override
 	public void drawUI() {
-		game.background(Constants.Colors.MENU_GREY);
+		displayWindow();
 		apply.display();
 		quit.display();
 		volumeBGM.display();
 		volumeSFX.display();
-		
+
+	}
+
+	private void displayWindow() {
+		background(19, 23, 35);
+		applet.fill(29, 33, 45);
+		applet.stroke(47, 54, 73);
+		applet.strokeWeight(8);
+		applet.rect(applet.gameResolution.x / 2, applet.gameResolution.y / 2, applet.gameResolution.x * 0.66f - 8,
+				applet.gameResolution.y - 8);
 	}
 
 	@Override
@@ -112,10 +121,10 @@ public final class AudioSettings extends PScene {
 	@Override
 	void keyReleased(KeyEvent e) {
 		switch (e.getKeyCode()) {
-			case PConstants.ESC : // Pause
+			case PConstants.ESC: // Pause
 				game.returnScene();
 				break;
-			default :
+			default:
 				break;
 		}
 	}

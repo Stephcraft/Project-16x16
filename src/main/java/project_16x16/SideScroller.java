@@ -331,7 +331,7 @@ public class SideScroller extends PApplet {
 	 * keyReleased decides if the key pressed is valid and if it is then removes it
 	 * from the keys ArrayList and keyReleaseEvent flag is set.
 	 * 
-	 * FOR GLOBAL KEYS ONLY
+	 * FOR GLOBAL KEYS ONLY (dev tools mostly for now...)
 	 */
 	@Override
 	public void keyReleased(processing.event.KeyEvent event) {

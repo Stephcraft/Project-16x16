@@ -74,7 +74,7 @@ public class Settings extends PScene {
 		applet.fill(255);
 		applet.textSize(60);
 		applet.textAlign(CENTER, TOP);
-		applet.text("Options", applet.gameResolution.x / 2, 20);
+		applet.text("Settings", applet.gameResolution.x / 2, 20);
 
 		quit.display();
 		apply.display();
