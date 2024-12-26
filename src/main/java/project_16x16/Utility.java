@@ -381,6 +381,21 @@ public final class Utility {
 			Utility.saveFile("src/main/resources/Storage/Game/Maps/save/" + mapName + ".dat", Utility.encrypt(levelSave.toString()));
 		}
 	}
+	
+	 public static String charToStr(int charCode) {
+	        switch (charCode) {
+	            case 32:
+	                return "space";
+	            case 16:
+	            	return "shift";
+	            case 10:
+	                return "newline";
+	            case 9:
+	                return "tab";
+	            default:
+	                return Character.toString((char) charCode);
+	        }
+	    }
 }
 
 /**

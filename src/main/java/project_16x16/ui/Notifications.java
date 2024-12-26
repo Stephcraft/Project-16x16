@@ -12,7 +12,9 @@ import project_16x16.SideScroller;
 import project_16x16.Utility;
 
 /**
- * Handles both drawing and logic of notifications.
+ * Handles both drawing and logic of notifications. Use
+ * {@link #addNotification(String, String) addNotification()} from anywhere
+ * within game code to display a notification to the user.
  * 
  * @author micycle1
  */
@@ -22,7 +24,8 @@ public class Notifications {
 	private static PImage background;
 	private static PVector positionTarget;
 
-	private static final int notificationWidth = 275, notificationHeight = 125, notificationTextPadding = 10, notificationLifetime = 240, notificationLifetimeFast = 150, notificationLifetimeVeryFast = 60;
+	private static final int notificationWidth = 275, notificationHeight = 125, notificationTextPadding = 10,
+			notificationLifetime = 240, notificationLifetimeFast = 150, notificationLifetimeVeryFast = 60;
 
 	private final PVector position = new PVector(game.width - notificationWidth, game.height);
 	private final String title, message;
@@ -85,12 +88,10 @@ public class Notifications {
 			if (notifications.size() > 2) {
 				if (notifications.size() < 6) {
 					lifetime = notificationLifetimeFast;
-				}
-				else {
+				} else {
 					lifetime = notificationLifetimeVeryFast;
 				}
-			}
-			else {
+			} else {
 				lifetime = notificationLifetime;
 			}
 		}

@@ -525,24 +525,17 @@ public class GameplayScene extends PScene {
 
 	@Override
 	protected void keyReleased(processing.event.KeyEvent e) {
-		switch (e.getKeyCode()) { // Global gameplay hotkeys
-			case PConstants.ESC: // Pause
-				applet.swapToScene(GameScenes.PAUSE_MENU);
-				break;
-			case Options.lifeCapInc:
-				localPlayer.lifeCapacity++;
-				break;
-			case Options.lifeCapDec:
-				localPlayer.lifeCapacity--;
-				break;
-			case Options.lifeInc:
-				localPlayer.life++;
-				break;
-			case Options.lifeDec:
-				localPlayer.life--;
-				break;
-			default:
-				break;
+		final int keyCode = e.getKeyCode();
+		if (keyCode == PConstants.ESC) {
+		    applet.swapToScene(GameScenes.PAUSE_MENU);
+		} else if (keyCode == Options.lifeCapIncreaseKey) {
+		    localPlayer.lifeCapacity++;
+		} else if (keyCode == Options.lifeCapDecreaseKey) {
+		    localPlayer.lifeCapacity--;
+		} else if (keyCode == Options.lifeIncreaseKey) {
+		    localPlayer.life++;
+		} else if (keyCode == Options.lifeDecreaseKey) {
+		    localPlayer.life--;
 		}
 
 		currentMode.keyReleasedEvent(e);

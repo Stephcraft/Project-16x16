@@ -108,8 +108,8 @@ public final class AudioSettings extends PScene {
 		if (apply.hover()) {
 			float volBGM = 20 * (float) Math.log(volumeBGM.getValue());
 			float volSFX = 20 * (float) Math.log(volumeSFX.getValue());
-			Options.save(Option.gainBGM, volBGM);
-			Options.save(Option.gainSFX, volSFX);
+			Options.save(Option.GAIN_BGM, volBGM);
+			Options.save(Option.GAIN_SFX, volSFX);
 			Options.gainBGM = volBGM;
 			Options.gainSFX = volSFX;
 			Notifications.addNotification("Sound Settings Applied", "Your configuration has been successfully applied.");

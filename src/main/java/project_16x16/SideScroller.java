@@ -59,8 +59,7 @@ public class SideScroller extends PApplet {
 
 	// Game Rendering
 	private PVector windowSize = new PVector(1280, 720); // Game window size -- to be set via options
-	public PVector gameResolution = new PVector(1280, 720); // Game rendering resolution -- to be set
-															// via options
+	public PVector gameResolution = new PVector(1280, 720); // Game rendering resolution
 	// Font Resources
 	private static PFont font_pixel;
 
@@ -72,16 +71,19 @@ public class SideScroller extends PApplet {
 	private static GameplayScene game;
 	private static PauseMenu pmenu;
 	private static Settings settings;
+	
 	private static MultiplayerMenu mMenu;
 	private static MultiplayerHostMenu mHostMenu;
 	private static MultiplayerClientMenu mClientMenu;
+	
 	private static GraphicsSettings graphicsSettings;
 	private static AudioSettings audioSettings;
 	private static ControlsSettings controlsSettings;
 
 	public enum GameScenes {
 		MAIN_MENU(menu), GAME(game), PAUSE_MENU(pmenu), SETTINGS_MENU(settings), MULTIPLAYER_MENU(mMenu),
-		HOST_MENU(mHostMenu), CLIENT_MENU(mClientMenu), GRAPHICS_SETTINGS(graphicsSettings), AUDIO_SETTINGS(audioSettings), CONTROLS_SETTINGS(controlsSettings); 
+		HOST_MENU(mHostMenu), CLIENT_MENU(mClientMenu), GRAPHICS_SETTINGS(graphicsSettings), AUDIO_SETTINGS(audioSettings), 
+		CONTROLS_SETTINGS(controlsSettings), CONFIRMATION(null);
 
 		PScene scene;
 
@@ -91,6 +93,12 @@ public class SideScroller extends PApplet {
 
 		public PScene getScene() {
 			return scene;
+		}
+		
+		// confirmation menus ("are you sure...") can be created ad-hoc, unlike other named scenes like "GAME"
+		public static GameScenes makeConfirmation(ConfirmationMenu newScene) {
+		    GameScenes.CONFIRMATION.scene = newScene;
+		    return GameScenes.CONFIRMATION;
 		}
 	}
 
@@ -145,7 +153,7 @@ public class SideScroller extends PApplet {
 		scene = canvas.getScene();
 		stage = (Stage) scene.getWindow();
 		stage.setTitle("Project-16x16");
-		stage.setResizable(false); // prevent abitrary user resize
+		stage.setResizable(false); // prevent arbitrary user resize
 		stage.setFullScreenExitHint(""); // disable fullscreen toggle hint
 		stage.setFullScreenExitKeyCombination(KeyCombination.NO_MATCH); // prevent ESC toggling fullscreen
 		scene.getWindow().addEventFilter(WindowEvent.WINDOW_CLOSE_REQUEST, this::closeWindowEvent);
@@ -227,7 +235,7 @@ public class SideScroller extends PApplet {
 	}
 
 	/**
-	 * Use this method or {@link #returnScene()} to change the running game scene.
+	 * Use this method or {@link #returnScene()} to change the running game scene to a named scene.
 	 * 
 	 * @param newScene
 	 * @see #returnScene()
@@ -338,45 +346,34 @@ public class SideScroller extends PApplet {
 		keysDown.remove(event.getKeyCode());
 		keyReleaseEvent = true;
 
-		switch (event.getKeyCode()) {
-			case Options.frameRateHigh :
-				frameRate(5000);
-				break;
-			case Options.frameRateLow :
-				frameRate(20);
-				break;
-			case Options.frameRateDefault :
-				frameRate(Options.frameRateDefault);
-				break;
-			case Options.toggleDeadzone :
-				camera.toggleDeadZone();
-				break;
-			case Options.cameraToMouse :
-				camera.setCameraPosition(camera.getMouseCoord());
-				break;
-			case Options.cameraToPlayer :
-				camera.setFollowObject(game.getPlayer());
-				camera.setZoomScale(1.0f);
-				break;
-			case Options.shake :
-				camera.shake(0.4f);
-				break;
-			case Options.notify :
-				Notifications.addNotification("Hello", "World");
-				break;
-			case Options.fullscreen :
-				noLoop();
-				stage.setFullScreen(!stage.isFullScreen());
-				scaleResolution();
-				loop();
-				break;
-			case Options.toggleDebug :
-				debug = debug.next();
-				Options.save(Option.debugMode, debug.ordinal());
-				break;
-			default :
-				break;
+		final int keyCode = event.getKeyCode();
+		if (keyCode == Options.frameRateHighKey) {
+		    frameRate(5000);
+		} else if (keyCode == Options.frameRateLowKey) {
+		    frameRate(20);
+		} else if (keyCode == Options.frameRateDefaultKey) {
+		    frameRate(60);
+		} else if (keyCode == Options.toggleDeadzoneKey) {
+		    camera.toggleDeadZone();
+		} else if (keyCode == Options.cameraToMouseKey) {
+		    camera.setCameraPosition(camera.getMouseCoord());
+		} else if (keyCode == Options.cameraToPlayerKey) {
+		    camera.setFollowObject(game.getPlayer());
+		    camera.setZoomScale(1.0f);
+		} else if (keyCode == Options.cameraShakeKey) {
+		    camera.shake(0.4f);
+		} else if (keyCode == Options.notifyKey) {
+		    Notifications.addNotification("Hello", "World");
+		} else if (keyCode == Options.toggleFullscreenKey) {
+		    noLoop();
+		    stage.setFullScreen(!stage.isFullScreen());
+		    scaleResolution();
+		    loop();
+		} else if (keyCode == Options.toggleDebugKey) {
+		    debug = debug.next();
+		    Options.save(Option.DEBUG_MODE, debug.ordinal());
 		}
+
 	}
 
 	/**
@@ -483,11 +480,13 @@ public class SideScroller extends PApplet {
 	}
 
 	private void displayDebugInfo() {
+		pushStyle();
 		final int lineOffset = 12; // vertical offset
 		final int yOffset = 1;
 		final int labelPadding = 225; // label -x offset (from screen width)
 		final int ip = 1; // infoPadding -xoffset (from screen width)
 		final Player player = game.getPlayer();
+		
 		PVector velocity = player.getVelocity();
 		fill(0, 50);
 		noStroke();
@@ -539,17 +538,17 @@ public class SideScroller extends PApplet {
 				lineOffset * 7 + yOffset);
 		text("[" + "?" + "]", width - ip, lineOffset * 8 + yOffset); // TODO expose
 		
-		text("['" + (char) Options.frameRateHigh + "']", width - ip, lineOffset * 12 + yOffset);
-		text("['" + (char) Options.frameRateLow + "']", width - ip, lineOffset * 13 + yOffset);
-		text("['" + (char) Options.toggleDeadzone + "']", width - ip, lineOffset * 14 + yOffset);
-		text("['" + (char) Options.cameraToMouse + "']", width - ip, lineOffset * 15 + yOffset);
-		text("['" + (char) Options.cameraToPlayer + "']", width - ip, lineOffset * 16 + yOffset);
-		text("['" + (char) Options.shake + "']", width - ip, lineOffset * 17 + yOffset);
-		text("['" + (char) Options.notify + "']", width - ip, lineOffset * 18 + yOffset);
-		text("['" + (char) Options.lifeCapInc + "']", width - ip, lineOffset * 19 + yOffset);
-		text("['" + (char) Options.lifeCapDec + "']", width - ip, lineOffset * 20 + yOffset);
-		text("['" + (char) Options.lifeInc + "']", width - ip, lineOffset * 21 + yOffset);
-		text("['" + (char) Options.lifeDec + "']", width - ip, lineOffset * 22 + yOffset);
+		text("['" + (char) Options.frameRateHighKey + "']", width - ip, lineOffset * 12 + yOffset);
+		text("['" + (char) Options.frameRateLowKey + "']", width - ip, lineOffset * 13 + yOffset);
+		text("['" + (char) Options.toggleDeadzoneKey + "']", width - ip, lineOffset * 14 + yOffset);
+		text("['" + (char) Options.cameraToMouseKey + "']", width - ip, lineOffset * 15 + yOffset);
+		text("['" + (char) Options.cameraToPlayerKey + "']", width - ip, lineOffset * 16 + yOffset);
+		text("['" + (char) Options.cameraShakeKey + "']", width - ip, lineOffset * 17 + yOffset);
+		text("['" + (char) Options.notifyKey + "']", width - ip, lineOffset * 18 + yOffset);
+		text("['" + (char) Options.lifeCapIncreaseKey + "']", width - ip, lineOffset * 19 + yOffset);
+		text("['" + (char) Options.lifeCapDecreaseKey + "']", width - ip, lineOffset * 20 + yOffset);
+		text("['" + (char) Options.lifeIncreaseKey + "']", width - ip, lineOffset * 21 + yOffset);
+		text("['" + (char) Options.lifeDecreaseKey + "']", width - ip, lineOffset * 22 + yOffset);
 		text("['F11']", width - ip, lineOffset * 23 + yOffset);
 		text("['TAB']", width - ip, lineOffset * 24 + yOffset);
 
@@ -560,6 +559,7 @@ public class SideScroller extends PApplet {
 			fill(255, 0, 0);
 		}
 		text("[" + round(frameRate) + "]", width - ip, lineOffset * 9 + yOffset);
+		popStyle();
 	}
 
 	/**
