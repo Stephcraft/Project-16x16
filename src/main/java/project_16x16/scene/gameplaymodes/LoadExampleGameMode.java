@@ -20,7 +20,7 @@ public class LoadExampleGameMode extends GameplayMode {
 	public void updateGUI() {
 		Tab windowTabs = scene.getWindowTabs();
 		LoadLevelWindow window_loadLevel = scene.getWindowLoadLevel();
-		
+
 		if (windowTabs.getActiveButton() != 0) {
 			windowTabs.moveActive(0);
 		}

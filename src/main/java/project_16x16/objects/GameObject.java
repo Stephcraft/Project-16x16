@@ -2,12 +2,12 @@ package project_16x16.objects;
 
 import java.util.ArrayList;
 
-import project_16x16.components.AnimationComponent;
 import processing.core.PImage;
 import processing.data.JSONObject;
-import project_16x16.scene.GameplayScene;
 import project_16x16.SideScroller;
 import project_16x16.Tileset;
+import project_16x16.components.AnimationComponent;
+import project_16x16.scene.GameplayScene;
 
 /**
  * Extends {@link EditableObject}.
@@ -28,6 +28,7 @@ public class GameObject extends EditableObject {
 		animation = new AnimationComponent();
 	}
 
+	@Override
 	public void display() {
 	}
 
@@ -36,9 +37,9 @@ public class GameObject extends EditableObject {
 
 	public void delete() {
 	}
-	
+
 	/**
-	 * 
+	 *
 	 * @param name the name of a tile
 	 * @return the animation of a given tile
 	 */
@@ -48,7 +49,7 @@ public class GameObject extends EditableObject {
 
 	/**
 	 * Returns a specific tile given its coordinates and dimensions
-	 * 
+	 *
 	 * @param x coordinate
 	 * @param y coordinate
 	 * @param w width

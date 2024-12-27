@@ -15,7 +15,7 @@ public class ImportGameMode extends GameplayMode {
 	public GameModes getModeType() {
 		return GameModes.IMPORT;
 	}
-	
+
 	@Override
 	public void updateGUI() {
 		Tab windowTabs = scene.getWindowTabs();
@@ -30,7 +30,7 @@ public class ImportGameMode extends GameplayMode {
 		windowTabs.display();
 		window_importlevel.update();
 		window_importlevel.display();
-		
+
 		if (windowTabs.getButton(0).event()) {
 			windowTabs.moveActive(0);
 			scene.changeMode(GameModes.LOADEXAMPLE);

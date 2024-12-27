@@ -6,18 +6,18 @@ import project_16x16.particleSystem.Particle;
 /**
  * Partical Velocity Controller
  * <p>
- * Adds velocity to a particle on spawn.
- * Useful is using a emission that only adds random or directional velocity.
+ * Adds velocity to a particle on spawn. Useful is using a emission that only
+ * adds random or directional velocity.
  *
  * @author petturtle
  */
 public class ParticalVelocityController implements ParticleEventListener {
 
 	PVector velocity;
-	
+
 	/**
-	 * Adds velocity to a particle on spawn.
-	 * Useful is using a emission that only adds random or directional velocity
+	 * Adds velocity to a particle on spawn. Useful is using a emission that only
+	 * adds random or directional velocity
 	 *
 	 * @param velocity PVector velocity
 	 */

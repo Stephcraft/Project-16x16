@@ -2,6 +2,7 @@ package project_16x16.objects;
 
 import java.lang.reflect.Constructor;
 
+import processing.core.PConstants;
 import processing.core.PVector;
 import processing.data.JSONObject;
 import project_16x16.PClass;
@@ -90,8 +91,7 @@ public abstract class EditableObject extends PClass {
 					focus = true;
 					gameplayScene.focusedObject = this;
 				}
-			}
-			else {
+			} else {
 				if (focus) { // Focus Disable
 					gameplayScene.focusedObject = null;
 					focus = false;
@@ -107,7 +107,7 @@ public abstract class EditableObject extends PClass {
 			}
 
 			// Duplicate Object Shift
-			if (applet.keyPressEvent && applet.isKeyDown(SideScroller.SHIFT)) {
+			if (applet.keyPressEvent && applet.isKeyDown(PConstants.SHIFT)) {
 				EditableObject copy; // Duplicate Instance
 				switch (type) {
 					case COLLISION:
@@ -127,8 +127,7 @@ public abstract class EditableObject extends PClass {
 							copy.editOffset = editOffset.copy();
 							gameplayScene.objects.add(copy);
 							break;
-						}
-						catch (Exception e) {
+						} catch (Exception e) {
 							e.printStackTrace();
 						}
 						switch (id) {
@@ -144,7 +143,8 @@ public abstract class EditableObject extends PClass {
 				focus = false;
 			}
 			if (focus && applet.mousePressed && applet.mouseButton == LEFT) {
-				position = new PVector(Utility.roundToNearest(applet.getMouseCoordGame().x + editOffset.x, SideScroller.snapSize), Utility.roundToNearest(applet.getMouseCoordGame().y + editOffset.y, SideScroller.snapSize));
+				position = new PVector(Utility.roundToNearest(applet.getMouseCoordGame().x + editOffset.x, SideScroller.snapSize),
+						Utility.roundToNearest(applet.getMouseCoordGame().y + editOffset.y, SideScroller.snapSize));
 			}
 		}
 	}

@@ -3,10 +3,9 @@ package project_16x16.objects;
 import processing.core.PImage;
 import processing.core.PVector;
 import processing.data.JSONObject;
-
-import project_16x16.scene.GameplayScene;
 import project_16x16.SideScroller;
 import project_16x16.Tileset;
+import project_16x16.scene.GameplayScene;
 
 public class BackgroundObject extends EditableObject {
 
@@ -30,6 +29,7 @@ public class BackgroundObject extends EditableObject {
 		setGraphic(id);
 	}
 
+	@Override
 	public void display() {
 		float pixelOffsetX = 0;
 		float pixelOffsetY = 0;
@@ -40,7 +40,7 @@ public class BackgroundObject extends EditableObject {
 		if (width / 4 % 2 != 0) {
 			pixelOffsetX = 2;
 		}
-		
+
 		applet.image(image, position.x + pixelOffsetX, position.y + pixelOffsetY, width, height);
 	}
 

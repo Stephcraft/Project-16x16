@@ -25,7 +25,7 @@ public class Button extends PClass {
 
 	/**
 	 * Constructor for Press
-	 * 
+	 *
 	 * @param a Reference to Game
 	 */
 	public Button(SideScroller sideScroller) {
@@ -89,8 +89,7 @@ public class Button extends PClass {
 		press = false;
 		if (applet.mousePressEvent) {
 			focus = hover();
-		}
-		else if (applet.mouseReleaseEvent && hover()) {
+		} else if (applet.mouseReleaseEvent && hover()) {
 			press = true;
 		}
 	}
@@ -99,8 +98,7 @@ public class Button extends PClass {
 		if (hover()) {
 			applet.stroke(colorValues[2]);
 			applet.fill(colorValues[3]);
-		}
-		else {
+		} else {
 			applet.stroke(colorValues[0]);
 			applet.fill(colorValues[1]);
 		}
@@ -110,8 +108,7 @@ public class Button extends PClass {
 	public void displayTextColors() {
 		if (focus) {
 			applet.fill(colorValues[5]);
-		}
-		else {
+		} else {
 			applet.fill(colorValues[4]);
 		}
 		applet.textAlign(CENTER, CENTER);
@@ -148,7 +145,7 @@ public class Button extends PClass {
 
 	/**
 	 * Determines if the mouse is over the button
-	 * 
+	 *
 	 * @return response as a boolean
 	 */
 	public boolean hover() {
@@ -157,7 +154,7 @@ public class Button extends PClass {
 
 	/**
 	 * Sets the text for the button
-	 * 
+	 *
 	 * @param txt the new text for the button
 	 */
 	public void setText(String txt) {
@@ -211,7 +208,7 @@ public class Button extends PClass {
 
 	/**
 	 * Determin if the button is pressed
-	 * 
+	 *
 	 * @return response as a boolean
 	 */
 	public boolean event() {

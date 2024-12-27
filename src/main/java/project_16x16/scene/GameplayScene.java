@@ -131,12 +131,12 @@ public class GameplayScene extends PScene {
 	}
 
 	private void setup() {
-		projectileObjects = new ArrayList<ProjectileObject>();
+		projectileObjects = new ArrayList<>();
 
-		objects = new ArrayList<EditableObject>();
+		objects = new ArrayList<>();
 
 		// Create Inventory
-		inventory = new ArrayList<String>();
+		inventory = new ArrayList<>();
 		inventory.add("Metal");
 		inventory.add("Metal_Walk_Left:0");
 		inventory.add("Metal_Walk_Middle:0");
@@ -208,6 +208,7 @@ public class GameplayScene extends PScene {
 	/**
 	 * Draw scene elements that are below (affected by) the camera.
 	 */
+	@Override
 	public void draw() {
 		background(23, 26, 36);
 
@@ -223,8 +224,7 @@ public class GameplayScene extends PScene {
 			ProjectileObject o = i.next();
 			if (applet.frameCount - o.spawnTime > 600) {
 				i.remove(); // kill projectile after 10s
-			}
-			else {
+			} else {
 				o.update();
 				o.display();
 			}
@@ -236,7 +236,7 @@ public class GameplayScene extends PScene {
 
 	/**
 	 * Call when host/connect buttons pressed.
-	 * 
+	 *
 	 * @param multiplayer multiplayer client
 	 */
 	public void setupMultiplayer(Multiplayer multiplayer) {
@@ -279,6 +279,7 @@ public class GameplayScene extends PScene {
 	/**
 	 * Draw scene elements that are above the camera.
 	 */
+	@Override
 	public void drawUI() {
 		currentMode.displayGUISlots();
 
@@ -286,7 +287,8 @@ public class GameplayScene extends PScene {
 		int offset = 48;
 		// GUI Icons
 		currentMode.updateGUIButton(xAnchor, iconModifyActive, iconModify, GameModes.MODIFY, Utility.hoverScreen(xAnchor, 120, 36, 36));
-		currentMode.updateGUIButton(xAnchor + offset, iconInventoryActive, iconInventory, GameModes.INVENTORY, Utility.hoverScreen(xAnchor + offset, 120, 36, 36));
+		currentMode.updateGUIButton(xAnchor + offset, iconInventoryActive, iconInventory, GameModes.INVENTORY,
+				Utility.hoverScreen(xAnchor + offset, 120, 36, 36));
 		currentMode.updateGUIButton(xAnchor + offset * 2, iconPlayActive, iconPlay, GameModes.PLAY, Utility.hoverScreen(xAnchor + offset * 2, 120, 36, 36));
 		currentMode.updateGUIButton(xAnchor + offset * 3, iconSaveActive, iconSave, GameModes.SAVE, Utility.hoverScreen(xAnchor + offset * 3, 120, 36, 36));
 
@@ -299,6 +301,7 @@ public class GameplayScene extends PScene {
 	/**
 	 * Display boundaries of all world objects.
 	 */
+	@Override
 	public void debug() {
 		for (EditableObject o : objects) {
 			o.debug();
@@ -340,15 +343,13 @@ public class GameplayScene extends PScene {
 			if (index % 6 == 0) { // show 6 items per row
 				x = 0;
 				y++;
-			}
-			else {
+			} else {
 				x++;
 			}
 			applet.image(slotEditor, 20 * 4 / 2 + 10 + x * (20 * 4 + 10), y * (20 * 4 + 10) + scrollInventory);
 			if (img.width > 20 * 4 || img.height > 20 * 4) {
 				applet.image(img, 20 * 4 / 2 + 10 + x * (20 * 4 + 10), y * (20 * 4 + 10) + scrollInventory, img.width / 4, img.height / 4);
-			}
-			else {
+			} else {
 				applet.image(img, 20 * 4 / 2 + 10 + x * (20 * 4 + 10), y * (20 * 4 + 10) + scrollInventory, img.width / 2, img.height / 2);
 			}
 
@@ -356,7 +357,8 @@ public class GameplayScene extends PScene {
 			float xx = 20 * 4 / 2 + 10 + x * (20 * 4 + 10);
 			float yy = y * (20 * 4 + 10) + scrollInventory;
 			if (applet.getMouseCoordScreen().y > 100) {
-				if (applet.getMouseCoordScreen().x > xx - (20 * 4) / 2 && applet.getMouseCoordScreen().x < xx + (20 * 4) / 2 && applet.getMouseCoordScreen().y > yy - (20 * 4) / 2 && applet.getMouseCoordScreen().y < yy + (20 * 4) / 2) {
+				if (applet.getMouseCoordScreen().x > xx - (20 * 4) / 2 && applet.getMouseCoordScreen().x < xx + (20 * 4) / 2
+						&& applet.getMouseCoordScreen().y > yy - (20 * 4) / 2 && applet.getMouseCoordScreen().y < yy + (20 * 4) / 2) {
 					// Grab Item
 					if (applet.mousePressEvent) {
 						editorItem.focus = true;
@@ -399,7 +401,8 @@ public class GameplayScene extends PScene {
 			if (applet.mouseReleaseEvent) {
 				float xx = 20 * 4 / 2 + 10 + i * (20 * 4 + 10);
 				float yy = 20 * 4 / 2 + 10;
-				if (editorItem.focus && applet.getMouseCoordScreen().x > xx - (20 * 4) / 2 && applet.getMouseCoordScreen().x < xx + (20 * 4) / 2 && applet.getMouseCoordScreen().y > yy - (20 * 4) / 2 && applet.getMouseCoordScreen().y < yy + (20 * 4) / 2) {
+				if (editorItem.focus && applet.getMouseCoordScreen().x > xx - (20 * 4) / 2 && applet.getMouseCoordScreen().x < xx + (20 * 4) / 2
+						&& applet.getMouseCoordScreen().y > yy - (20 * 4) / 2 && applet.getMouseCoordScreen().y < yy + (20 * 4) / 2) {
 					editorItem.focus = false;
 					inventory.set(i, editorItem.id);
 				}
@@ -431,8 +434,7 @@ public class GameplayScene extends PScene {
 		for (int i = 0; i < inventoryTiles.size(); i++) {
 			if (i % 6 == 0) {
 				y++;
-			}
-			else {
+			} else {
 			}
 		}
 		return 20 * 4 + 10 + y * (20 * 4 + 10);
@@ -445,7 +447,7 @@ public class GameplayScene extends PScene {
 	/**
 	 * Lists the amount of items currently on the inventory. Can be refactored in
 	 * the future to support the actual gameplay inventory.
-	 * 
+	 *
 	 * @return amount of items currently on the inventory
 	 */
 	private int getTotalInventoryItems() {
@@ -455,7 +457,7 @@ public class GameplayScene extends PScene {
 
 	/**
 	 * Calculates the ratio for a scrollbar.
-	 * 
+	 *
 	 * @param bodyToScroll   Approximate relative size of the scrollable body
 	 * @param containerSize  Size of the bar container
 	 * @param sizeMultiplier Multiplier for the relative size of the bar
@@ -515,10 +517,10 @@ public class GameplayScene extends PScene {
 		currentMode.mouseDraggedEvent(e, origPos, mouseDown);
 	}
 
+	@Override
 	public void mouseWheel(MouseEvent event) {
 		if (event.isShiftDown()) {
-		}
-		else {
+		} else {
 			currentMode.mouseWheelEvent(event);
 		}
 	}
@@ -527,15 +529,15 @@ public class GameplayScene extends PScene {
 	protected void keyReleased(processing.event.KeyEvent e) {
 		final int keyCode = e.getKeyCode();
 		if (keyCode == PConstants.ESC) {
-		    applet.swapToScene(GameScenes.PAUSE_MENU);
+			applet.swapToScene(GameScenes.PAUSE_MENU);
 		} else if (keyCode == Options.lifeCapIncreaseKey) {
-		    localPlayer.lifeCapacity++;
+			localPlayer.lifeCapacity++;
 		} else if (keyCode == Options.lifeCapDecreaseKey) {
-		    localPlayer.lifeCapacity--;
+			localPlayer.lifeCapacity--;
 		} else if (keyCode == Options.lifeIncreaseKey) {
-		    localPlayer.life++;
+			localPlayer.life++;
 		} else if (keyCode == Options.lifeDecreaseKey) {
-		    localPlayer.life--;
+			localPlayer.life--;
 		}
 
 		currentMode.keyReleasedEvent(e);
@@ -564,8 +566,7 @@ public class GameplayScene extends PScene {
 				break;
 			case 69: // 'e' TODO remove?
 				if (currentMode.getModeType().equals(GameModes.INVENTORY)) {
-				}
-				else {
+				} else {
 					changeMode(GameModes.INVENTORY);
 					editorItem.setMode("ITEM");
 					scrollInventory = 0;
@@ -574,7 +575,7 @@ public class GameplayScene extends PScene {
 			case 8: // BACKSPACE
 			case 46: // DEL
 				for (Iterator<EditableObject> iterator = objects.iterator(); iterator.hasNext();) {
-					EditableObject o = (EditableObject) iterator.next();
+					EditableObject o = iterator.next();
 					if (o.isFocused()) {
 						iterator.remove();
 					}
@@ -588,7 +589,7 @@ public class GameplayScene extends PScene {
 	/**
 	 * Saves the level (background, game and collideable objects), encrypting the
 	 * output.
-	 * 
+	 *
 	 * @param path Save location path.
 	 */
 	public void saveLevel(String path) {
@@ -638,8 +639,7 @@ public class GameplayScene extends PScene {
 					CollidableObject collision = new CollidableObject(applet, this);
 					try {
 						collision.setGraphic(item.getString("id"));
-					}
-					catch (Exception e) {
+					} catch (Exception e) {
 						collision.width = 64;
 						collision.height = 64;
 					}
@@ -666,8 +666,7 @@ public class GameplayScene extends PScene {
 
 						objects.add(gameObject); // SideScrollerend To Level
 						break;
-					}
-					catch (Exception e) {
+					} catch (Exception e) {
 						e.printStackTrace();
 					}
 					break;
@@ -697,7 +696,8 @@ public class GameplayScene extends PScene {
 			if (applet.mousePressEvent) {
 				float x = 20 * 4 / 2 + 10 + i * (20 * 4 + 10);
 				float y = 20 * 4 / 2 + 10;
-				if (applet.getMouseCoordScreen().x > x - (20 * 4) / 2 && applet.getMouseCoordScreen().x < x + (20 * 4) / 2 && applet.getMouseCoordScreen().y > y - (20 * 4) / 2 && applet.getMouseCoordScreen().y < y + (20 * 4) / 2) {
+				if (applet.getMouseCoordScreen().x > x - (20 * 4) / 2 && applet.getMouseCoordScreen().x < x + (20 * 4) / 2
+						&& applet.getMouseCoordScreen().y > y - (20 * 4) / 2 && applet.getMouseCoordScreen().y < y + (20 * 4) / 2) {
 					editorItem.focus = true;
 					editorItem.setTile(inventory.get(i));
 					editorItem.type = Tileset.getTileType(inventory.get(i));
@@ -737,7 +737,7 @@ public class GameplayScene extends PScene {
 	}
 
 	/**
-	 * 
+	 *
 	 * @author micycle1
 	 *
 	 */
@@ -761,8 +761,7 @@ public class GameplayScene extends PScene {
 			for (EditableObject o : objects) {
 				if (Utility.withinRegion(o.position, startPosGame, applet.getMouseCoordGame())) {
 					o.focus();
-				}
-				else {
+				} else {
 					o.unFocus();
 				}
 			}

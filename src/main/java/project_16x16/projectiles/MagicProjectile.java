@@ -57,18 +57,17 @@ public class MagicProjectile extends ProjectileObject {
 		applet.noFill();
 		if (direction == LEFT || direction == RIGHT) {
 			applet.rect(position.x, position.y, width, height);
-		}
-		else {
+		} else {
 			applet.rect(position.x, position.y, height, width);
 		}
 	}
 
+	@Override
 	public void update() {
 		trail.run();
 		if (hit) {
 			explode.run();
-		}
-		else {
+		} else {
 			moveProjectile();
 //			destroyProjectile();
 		}
@@ -109,7 +108,7 @@ public class MagicProjectile extends ProjectileObject {
 	}
 
 	private void setParticleAnimation(SideScroller a) {
-		particleAnimation = new ArrayList<PImage>();
+		particleAnimation = new ArrayList<>();
 		PImage image = Tileset.getTile("MAGIC_SOURCE");
 		float scale = 0.12f;
 		float angle = PApplet.radians(11);

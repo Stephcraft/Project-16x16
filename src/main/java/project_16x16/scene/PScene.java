@@ -2,14 +2,13 @@ package project_16x16.scene;
 
 import processing.event.KeyEvent;
 import processing.event.MouseEvent;
-
 import project_16x16.PClass;
 import project_16x16.SideScroller;
 
 /**
  * Scenes are a way of encapsulating different game states/views (such as menu
  * vs playable game).
- * 
+ *
  * @author micycle1
  *
  */
@@ -76,22 +75,22 @@ public abstract class PScene extends PClass {
 	 */
 	public final void mouseEvent(MouseEvent e) {
 		switch (e.getAction()) {
-			case MouseEvent.PRESS :
+			case MouseEvent.PRESS:
 				mousePressed(e);
 				break;
-			case MouseEvent.RELEASE :
+			case MouseEvent.RELEASE:
 				mouseReleased(e);
 				break;
-			case MouseEvent.CLICK :
+			case MouseEvent.CLICK:
 				mouseClicked(e);
 				break;
-			case MouseEvent.WHEEL :
+			case MouseEvent.WHEEL:
 				mouseWheel(e);
 				break;
-			case MouseEvent.DRAG :
+			case MouseEvent.DRAG:
 				mouseDragged(e);
 				break;
-			default :
+			default:
 				break;
 		}
 	}
@@ -158,13 +157,13 @@ public abstract class PScene extends PClass {
 	 */
 	public final void keyEvent(KeyEvent e) {
 		switch (e.getAction()) {
-			case KeyEvent.PRESS :
+			case KeyEvent.PRESS:
 				keyPressed(e);
 				break;
-			case KeyEvent.RELEASE :
+			case KeyEvent.RELEASE:
 				keyReleased(e);
 				break;
-			default :
+			default:
 				break;
 		}
 	}

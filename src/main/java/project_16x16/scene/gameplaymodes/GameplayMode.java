@@ -39,14 +39,12 @@ public abstract class GameplayMode {
 	public void updateGUIButton(int xAnchor, PImage activeIcon, PImage inactiveIcon, GameModes mode, boolean isHighlighted) {
 		if (getModeType().equals(mode)) {
 			drawGUIButton(activeIcon, xAnchor, 120);
-		}
-		else if (isNotInvalidGUIButtonMode() && isHighlighted) {
+		} else if (isNotInvalidGUIButtonMode() && isHighlighted) {
 			if (scene.applet.mousePressEvent) {
 				scene.changeMode(mode);
 			}
 			drawGUIButton(activeIcon, xAnchor, 120);
-		}
-		else {
+		} else {
 			drawGUIButton(inactiveIcon, xAnchor, 120);
 		}
 	}

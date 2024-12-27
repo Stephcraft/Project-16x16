@@ -6,8 +6,6 @@ import java.util.prefs.Preferences;
 
 import org.junit.jupiter.api.Test;
 
-import project_16x16.Options;
-
 public class OptionsTest {
 
 	@Test

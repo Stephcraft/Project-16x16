@@ -9,17 +9,16 @@ import processing.core.PConstants;
 import processing.core.PGraphics;
 import processing.event.KeyEvent;
 import processing.event.MouseEvent;
-
-import project_16x16.SideScroller;
-import project_16x16.Utility;
 import project_16x16.Audio;
 import project_16x16.Audio.BGM;
 import project_16x16.Constants;
+import project_16x16.SideScroller;
 import project_16x16.SideScroller.GameScenes;
+import project_16x16.Utility;
 import project_16x16.ui.Button;
 
 /**
- * 
+ *
  * @author micycle1
  *
  */
@@ -132,7 +131,7 @@ public final class MainMenu extends PScene {
 
 	/**
 	 * Adapted from https://www.openprocessing.org/sketch/762850
-	 * 
+	 *
 	 * @author micycle1
 	 *
 	 */
@@ -162,8 +161,7 @@ public final class MainMenu extends PScene {
 			for (int i = 0; i < n; i++) {
 				float x = getXPos(game.random(0, game.gameResolution.x));
 				float y = getYPos(game.random(0, game.gameResolution.y));
-				int color = Utility.colorToRGB((int) game.random(0, 50), (int) game.random(150, 255),
-						(int) game.random(150, 255));
+				int color = Utility.colorToRGB((int) game.random(0, 50), (int) game.random(150, 255), (int) game.random(150, 255));
 				Particle p = new Particle(x, y, (int) game.random(2, 8), color);
 				particles.add(p);
 			}
@@ -179,7 +177,7 @@ public final class MainMenu extends PScene {
 			int repopulate = 0;
 			for (Iterator<Particle> iterator = particles.iterator(); iterator.hasNext();) {
 				Particle p = iterator.next();
-				p.update(3 / game.targetFramerate);
+				p.update(3 / SideScroller.targetFramerate);
 				float x = getXPrint(p.x);
 				float y = getYPrint(p.y);
 
@@ -189,8 +187,7 @@ public final class MainMenu extends PScene {
 
 				p.lastX = x;
 				p.lastY = y;
-				if (!Utility.withinRegion(p.lastX, p.lastY, -100, -100, game.gameResolution.x + 100,
-						game.gameResolution.y + 100)) {
+				if (!Utility.withinRegion(p.lastX, p.lastY, -100, -100, game.gameResolution.x + 100, game.gameResolution.y + 100)) {
 					iterator.remove();
 					repopulate++;
 				}
@@ -205,14 +202,14 @@ public final class MainMenu extends PScene {
 				// @formatter:off
 				case 0: return Math.cos(y);
 				case 1: return Math.cos(y*5)*x*0.3;
-				case 2: 
-				case 3: 
-				case 4: 
-				case 5: 
+				case 2:
+				case 3:
+				case 4:
+				case 5:
 				case 6: return 1;
 				case 7: return Math.sin(y*0.1)*3; //orbit
 				case 8: return y/3; //two orbits
-				case 9: return -y;		
+				case 9: return -y;
 				case 10: return -1.5*y;
 				case 11: return Math.sin(y)*Math.cos(x);
 				default : return 1;

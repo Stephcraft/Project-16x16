@@ -11,7 +11,7 @@ import project_16x16.ui.Button;
  * proposed changes. The design is such that clicking "yes" should apply
  * proposed changes (runs the given Runnable); clicking "no" is functionless,
  * and merely goes back to the previous menu.
- * 
+ *
  * @author micycle1
  *
  */
@@ -26,7 +26,7 @@ public class ConfirmationMenu extends PScene {
 	private Button no;
 
 	/**
-	 * 
+	 *
 	 * @param sideScroller
 	 * @param onConfirm    the code that runs if "yes" is clicked
 	 * @param menutext

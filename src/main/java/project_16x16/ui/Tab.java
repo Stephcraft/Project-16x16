@@ -25,8 +25,7 @@ public class Tab extends PClass {
 			buttons[i].setText(texts[i]);
 			if (i == 0) {
 				buttons[i].setPosition((applet.width / 2) - 155, (applet.height / 2) - 265);
-			}
-			else {
+			} else {
 				buttons[i].setPosition(buttons[i - 1].getX() + ((buttons[i - 1].getW() + buttons[i].getW()) / 2), (applet.height / 2) - 265);
 			}
 		}
@@ -37,8 +36,7 @@ public class Tab extends PClass {
 		for (int j = 0; j < tabCount; j++) {
 			if (j == 0) {
 				buttons[j].setPosition((applet.width / 2) - 155, (applet.height / 2) - 265);
-			}
-			else {
+			} else {
 				buttons[j].setPosition(buttons[j - 1].getX() + ((buttons[j - 1].getW() + buttons[j].getW()) / 2), (applet.height / 2) - 265);
 			}
 		}
@@ -88,8 +86,7 @@ public class Tab extends PClass {
 			movingIncrement = 0;
 			buttonDistance = 0;
 			setIncrementSpeed(1);
-		}
-		else if (buttonDistance > movingIncrement) {
+		} else if (buttonDistance > movingIncrement) {
 			applet.rectMode(CENTER);
 			applet.rect(buttons[prevButton].getX() - movingIncrement, buttons[prevButton].getY(), buttons[prevButton].getW(), buttons[prevButton].getH());
 			movingIncrement += incrementSpeed;
@@ -99,8 +96,7 @@ public class Tab extends PClass {
 				buttonDistance = 0;
 				setIncrementSpeed(1);
 			}
-		}
-		else if (buttonDistance < movingIncrement) {
+		} else if (buttonDistance < movingIncrement) {
 			applet.rectMode(CENTER);
 			applet.rect(buttons[prevButton].getX() + movingIncrement, buttons[prevButton].getY(), buttons[prevButton].getW(), buttons[prevButton].getH());
 			movingIncrement += incrementSpeed;

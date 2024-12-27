@@ -1,20 +1,21 @@
 package project_16x16;
 
+import static processing.core.PApplet.cos;
+import static processing.core.PApplet.sin;
+
 import org.gicentre.utils.move.ZoomPan;
 
-import project_16x16.objects.EditableObject;
 import processing.core.PApplet;
+import processing.core.PConstants;
 import processing.core.PVector;
-
-import static processing.core.PApplet.sin;
-import static processing.core.PApplet.cos;
+import project_16x16.objects.EditableObject;
 
 /**
  * Camera class. Extends {@link org.gicentre.utils.move.ZoomPan ZoomPan},
  * offering some bespoke methods relating to Project-16x16. At the moment, the
  * camera uses {@link PApplet#lerp(float, float, float) lerp()} to follow
  * objects or go to target position.
- * 
+ *
  * @todo deadzone mode can be choppy when tracking; zoom-to-fit (multiple
  *       entities); setting position to mouse when camera is rotated [bugged]
  * @author micycle1
@@ -81,7 +82,7 @@ public final class Camera extends ZoomPan {
 
 	/**
 	 * The most basic constructor. Initialises the camera at position (0, 0).
-	 * 
+	 *
 	 * @param applet Target applet ({@link SideScroller}).
 	 */
 	public Camera(SideScroller applet) {
@@ -92,7 +93,7 @@ public final class Camera extends ZoomPan {
 
 	/**
 	 * Constructor. Specify camera's initial fixed position.
-	 * 
+	 *
 	 * @param applet        Target applet ({@link SideScroller}).
 	 * @param startPosition Initial camera position.
 	 */
@@ -104,7 +105,7 @@ public final class Camera extends ZoomPan {
 
 	/**
 	 * Constructor. Specify the object to track from initialisation.
-	 * 
+	 *
 	 * @param applet       Target applet ({@link SideScroller}).
 	 * @param followObject Object the camera will follow.
 	 */
@@ -118,7 +119,7 @@ public final class Camera extends ZoomPan {
 	/**
 	 * Constructor. Specify both the object to track and the translation offset with
 	 * which to track it from initialisation.
-	 * 
+	 *
 	 * @param applet       Target applet ({@link SideScroller}).
 	 * @param followObject Object the camera will follow.
 	 * @param followOffset Offset with which the camera will follow the given
@@ -150,16 +151,16 @@ public final class Camera extends ZoomPan {
 		applet.line(applet.width / 2 - length * 2, applet.height / 2, applet.width / 2 + length * 2, applet.height / 2);
 		applet.popMatrix();
 		if (following) {
-			applet.rectMode(PApplet.CENTER);
+			applet.rectMode(PConstants.CENTER);
 			applet.rect(getCoordToDisp(followObject.position).x, getCoordToDisp(followObject.position).y, length * 2, length * 2);
-			applet.strokeWeight(PApplet.map(PApplet.dist(applet.width / 2, applet.height / 2,
-					getCoordToDisp(followObject.position).x, getCoordToDisp(followObject.position).y), 0, 100, 2, 10));
-			applet.line(applet.width / 2, applet.height / 2, getCoordToDisp(followObject.position).x,
-					getCoordToDisp(followObject.position).y);
+			applet.strokeWeight(PApplet.map(
+					PApplet.dist(applet.width / 2, applet.height / 2, getCoordToDisp(followObject.position).x, getCoordToDisp(followObject.position).y), 0, 100,
+					2, 10));
+			applet.line(applet.width / 2, applet.height / 2, getCoordToDisp(followObject.position).x, getCoordToDisp(followObject.position).y);
 			if (deadZoneScreen) {
-				applet.rectMode(PApplet.CORNER);
+				applet.rectMode(PConstants.CORNER);
 				applet.rect(deadZoneP1.x, deadZoneP1.y, deadZoneP2.x - deadZoneP1.x, deadZoneP2.y - deadZoneP1.y);
-				applet.rectMode(PApplet.CENTER);
+				applet.rectMode(PConstants.CENTER);
 			}
 		}
 	}
@@ -173,7 +174,7 @@ public final class Camera extends ZoomPan {
 	 * This results in all subsequent drawing being affected by the camera.
 	 * Occasionally though there may be a need to have some display activity that is
 	 * independent of the camera -- see {@link #release()}.
-	 * 
+	 *
 	 * @see #release()
 	 */
 	public void hook() {
@@ -186,7 +187,7 @@ public final class Camera extends ZoomPan {
 	 * called will not be affected by the camera. Call this to display legends,
 	 * annotations and 'heads-up displays', or any other graphics that need to be
 	 * overlaid on top of the zoomed graphics.
-	 * 
+	 *
 	 * @see #hook()
 	 */
 	public void release() {
@@ -195,7 +196,7 @@ public final class Camera extends ZoomPan {
 
 	/**
 	 * Updates the camera - this method is the heart of the {@link Camera} class.
-	 * 
+	 *
 	 * @see {@linkplain ZoomPan#transform() transform()}
 	 */
 	private void update() {
@@ -218,20 +219,14 @@ public final class Camera extends ZoomPan {
 		setZoomScaleX(scale);
 		setZoomScaleY(scale);
 
-		if (following && ((deadZoneScreen && !withinScreenDeadZone()) || ((deadZoneWorld && !withinWorldDeadZone()))
-				|| (!deadZoneScreen && !deadZoneWorld))) {
-			setPanOffset(
-					PApplet.lerp(getPanOffset().x, ((-followObject.position.x - followObjectOffset.x + offset.x) * zoom),
-							lerpSpeed) - shakeOffset.x,
-					PApplet.lerp(getPanOffset().y, ((-followObject.position.y - followObjectOffset.y + offset.y) * zoom),
-							lerpSpeed) - shakeOffset.y);
+		if (following && ((deadZoneScreen && !withinScreenDeadZone()) || ((deadZoneWorld && !withinWorldDeadZone())) || (!deadZoneScreen && !deadZoneWorld))) {
+			setPanOffset(PApplet.lerp(getPanOffset().x, ((-followObject.position.x - followObjectOffset.x + offset.x) * zoom), lerpSpeed) - shakeOffset.x,
+					PApplet.lerp(getPanOffset().y, ((-followObject.position.y - followObjectOffset.y + offset.y) * zoom), lerpSpeed) - shakeOffset.y);
 		} else if (!following) {
-			setPanOffset(
-					PApplet.lerp(getPanOffset().x, ((targetPosition.x + offset.x) * zoom), lerpSpeed) - shakeOffset.x,
+			setPanOffset(PApplet.lerp(getPanOffset().x, ((targetPosition.x + offset.x) * zoom), lerpSpeed) - shakeOffset.x,
 					PApplet.lerp(getPanOffset().y, ((targetPosition.y + offset.y) * zoom), lerpSpeed) - shakeOffset.y);
 		}
-		logicalPosition = PVector.mult(PVector.sub(getPanOffset(), new PVector(applet.width / 2 * zoom, applet.height / 2 * zoom)),
-				-1 / zoom);
+		logicalPosition = PVector.mult(PVector.sub(getPanOffset(), new PVector(applet.width / 2 * zoom, applet.height / 2 * zoom)), -1 / zoom);
 
 		if (trauma > 0) { // 50 and 0.35 seem suitable values
 			trauma -= traumaDecay;
@@ -256,16 +251,16 @@ public final class Camera extends ZoomPan {
 			applet.noFill();
 			applet.stroke(0, 150, 255);
 			applet.strokeWeight(2);
-			applet.rectMode(PApplet.CORNER);
+			applet.rectMode(PConstants.CORNER);
 			applet.rect(deadZoneP1.x, deadZoneP1.y, deadZoneP2.x - deadZoneP1.x, deadZoneP2.y - deadZoneP1.y);
-			applet.rectMode(PApplet.CENTER);
+			applet.rectMode(PConstants.CENTER);
 		}
 	}
 
 	/**
 	 * Tells the camera which object to track/follow. Retains the previous offset
 	 * (if any).
-	 * 
+	 *
 	 * @param o Object to track.
 	 */
 	public void setFollowObject(EditableObject o) {
@@ -276,7 +271,7 @@ public final class Camera extends ZoomPan {
 
 	/**
 	 * Tells the camera which object to track/follow, given a new offset.
-	 * 
+	 *
 	 * @param o      Object to track.
 	 * @param offset Offset with which the camera will follow the given object.
 	 */
@@ -289,7 +284,7 @@ public final class Camera extends ZoomPan {
 
 	/**
 	 * Modify the existing object tracking offset.
-	 * 
+	 *
 	 * @param followObjectOffset new offset
 	 */
 	public void setFollowObjectOffset(PVector followObjectOffset) {
@@ -299,7 +294,7 @@ public final class Camera extends ZoomPan {
 	/**
 	 * Shakes the camera around current position. Force is additive, so successive
 	 * shakes produce more camera shaking.
-	 * 
+	 *
 	 * @param force shaking force (should be at most 1).
 	 */
 	public void shake(float force) { // todo
@@ -310,7 +305,7 @@ public final class Camera extends ZoomPan {
 	 * Defines the screen region in which the tracked object can move without the
 	 * camera following. When the tracked object exits the region, the camera will
 	 * track the object until it returns within the region.
-	 * 
+	 *
 	 * @param point1 Coordinate 1 (Screen coordinate)
 	 * @param point2 Coordinate 2 (Screen coordinate - the point opposite point1)
 	 * @see {@link #setWorldDeadZone(PVector, PVector) setWorldDeadZone()}
@@ -325,7 +320,7 @@ public final class Camera extends ZoomPan {
 
 	/**
 	 * Determines whether the following-object is within the screen deadzone.
-	 * 
+	 *
 	 * @return
 	 */
 	private boolean withinScreenDeadZone() {
@@ -337,7 +332,7 @@ public final class Camera extends ZoomPan {
 	 * Defines the game world region in which the tracked object can move without
 	 * the camera following. When the tracked object exits the region, the camera
 	 * will track the object until it returns within the region.
-	 * 
+	 *
 	 * @param point1 Coordinate 1 (Screen coordinate)
 	 * @param point2 Coordinate 2 (Screen coordinate - the point opposite point1)
 	 * @see {@link #setScreenDeadZone(PVector, PVector) setScreenDeadZone()}
@@ -352,7 +347,7 @@ public final class Camera extends ZoomPan {
 
 	/**
 	 * Determines whether the following-object is within the world deadzone.
-	 * 
+	 *
 	 * @return
 	 */
 	private boolean withinWorldDeadZone() {
@@ -380,7 +375,7 @@ public final class Camera extends ZoomPan {
 	/**
 	 * Sets camera position. Takes precedence over the follow object (if any). Could
 	 * be used to reveal a boss, then snap back to the player.
-	 * 
+	 *
 	 * @param position World position camera will center on.
 	 * @see {@link ZoomPan#getDispToCoord(PVector) getDispToCoord()}
 	 */
@@ -388,10 +383,10 @@ public final class Camera extends ZoomPan {
 		following = false;
 		this.targetPosition = new PVector(-position.x, -position.y);
 	}
-	
+
 	/**
 	 * Sets camera position immediately (no lerping towards target position).
-	 * 
+	 *
 	 * @param position World position camera will center on.
 	 * @see #setCameraPosition(PVector)
 	 */
@@ -405,7 +400,7 @@ public final class Camera extends ZoomPan {
 	/**
 	 * Set camera rotation (the camera rotates around the camera position - not a
 	 * world position).
-	 * 
+	 *
 	 * @param angle Rotation angle (in radians)
 	 */
 	public void setRotation(float angle) {
@@ -414,7 +409,7 @@ public final class Camera extends ZoomPan {
 
 	/**
 	 * Modify the existing rotation.
-	 * 
+	 *
 	 * @param angle Rotation angle (in radians)
 	 */
 	public void rotate(float angle) {
@@ -449,7 +444,7 @@ public final class Camera extends ZoomPan {
 	 * Since the lerp is calculated per-frame (after prior motion), the camera
 	 * motion is effectively non-linear. Smaller values provide a smoother, less
 	 * snappy, slower camera.
-	 * 
+	 *
 	 * @param lerpSpeed Range = [0-1.0]
 	 * @see {@link PApplet#lerp(float, float, float) lerp()}
 	 */
@@ -459,7 +454,7 @@ public final class Camera extends ZoomPan {
 
 	/**
 	 * Determine if a point is within rectangular region.
-	 * 
+	 *
 	 * @param point PVector position to test.
 	 * @param UL    Corner one of region.
 	 * @param BR    Corner two of region (different X & Y).
@@ -476,7 +471,7 @@ public final class Camera extends ZoomPan {
 	 * Where is the camera in the world? Accounts for zooming and centering the
 	 * camera (ie. an object located at (0, 0) which the camera is following gives a
 	 * camera position of (0, 0) too, regardless of zoom level).
-	 * 
+	 *
 	 * @return Representation of camera position (the point the camera is centered
 	 *         on).
 	 * @see {@link ZoomPan#getPanOffset() getPanOffset()} (not adjusted for
@@ -488,18 +483,18 @@ public final class Camera extends ZoomPan {
 
 	/**
 	 * Returns clockwise rotation of the camera.
-	 * 
+	 *
 	 * @return rotation (radians).
 	 */
 	public float getCameraRotation() {
-		return PApplet.abs(rotation) % PApplet.TWO_PI;
+		return PApplet.abs(rotation) % PConstants.TWO_PI;
 	}
 
 	/**
 	 * Returns the world position the mouse is over, accounting for camera rotation
 	 * (uses polar coordinates). Overrides the {@link ZoomPan#getMouseCoord() parent
 	 * method}, since this does not account for camera rotation.
-	 * 
+	 *
 	 * @return World position the mouse is over.
 	 */
 	@Override

@@ -26,6 +26,7 @@ public class CleanerRobot extends Enemy {
 		target = posA;
 	}
 
+	@Override
 	public void update() {
 		super.update();
 
@@ -33,16 +34,13 @@ public class CleanerRobot extends Enemy {
 		if (getDistance(target, position) < 10) {
 			if (target == posA) {
 				target = posB;
-			}
-			else {
+			} else {
 				target = posA;
 			}
-		}
-		else if (position.x > target.x) {
+		} else if (position.x > target.x) {
 			velocity.x = -speedWalk;
 			enemyState.facingDir = LEFT;
-		}
-		else if (position.x < target.x) {
+		} else if (position.x < target.x) {
 			velocity.x = speedWalk;
 			enemyState.facingDir = RIGHT;
 		}

@@ -7,9 +7,10 @@ import processing.core.PVector;
 /**
  * Particle Preload System
  * <p>
- * Preloads the particles position, velocity, lifespan and frameCount.
- * It only takes into account the particles spawn position, velocity and acceleration.
- * Runtime changes like collision and outside forces will not be taken into affect.
+ * Preloads the particles position, velocity, lifespan and frameCount. It only
+ * takes into account the particles spawn position, velocity and acceleration.
+ * Runtime changes like collision and outside forces will not be taken into
+ * affect.
  *
  * @author petturtle
  */
@@ -25,10 +26,10 @@ public class ParticlePreloadSystem {
 			}
 		};
 	}
-	
+
 	private static PVector positionDeltaIntegral(Particle particle, int frames) {
-		float deltaX = (float) (particle.position.x + particle.velocity.x*frames + 0.5*particle.acceleration.x*frames*frames);
-		float deltaY = (float) (particle.position.y + particle.velocity.y*frames + 0.5*particle.acceleration.y*frames*frames);
+		float deltaX = (float) (particle.position.x + particle.velocity.x * frames + 0.5 * particle.acceleration.x * frames * frames);
+		float deltaY = (float) (particle.position.y + particle.velocity.y * frames + 0.5 * particle.acceleration.y * frames * frames);
 		return new PVector(deltaX, deltaY);
 	}
 }

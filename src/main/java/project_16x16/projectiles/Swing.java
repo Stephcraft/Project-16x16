@@ -1,14 +1,14 @@
 package project_16x16.projectiles;
 
-import project_16x16.components.AnimationComponent;
 import processing.core.PVector;
-import project_16x16.scene.GameplayScene;
 import project_16x16.SideScroller;
 import project_16x16.Tileset;
+import project_16x16.components.AnimationComponent;
+import project_16x16.scene.GameplayScene;
 
 public class Swing extends ProjectileObject { // PClass
 
-	private AnimationComponent animation;
+	AnimationComponent animation;
 
 	public boolean activated;
 
@@ -19,10 +19,10 @@ public class Swing extends ProjectileObject { // PClass
 		direction = dir;
 
 		switch (direction) {
-			case LEFT :
+			case LEFT:
 				position = new PVector(x - 60, y);
 				break;
-			case RIGHT :
+			case RIGHT:
 				position = new PVector(x + 60, y);
 				break;
 		}
@@ -49,9 +49,9 @@ public class Swing extends ProjectileObject { // PClass
 	@Override
 	public void update() {
 		image = animation.animate();
-
-		if (animation.ended) {
-			gameplayScene.getPlayer().swings.remove(this);
-		}
+	}
+	
+	public boolean animationEnded() {
+		return animation.ended;
 	}
 }

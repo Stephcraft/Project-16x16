@@ -9,7 +9,7 @@ import ddf.minim.Minim;
 /**
  * Provides static methods for playing game audio: background music and sound
  * effects.
- * 
+ *
  * @author micycle1
  *
  */
@@ -28,8 +28,7 @@ public final class Audio {
 	public enum BGM {
 		TEST0("first_theme.mp3"), // TODO
 		TEST1("cyberSynthwave.mp3"), // TODO
-		TEST2("First_level_take_1.mp3"),
-		TEST3("Intro_Title_Pause_Screen_Take1_Loopable.mp3");
+		TEST2("First_level_take_1.mp3"), TEST3("Intro_Title_Pause_Screen_Take1_Loopable.mp3");
 
 		private String filename;
 
@@ -64,7 +63,7 @@ public final class Audio {
 
 	/**
 	 * Call during setup to instantiate a connection to Minim (the audio backend).
-	 * 
+	 *
 	 * @param s
 	 */
 	public static void assignApplet(SideScroller sideScroller) {
@@ -73,8 +72,7 @@ public final class Audio {
 			AudioSample sample = minim.loadSample(sfx.getPath());
 			if (sample != null) {
 				SFX_MAP.put(sfx, sample);
-			}
-			else {
+			} else {
 				System.err.println(sfx.getPath() + " not found.");
 			}
 		}
@@ -82,8 +80,7 @@ public final class Audio {
 			AudioPlayer audioPlayer = minim.loadFile(bgm.getPath());
 			if (audioPlayer != null) {
 				BGM_MAP.put(bgm, audioPlayer);
-			}
-			else {
+			} else {
 				System.err.println(bgm.getPath() + " not found.");
 			}
 		}
@@ -94,7 +91,7 @@ public final class Audio {
 	/**
 	 * Play a sound effect once. Can be called again before the sound finishes
 	 * playing.
-	 * 
+	 *
 	 * @param sound sound effect name
 	 * @see #play(SFX, float)
 	 * @see ddf.minim.AudioSample#trigger()
@@ -102,8 +99,7 @@ public final class Audio {
 	public static void play(SFX sound) {
 		if (SFX_MAP.containsKey(sound)) {
 			SFX_MAP.get(sound).trigger();
-		}
-		else {
+		} else {
 			System.err.println(sound.getPath() + " not found.");
 		}
 	}
@@ -111,7 +107,7 @@ public final class Audio {
 	/**
 	 * Plays a sound effect once (does not loop). Can be called again before the
 	 * sound finishes playing. The sound effect gain is specified with this method.
-	 * 
+	 *
 	 * @param sound sound effect name
 	 * @param gain  gain, in decibels (where negative is quieter). Default = 0.
 	 * @see #play(SFX)
@@ -121,8 +117,7 @@ public final class Audio {
 		if (SFX_MAP.containsKey(sound)) {
 			SFX_MAP.get(sound).setGain(gain);
 			SFX_MAP.get(sound).trigger();
-		}
-		else {
+		} else {
 			System.err.println(sound.getPath() + " not found.");
 		}
 	}
@@ -131,7 +126,7 @@ public final class Audio {
 	 * Plays a background music track. Only one BGM track can play at once -- this
 	 * method stops any existing BGM track if it is different. BGM tracks loop by
 	 * default.
-	 * 
+	 *
 	 * @param sound BGM track
 	 * @see #play(BGM, float)
 	 */
@@ -148,8 +143,7 @@ public final class Audio {
 		if (BGM_MAP.containsKey(sound)) {
 			BGM_MAP.get(sound).setGain(gainBGM);
 			BGM_MAP.get(sound).loop();
-		}
-		else {
+		} else {
 			System.err.println(sound.getPath() + " not found.");
 		}
 	}
@@ -158,7 +152,7 @@ public final class Audio {
 	 * Plays a background music track at a specific gain (volume). Only one BGM
 	 * track can play at once -- this method stops any existing BGM track. BGM
 	 * tracks loop by default.
-	 * 
+	 *
 	 * @param sound BGM track
 	 * @param gain  gain, in decibels (where negative is quieter). Default = 0.
 	 * @see #play(BGM)
@@ -167,15 +161,14 @@ public final class Audio {
 		if (BGM_MAP.containsKey(sound)) {
 			BGM_MAP.get(sound).setGain(gain);
 			play(sound);
-		}
-		else {
+		} else {
 			System.err.println(sound.getPath() + " not found.");
 		}
 	}
 
 	/**
 	 * Sets gain (volume) for background music.
-	 * 
+	 *
 	 * @param gain gain, in decibels (where negative is quieter). Default = 0.
 	 */
 	public static void setGainBGM(float gain) {
@@ -185,7 +178,7 @@ public final class Audio {
 
 	/**
 	 * Sets gain (volume) for sound effects.
-	 * 
+	 *
 	 * @param gain gain, in decibels (where negative is quieter). Default = 0.
 	 */
 	public static void setGainSFX(float gain) {
@@ -212,7 +205,7 @@ public final class Audio {
 	/**
 	 * Stops Minim and releases all audio resources. Call when application is
 	 * closed.
-	 * 
+	 *
 	 * @see Minim#stop()
 	 */
 	public static void exit() {

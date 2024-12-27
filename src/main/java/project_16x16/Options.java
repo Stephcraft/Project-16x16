@@ -3,6 +3,7 @@ package project_16x16;
 import java.awt.event.KeyEvent;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
+
 import project_16x16.ui.Notifications;
 
 /**
@@ -30,29 +31,29 @@ public class Options {
         MOVE_RIGHT_KEY,
         JUMP_KEY,
         DASH_KEY,
-        
+
         // Debug and development controls
         FRAME_RATE_LOW_KEY,
         FRAME_RATE_HIGH_KEY,
         FRAME_RATE_DEFAULT_KEY,
         TOGGLE_DEADZONE_KEY,
         TOGGLE_DEBUG_KEY,
-        
+
         // Camera controls
         CAMERA_TO_MOUSE_KEY,
         CAMERA_TO_PLAYER_KEY,
         CAMERA_SHAKE_KEY,
-        
+
         // UI controls
         NOTIFY_KEY,
         TOGGLE_FULLSCREEN_KEY,
-        
+
         // Life system controls
         LIFE_CAP_INCREASE_KEY,
         LIFE_CAP_DECREASE_KEY,
         LIFE_INCREASE_KEY,
         LIFE_DECREASE_KEY,
-        
+
         // Other settings
         TARGET_FPS,
         SNAP_SIZE,
@@ -61,7 +62,7 @@ public class Options {
         GAIN_SFX,
         MUTE_BGM,
         MUTE_SFX,
-        
+
         TEST_KEY,
      // @formatter:on
 	}
@@ -111,8 +112,7 @@ public class Options {
 	// Debug and development key bindings
 	public static int frameRateLowKey = options.getInt(Option.FRAME_RATE_LOW_KEY.toString(), DefaultKeys.FRAME_RATE_LOW);
 	public static int frameRateHighKey = options.getInt(Option.FRAME_RATE_HIGH_KEY.toString(), DefaultKeys.FRAME_RATE_HIGH);
-	public static int frameRateDefaultKey = options.getInt(Option.FRAME_RATE_DEFAULT_KEY.toString(),
-			DefaultKeys.FRAME_RATE_DEFAULT);
+	public static int frameRateDefaultKey = options.getInt(Option.FRAME_RATE_DEFAULT_KEY.toString(), DefaultKeys.FRAME_RATE_DEFAULT);
 	public static int toggleDeadzoneKey = options.getInt(Option.TOGGLE_DEADZONE_KEY.toString(), DefaultKeys.TOGGLE_DEADZONE);
 	public static int toggleDebugKey = options.getInt(Option.TOGGLE_DEBUG_KEY.toString(), DefaultKeys.TOGGLE_DEBUG);
 
@@ -123,8 +123,7 @@ public class Options {
 
 	// UI key bindings
 	public static int notifyKey = options.getInt(Option.NOTIFY_KEY.toString(), DefaultKeys.NOTIFY);
-	public static int toggleFullscreenKey = options.getInt(Option.TOGGLE_FULLSCREEN_KEY.toString(),
-			DefaultKeys.TOGGLE_FULLSCREEN);
+	public static int toggleFullscreenKey = options.getInt(Option.TOGGLE_FULLSCREEN_KEY.toString(), DefaultKeys.TOGGLE_FULLSCREEN);
 
 	// Life system key bindings
 	public static int lifeCapIncreaseKey = options.getInt(Option.LIFE_CAP_INCREASE_KEY.toString(), DefaultKeys.LIFE_CAP_INCREASE);

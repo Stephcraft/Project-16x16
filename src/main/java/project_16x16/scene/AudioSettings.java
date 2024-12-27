@@ -1,11 +1,9 @@
 package project_16x16.scene;
 
-import processing.core.PApplet;
 import processing.core.PConstants;
 import processing.event.KeyEvent;
 import processing.event.MouseEvent;
 import project_16x16.Audio;
-import project_16x16.Constants;
 import project_16x16.Options;
 import project_16x16.Options.Option;
 import project_16x16.SideScroller;
@@ -14,7 +12,7 @@ import project_16x16.ui.Notifications;
 import project_16x16.ui.Slider;
 
 /**
- * 
+ *
  * @author micycle1
  *
  */
@@ -79,8 +77,7 @@ public final class AudioSettings extends PScene {
 		applet.fill(29, 33, 45);
 		applet.stroke(47, 54, 73);
 		applet.strokeWeight(8);
-		applet.rect(applet.gameResolution.x / 2, applet.gameResolution.y / 2, applet.gameResolution.x * 0.66f - 8,
-				applet.gameResolution.y - 8);
+		applet.rect(applet.gameResolution.x / 2, applet.gameResolution.y / 2, applet.gameResolution.x * 0.66f - 8, applet.gameResolution.y - 8);
 	}
 
 	@Override

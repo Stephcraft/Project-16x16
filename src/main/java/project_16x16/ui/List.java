@@ -32,8 +32,9 @@ public class List extends PClass {
 
 	// If new elements are present can use it to recreate them
 	private void initalizeElements() {
-		for (int i = 0; i < elements.length; i++)
+		for (int i = 0; i < elements.length; i++) {
 			elements[i] = new Button(applet);
+		}
 	}
 
 	public void refreshElements(String[] files) {
@@ -78,13 +79,13 @@ public class List extends PClass {
 	public void update() {
 		confirm.update();
 		cancel.update();
-		for (int i = 0; i < elements.length; i++) {
-			elements[i].updateOnPress();
+		for (Button element : elements) {
+			element.updateOnPress();
 			// requires the !getConfirm as there is an event glitch when confiriming your
 			// choice
 			// within the list
-			if (elements[i].event() && !getConfirmPress()) {
-				getElement = elements[i].getText();
+			if (element.event() && !getConfirmPress()) {
+				getElement = element.getText();
 				System.out.println(getElement);
 			}
 		}
@@ -93,8 +94,9 @@ public class List extends PClass {
 	public void displayElements() {
 		for (int i = 0; i < elements.length; i++) {
 			elements[i].setPosition((x - w / 2) + (elements[i].getW() / 2), (y - h / 2 + 30) + (i * elementOffSet) - scrollPass);
-			if (inListBox(elements[i].getY() + elements[i].getH() / 2, elements[i].getY() - elements[i].getH() / 2))
+			if (inListBox(elements[i].getY() + elements[i].getH() / 2, elements[i].getY() - elements[i].getH() / 2)) {
 				elements[i].display();
+			}
 		}
 	}
 

@@ -32,7 +32,7 @@ public class ParticleAnimationController implements ParticleEventListener {
 
 	/**
 	 * Add animation to particle
-	 * 
+	 *
 	 * @param images animation ArrayList
 	 * @param rate   animation speed, high value = slow speed, -1 = match life span
 	 *               of particle
@@ -45,7 +45,7 @@ public class ParticleAnimationController implements ParticleEventListener {
 	@Override
 	public void onParticleSpawnEvent(Particle particle) {
 		setParticle(particle);
-	};
+	}
 
 	@Override
 	public void onParticleRunEvent(Particle particle) {
@@ -60,8 +60,7 @@ public class ParticleAnimationController implements ParticleEventListener {
 	private void setParticle(Particle particle) {
 		if (rate == -1) {
 			particle.image = getImage(particle.maxLifespan, particle.lifespan);
-		}
-		else {
+		} else {
 			particle.image = getImage(particle.frameCount);
 		}
 	}

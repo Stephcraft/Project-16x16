@@ -48,6 +48,7 @@ public class CollidableObject extends EditableObject {
 		position = new PVector(x, y);
 	}
 
+	@Override
 	public void display() {
 		if (height / 4 % 2 != 0) {
 			pixelOffsetY = 2;
@@ -62,8 +63,7 @@ public class CollidableObject extends EditableObject {
 				applet.stroke(0, 255, 200);
 				applet.rect(position.x + pixelOffsetX, position.y + pixelOffsetY, width, height);
 			}
-		}
-		else {
+		} else {
 			applet.image(image, position.x + pixelOffsetX, position.y + pixelOffsetY, width, height);
 		}
 	}

@@ -51,7 +51,8 @@ public class EditorItem extends PClass {
 					// transform from screen mouse pos to game pos
 					// Create new instance from dragged icon
 
-					PVector realPos = applet.camera.getDispToCoord(new PVector(Utility.roundToNearest(applet.getMouseCoordScreen().x, SideScroller.snapSize), Utility.roundToNearest(applet.getMouseCoordScreen().y, SideScroller.snapSize)));
+					PVector realPos = applet.camera.getDispToCoord(new PVector(Utility.roundToNearest(applet.getMouseCoordScreen().x, SideScroller.snapSize),
+							Utility.roundToNearest(applet.getMouseCoordScreen().y, SideScroller.snapSize)));
 					EditableObject c = null;
 					switch (type) {
 						case COLLISION:
@@ -67,8 +68,7 @@ public class EditorItem extends PClass {
 								Constructor<?> ctor = gameObjectClass.getDeclaredConstructors()[0];
 								c = (GameObject) ctor.newInstance(new Object[] { applet, gameplayScene });
 								break;
-							}
-							catch (Exception e) {
+							} catch (Exception e) {
 								e.printStackTrace();
 							}
 							break;

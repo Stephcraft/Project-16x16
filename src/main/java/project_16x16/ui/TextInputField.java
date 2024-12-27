@@ -21,7 +21,7 @@ public class TextInputField extends PClass {
 
 	/**
 	 * Constructor for PInput
-	 * 
+	 *
 	 * @param a This a reference to the game //TODO: having variable names that are
 	 *          just letters can be confusing to new contributors
 	 */
@@ -51,8 +51,7 @@ public class TextInputField extends PClass {
 		applet.strokeWeight(4);
 		if (mouseOver) {
 			applet.stroke(115, 126, 154);
-		}
-		else {
+		} else {
 			applet.stroke(74, 81, 99);
 		}
 
@@ -82,8 +81,7 @@ public class TextInputField extends PClass {
 			if (applet.mousePressEvent) {
 				focus = true;
 			}
-		}
-		else {
+		} else {
 			mouseOver = false;
 			if (applet.mousePressEvent) {
 				focus = false;
@@ -100,8 +98,7 @@ public class TextInputField extends PClass {
 							text += applet.key;
 						}
 					}
-				}
-				else {
+				} else {
 					if (text.length() > 0) {
 						text = text.substring(0, text.length() - 1);
 					}
@@ -112,7 +109,7 @@ public class TextInputField extends PClass {
 
 	/**
 	 * Changes the object variable text to txt
-	 * 
+	 *
 	 * @param text what to update text to as String
 	 */
 	public void setText(String text) {
@@ -121,7 +118,7 @@ public class TextInputField extends PClass {
 
 	/**
 	 * Changes the position of the window
-	 * 
+	 *
 	 * @param x the new x component
 	 * @param y the new y component
 	 */
@@ -132,7 +129,7 @@ public class TextInputField extends PClass {
 
 	/**
 	 * changes size and position
-	 * 
+	 *
 	 * @param x new x component
 	 * @param y new y component
 	 * @param w new width
@@ -147,7 +144,7 @@ public class TextInputField extends PClass {
 
 	/**
 	 * Changes the width
-	 * 
+	 *
 	 * @param w new width
 	 */
 	public void setWidth(int w) {
@@ -156,7 +153,7 @@ public class TextInputField extends PClass {
 
 	/**
 	 * gets the object variable text
-	 * 
+	 *
 	 * @return text as String
 	 */
 	public String getText() {

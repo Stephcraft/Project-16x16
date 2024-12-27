@@ -38,7 +38,7 @@ public class Enemy extends CollidableObject {
 
 	/**
 	 * Constructor
-	 * 
+	 *
 	 * @param sideScroller SideScroller game controller.
 	 */
 	public Enemy(SideScroller sideScroller, GameplayScene gameplayScene) {
@@ -57,6 +57,7 @@ public class Enemy extends CollidableObject {
 	 * The display method controls how to display the character to the screen with
 	 * what animation.
 	 */
+	@Override
 	public void display() {
 		applet.pushMatrix();
 		applet.translate(position.x, position.y);
@@ -126,8 +127,7 @@ public class Enemy extends CollidableObject {
 						if (position.x < collision.position.x) {
 							position.x = collision.position.x - collision.width / 2 - width / 2;
 							// enemy right of collision
-						}
-						else {
+						} else {
 							position.x = collision.position.x + collision.width / 2 + width / 2;
 						}
 						velocity.x = 0;
@@ -142,8 +142,7 @@ public class Enemy extends CollidableObject {
 							position.y = collision.position.y - collision.height / 2 - height / 2;
 							enemyState.flying = false;
 							// enemy below collision
-						}
-						else {
+						} else {
 							position.y = collision.position.y + collision.height / 2 + height / 2;
 							enemyState.jumping = false;
 						}
@@ -155,23 +154,21 @@ public class Enemy extends CollidableObject {
 	}
 
 	/**
-	 * 
+	 *
 	 * Determines is the character has collided with an object of type Collision.
-	 * 
+	 *
 	 * @param collision The other object
 	 * @return boolean if it has or has not collided with the object.
 	 */
 	private boolean collides(CollidableObject collision) {
-		return (position.x + width / 2 > collision.position.x - collision.width / 2
-				&& position.x - width / 2 < collision.position.x + collision.width / 2)
+		return (position.x + width / 2 > collision.position.x - collision.width / 2 && position.x - width / 2 < collision.position.x + collision.width / 2)
 				&& (position.y + height / 2 > collision.position.y - collision.height / 2
 						&& position.y - height / 2 < collision.position.y + collision.height / 2);
 	}
 
 	// TODO: optimize these (unused)
 	private boolean collidesEqual(CollidableObject collision) {
-		return (position.x + width / 2 >= collision.position.x - collision.width / 2
-				&& position.x - width / 2 <= collision.position.x + collision.width / 2)
+		return (position.x + width / 2 >= collision.position.x - collision.width / 2 && position.x - width / 2 <= collision.position.x + collision.width / 2)
 				&& (position.y + height / 2 >= collision.position.y - collision.height / 2
 						&& position.y - height / 2 <= collision.position.y + collision.height / 2);
 	}

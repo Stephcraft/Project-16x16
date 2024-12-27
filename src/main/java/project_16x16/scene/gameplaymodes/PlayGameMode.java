@@ -14,7 +14,7 @@ public class PlayGameMode extends GameplayMode {
 		super(gameplayScene);
 		this.localPlayer = localPlayer;
 	}
-	
+
 	@Override
 	public void enter() {
 		scene.setZoomable(true);
@@ -31,7 +31,7 @@ public class PlayGameMode extends GameplayMode {
 			((GameObject) object).update();
 		}
 	}
-	
+
 	@Override
 	public void updateLocalPlayer(Player localPlayer) {
 		localPlayer.update();

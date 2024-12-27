@@ -31,7 +31,7 @@ public class ParticleChildController implements ParticleEventListener {
 		hasDelay = true;
 		spawnOnDeath = false;
 		copySystem = particleSystem;
-		particleSystems = new ArrayList<ParticleSystem>();
+		particleSystems = new ArrayList<>();
 	}
 
 	/**
@@ -44,7 +44,7 @@ public class ParticleChildController implements ParticleEventListener {
 		this.spawnOnDeath = spawnOnDeath;
 		hasDelay = true;
 		copySystem = particleSystem;
-		particleSystems = new ArrayList<ParticleSystem>();
+		particleSystems = new ArrayList<>();
 	}
 
 	/**
@@ -56,12 +56,12 @@ public class ParticleChildController implements ParticleEventListener {
 		hasDelay = false;
 		delay = 0;
 		copySystem = particleSystem;
-		particleSystems = new ArrayList<ParticleSystem>();
+		particleSystems = new ArrayList<>();
 	}
 
 	@Override
 	public void onUpdateEvent() {
-		ArrayList<ParticleSystem> temp = new ArrayList<ParticleSystem>();
+		ArrayList<ParticleSystem> temp = new ArrayList<>();
 		for (ParticleSystem particleSystem : particleSystems) {
 			particleSystem.run();
 			if (!particleSystem.spawn && !particleSystem.particles.hasActiveParticles()) {

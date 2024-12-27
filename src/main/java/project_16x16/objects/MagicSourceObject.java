@@ -28,8 +28,9 @@ public class MagicSourceObject extends GameObject {
 		type = ObjectType.OBJECT;
 		id = "MAGIC_SOURCE";
 
-		if (particleAnimation == null)
+		if (particleAnimation == null) {
 			setParticleAnimation(sideScroller);
+		}
 
 		trail = new ParticleSystem(sideScroller, image, 5, 1, 0.4f);
 		trail.setEmission(new AreaEmission(position, 1f, -0.01f, 5));
@@ -72,16 +73,19 @@ public class MagicSourceObject extends GameObject {
 	}
 
 	public boolean collidesWithSwing(Swing swing) {
-		return (swing.position.x + swing.width / 2 > position.x - width / 2 && swing.position.x - swing.width / 2 < position.x + width / 2) && (swing.position.y + swing.height / 2 > position.y - height / 2 && swing.position.y - swing.height / 2 < position.y + height / 2);
+		return (swing.position.x + swing.width / 2 > position.x - width / 2 && swing.position.x - swing.width / 2 < position.x + width / 2)
+				&& (swing.position.y + swing.height / 2 > position.y - height / 2 && swing.position.y - swing.height / 2 < position.y + height / 2);
 	}
 
 	public boolean collidesWithPlayer() {
-		return (gameplayScene.getPlayer().position.x + gameplayScene.getPlayer().width / 2 > position.x - width / 2 && gameplayScene.getPlayer().position.x - gameplayScene.getPlayer().width / 2 < position.x + width / 2)
-				&& (gameplayScene.getPlayer().position.y + gameplayScene.getPlayer().height / 2 > position.y - height / 2 && gameplayScene.getPlayer().position.y - gameplayScene.getPlayer().height / 2 < position.y + height / 2);
+		return (gameplayScene.getPlayer().position.x + gameplayScene.getPlayer().width / 2 > position.x - width / 2
+				&& gameplayScene.getPlayer().position.x - gameplayScene.getPlayer().width / 2 < position.x + width / 2)
+				&& (gameplayScene.getPlayer().position.y + gameplayScene.getPlayer().height / 2 > position.y - height / 2
+						&& gameplayScene.getPlayer().position.y - gameplayScene.getPlayer().height / 2 < position.y + height / 2);
 	}
 
 	private void setParticleAnimation(SideScroller a) {
-		particleAnimation = new ArrayList<PImage>();
+		particleAnimation = new ArrayList<>();
 		PImage image = Tileset.getTile("MAGIC_SOURCE");
 		float scale = 0.12f;
 		float angle = PApplet.radians(11);

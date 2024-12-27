@@ -31,18 +31,15 @@ public class LoadLevelWindow extends PClass {
 
 	public LoadLevelWindow(SideScroller sideScroller, GameplayScene scene) {
 		super(sideScroller);
-		collidableObjects = new ArrayList<CollidableObject>();
-		backgroundObjects = new ArrayList<BackgroundObject>();
+		collidableObjects = new ArrayList<>();
+		backgroundObjects = new ArrayList<>();
 		picked = "";
 		this.scene = scene;
 		f = new File(path);
 		f.mkdirs();
-		File[] files = f.listFiles(new FileFilter() {
-			@Override
-			public boolean accept(File pathname) {
-				String name = pathname.getName().toLowerCase();
-				return name.endsWith(".dat") && pathname.isFile();
-			}
+		File[] files = f.listFiles((FileFilter) pathname -> {
+			String name = pathname.getName().toLowerCase();
+			return name.endsWith(".dat") && pathname.isFile();
 		});
 
 		list = new List(sideScroller, Arrays.stream(files).map(File::getName).toArray(String[]::new), 30);
@@ -94,9 +91,9 @@ public class LoadLevelWindow extends PClass {
 			Notifications.addNotification("Level Loaded", "Loaded " + list.getElement() + ".");
 			list.resetElement();
 			scene.changeMode(GameModes.MODIFY);
-		}
-		else if (list.getConfirmPress() && list.getElement().isEmpty())
+		} else if (list.getConfirmPress() && list.getElement().isEmpty()) {
 			scene.changeMode(GameModes.MODIFY);
+		}
 	}
 
 	public void cancelButton() {
@@ -148,8 +145,7 @@ public class LoadLevelWindow extends PClass {
 					CollidableObject collision = new CollidableObject(applet, scene);
 					try {
 						collision.setGraphic(item.getString("id"));
-					}
-					catch (Exception e) {
+					} catch (Exception e) {
 						collision.width = 64;
 						collision.height = 64;
 					}
@@ -176,11 +172,11 @@ public class LoadLevelWindow extends PClass {
 	}
 
 	public void showLevelPreviewWindow() {
-		for (int i = 0; i < collidableObjects.size(); i++) {
-			collidableObjects.get(i).display();
+		for (CollidableObject collidableObject : collidableObjects) {
+			collidableObject.display();
 		}
-		for (int i = 0; i < backgroundObjects.size(); i++) {
-			backgroundObjects.get(i).display();
+		for (BackgroundObject backgroundObject : backgroundObjects) {
+			backgroundObject.display();
 		}
 	}
 

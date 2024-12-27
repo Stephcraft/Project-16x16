@@ -11,7 +11,7 @@ import project_16x16.ui.NumberInputField;
 
 /**
  * WIP - the settings menu
- * 
+ *
  * @author micycle1
  *
  */

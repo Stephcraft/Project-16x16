@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package project_16x16.scene;
 

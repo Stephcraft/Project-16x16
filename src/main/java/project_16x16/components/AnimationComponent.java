@@ -37,7 +37,7 @@ public class AnimationComponent {
 
 	/**
 	 * The most simple method to change current animation sequence.
-	 * 
+	 *
 	 * @param frames PImage frame sequence.
 	 * @param loop   Whether the animation should loop.
 	 * @param rate   Every x frames the next frame is loaded.
@@ -49,7 +49,7 @@ public class AnimationComponent {
 	/**
 	 * A method to change current animation sequence. Can specify animation frame
 	 * length.
-	 * 
+	 *
 	 * @param frames PImage frame sequence.
 	 * @param loop   Whether the animation should loop.
 	 * @param rate   Every x frames the next frame is loaded.
@@ -67,7 +67,7 @@ public class AnimationComponent {
 
 	/**
 	 * This method controls the animation of elements (cycles through frames).
-	 * 
+	 *
 	 * @return PImage image
 	 */
 	@SuppressWarnings("unchecked")
@@ -91,14 +91,16 @@ public class AnimationComponent {
 
 	/**
 	 * Return current frame without animating further.
-	 * 
+	 *
 	 * @return
 	 */
-	public PImage getFrame() { return frames.get((int) currentFrame); }
+	public PImage getFrame() {
+		return frames.get((int) currentFrame);
+	}
 
 	/**
 	 * Retrieves the number of remaining frames
-	 * 
+	 *
 	 * @return The number of remaining frames as an int
 	 */
 	public int remainingFrames() {
@@ -110,11 +112,13 @@ public class AnimationComponent {
 	 *
 	 * @return the current frame as a float
 	 **/
-	public int getFrameID() { return (int) currentFrame; }
+	public int getFrameID() {
+		return (int) currentFrame;
+	}
 
 	/**
 	 * Set frame (for multiplayer)
-	 * 
+	 *
 	 * @param frame
 	 */
 	public void setFrame(int frame) {
@@ -128,11 +132,13 @@ public class AnimationComponent {
 	 *
 	 * @return the time of the animation as an int
 	 **/
-	public int getAnimLength() { return length; }
+	public int getAnimLength() {
+		return length;
+	}
 
 	/**
 	 * Set a SFX to play trigger at a given animation frame. TODO frames param
-	 * 
+	 *
 	 * @param sound
 	 * @param frameNumber
 	 */

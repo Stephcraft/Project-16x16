@@ -29,24 +29,26 @@ public final class Utility {
 	}
 
 	/**
-	 * 
+	 *
 	 * @param img
 	 * @return
 	 * @deprecated
 	 */
+	@Deprecated
 	public static PImage pg(PImage img) {
 		return pg(img, 1);
 	}
 
 	/**
 	 * Scales a PImage object.
-	 * 
+	 *
 	 * @param img
 	 * @param scale Scale (probably set to 4).
 	 * @deprecated Use {@link Tileset#getTile(int, int, int, int, int) getTile() to
 	 *             load and scale game graphics}.
 	 * @return
 	 */
+	@Deprecated
 	public static PImage pg(PImage img, float scale) {
 		PGraphics pg = applet.createGraphics((int) (img.width * scale), (int) (img.height * scale));
 		pg.noSmooth();
@@ -72,7 +74,8 @@ public final class Utility {
 	 */
 	public static PImage scale(PImage buffer, int scaling) {
 		PImage originalImage = buffer;
-		PImage tempImage = applet.createImage(PApplet.parseInt(originalImage.width * scaling), PApplet.parseInt(originalImage.height * scaling), PConstants.ARGB);
+		PImage tempImage = applet.createImage(PApplet.parseInt(originalImage.width * scaling), PApplet.parseInt(originalImage.height * scaling),
+				PConstants.ARGB);
 		tempImage.loadPixels();
 		originalImage.loadPixels();
 		for (int i = 0; i < originalImage.pixels.length; i++) {
@@ -110,7 +113,7 @@ public final class Utility {
 
 		pg.beginDraw();
 		pg.clear();
-		pg.imageMode(PApplet.CENTER);
+		pg.imageMode(PConstants.CENTER);
 		pg.translate(pg.width / 2, pg.height / 2);
 		pg.rotate(angle);
 		pg.image(img, 0, 0);
@@ -137,7 +140,7 @@ public final class Utility {
 	/**
 	 * Converts (R,G,B) values to integer representation, compatible with
 	 * Processing.
-	 * 
+	 *
 	 * @param r Red Value [0-255].
 	 * @param g Green Value [0-255].
 	 * @param b Blue Value [0-255].
@@ -156,7 +159,7 @@ public final class Utility {
 	/**
 	 * Converts (R,G,B,A) values to integer representation, compatible with
 	 * Processing.
-	 * 
+	 *
 	 * @param r Red Value [0-255].
 	 * @param g Green Value [0-255].
 	 * @param b Blue Value [0-255].
@@ -170,7 +173,7 @@ public final class Utility {
 	/**
 	 * Is the <b>screen coordinate</b> of the mouse within a square region, given by
 	 * its center coordinate (x,y)?
-	 * 
+	 *
 	 * @param x region center pos X
 	 * @param y region center pos Y
 	 * @param w region width
@@ -179,13 +182,14 @@ public final class Utility {
 	 * @see #hoverGame(float, float, float, float) hoverGame()
 	 */
 	public static boolean hoverScreen(float x, float y, float w, float h) {
-		return (applet.getMouseCoordScreen().x > x - w / 2 && applet.getMouseCoordScreen().x < x + w / 2 && applet.getMouseCoordScreen().y > y - h / 2 && applet.getMouseCoordScreen().y < y + h / 2);
+		return (applet.getMouseCoordScreen().x > x - w / 2 && applet.getMouseCoordScreen().x < x + w / 2 && applet.getMouseCoordScreen().y > y - h / 2
+				&& applet.getMouseCoordScreen().y < y + h / 2);
 	}
 
 	/**
 	 * Is the <b>gameworld coordinate</b> of the mouse within a square region, given
 	 * by its center coordinate (x,y)?
-	 * 
+	 *
 	 * @param x region center pos X
 	 * @param y region center pos Y
 	 * @param w region width
@@ -194,12 +198,13 @@ public final class Utility {
 	 * @see #hoverScreen(float, float, float, float) hoverScreen()
 	 */
 	public static boolean hoverGame(float x, float y, float w, float h) {
-		return (applet.getMouseCoordGame().x > x - w / 2 && applet.getMouseCoordGame().x < x + w / 2 && applet.getMouseCoordGame().y > y - h / 2 && applet.getMouseCoordGame().y < y + h / 2);
+		return (applet.getMouseCoordGame().x > x - w / 2 && applet.getMouseCoordGame().x < x + w / 2 && applet.getMouseCoordGame().y > y - h / 2
+				&& applet.getMouseCoordGame().y < y + h / 2);
 	}
 
 	/**
 	 * Determine if a point is within a rectangular region -- PVector params.
-	 * 
+	 *
 	 * @param point PVector position to test.
 	 * @param UL    Corner one of region.
 	 * @param BR    Corner two of region (different X & Y).
@@ -214,7 +219,7 @@ public final class Utility {
 
 	/**
 	 * Determine if a point is within a rectangular region -- Float params.
-	 * 
+	 *
 	 * @param pointX X coord of point position to test.
 	 * @param pointY X coord of point position to test.
 	 * @param ULX    X coord of corner #1 (upper left) of region.
@@ -232,7 +237,7 @@ public final class Utility {
 
 	/**
 	 * Rounds n to the nearest x.
-	 * 
+	 *
 	 * @param n number to round
 	 * @param x
 	 */
@@ -242,7 +247,7 @@ public final class Utility {
 
 	/**
 	 * Round a float to 'n' decimal places.
-	 * 
+	 *
 	 * @param n number to round
 	 * @param d number of decimal places
 	 * @return rounded float
@@ -255,7 +260,7 @@ public final class Utility {
 	 * Are two PVectors with range of each other? Faster than using
 	 * [{@link PApplet#dist(float, float, float, float) dist()} < range] since this
 	 * doesn't use square-roots.
-	 * 
+	 *
 	 * @param a    PVector 1
 	 * @param b    PVector 2
 	 * @param dist Range to check
@@ -268,7 +273,7 @@ public final class Utility {
 	/**
 	 * Calculates the angle between two PVectors where: East = 0; North = -1/2PI;
 	 * West = -PI; South = -3/2PI | 1/2PI
-	 * 
+	 *
 	 * @param tail PVector Coordinate 1.
 	 * @param head PVector Coordinate 2.
 	 * @return float θ in radians.
@@ -283,7 +288,7 @@ public final class Utility {
 
 	/**
 	 * Writes data to file.
-	 * 
+	 *
 	 * @param path    File location.
 	 * @param content File contents
 	 */
@@ -292,8 +297,7 @@ public final class Utility {
 			OutputStreamWriter o = new OutputStreamWriter(new FileOutputStream(path), StandardCharsets.UTF_8);
 			o.write(content);
 			o.close();
-		}
-		catch (IOException e) {
+		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
@@ -311,8 +315,7 @@ public final class Utility {
 			if (file[0].length() == 0) {
 			}
 			condition = true;
-		}
-		catch (Exception e) {
+		} catch (Exception e) {
 			condition = false;
 		}
 		return condition;
@@ -320,7 +323,7 @@ public final class Utility {
 
 	/**
 	 * Encrypts str (JSON) for output.
-	 * 
+	 *
 	 * @param str
 	 * @return
 	 */
@@ -337,7 +340,7 @@ public final class Utility {
 
 	/**
 	 * Decrypt input to str (JSON).
-	 * 
+	 *
 	 * @param str
 	 * @return
 	 */
@@ -374,44 +377,44 @@ public final class Utility {
 					JSONtile.setString("id", tile.getName());
 					JSONtile.setString("type", tile.getTileType().toString());
 					JSONtile.setInt("x", (j % width) * 60 - (width / 2 * 60));
-					JSONtile.setInt("y", (int) (j / width) * 60 - (height / 2 * 60));
+					JSONtile.setInt("y", j / width * 60 - (height / 2 * 60));
 					levelSave.append(JSONtile);
 				}
 			}
 			Utility.saveFile("src/main/resources/Storage/Game/Maps/save/" + mapName + ".dat", Utility.encrypt(levelSave.toString()));
 		}
 	}
-	
-	 public static String charToStr(int charCode) {
-	        switch (charCode) {
-	            case 32:
-	                return "space";
-	            case 16:
-	            	return "shift";
-	            case 10:
-	                return "newline";
-	            case 9:
-	                return "tab";
-	            default:
-	                return Character.toString((char) charCode);
-	        }
-	    }
+
+	public static String charToStr(int charCode) {
+		switch (charCode) {
+			case 32:
+				return "space";
+			case 16:
+				return "shift";
+			case 10:
+				return "newline";
+			case 9:
+				return "tab";
+			default:
+				return Character.toString((char) charCode);
+		}
+	}
 }
 
 /**
  * A simple set of software blur utilities for mobile applications.
  * https://gist.github.com/mattdesl/4383372
- * 
+ *
  * @author davedes, blur algorithm by Romain Guy
  * @author micycle1 -- PImage integration.
  */
 final class BlurUtils {
 	/*
 	 * Copyright (c) 2007, Romain Guy All rights reserved.
-	 * 
+	 *
 	 * Redistribution and use in source and binary forms, with or without
 	 * modification, are permitted provided that the following conditions are met:
-	 * 
+	 *
 	 * * Redistributions of source code must retain the above copyright notice, this
 	 * list of conditions and the following disclaimer. * Redistributions in binary
 	 * form must reproduce the above copyright notice, this list of conditions and
@@ -419,7 +422,7 @@ final class BlurUtils {
 	 * with the distribution. * Neither the name of the TimingFramework project nor
 	 * the names of its contributors may be used to endorse or promote products
 	 * derived from this software without specific prior written permission.
-	 * 
+	 *
 	 * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
 	 * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
 	 * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -441,7 +444,7 @@ final class BlurUtils {
 	 * The source and destination pixels arrays are expected to be in the RGBA
 	 * format.
 	 * </p>
-	 * 
+	 *
 	 * @param srcPixels the source pixels
 	 * @param dstPixels the destination pixels
 	 * @param width     the width of the source picture
@@ -472,8 +475,7 @@ final class BlurUtils {
 			for (int i = 0; i < indexLookupTable.length; i++) {
 				indexLookupTable[i] = i;
 			}
-		}
-		else {
+		} else {
 			for (int i = 0; i < width; i++) {
 				indexLookupTable[i] = i;
 			}
@@ -534,7 +536,7 @@ final class BlurUtils {
 	/**
 	 * Blurs (in both horizontal and vertical directions) the specified RGBA image
 	 * with the given radius and iterations.
-	 * 
+	 *
 	 * @param inputRGBA  the image pixels, in RGBA format
 	 * @param width      the width of the image in pixels
 	 * @param height     the height of the image in pixels
@@ -558,7 +560,7 @@ final class BlurUtils {
 	/**
 	 * Blurs the input PImage, producing a copy [the orignal is untouched] (much
 	 * faster than using {@link processing.core.PApplet#filter(int) filter(BLUR)}).
-	 * 
+	 *
 	 * @param image      source PImage
 	 * @param radius     radius of blur effect
 	 * @param iterations the number of times to perform the blur; i.e. to increase

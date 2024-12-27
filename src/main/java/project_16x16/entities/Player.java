@@ -67,7 +67,7 @@ public final class Player extends EditableObject {
 	private PlayerState state;
 
 	static {
-		playerAnimationSequences = new HashMap<ACTION, ArrayList<PImage>>();
+		playerAnimationSequences = new HashMap<>();
 		playerAnimationSequences.put(ACTION.WALK, Tileset.getAnimation("PLAYER::WALK"));
 		playerAnimationSequences.put(ACTION.IDLE, Tileset.getAnimation("PLAYER::IDLE"));
 		playerAnimationSequences.put(ACTION.JUMP, Tileset.getAnimation("PLAYER::SQUISH"));
@@ -80,7 +80,7 @@ public final class Player extends EditableObject {
 
 	/**
 	 * Constructor
-	 * 
+	 *
 	 * @param sideScroller SideScroller game controller.
 	 */
 	public Player(SideScroller sideScroller, GameplayScene gameplayScene, boolean isMultiplayerPlayer) {
@@ -90,7 +90,7 @@ public final class Player extends EditableObject {
 
 		animation = new AnimationComponent();
 //		animation.setSFX(Audio.SFX.STEP, 2);
-		swings = new ArrayList<Swing>();
+		swings = new ArrayList<>();
 		image = Tileset.getTile(0, 258, 14, 14, 4);
 		lifeOn = Tileset.getTile(144, 256, 9, 9, 4);
 		lifeOff = Tileset.getTile(160, 256, 9, 9, 4);
@@ -115,10 +115,11 @@ public final class Player extends EditableObject {
 	 * The display method controls how to display the character to the screen with
 	 * what animation.
 	 */
+	@Override
 	public void display() {
 		// Display Swing Projectiles
-		for (int i = 0; i < swings.size(); i++) {
-			swings.get(i).display();
+		for (Swing swing : swings) {
+			swing.display();
 		}
 
 		applet.pushMatrix();
@@ -129,8 +130,7 @@ public final class Player extends EditableObject {
 		if (isMultiplayerPlayer) {
 			applet.tint(255, 125, 0);
 			image = animation.getFrame();
-		}
-		else {
+		} else {
 			image = animation.animate();
 		}
 		applet.image(image, 0, 0);
@@ -227,9 +227,10 @@ public final class Player extends EditableObject {
 			// Create Swing Projectile
 			swings.add(new Swing(applet, gameplayScene, (int) position.x, (int) position.y, state.facingDir));
 		}
-		for (int i = 0; i < swings.size(); i++) { // Update Swing Projectiles
-			swings.get(i).update();
+		for (Swing swing : swings) { // Update Swing Projectiles
+			swing.update();
 		}
+		swings.removeIf(swing -> swing.animationEnded());
 	}
 
 	private void checkPlayerCollision() {
@@ -249,8 +250,7 @@ public final class Player extends EditableObject {
 						if (position.x < collision.position.x) {
 							position.x = collision.position.x - collision.width / 2 - width / 2;
 							// player right of collision
-						}
-						else {
+						} else {
 							position.x = collision.position.x + collision.width / 2 + width / 2;
 						}
 						velocity.x = 0;
@@ -265,8 +265,7 @@ public final class Player extends EditableObject {
 							position.y = collision.position.y - collision.height / 2 - height / 2;
 							state.flying = false;
 							// player below collision
-						}
-						else {
+						} else {
 							position.y = collision.position.y + collision.height / 2 + height / 2;
 							state.jumping = false;
 						}
@@ -302,52 +301,43 @@ public final class Player extends EditableObject {
 		}
 		if (state.jumping) {
 			setAnimation(ACTION.JUMP);
-		}
-		else if (state.landing) {
+		} else if (state.landing) {
 			setAnimation(ACTION.LAND);
-		}
-		else if (state.attacking) {
+		} else if (state.attacking) {
 			if (state.dashing) {
 				setAnimation(ACTION.DASH_ATTACK);
-			}
-			else {
+			} else {
 				setAnimation(ACTION.ATTACK);
 			}
-		}
-		else if (state.flying) {
+		} else if (state.flying) {
 			setAnimation(ACTION.FALL);
-		}
-		else if (velocity.x != 0) {
+		} else if (velocity.x != 0) {
 			if (state.dashing) {
 				setAnimation(ACTION.DASH);
-			}
-			else {
+			} else {
 				setAnimation(ACTION.WALK);
 			}
-		}
-		else {
+		} else {
 			setAnimation(ACTION.IDLE);
 		}
 	}
 
 	/**
-	 * 
+	 *
 	 * Determines is the character has collided with an object of type Collision.
-	 * 
+	 *
 	 * @param collision The other object
 	 * @return boolean if it has or has not collided with the object.
 	 */
 	private boolean collides(CollidableObject collision) {
-		return (position.x + width / 2 > collision.position.x - collision.width / 2
-				&& position.x - width / 2 < collision.position.x + collision.width / 2)
+		return (position.x + width / 2 > collision.position.x - collision.width / 2 && position.x - width / 2 < collision.position.x + collision.width / 2)
 				&& (position.y + height / 2 > collision.position.y - collision.height / 2
 						&& position.y - height / 2 < collision.position.y + collision.height / 2);
 	}
 
 	// TODO: optimize these (unused)
 	private boolean collidesEqual(CollidableObject collision) {
-		return (position.x + width / 2 >= collision.position.x - collision.width / 2
-				&& position.x - width / 2 <= collision.position.x + collision.width / 2)
+		return (position.x + width / 2 >= collision.position.x - collision.width / 2 && position.x - width / 2 <= collision.position.x + collision.width / 2)
 				&& (position.y + height / 2 >= collision.position.y - collision.height / 2
 						&& position.y - height / 2 <= collision.position.y + collision.height / 2);
 	}
@@ -380,7 +370,7 @@ public final class Player extends EditableObject {
 
 	/**
 	 * Sets the current animation sequence for the Player to use
-	 * 
+	 *
 	 * @param anim the animation id
 	 */
 	private void setAnimation(ACTION anim) {

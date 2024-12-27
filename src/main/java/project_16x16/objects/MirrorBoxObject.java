@@ -39,6 +39,7 @@ public class MirrorBoxObject extends GameObject {
 		gameplayScene.objects.add(collision);
 	}
 
+	@Override
 	public void display() {
 		switch (direction) {
 			case BOX_RIGHT:
@@ -56,6 +57,7 @@ public class MirrorBoxObject extends GameObject {
 		}
 	}
 
+	@Override
 	public void update() {
 		if (rotating) {
 			image = animation.animate();
@@ -63,8 +65,8 @@ public class MirrorBoxObject extends GameObject {
 		collision.position = position;
 
 		// Change Mirror Box Axis
-		for (int i = 0; i < gameplayScene.getPlayer().swings.size(); i++) {
-			Swing swing = gameplayScene.getPlayer().swings.get(i);
+		for (Swing element : gameplayScene.getPlayer().swings) {
+			Swing swing = element;
 			if (collidesWithSwing(swing)) {
 				if (!swing.activated) {
 					rotating = true;
@@ -76,8 +78,7 @@ public class MirrorBoxObject extends GameObject {
 		}
 
 		// Reflect Magic Projectile
-		for (int i = 0; i < gameplayScene.projectileObjects.size(); i++) {
-			ProjectileObject projectile = gameplayScene.projectileObjects.get(i);
+		for (ProjectileObject projectile : gameplayScene.projectileObjects) {
 			activated = false;
 			if (projectile.id.equals("MAGIC")) {
 				if (collidesWithProjectile(projectile) && !projectile.hit) {
@@ -94,8 +95,7 @@ public class MirrorBoxObject extends GameObject {
 		if (!rotating) {
 			if (activated && checkHit) {
 				image = Tileset.getTile("MIRROR_BOX_HIT");
-			}
-			else {
+			} else {
 				image = Tileset.getTile("MIRROR_BOX");
 			}
 		}
@@ -116,7 +116,7 @@ public class MirrorBoxObject extends GameObject {
 		 * Each mirror has a composite to their actual position which they hit for e.g.
 		 * BOX_RIGHT when something hits it down it supposed to deflect it right so it
 		 * rotation is | | v \ - - > There is also the possibility of :
-		 * 
+		 *
 		 * ^ | | \ < - - - The code allows this to happen setting the appropiate
 		 * position of the projectile so it is properly alligned with the mirror box.
 		 */
@@ -141,11 +141,13 @@ public class MirrorBoxObject extends GameObject {
 	}
 
 	public boolean collidesWithSwing(Swing swing) {
-		return (swing.position.x + swing.width / 2 > position.x - width / 2 && swing.position.x - swing.width / 2 < position.x + width / 2) && (swing.position.y + swing.height / 2 > position.y - height / 2 && swing.position.y - swing.height / 2 < position.y + height / 2);
+		return (swing.position.x + swing.width / 2 > position.x - width / 2 && swing.position.x - swing.width / 2 < position.x + width / 2)
+				&& (swing.position.y + swing.height / 2 > position.y - height / 2 && swing.position.y - swing.height / 2 < position.y + height / 2);
 	}
 
 	public boolean collidesWithProjectile(ProjectileObject swing) {
-		return (swing.position.x + swing.width / 2 > position.x - width / 2 && swing.position.x - swing.width / 2 < position.x + width / 2) && (swing.position.y + swing.height / 2 > position.y - height / 2 && swing.position.y - swing.height / 2 < position.y + height / 2);
+		return (swing.position.x + swing.width / 2 > position.x - width / 2 && swing.position.x - swing.width / 2 < position.x + width / 2)
+				&& (swing.position.y + swing.height / 2 > position.y - height / 2 && swing.position.y - swing.height / 2 < position.y + height / 2);
 	}
 
 	public void setMirrorBox(float rotate) {
@@ -162,10 +164,11 @@ public class MirrorBoxObject extends GameObject {
 		if (projectile.direction == flyDir) {
 			projectile.prevDirection = projectile.direction;
 			projectile.direction = deflectDir;
-			if (axisSwitch == 'x')
+			if (axisSwitch == 'x') {
 				projectile.position.x = position.x;
-			else if (axisSwitch == 'y')
+			} else if (axisSwitch == 'y') {
 				projectile.position.y = position.y;
+			}
 		}
 		hitWrongSide(projectile, flyDir, deflectDir);
 	}

@@ -11,12 +11,12 @@ public class SaveGameMode extends GameplayMode {
 	public SaveGameMode(GameplayScene gameplayScene) {
 		super(gameplayScene);
 	}
-	
+
 	@Override
 	public void enter() {
 		scene.setZoomable(false);
 	}
-	
+
 	@Override
 	public GameModes getModeType() {
 		return GameModes.SAVE;
@@ -26,16 +26,16 @@ public class SaveGameMode extends GameplayMode {
 	protected boolean isNotInvalidGUIButtonMode() {
 		return false;
 	}
-	
+
 	@Override
 	public void updateGUI() {
 		// Save , Load
 		// The if statement below should be used in each window that includes a tab.
 		// switch the number to the id of the button it's checking for
-		
+
 		Tab windowTabs = scene.getWindowTabs();
 		SaveLevelWindow window_saveLevel = scene.getWindowSaveLevel();
-		
+
 		if (windowTabs.getActiveButton() != 1) {
 			windowTabs.moveActive(1);
 		}
@@ -55,7 +55,8 @@ public class SaveGameMode extends GameplayMode {
 			scene.changeMode(GameModes.IMPORT);
 		}
 	}
-	
+
 	@Override
-	public void keyReleasedEvent(KeyEvent event) {}
+	public void keyReleasedEvent(KeyEvent event) {
+	}
 }

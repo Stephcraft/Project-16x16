@@ -24,8 +24,8 @@ public class Particles {
 		this.applet = applet;
 		this.particleSystem = particleSystem;
 
-		activeParticles = new ArrayList<Particle>();
-		inactiveParticles = new ArrayList<Particle>();
+		activeParticles = new ArrayList<>();
+		inactiveParticles = new ArrayList<>();
 	}
 
 	public void run() {
@@ -50,7 +50,7 @@ public class Particles {
 	}
 
 	private void runParticles() {
-		ArrayList<Particle> deadParticles = new ArrayList<Particle>();
+		ArrayList<Particle> deadParticles = new ArrayList<>();
 		for (Particle particle : activeParticles) {
 			particle.run();
 			particleSystem.onParticleRunEvent(particle);
@@ -72,7 +72,7 @@ public class Particles {
 	}
 
 	private int loopParticles(int amount) {
-		ArrayList<Particle> particles = new ArrayList<Particle>();
+		ArrayList<Particle> particles = new ArrayList<>();
 		for (Particle particle : inactiveParticles) {
 			if (particle.isDead()) {
 				respawnParticle(particle);

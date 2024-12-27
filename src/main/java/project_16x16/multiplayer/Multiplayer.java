@@ -23,7 +23,7 @@ public class Multiplayer {
 
 	/**
 	 * Constructor for a connecting client
-	 * 
+	 *
 	 * @param player
 	 * @param hostIP
 	 * @param port
@@ -36,8 +36,7 @@ public class Multiplayer {
 			if (!server.active()) {
 				throw new java.net.ConnectException();
 			}
-		}
-		else {
+		} else {
 			client = new Client(player, hostIP, port);
 			if (!client.active()) {
 				throw new java.net.ConnectException();
@@ -47,7 +46,7 @@ public class Multiplayer {
 
 	/**
 	 * Use default (LAN) port and host.
-	 * 
+	 *
 	 * @param player
 	 * @param isHost
 	 * @throws ConnectException
@@ -64,8 +63,7 @@ public class Multiplayer {
 			String packet = client.readString();
 			try {
 				data = JSONObject.parse(packet);
-			}
-			catch (java.lang.RuntimeException e) {
+			} catch (java.lang.RuntimeException e) {
 			}
 		}
 
@@ -75,8 +73,7 @@ public class Multiplayer {
 	public void writeData(String packet) {
 		if (isHost) {
 			server.write(packet); // write to client(s)
-		}
-		else {
+		} else {
 			if (client.active()) {
 				client.write(packet); // write to server
 			}

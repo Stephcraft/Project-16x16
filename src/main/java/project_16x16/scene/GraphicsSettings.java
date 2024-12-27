@@ -26,7 +26,7 @@ public final class GraphicsSettings extends PScene {
 		quit = new Button(a);
 		quit.setText("Quit");
 		quit.setPosition(a.width / 2, 600);
-		
+
 	}
 
 	@Override
@@ -40,19 +40,18 @@ public final class GraphicsSettings extends PScene {
 		apply.display();
 		quit.display();
 	}
-	
+
 	private void displayWindow() {
 		background(19, 23, 35);
 		applet.fill(29, 33, 45);
 		applet.stroke(47, 54, 73);
 		applet.strokeWeight(8);
-		applet.rect(applet.gameResolution.x / 2, applet.gameResolution.y / 2, applet.gameResolution.x * 0.66f - 8,
-				applet.gameResolution.y - 8);
+		applet.rect(applet.gameResolution.x / 2, applet.gameResolution.y / 2, applet.gameResolution.x * 0.66f - 8, applet.gameResolution.y - 8);
 	}
 
 	@Override
 	void mouseDragged(MouseEvent e) {
-		
+
 	}
 
 	@Override
@@ -75,10 +74,10 @@ public final class GraphicsSettings extends PScene {
 	@Override
 	void keyReleased(KeyEvent e) {
 		switch (e.getKeyCode()) {
-			case PConstants.ESC : // Pause
+			case PConstants.ESC: // Pause
 				game.returnScene();
 				break;
-			default :
+			default:
 				break;
 		}
 	}

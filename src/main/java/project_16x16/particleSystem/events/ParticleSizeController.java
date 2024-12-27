@@ -26,7 +26,7 @@ public class ParticleSizeController implements ParticleEventListener {
 	@Override
 	public void onParticleSpawnEvent(Particle particle) {
 		particle.useCustomeSize = true;
-	};
+	}
 
 	@Override
 	public void onParticleRunEvent(Particle particle) {

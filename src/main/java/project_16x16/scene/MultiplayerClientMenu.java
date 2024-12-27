@@ -74,12 +74,10 @@ public class MultiplayerClientMenu extends PScene {
 					Multiplayer m = new Multiplayer(game, ip, port, false);
 					((GameplayScene) (GameScenes.GAME.getScene())).setupMultiplayer(m);
 					game.swapToScene(GameScenes.GAME);
-				}
-				catch (Exception e) {
+				} catch (Exception e) {
 					Notifications.addNotification("ERROR", "todo"); // TODO
 				}
-			}
-			else {
+			} else {
 				Notifications.addNotification("Invalid IP", "Include IP and port, eg:\n127.0.0.1:8080");
 			}
 		}

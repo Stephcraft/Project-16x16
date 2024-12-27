@@ -1,18 +1,24 @@
 package project_16x16.particleSystem.events;
 
-import project_16x16.particleSystem.*;
+import project_16x16.particleSystem.Particle;
+import project_16x16.particleSystem.ParticleSystem;
 
 public interface ParticleEventListener {
-	
-	default public void onCreateEvent(ParticleSystem particleSystem) {};
-	
-	default public void onUpdateEvent() {};
-	
-	default public void onParticleRunEvent(Particle particle) {};
-	
-	default public void onParticleSpawnEvent(Particle particle) {};
-	
-	default public void onParticleDeathEvent(Particle particle) {};
-	
+
+	default public void onCreateEvent(ParticleSystem particleSystem) {
+	}
+
+	default public void onUpdateEvent() {
+	}
+
+	default public void onParticleRunEvent(Particle particle) {
+	}
+
+	default public void onParticleSpawnEvent(Particle particle) {
+	}
+
+	default public void onParticleDeathEvent(Particle particle) {
+	}
+
 	public ParticleEventListener copy();
 }

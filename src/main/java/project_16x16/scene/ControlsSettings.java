@@ -113,8 +113,7 @@ public final class ControlsSettings extends PScene {
 		applet.fill(29, 33, 45);
 		applet.stroke(47, 54, 73);
 		applet.strokeWeight(8);
-		applet.rect(applet.gameResolution.x / 2, applet.gameResolution.y / 2, applet.gameResolution.x * 0.66f - 8,
-				applet.gameResolution.y - 8);
+		applet.rect(applet.gameResolution.x / 2, applet.gameResolution.y / 2, applet.gameResolution.x * 0.66f - 8, applet.gameResolution.y - 8);
 	}
 
 	@Override

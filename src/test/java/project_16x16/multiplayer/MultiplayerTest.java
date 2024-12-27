@@ -22,7 +22,6 @@ import processing.data.JSONObject;
 import processing.net.Client;
 import processing.net.Server;
 import project_16x16.SideScroller;
-import project_16x16.multiplayer.Multiplayer;
 
 @ExtendWith(MockitoExtension.class)
 public class MultiplayerTest {
@@ -35,8 +34,7 @@ public class MultiplayerTest {
 		ConnectException ce = null;
 		try {
 			Multiplayer multiplayer = new Multiplayer(player, false);
-		}
-		catch (ConnectException e) {
+		} catch (ConnectException e) {
 			ce = e;
 		}
 
@@ -48,8 +46,7 @@ public class MultiplayerTest {
 		ConnectException ce = null;
 		try {
 			Multiplayer multiplayer = new Multiplayer(player, true);
-		}
-		catch (ConnectException e) {
+		} catch (ConnectException e) {
 			ce = e;
 		}
 
@@ -64,8 +61,7 @@ public class MultiplayerTest {
 		})) {
 			try {
 				Multiplayer multiplayer = new Multiplayer(player, true);
-			}
-			catch (ConnectException e) {
+			} catch (ConnectException e) {
 				ce = e;
 			}
 
@@ -81,8 +77,7 @@ public class MultiplayerTest {
 		})) {
 			try {
 				Multiplayer multiplayer = new Multiplayer(player, false);
-			}
-			catch (ConnectException e) {
+			} catch (ConnectException e) {
 				ce = e;
 			}
 
@@ -101,8 +96,7 @@ public class MultiplayerTest {
 			try {
 				Multiplayer multiplayer = new Multiplayer(player, true);
 				data = multiplayer.readData();
-			}
-			catch (ConnectException e) {
+			} catch (ConnectException e) {
 				ce = e;
 			}
 
@@ -126,8 +120,7 @@ public class MultiplayerTest {
 			try {
 				Multiplayer multiplayer = new Multiplayer(player, true);
 				data = multiplayer.readData();
-			}
-			catch (ConnectException e) {
+			} catch (ConnectException e) {
 				ce = e;
 			}
 
@@ -148,8 +141,7 @@ public class MultiplayerTest {
 			try {
 				Multiplayer multiplayer = new Multiplayer(player, false);
 				data = multiplayer.readData();
-			}
-			catch (ConnectException e) {
+			} catch (ConnectException e) {
 				ce = e;
 			}
 
@@ -170,8 +162,7 @@ public class MultiplayerTest {
 			try {
 				Multiplayer multiplayer = new Multiplayer(player, false);
 				data = multiplayer.readData();
-			}
-			catch (ConnectException e) {
+			} catch (ConnectException e) {
 				ce = e;
 			}
 
@@ -193,8 +184,7 @@ public class MultiplayerTest {
 
 				assertFalse(mocked.constructed().isEmpty());
 				verify(mocked.constructed().get(0), times(1)).write("");
-			}
-			catch (ConnectException e) {
+			} catch (ConnectException e) {
 				ce = e;
 			}
 
@@ -214,8 +204,7 @@ public class MultiplayerTest {
 
 				assertFalse(mocked.constructed().isEmpty());
 				verify(mocked.constructed().get(0), times(1)).write("");
-			}
-			catch (ConnectException e) {
+			} catch (ConnectException e) {
 				ce = e;
 			}
 
@@ -236,8 +225,7 @@ public class MultiplayerTest {
 				when(mocked.constructed().get(0).active()).thenReturn(false);
 				multiplayer.writeData("");
 				verify(mocked.constructed().get(0), times(0)).write("");
-			}
-			catch (ConnectException e) {
+			} catch (ConnectException e) {
 				ce = e;
 			}
 
@@ -257,8 +245,7 @@ public class MultiplayerTest {
 
 				assertFalse(mocked.constructed().isEmpty());
 				verify(mocked.constructed().get(0), times(1)).stop();
-			}
-			catch (ConnectException e) {
+			} catch (ConnectException e) {
 				ce = e;
 			}
 
@@ -278,8 +265,7 @@ public class MultiplayerTest {
 
 				assertFalse(mocked.constructed().isEmpty());
 				verify(mocked.constructed().get(0), times(1)).stop();
-			}
-			catch (ConnectException e) {
+			} catch (ConnectException e) {
 				ce = e;
 			}
 
