@@ -2,6 +2,7 @@ package project_16x16.scene;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 import processing.core.PApplet;
 import processing.core.PConstants;
@@ -15,7 +16,6 @@ import project_16x16.Audio;
 import project_16x16.Audio.BGM;
 import project_16x16.Constants;
 import project_16x16.SideScroller.GameScenes;
-import project_16x16.scene.PScene;
 import project_16x16.ui.Button;
 
 /**
@@ -41,7 +41,7 @@ public final class MainMenu extends PScene {
 		background = game.createGraphics((int) game.gameResolution.x, (int) game.gameResolution.x);
 		background.noSmooth();
 		Particles.assignApplet(a);
-		Particles.populate(1000);
+		Particles.populate(1250);
 
 		pressStart = new Button(a);
 		pressMultiplayer = new Button(a);
@@ -78,11 +78,11 @@ public final class MainMenu extends PScene {
 	@Override
 	public void drawUI() {
 		game.fill(Constants.Colors.MENU_GREY, 40);
-		game.rectMode(CORNER);
 		game.noStroke();
+		game.rectMode(CORNER);
 		game.rect(0, 0, game.gameResolution.x, game.gameResolution.y);
-		Particles.run();
 		game.rectMode(CENTER);
+		Particles.run();
 
 		pressStart.manDisplay();
 		pressMultiplayer.manDisplay();
@@ -121,11 +121,11 @@ public final class MainMenu extends PScene {
 	@Override
 	void keyReleased(KeyEvent e) {
 		switch (e.getKeyCode()) {
-			case 8 : // BACKSPACE
-			case PConstants.ESC : // Pause
+			case 8: // BACKSPACE
+			case PConstants.ESC: // Pause
 				game.returnScene();
 				break;
-			default :
+			default:
 				break;
 		}
 	}
@@ -140,14 +140,14 @@ public final class MainMenu extends PScene {
 
 		private static SideScroller game;
 
-		private static ArrayList<Particle> particles;
+		private static List<Particle> particles;
 
 		private static int function = 0;
 		private static int centerX, centerY;
 		private static int scaleX, scaleY;
 
-		private static final float STEP = 0.05f;
-		private static final int TRANSITION_TIME = 360;
+		private static long timeAccumulator = 0;
+		private static final int TRANSITION_INTERVAL = 5000; // 5000 milliseconds = 5 seconds
 
 		static void assignApplet(SideScroller s) {
 			particles = new ArrayList<>();
@@ -160,35 +160,33 @@ public final class MainMenu extends PScene {
 
 		static void populate(int n) {
 			for (int i = 0; i < n; i++) {
-				particles.add(new Particle(getXPos(game.random(0, game.gameResolution.x)),
-						getYPos(game.random(0, game.gameResolution.y)), (int) game.random(2, 8), Utility.colorToRGB(
-								(int) game.random(0, 50), (int) game.random(150, 255), (int) game.random(150, 255))));
+				float x = getXPos(game.random(0, game.gameResolution.x));
+				float y = getYPos(game.random(0, game.gameResolution.y));
+				int color = Utility.colorToRGB((int) game.random(0, 50), (int) game.random(150, 255),
+						(int) game.random(150, 255));
+				Particle p = new Particle(x, y, (int) game.random(2, 8), color);
+				particles.add(p);
 			}
 		}
 
 		static void run() {
-
-			if (game.frameCount % TRANSITION_TIME == 0) {
+			if (timeAccumulator >= TRANSITION_INTERVAL) {
 				function++;
-				function %= 12;
+				function %= 12; // cycle movement function
+				timeAccumulator %= TRANSITION_INTERVAL;
 			}
 
 			int repopulate = 0;
 			for (Iterator<Particle> iterator = particles.iterator(); iterator.hasNext();) {
 				Particle p = iterator.next();
-				float x = (float) getSlopeX(p.x, p.y);
-				float y = (float) getSlopeY(p.x, p.y);
-				p.x += p.direction * x * STEP;
-				p.y += p.direction * y * STEP;
+				p.update(3 / game.targetFramerate);
+				float x = getXPrint(p.x);
+				float y = getYPrint(p.y);
 
-				x = getXPrint(p.x);
-				y = getYPrint(p.y);
+				game.stroke(p.color);
+				game.strokeWeight(p.size);
+				game.line(PApplet.lerp(x, p.lastX, 0.15f), PApplet.lerp(y, p.lastY, 0.15f), p.lastX, p.lastY);
 
-				if (game.frameCount - p.start > 1) {
-					game.stroke(p.color);
-					game.strokeWeight(p.size);
-					game.line(PApplet.lerp(x, p.lastX, 0.15f), PApplet.lerp(y, p.lastY, 0.15f), p.lastX, p.lastY);
-				}
 				p.lastX = x;
 				p.lastY = y;
 				if (!Utility.withinRegion(p.lastX, p.lastY, -100, -100, game.gameResolution.x + 100,
@@ -198,6 +196,8 @@ public final class MainMenu extends PScene {
 				}
 			}
 			populate(repopulate);
+
+			timeAccumulator += 1000 / game.frameRate;
 		}
 
 		private static double getSlopeX(float x, float y) {
@@ -263,17 +263,23 @@ public final class MainMenu extends PScene {
 			private final int size;
 			private final int color;
 			private final float direction;
-			private final int start;
 
 			public Particle(float x, float y, int size, int color) {
 				this.x = x;
 				this.y = y;
 				this.color = color;
 				this.size = size;
-				this.lastX = x;
-				this.lastY = y;
+				this.lastX = getXPrint(x);
+				this.lastY = getYPrint(y);
 				this.direction = (game.random(0.1f, 1) * (game.random(1) > 0.5f ? 1 : -1));
-				start = game.frameCount;
+
+			}
+
+			void update(float step) {
+				float xDelta = (float) getSlopeX(x, y);
+				float yDelta = (float) getSlopeY(x, y);
+				x += direction * xDelta * step;
+				y += direction * yDelta * step;
 			}
 		}
 	}

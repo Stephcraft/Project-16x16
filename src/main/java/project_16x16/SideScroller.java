@@ -56,10 +56,13 @@ public class SideScroller extends PApplet {
 
 	public static final boolean SNAP = true; // snap objects to grid when moving; TODO move to options
 	public static int snapSize;
+	public static long startTime;
 
 	// Game Rendering
 	private PVector windowSize = new PVector(1280, 720); // Game window size -- to be set via options
 	public PVector gameResolution = new PVector(1280, 720); // Game rendering resolution
+	/** Framerate target/cap; the actual framerate's limit.*/ 
+	public static float targetFramerate;
 	// Font Resources
 	private static PFont font_pixel;
 
@@ -183,15 +186,15 @@ public class SideScroller extends PApplet {
 
 		snapSize = SNAP ? Options.snapSize : 1; // global snap step
 
-		// Set frame rate limit
-		frameRate(Options.targetFrameRate);
+		// Load framerate target from user settings (default = 60)
+		targetFramerate = Options.targetFrameRate;
 		
 		// Setup modes
 		imageMode(CENTER);
 		rectMode(CENTER);
 		strokeCap(SQUARE);
 
-		// Create ArrayList
+		// create set to manage current key(s) pressed down
 		keysDown = new HashSet<Integer>();
 
 		// Main Load
@@ -200,7 +203,7 @@ public class SideScroller extends PApplet {
 		Notifications.assignApplet(this);
 		Audio.assignApplet(this);
 
-		// Create scene
+		// Create scenes
 		sceneHistory = new ArrayDeque<>();
 		game = new GameplayScene(this, Constants.DEV_LEVEL);
 		menu = new MainMenu(this);
@@ -214,14 +217,16 @@ public class SideScroller extends PApplet {
 		controlsSettings = new ControlsSettings(this);
 		swapToScene(GameScenes.MAIN_MENU);
 
-		// Camera
+		// Init camera
 		camera = new Camera(this);
 		camera.setMouseMask(CONTROL);
 		camera.setMinZoomScale(Constants.CAMERA_ZOOM_MIN);
 		camera.setMaxZoomScale(Constants.CAMERA_ZOOM_MAX);
 
 		scaleResolution();
-		launchIntoMultiplayer();
+		launchIntoMultiplayer(); // multi is conditional on program args
+		
+		startTime = System.currentTimeMillis(); // game starttime occurs at setup end
 	}
 
 	/**
@@ -272,7 +277,7 @@ public class SideScroller extends PApplet {
 	 */
 	@Override
 	public void draw() {
-
+		frameRate(targetFramerate);
 		camera.hook();
 		drawBelowCamera();
 		camera.release();
@@ -296,6 +301,9 @@ public class SideScroller extends PApplet {
 	 * @see {@link Camera#hook()}
 	 */
 	private void drawBelowCamera() {
+		if (sceneHistory.isEmpty()) {
+			return;
+		}
 		sceneHistory.peek().getScene().draw(); // Handle Draw Scene Method - draws world, etc.
 		if (debug == DebugType.ALL) {
 			sceneHistory.peek().getScene().debug();
@@ -312,6 +320,9 @@ public class SideScroller extends PApplet {
 	 * @see {@link Camera#release()}
 	 */
 	private void drawAboveCamera() {
+		if (sceneHistory.isEmpty()) {
+			return;
+		}
 		sceneHistory.peek().getScene().drawUI();
 		Notifications.run();
 		if (debug == DebugType.ALL) {
@@ -348,11 +359,11 @@ public class SideScroller extends PApplet {
 
 		final int keyCode = event.getKeyCode();
 		if (keyCode == Options.frameRateHighKey) {
-		    frameRate(5000);
+			targetFramerate = 1000;
 		} else if (keyCode == Options.frameRateLowKey) {
-		    frameRate(20);
+		    targetFramerate = 20;
 		} else if (keyCode == Options.frameRateDefaultKey) {
-		    frameRate(60);
+			targetFramerate = 60;
 		} else if (keyCode == Options.toggleDeadzoneKey) {
 		    camera.toggleDeadZone();
 		} else if (keyCode == Options.cameraToMouseKey) {
