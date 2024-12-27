@@ -25,7 +25,7 @@ public class MagicSourceObject extends GameObject {
 	public MagicSourceObject(SideScroller sideScroller, GameplayScene gameplayScene) {
 		super(sideScroller, gameplayScene);
 
-		type = type.OBJECT;
+		type = ObjectType.OBJECT;
 		id = "MAGIC_SOURCE";
 
 		if (particleAnimation == null)

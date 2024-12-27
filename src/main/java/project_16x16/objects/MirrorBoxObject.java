@@ -26,7 +26,7 @@ public class MirrorBoxObject extends GameObject {
 
 		direction = 0;
 
-		type = type.OBJECT;
+		type = ObjectType.OBJECT;
 
 		id = "MIRROR_BOX";
 		image = Tileset.getTile("MIRROR_BOX");

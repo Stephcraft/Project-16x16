@@ -21,7 +21,7 @@ public class CollidableObject extends EditableObject {
 		super(sideScroller, gameplayScene);
 
 		flag = "";
-		type = type.COLLISION;
+		type = ObjectType.COLLISION;
 		position = new PVector(0, 0);
 	}
 

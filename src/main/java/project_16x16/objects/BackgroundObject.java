@@ -15,7 +15,7 @@ public class BackgroundObject extends EditableObject {
 	public BackgroundObject(SideScroller sideScroller, GameplayScene gameplayScene) {
 		super(sideScroller, gameplayScene);
 
-		type = type.BACKGROUND;
+		type = ObjectType.BACKGROUND;
 	}
 
 	public BackgroundObject(SideScroller sideScroller, GameplayScene gameplayScene, String id) {
