@@ -1,8 +1,5 @@
 ![discord](https://img.shields.io/discord/310521827749265409?color=%23738adb&label=Discord&logo=Stephcraft)
 [![Open Source Helpers](https://www.codetriage.com/stephcraft/project-16x16/badges/users.svg)](https://www.codetriage.com/stephcraft/project-16x16)
-[![Codacy Badge](https://api.codacy.com/project/badge/Grade/968c04792ffc4536ac7b9428ed79997d)](https://www.codacy.com/manual/micycle1/Project-16x16?utm_source=github.com&utm_medium=referral&utm_content=Stephcraft/Project-16x16&utm_campaign=Badge_Grade)
-[![Language grade: Java](https://img.shields.io/lgtm/grade/java/g/Stephcraft/Project-16x16.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/Stephcraft/Project-16x16/context:java)
-[![Total alerts](https://img.shields.io/lgtm/alerts/g/Stephcraft/Project-16x16.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/Stephcraft/Project-16x16/alerts/)
 
 # Project-16x16
 
