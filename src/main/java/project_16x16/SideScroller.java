@@ -7,6 +7,7 @@ import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.input.KeyCombination;
 import javafx.scene.transform.Scale;
+import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import processing.core.PApplet;
@@ -168,6 +169,12 @@ public class SideScroller extends PApplet {
 		stage.setFullScreenExitHint(""); // disable fullscreen toggle hint
 		stage.setFullScreenExitKeyCombination(KeyCombination.NO_MATCH); // prevent ESC toggling fullscreen
 		scene.getWindow().addEventFilter(WindowEvent.WINDOW_CLOSE_REQUEST, this::closeWindowEvent);
+
+		Screen screen = Screen.getPrimary();
+		double scaleX = screen.getOutputScaleX();
+		double scaleY = screen.getOutputScaleY();
+		changeScale(Math.min(scaleX, scaleY));
+
 		return surface;
 	}
 
@@ -499,6 +506,35 @@ public class SideScroller extends PApplet {
 		}
 	}
 
+	double currentScale = 1;
+
+	/**
+	 * Changes game UI scaling. Akin to 'glass.win.uiScale' system property, but
+	 * adjustable during runtime.
+	 */
+	private void changeScale(double newScale) {
+		double x = stage.getX();
+		double y = stage.getY();
+
+		// Calculate new dimensions
+		double widthRatio = newScale / currentScale;
+		double heightRatio = newScale / currentScale;
+
+		// Update transform for all nodes in the scene
+		scene.getRoot().setScaleX(newScale);
+		scene.getRoot().setScaleY(newScale);
+
+		// Adjust stage size to maintain content visibility
+		stage.setWidth(stage.getWidth() * widthRatio);
+		stage.setHeight(stage.getHeight() * heightRatio);
+
+		// Adjust position to keep window centred
+		stage.setX(x - (stage.getWidth() - stage.getWidth() / widthRatio) / 2);
+		stage.setY(y - (stage.getHeight() - stage.getHeight() / heightRatio) / 2);
+
+		currentScale = newScale;
+	}
+
 	private void displayDebugInfo() {
 		pushStyle();
 		final int lineOffset = 12; // vertical offset
@@ -618,6 +654,11 @@ public class SideScroller extends PApplet {
 
 	// Main
 	public static void main(String args[]) {
+		/*
+		 * Set DPI scaling to 1 here, but manually change using changeScale() later so
+		 * we have direct control over it.
+		 */
+		System.setProperty("glass.win.uiScale", "100%");
 		PApplet.main(SideScroller.class, args);
 	}
 }
