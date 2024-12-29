@@ -54,14 +54,19 @@ public class Options {
         LIFE_INCREASE_KEY,
         LIFE_DECREASE_KEY,
 
-        // Other settings
+        // Graphics
         TARGET_FPS,
-        SNAP_SIZE,
-        DEBUG_MODE,
+        UI_SCALE,
+        
+        // Audio
         GAIN_BGM,
         GAIN_SFX,
         MUTE_BGM,
         MUTE_SFX,
+        
+        // Other settings
+        SNAP_SIZE,
+        DEBUG_MODE,
 
         TEST_KEY,
      // @formatter:on
@@ -131,8 +136,11 @@ public class Options {
 	public static int lifeIncreaseKey = options.getInt(Option.LIFE_INCREASE_KEY.toString(), DefaultKeys.LIFE_INCREASE);
 	public static int lifeDecreaseKey = options.getInt(Option.LIFE_DECREASE_KEY.toString(), DefaultKeys.LIFE_DECREASE);
 
-	// Game settings
+	// Graphics settings
+	public static float uiScale = options.getInt(Option.UI_SCALE.toString(), 1);
 	public static int targetFrameRate = options.getInt(Option.TARGET_FPS.toString(), 60);
+	
+	// Game settings
 	public static int snapSize = options.getInt(Option.SNAP_SIZE.toString(), 32);
 	public static int debugMode = options.getInt(Option.DEBUG_MODE.toString(), 2);
 

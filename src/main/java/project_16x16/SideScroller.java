@@ -173,7 +173,8 @@ public class SideScroller extends PApplet {
 		Screen screen = Screen.getPrimary();
 		double scaleX = screen.getOutputScaleX();
 		double scaleY = screen.getOutputScaleY();
-		changeScale(Math.min(scaleX, scaleY));
+		double scale = Math.min(scaleX, scaleY);
+		changeScale((float) scale);
 
 		return surface;
 	}
@@ -505,14 +506,14 @@ public class SideScroller extends PApplet {
 			canvas.getTransforms().setAll(new Scale(scaleX, scaleY)); // scale canvas
 		}
 	}
-
-	double currentScale = 1;
-
+	
 	/**
 	 * Changes game UI scaling. Akin to 'glass.win.uiScale' system property, but
 	 * adjustable during runtime.
 	 */
-	private void changeScale(double newScale) {
+	private void changeScale(float newScale) {
+		float currentScale = Options.uiScale;
+		
 		double x = stage.getX();
 		double y = stage.getY();
 
@@ -532,6 +533,9 @@ public class SideScroller extends PApplet {
 		stage.setX(x - (stage.getWidth() - stage.getWidth() / widthRatio) / 2);
 		stage.setY(y - (stage.getHeight() - stage.getHeight() / heightRatio) / 2);
 
+		// update scale
+		Options.uiScale = newScale;
+		Options.save(Option.UI_SCALE, newScale);
 		currentScale = newScale;
 	}
 
