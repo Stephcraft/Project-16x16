@@ -148,6 +148,10 @@ public final class Audio {
 	 * @see #play(BGM, float)
 	 */
 	public static void play(BGM sound) {
+		if (!BGM_MAP.containsKey(sound)) {
+			System.err.println(sound.getPath() + " not found.");
+			return;
+		}
 		if (BGM_MAP.get(sound).isPlaying()) {
 			return;
 		}
@@ -157,12 +161,8 @@ public final class Audio {
 				bgm.rewind();
 			}
 		}
-		if (BGM_MAP.containsKey(sound)) {
-			BGM_MAP.get(sound).setGain(sound.gain());
-			BGM_MAP.get(sound).loop();
-		} else {
-			System.err.println(sound.getPath() + " not found.");
-		}
+		BGM_MAP.get(sound).setGain(sound.gain());
+		BGM_MAP.get(sound).loop();
 	}
 
 	/**

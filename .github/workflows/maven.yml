@@ -51,7 +51,9 @@ jobs:
         if ($alive) { Stop-Process -Id $p.Id -Force }
         Get-Content err.txt, out.txt
         if (-not $alive) { throw "App exited early (code $($p.ExitCode))" }
-        if (Select-String -Path err.txt -Pattern 'Exception|Error' -Quiet) { throw 'App logged an exception' }
+        # the runner has no sound device, so Minim/audio errors are expected; only fail on packaging/startup faults
+        $fatal = 'NoClassDefFoundError|NoSuchMethodError|ClassNotFoundException|UnsatisfiedLinkError|Exception in Application start method|no suitable pipeline|Unable to initialize main class'
+        if (Select-String -Path err.txt -Pattern $fatal -Quiet) { throw 'App hit a startup/packaging error' }
     - name: Launch the exe itself
       shell: pwsh
       run: |
