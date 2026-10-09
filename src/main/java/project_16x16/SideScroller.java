@@ -4,22 +4,28 @@ import java.util.ArrayDeque;
 import java.util.HashSet;
 
 import javafx.application.Platform;
+import javafx.event.EventHandler;
 import javafx.geometry.Rectangle2D;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
+import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.image.PixelFormat;
+import javafx.scene.image.WritableImage;
 import javafx.scene.input.KeyCombination;
-import javafx.scene.transform.Scale;
+import javafx.scene.layout.Pane;
+import javafx.scene.paint.Color;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import processing.core.PApplet;
 import processing.core.PFont;
+import processing.core.PImage;
 import processing.core.PSurface;
 import processing.core.PVector;
 import processing.event.MouseEvent;
 import processing.javafx.PSurfaceFX;
 import project_16x16.Options.Option;
-import project_16x16.components.AnimationComponent;
 import project_16x16.entities.Player;
 import project_16x16.multiplayer.Multiplayer;
 import project_16x16.scene.AudioSettings;
@@ -35,6 +41,7 @@ import project_16x16.scene.MultiplayerMenu;
 import project_16x16.scene.PScene;
 import project_16x16.scene.PauseMenu;
 import project_16x16.scene.Settings;
+import project_16x16.ui.MenuBackground;
 import project_16x16.ui.Notifications;
 
 /**
@@ -67,11 +74,21 @@ public class SideScroller extends PApplet {
 
 	public static final boolean SNAP = true; // snap objects to grid when moving; TODO move to options
 	public static int snapSize;
-	public static long startTime;
 
 	// Game Rendering
-	private PVector windowSize = new PVector(1280, 720); // Game window size -- to be set via options
-	public PVector gameResolution = new PVector(1280, 720); // Game rendering resolution
+	private PVector windowSize = new PVector(1280, 720); // Base window size, before display scaling
+	/** Windowed-mode window (content) size, restored when leaving fullscreen. */
+	private int windowedWidth = 1280, windowedHeight = 720;
+	/**
+	 * The game's logical resolution: all drawing and mouse coordinates are in these
+	 * units, whatever the window size. Rendering is scaled up (or down) from it to
+	 * the window's own resolution -- see {@link #scaleResolution()}.
+	 */
+	public PVector gameResolution = new PVector(1280, 720);
+	/** Window pixels per game-resolution unit. */
+	private float renderScale = 1;
+	/** Offset (window pixels) of the game area within the window, if letterboxed. */
+	private float renderOffsetX = 0, renderOffsetY = 0;
 	/** Framerate target/cap; the actual framerate's limit. */
 	public static float targetFramerate;
 	// Font Resources
@@ -79,7 +96,11 @@ public class SideScroller extends PApplet {
 
 	// Scenes
 	private ArrayDeque<GameScenes> sceneHistory;
-	private int sceneSwapTime = 0;
+	/** When the scene last changed (game time, ms). */
+	private long sceneSwapTime = 0;
+	/** Minimum time between scene changes (ms) -- debounces repeated input. */
+	private static final long SCENE_SWAP_DEBOUNCE_MILLIS = 100;
+	private static final float SCENE_FADE_MILLIS = 230;
 
 	private static MainMenu menu;
 	private static GameplayScene game;
@@ -171,12 +192,28 @@ public class SideScroller extends PApplet {
 		stage.setFullScreenExitHint(""); // disable fullscreen toggle hint
 		stage.setFullScreenExitKeyCombination(KeyCombination.NO_MATCH); // prevent ESC toggling fullscreen
 		scene.getWindow().addEventFilter(WindowEvent.WINDOW_CLOSE_REQUEST, this::closeWindowEvent);
+		scene.setFill(Color.BLACK); // letterbox bars
+		// keep the game scaled to fill the window as its size changes (resize, fullscreen)
+		scene.widthProperty().addListener(o -> scaleResolution());
+		scene.heightProperty().addListener(o -> scaleResolution());
+		stage.fullScreenProperty().addListener((o, wasFullscreen, isFullscreen) -> {
+			if (!isFullscreen) { // restore the chosen window size (it may have changed while fullscreen)
+				setWindowSize(windowedWidth, windowedHeight);
+			}
+		});
 
-		Screen screen = Screen.getPrimary();
-		double scaleX = screen.getOutputScaleX();
-		double scaleY = screen.getOutputScaleY();
-		double scale = Double.parseDouble(System.getProperty("ui.scale", String.valueOf(Math.min(scaleX, scaleY))));
-		changeScale((float) scale);
+		if (Options.windowWidth > 0 && Options.windowHeight > 0) {
+			setWindowSize(Options.windowWidth, Options.windowHeight);
+		} else {
+			Screen screen = Screen.getPrimary();
+			double scaleX = screen.getOutputScaleX();
+			double scaleY = screen.getOutputScaleY();
+			double scale = Double.parseDouble(System.getProperty("ui.scale", String.valueOf(Math.min(scaleX, scaleY))));
+			changeScale((float) scale);
+		}
+		if (Options.fullscreen) {
+			setFullscreen(true);
+		}
 
 		return surface;
 	}
@@ -217,8 +254,8 @@ public class SideScroller extends PApplet {
 
 		// Main Load
 		load();
-		AnimationComponent.assignApplet(this);
 		Notifications.assignApplet(this);
+		MenuBackground.assignApplet(this);
 		Audio.assignApplet(this);
 
 		// Create scenes
@@ -240,11 +277,13 @@ public class SideScroller extends PApplet {
 		camera.setMouseMask(CONTROL);
 		camera.setMinZoomScale(Constants.CAMERA_ZOOM_MIN);
 		camera.setMaxZoomScale(Constants.CAMERA_ZOOM_MAX);
+		camera.setCameraPositionNoLerp(game.getPlayer().position); // start on the player...
+		camera.setFollowObject(game.getPlayer()); // ...and track them
 
 		scaleResolution();
 		launchIntoMultiplayer(); // multi is conditional on program args
 
-		startTime = System.currentTimeMillis(); // game starttime occurs at setup end
+		Time.reset(); // game time starts once loading is complete
 	}
 
 	/**
@@ -265,14 +304,15 @@ public class SideScroller extends PApplet {
 	 * @see #returnScene()
 	 */
 	public void swapToScene(GameScenes newScene) {
-		if (frameCount - sceneSwapTime > 6 || frameCount == 0) {
+		final boolean inSetup = frameCount == 0; // no debounce while setting up
+		if (inSetup || Time.millis() - sceneSwapTime > SCENE_SWAP_DEBOUNCE_MILLIS) {
 			if (!newScene.equals(sceneHistory.peek())) { // if different
 				if (!sceneHistory.isEmpty()) {
 					sceneHistory.peek().getScene().switchFrom(); // switch from
 				}
 				sceneHistory.push(newScene);
 				newScene.getScene().switchTo();
-				sceneSwapTime = frameCount;
+				sceneSwapTime = Time.millis();
 			}
 		}
 	}
@@ -286,8 +326,24 @@ public class SideScroller extends PApplet {
 		if (sceneHistory.size() > 1) {
 			sceneHistory.pop().getScene().switchFrom();
 			sceneHistory.peek().getScene().switchTo();
-			sceneSwapTime = frameCount;
+			sceneSwapTime = Time.millis();
 		}
+	}
+
+	/**
+	 * @return true if the current scene belongs to a game in progress (such as the
+	 *         pause menu, or settings opened from it), rather than to the main menu
+	 */
+	public boolean isGameInProgress() {
+		for (GameScenes scene : sceneHistory) { // most recent first
+			if (scene == GameScenes.MAIN_MENU) {
+				return false;
+			}
+			if (scene == GameScenes.GAME || scene == GameScenes.PAUSE_MENU) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	/**
@@ -296,11 +352,22 @@ public class SideScroller extends PApplet {
 	 */
 	@Override
 	public void draw() {
+		Time.tick();
 		frameRate(targetFramerate);
+
+		// draw in game-resolution units, scaled to the window
+		translate(renderOffsetX, renderOffsetY);
+		scale(renderScale);
+		final GraphicsContext context = canvas.getGraphicsContext2D();
+		// keep the pixel-art world crisp when magnified; smooth it when shrunk (else it shimmers)
+		context.setImageSmoothing(renderScale * camera.getZoomScale() < 1);
 		camera.hook();
 		drawBelowCamera();
 		camera.release();
+		context.setImageSmoothing(true); // UI text is drawn from bitmap glyphs, which need smoothing
 		drawAboveCamera();
+		drawLetterbox();
+		MenuBackground.endFrame();
 
 		rectMode(CENTER);
 
@@ -343,6 +410,7 @@ public class SideScroller extends PApplet {
 			return;
 		}
 		sceneHistory.peek().getScene().drawUI();
+		drawSceneFade();
 		Notifications.run();
 		if (debug == DebugType.ALL) {
 			camera.post();
@@ -351,6 +419,64 @@ public class SideScroller extends PApplet {
 		if (debug == DebugType.INFO_ONLY) {
 			displayDebugInfo();
 		}
+	}
+
+	/**
+	 * Blacks out the window outside the game area (when the window's aspect ratio
+	 * differs from the game's), covering anything drawn beyond the game's edges.
+	 */
+	private void drawLetterbox() {
+		if (renderOffsetX < 0.5f && renderOffsetY < 0.5f) {
+			return;
+		}
+		pushStyle();
+		resetMatrix(); // window pixels
+		noStroke();
+		fill(0);
+		rectMode(CORNER);
+		final float gameW = gameResolution.x * renderScale;
+		final float gameH = gameResolution.y * renderScale;
+		rect(0, 0, renderOffsetX, g.height); // left
+		rect(renderOffsetX + gameW, 0, g.width, g.height); // right
+		rect(0, 0, g.width, renderOffsetY); // top
+		rect(0, renderOffsetY + gameH, g.width, g.height); // bottom
+		popStyle();
+	}
+
+	/**
+	 * Fades in from black after a scene change.
+	 */
+	private void drawSceneFade() {
+		float progress = (Time.millis() - sceneSwapTime) / SCENE_FADE_MILLIS;
+		if (progress >= 1 || progress < 0) {
+			return;
+		}
+		pushStyle();
+		noStroke();
+		fill(0, 255 * (1 - progress));
+		rectMode(CORNER);
+		rect(0, 0, width, height);
+		popStyle();
+	}
+
+	/**
+	 * Captures what has been drawn so far this frame, at game resolution. Unlike
+	 * {@link #get()}, this is the game area only (excluding any letterboxing),
+	 * scaled from the window's resolution to game resolution.
+	 */
+	public PImage captureFrame() {
+		final WritableImage snapshot = canvas.snapshot(null, null);
+		final int w = Math.min((int) snapshot.getWidth(), Math.round(gameResolution.x * renderScale));
+		final int h = Math.min((int) snapshot.getHeight(), Math.round(gameResolution.y * renderScale));
+		final PImage frame = createImage(w, h, ARGB);
+		frame.loadPixels();
+		snapshot.getPixelReader().getPixels(Math.round(renderOffsetX), Math.round(renderOffsetY), w, h, PixelFormat.getIntArgbInstance(), frame.pixels, 0,
+				w);
+		frame.updatePixels();
+		if (w != width || h != height) {
+			frame.resize(width, height);
+		}
+		return frame;
 	}
 
 	/**
@@ -395,10 +521,9 @@ public class SideScroller extends PApplet {
 		} else if (keyCode == Options.notifyKey) {
 			Notifications.addNotification("Hello", "World");
 		} else if (keyCode == Options.toggleFullscreenKey) {
-			noLoop();
-			stage.setFullScreen(!stage.isFullScreen());
-			scaleResolution();
-			loop();
+			Options.fullscreen = !isFullscreen();
+			Options.save(Option.FULLSCREEN, Options.fullscreen);
+			setFullscreen(Options.fullscreen);
 		} else if (keyCode == Options.toggleDebugKey) {
 			debug = debug.next();
 			Options.save(Option.DEBUG_MODE, debug.ordinal());
@@ -420,6 +545,17 @@ public class SideScroller extends PApplet {
 	@Override
 	public void mouseReleased() {
 		mouseReleaseEvent = true;
+	}
+
+	/**
+	 * Converts mouse positions from window pixels to game-resolution units, so
+	 * mouseX/mouseY (and the events scenes receive) match what is drawn.
+	 */
+	@Override
+	protected void handleMouseEvent(MouseEvent e) {
+		final int x = (int) Math.floor((e.getX() - renderOffsetX) / renderScale);
+		final int y = (int) Math.floor((e.getY() - renderOffsetY) / renderScale);
+		super.handleMouseEvent(new MouseEvent(e.getNative(), e.getMillis(), e.getAction(), e.getModifiers(), x, y, e.getButton(), e.getCount()));
 	}
 
 	/**
@@ -476,12 +612,100 @@ public class SideScroller extends PApplet {
 		return new PVector(mouseX, mouseY);
 	}
 
-	public void resizeWindow(int width, int height) {
-		windowSize = new PVector(width, height);
-		gameResolution = windowSize.copy();
-		stage.setWidth(width); // sceneWidth is not bound, so doesn't change
-		stage.setHeight(height);
-//		stage.setScene(new Scene(new StackPane(canvas), width, height)); // TODO
+	/** @return window pixels per game-resolution unit */
+	public float getRenderScale() {
+		return renderScale;
+	}
+
+	/** @return horizontal offset (window pixels) of the game area, if letterboxed */
+	public float getRenderOffsetX() {
+		return renderOffsetX;
+	}
+
+	/** @return vertical offset (window pixels) of the game area, if letterboxed */
+	public float getRenderOffsetY() {
+		return renderOffsetY;
+	}
+
+	/**
+	 * Adds a JavaFX node behind the game's canvas. It shows wherever the canvas is
+	 * transparent (see {@link #clearCanvas()}).
+	 */
+	public void addUnderlay(Node node) {
+		((Pane) scene.getRoot()).getChildren().add(0, node);
+	}
+
+	/** Clears the whole canvas to transparent, revealing any underlay. */
+	public void clearCanvas() {
+		final GraphicsContext context = canvas.getGraphicsContext2D();
+		context.save();
+		context.setTransform(1, 0, 0, 1, 0, 0);
+		context.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
+		context.restore();
+	}
+
+	public boolean isFullscreen() {
+		return stage.isFullScreen();
+	}
+
+	/**
+	 * Enters or leaves fullscreen mode, once the current frame has finished.
+	 */
+	public void setFullscreen(boolean fullscreen) {
+		afterFrame(() -> stage.setFullScreen(fullscreen));
+	}
+
+	/** @return the width of the window in windowed mode (px) */
+	public int getWindowWidth() {
+		return windowedWidth;
+	}
+
+	/** @return the height of the window in windowed mode (px) */
+	public int getWindowHeight() {
+		return windowedHeight;
+	}
+
+	/**
+	 * Sets the size of the window's content area in windowed mode, shrinking it
+	 * (keeping its aspect ratio) if needed to fit the screen. If the game is
+	 * fullscreen, the size applies once it leaves fullscreen. The game is scaled
+	 * to fill the window. Takes effect once the current frame has finished.
+	 */
+	public void setWindowSize(int width, int height) {
+		windowedWidth = width;
+		windowedHeight = height;
+		afterFrame(() -> {
+			if (stage.isFullScreen()) {
+				return;
+			}
+			Rectangle2D screen = Screen.getPrimary().getVisualBounds();
+			// window decorations (titlebar/borders) are unscaled and unknown until shown
+			double decoW = Double.isNaN(stage.getWidth()) ? 0 : stage.getWidth() - scene.getWidth();
+			double decoH = Double.isNaN(stage.getHeight()) ? 0 : stage.getHeight() - scene.getHeight();
+			double fit = Math.min(1, Math.min((screen.getWidth() - decoW) / width, (screen.getHeight() - decoH) / height));
+			stage.setWidth(Math.round(width * fit) + decoW);
+			stage.setHeight(Math.round(height * fit) + decoH);
+			stage.centerOnScreen();
+		});
+	}
+
+	/**
+	 * Runs a change to the window after the current frame (or once the window is
+	 * first shown). Changing the window can process further frames before
+	 * returning, and Processing exits if a frame starts within another frame.
+	 */
+	private void afterFrame(Runnable action) {
+		if (stage.isShowing()) {
+			Platform.runLater(action);
+			return;
+		}
+		stage.addEventHandler(WindowEvent.WINDOW_SHOWN, new EventHandler<WindowEvent>() {
+			@Override
+			public void handle(WindowEvent e) {
+				stage.removeEventHandler(WindowEvent.WINDOW_SHOWN, this);
+				action.run();
+			}
+		});
 	}
 
 	public void resizeGameResolution(int width, int height) {
@@ -490,54 +714,42 @@ public class SideScroller extends PApplet {
 	}
 
 	/**
-	 * Scales the game rendering (as defined by gameResolution) to fill the current
-	 * stage size. <b>Should be called whenever stage size or game resolution is
-	 * changed</b> - currently called only when toggling fullscreen mode.
+	 * Fits the game to the current window: the canvas takes the window's full
+	 * resolution, and drawing is scaled from game resolution to fit it (see
+	 * {@link #draw()}), preserving the aspect ratio and letterboxing any spare
+	 * space. Rendering at the window's resolution (rather than rendering at game
+	 * resolution and scaling the image) keeps large windows sharp. Called
+	 * automatically whenever the window size changes.
 	 */
 	private void scaleResolution() {
-		if (canvas == null || scene == null) {
+		if (canvas == null || scene == null || scene.getWidth() <= 0 || scene.getHeight() <= 0) {
 			return;
 		}
+		final int w = (int) Math.round(scene.getWidth());
+		final int h = (int) Math.round(scene.getHeight());
 		canvas.getTransforms().clear();
-		canvas.setTranslateX(-scene.getWidth() / 2 + gameResolution.x / 2); // recenters after scale
-		canvas.setTranslateY(-scene.getHeight() / 2 + gameResolution.y / 2); // recenters after scale
-		if (!(scene.getWidth() == gameResolution.x && scene.getHeight() == gameResolution.y)) {
-			canvas.setWidth(gameResolution.x);
-			canvas.setHeight(gameResolution.y);
-			width = (int) gameResolution.x;
-			height = (int) gameResolution.y;
-			final double scaleX = scene.getWidth() / gameResolution.x;
-			final double scaleY = scene.getHeight() / gameResolution.y;
-			canvas.getTransforms().setAll(new Scale(scaleX, scaleY)); // scale canvas
-		}
+		canvas.setTranslateX(0);
+		canvas.setTranslateY(0);
+		canvas.setWidth(w);
+		canvas.setHeight(h);
+		// Processing resizes the sketch along with the canvas, but sketch code works
+		// in game-resolution units -- only the renderer covers the whole canvas
+		g.setSize(w, h);
+		width = (int) gameResolution.x;
+		height = (int) gameResolution.y;
+		renderScale = Math.min(w / gameResolution.x, h / gameResolution.y);
+		renderOffsetX = (w - gameResolution.x * renderScale) / 2;
+		renderOffsetY = (h - gameResolution.y * renderScale) / 2;
 	}
-	
+
 	/**
-	 * Changes game UI scaling. Akin to 'glass.win.uiScale' system property, but
-	 * adjustable during runtime. The window is always sized from the (unscaled)
-	 * window size so the content keeps its aspect ratio, and is shrunk if needed to
-	 * fit the screen.
+	 * Sizes the window from the base window size and a display scale factor (akin
+	 * to the 'glass.win.uiScale' system property), shrinking it if needed to fit
+	 * the screen.
 	 */
 	private void changeScale(float newScale) {
-		Rectangle2D screen = Screen.getPrimary().getVisualBounds();
-		// window decorations (titlebar/borders) are unscaled and unknown until shown
-		Runnable apply = () -> {
-			double decoW = Double.isNaN(stage.getWidth()) ? 0 : stage.getWidth() - scene.getWidth();
-			double decoH = Double.isNaN(stage.getHeight()) ? 0 : stage.getHeight() - scene.getHeight();
-			float fit = (float) Math.min(newScale, Math.min((screen.getWidth() - decoW) / windowSize.x, (screen.getHeight() - decoH) / windowSize.y));
-			stage.setWidth(windowSize.x * fit + decoW);
-			stage.setHeight(windowSize.y * fit + decoH);
-			stage.centerOnScreen();
-			// canvas is scaled to fill the scene by scaleResolution(), not by scaling the root
-			Platform.runLater(this::scaleResolution);
-			Options.uiScale = fit;
-			Options.save(Option.UI_SCALE, fit);
-		};
-		if (stage.isShowing()) {
-			apply.run();
-		} else {
-			stage.setOnShown(e -> apply.run());
-		}
+		Options.uiScale = newScale;
+		setWindowSize(Math.round(windowSize.x * newScale), Math.round(windowSize.y * newScale));
 	}
 
 	private void displayDebugInfo() {
@@ -610,7 +822,7 @@ public class SideScroller extends PApplet {
 		text("['F11']", width - ip, lineOffset * 23 + yOffset);
 		text("['TAB']", width - ip, lineOffset * 24 + yOffset);
 
-		if (frameRate >= 59.5) {
+		if (frameRate >= targetFramerate - 0.5f) {
 			fill(0, 255, 0);
 		} else {
 			fill(255, 0, 0);

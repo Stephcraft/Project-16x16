@@ -14,10 +14,17 @@ import static project_16x16.Utility.colorToRGB;
  */
 public final class Constants {
 
-	public static final float CAMERA_LERP = 0.05f;
+	/** Camera motion smoothing rate (per second); see {@link Time#smoothing(float)}. */
+	public static final float CAMERA_SMOOTHING = 3.08f;
 	public static final float CAMERA_ZOOM_MAX = 3.0f;
 	public static final float CAMERA_ZOOM_MIN = 0.3f;
-	public static final float GAME_GRAVITY = 1;
+	/** Downwards acceleration of entities (px/s²). */
+	public static final float GAME_GRAVITY = 3600;
+	/**
+	 * Longest physics step (seconds). Longer frames are integrated in several
+	 * sub-steps so fast-moving entities can't pass through collisions.
+	 */
+	public static final float PHYSICS_MAX_STEP = 1 / 120f;
 
 	public static final String GAME_FONT = "Font/font-pixel-48.vlw";
 
@@ -35,6 +42,7 @@ public final class Constants {
 	public static class Colors {
 
 		public static final int MENU_GREY = colorToRGB(29, 33, 45);
+		public static final int BLACK = colorToRGB(0, 0, 0);
 
 	}
 

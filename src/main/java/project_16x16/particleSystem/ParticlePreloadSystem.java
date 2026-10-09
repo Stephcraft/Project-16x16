@@ -7,7 +7,7 @@ import processing.core.PVector;
 /**
  * Particle Preload System
  * <p>
- * Preloads the particles position, velocity, lifespan and frameCount. It only
+ * Preloads the particles position, velocity, lifespan and age. It only
  * takes into account the particles spawn position, velocity and acceleration.
  * Runtime changes like collision and outside forces will not be taken into
  * affect.
@@ -16,20 +16,23 @@ import processing.core.PVector;
  */
 public class ParticlePreloadSystem {
 
-	public static Consumer<Particle> preload(int frames) {
+	/**
+	 * @param seconds how long the particle should appear to have been alive for
+	 */
+	public static Consumer<Particle> preload(float seconds) {
 		return p -> {
-			p.lifespan -= frames;
-			p.frameCount = frames;
+			p.lifespan -= seconds;
+			p.age = seconds;
 			if (!p.isDead()) {
-				p.position.add(positionDeltaIntegral(p, frames));
-				p.velocity.add(p.acceleration.copy().mult(frames));
+				p.position.add(positionDelta(p, seconds));
+				p.velocity.add(PVector.mult(p.acceleration, seconds));
 			}
 		};
 	}
 
-	private static PVector positionDeltaIntegral(Particle particle, int frames) {
-		float deltaX = (float) (particle.position.x + particle.velocity.x * frames + 0.5 * particle.acceleration.x * frames * frames);
-		float deltaY = (float) (particle.position.y + particle.velocity.y * frames + 0.5 * particle.acceleration.y * frames * frames);
+	private static PVector positionDelta(Particle particle, float t) {
+		float deltaX = particle.velocity.x * t + 0.5f * particle.acceleration.x * t * t;
+		float deltaY = particle.velocity.y * t + 0.5f * particle.acceleration.y * t * t;
 		return new PVector(deltaX, deltaY);
 	}
 }

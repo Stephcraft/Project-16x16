@@ -32,8 +32,8 @@ public class RotationEmission implements ParticleEmission {
 	 *
 	 * @param position     PVector position, set to a active entities PVector for
 	 *                     the particle system to follow
-	 * @param velocity     Start velocity of particle in facing direction.
-	 * @param acceleration Start acceleration of particle in facing direction.
+	 * @param velocity     Start velocity of particle in facing direction (px/s).
+	 * @param acceleration Start acceleration of particle in facing direction (px/s²).
 	 * @param spread       Deviation from spawn position
 	 * @param div          Angle increase for each particle (radians)
 	 */

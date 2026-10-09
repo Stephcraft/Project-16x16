@@ -1,46 +1,104 @@
 package project_16x16.ui;
 
 import processing.core.PApplet;
+import processing.core.PConstants;
 import project_16x16.SideScroller;
 
 /**
- * Horizontal slider. Used for options.
+ * Horizontal slider with a label and percentage read-out. Used for options.
+ * Call {@link #press()}, {@link #drag()} and {@link #release()} from the
+ * owning scene's mouse handlers.
  */
 public final class Slider extends Button {
 
+	private static final int ACCENT = 0xFF7CC8FF;
+	private static final int TRACK_WIDTH = 300;
+	private static final int LABEL_WIDTH = 190;
+	private static final int VALUE_WIDTH = 80;
+	private static final float STEP = 0.05f;
+
 	private float value; // between 0 and 1
-	private float tmpValue;
-	private static final int thumbSize = 10;
+	private boolean dragging;
 
 	public Slider(SideScroller sideScroller, float defaultValue) {
 		super(sideScroller);
-		this.value = defaultValue;
-		tmpValue = this.value;
+		this.value = PApplet.constrain(defaultValue, 0, 1);
+		width = LABEL_WIDTH + TRACK_WIDTH + VALUE_WIDTH;
+		height = 40;
 	}
 
 	public Slider(SideScroller sideScroller) {
-		super(sideScroller);
-		this.value = 0.5f;
-		this.tmpValue = this.value;
+		this(sideScroller, 0.5f);
 	}
 
-	/**
-	 * Updates the slider value. Sets the slider value between 0 and 1.
-	 */
-	@Override
-	public void update() {
-		tmpValue = PApplet.map(applet.mouseX - getX() + (float) super.getW() / 2, 0, getW(), 0.0f, 1.0f);
+	private float trackLeft() {
+		return x - width / 2f + LABEL_WIDTH;
+	}
+
+	private void setFromMouse() {
+		float mx = applet.getMouseCoordScreen().x;
+		value = PApplet.constrain((mx - trackLeft()) / TRACK_WIDTH, 0, 1);
+	}
+
+	/** Begin dragging if the mouse is over the slider. */
+	public void press() {
 		if (hover()) {
-			value = tmpValue;
+			dragging = true;
+			setFromMouse();
 		}
+	}
+
+	/** @return true if the value was changed by dragging. */
+	public boolean drag() {
+		if (dragging) {
+			setFromMouse();
+		}
+		return dragging;
+	}
+
+	public void release() {
+		dragging = false;
+	}
+
+	/** Nudge the value by a fixed step (keyboard control). */
+	public void nudge(int direction) {
+		value = PApplet.constrain(Math.round(value / STEP) * STEP + direction * STEP, 0, 1);
 	}
 
 	@Override
 	public void display() {
-		super.display();
+		manDisplay();
+	}
 
-		// display the thumb
-		applet.rect(x - (float) width / 2 + width * value, y, thumbSize, height + (float) thumbSize / 4);
+	@Override
+	public void manDisplay() {
+		boolean active = hover() || isSelected() || dragging;
+		float left = trackLeft();
+
+		applet.textAlign(PConstants.LEFT, PConstants.CENTER);
+		applet.textSize(26);
+		applet.fill(255, active ? 255 : 200);
+		applet.text(getText(), x - width / 2f, y);
+
+		// track
+		applet.noStroke();
+		applet.fill(47, 54, 73);
+		applet.rect(left + TRACK_WIDTH / 2f, y, TRACK_WIDTH, 8, 4);
+		// filled portion
+		applet.fill(ACCENT);
+		if (value > 0) {
+			applet.rect(left + TRACK_WIDTH * value / 2f, y, TRACK_WIDTH * value, 8, 4);
+		}
+		// thumb
+		float r = active ? 12 : 9;
+		applet.stroke(active ? 255 : ACCENT);
+		applet.strokeWeight(3);
+		applet.fill(29, 33, 45);
+		applet.ellipse(left + TRACK_WIDTH * value, y, r * 2, r * 2);
+
+		applet.textAlign(PConstants.RIGHT, PConstants.CENTER);
+		applet.fill(255);
+		applet.text(Math.round(value * 100) + "%", x + width / 2f, y);
 	}
 
 	public float getValue() {
@@ -48,11 +106,14 @@ public final class Slider extends Button {
 	}
 
 	public void setValue(float value) {
-		this.value = value;
+		this.value = PApplet.constrain(value, 0, 1);
 	}
 
 	@Override
 	public void intW() {
-		width = (int) applet.textWidth(getText()) + 160;
+	}
+
+	@Override
+	public void intH() {
 	}
 }

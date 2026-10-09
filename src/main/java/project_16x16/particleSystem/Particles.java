@@ -3,6 +3,7 @@ package project_16x16.particleSystem;
 import java.util.ArrayList;
 
 import project_16x16.SideScroller;
+import project_16x16.Time;
 
 /**
  * Particles
@@ -20,6 +21,9 @@ public class Particles {
 	public ArrayList<Particle> activeParticles;
 	public ArrayList<Particle> inactiveParticles;
 
+	/** Time until the next spawn (seconds); spawns immediately at first. */
+	private float untilNextSpawn = 0;
+
 	public Particles(ParticleSystem particleSystem, SideScroller applet) {
 		this.applet = applet;
 		this.particleSystem = particleSystem;
@@ -30,8 +34,13 @@ public class Particles {
 
 	public void run() {
 		runParticles();
-		if (nextTick()) {
-			spawnParticles(particleSystem.spawnAmount);
+		if (particleSystem.spawn) {
+			untilNextSpawn -= Time.delta();
+			// catch up on every spawn due this frame (possibly several at low frame rates)
+			while (particleSystem.spawn && untilNextSpawn <= 0) {
+				spawnParticles(particleSystem.spawnAmount);
+				untilNextSpawn += 1f / particleSystem.spawnRate;
+			}
 		}
 
 		particleSystem.onUpdateEvent();
@@ -43,7 +52,7 @@ public class Particles {
 
 	public Particle newParticle() {
 		Particle particle = new Particle(applet, particleSystem.image);
-		particle.spawn(particleSystem.getEmissionConsumer(), particleSystem.lifespan * ParticleSystem.FRAMERATE);
+		particle.spawn(particleSystem.getEmissionConsumer(), particleSystem.lifespan);
 		particleSystem.onParticleSpawnEvent(particle);
 		activeParticles.add(particle);
 		return particle;
@@ -88,11 +97,7 @@ public class Particles {
 	}
 
 	private void respawnParticle(Particle particle) {
-		particle.spawn(particleSystem.getEmissionConsumer(), particleSystem.lifespan * ParticleSystem.FRAMERATE);
+		particle.spawn(particleSystem.getEmissionConsumer(), particleSystem.lifespan);
 		particleSystem.onParticleSpawnEvent(particle);
-	}
-
-	private boolean nextTick() {
-		return particleSystem.spawn && applet.frameCount % (ParticleSystem.FRAMERATE / particleSystem.spawnRate) == 0;
 	}
 }

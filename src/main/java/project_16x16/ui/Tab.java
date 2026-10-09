@@ -2,6 +2,7 @@ package project_16x16.ui;
 
 import project_16x16.PClass;
 import project_16x16.SideScroller;
+import project_16x16.Time;
 
 public class Tab extends PClass {
 
@@ -10,16 +11,21 @@ public class Tab extends PClass {
 	private int activeButton;
 	private int prevButton;
 	private int buttonDistance = 0;
-	private float movingIncrement = 0;
-	private float incrementSpeed;
+	/** Time since the active-tab highlight started sliding (ms). */
+	private float slideElapsed = 0;
+
+	/**
+	 * The highlight slides with increasing speed: after t seconds it has travelled
+	 * (SLIDE_RATE * t)^SLIDE_EXPONENT px.
+	 */
+	private static final float SLIDE_RATE = 22.8f;
+	private static final double SLIDE_EXPONENT = 1 / 0.38;
 
 	// Basic constructor for tab
 	public Tab(SideScroller sideScroller, String[] texts, int tabs) {
 		super(sideScroller);
 		tabCount = tabs;
 		buttons = new Button[tabCount];
-		incrementSpeed = 1;
-		movingIncrement = 0;
 		for (int i = 0; i < tabCount; i++) {
 			buttons[i] = new Button(sideScroller);
 			buttons[i].setText(texts[i]);
@@ -59,6 +65,7 @@ public class Tab extends PClass {
 		setPrevButton(activeButton);
 		setActiveButton(index);
 		buttonDistance = buttons[prevButton].getX() - buttons[activeButton].getX();
+		slideElapsed = 0;
 	}
 
 	// Display inactive thick button edges without changing the actual stroke normal
@@ -80,33 +87,20 @@ public class Tab extends PClass {
 		applet.strokeWeight(8);
 		applet.stroke(255, 255, 255);
 		applet.fill(0, 0);
-		if (buttonDistance == movingIncrement) {
-			applet.rectMode(CENTER);
-			applet.rect(buttons[activeButton].getX(), buttons[activeButton].getY(), buttons[activeButton].getW(), buttons[activeButton].getH());
-			movingIncrement = 0;
-			buttonDistance = 0;
-			setIncrementSpeed(1);
-		} else if (buttonDistance > movingIncrement) {
-			applet.rectMode(CENTER);
-			applet.rect(buttons[prevButton].getX() - movingIncrement, buttons[prevButton].getY(), buttons[prevButton].getW(), buttons[prevButton].getH());
-			movingIncrement += incrementSpeed;
-			setIncrementSpeed(movingIncrement);
-			if (movingIncrement > buttonDistance) {
-				movingIncrement = 0;
-				buttonDistance = 0;
-				setIncrementSpeed(1);
-			}
-		} else if (buttonDistance < movingIncrement) {
-			applet.rectMode(CENTER);
-			applet.rect(buttons[prevButton].getX() + movingIncrement, buttons[prevButton].getY(), buttons[prevButton].getW(), buttons[prevButton].getH());
-			movingIncrement += incrementSpeed;
-			setIncrementSpeed(movingIncrement);
-			if (movingIncrement > -buttonDistance) {
-				movingIncrement = 0;
-				buttonDistance = 0;
-				setIncrementSpeed(1);
+		applet.rectMode(CENTER);
+		Button from = buttons[activeButton];
+		float offset = 0;
+		if (buttonDistance != 0) {
+			slideElapsed += Time.deltaMillis();
+			final float travelled = (float) Math.pow(SLIDE_RATE * slideElapsed / 1000, SLIDE_EXPONENT);
+			if (travelled < Math.abs(buttonDistance)) {
+				from = buttons[prevButton];
+				offset = -Math.signum(buttonDistance) * travelled;
+			} else {
+				buttonDistance = 0; // arrived
 			}
 		}
+		applet.rect(from.getX() + offset, from.getY(), from.getW(), from.getH());
 	}
 
 	// Check hover state of each button
@@ -140,11 +134,6 @@ public class Tab extends PClass {
 	public void setPrevButton(int index) {
 		prevButton = index;
 		setBlockedButton(prevButton, false);
-	}
-
-	// Set button's moving speed
-	public void setIncrementSpeed(float speed) {
-		incrementSpeed = (float) Math.pow(speed, .62f);
 	}
 
 	// Get current active button

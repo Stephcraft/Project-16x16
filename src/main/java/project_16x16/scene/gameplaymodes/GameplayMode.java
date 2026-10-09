@@ -32,20 +32,16 @@ public abstract class GameplayMode {
 	public void updateLocalPlayer(Player localPlayer) {
 	}
 
-	public void displayGUISlots() {
-		scene.displayGUISlots();
-	}
-
-	public void updateGUIButton(int xAnchor, PImage activeIcon, PImage inactiveIcon, GameModes mode, boolean isHighlighted) {
+	public void updateGUIButton(int x, int y, PImage activeIcon, PImage inactiveIcon, GameModes mode, boolean isHighlighted) {
 		if (getModeType().equals(mode)) {
-			drawGUIButton(activeIcon, xAnchor, 120);
+			drawGUIButton(activeIcon, x, y);
 		} else if (isNotInvalidGUIButtonMode() && isHighlighted) {
 			if (scene.applet.mousePressEvent) {
 				scene.changeMode(mode);
 			}
-			drawGUIButton(activeIcon, xAnchor, 120);
+			drawGUIButton(activeIcon, x, y);
 		} else {
-			drawGUIButton(inactiveIcon, xAnchor, 120);
+			drawGUIButton(inactiveIcon, x, y);
 		}
 	}
 
@@ -58,6 +54,30 @@ public abstract class GameplayMode {
 	}
 
 	public abstract GameModes getModeType();
+
+	/**
+	 * @return whether level objects can be selected and moved in this mode
+	 */
+	public boolean allowsWorldEditing() {
+		return false;
+	}
+
+	/**
+	 * @return whether the screen position is over UI belonging to this mode
+	 */
+	public boolean isOverUI(PVector screen) {
+		return false;
+	}
+
+	/**
+	 * Offers a tile dragged from the editor to this mode's UI.
+	 *
+	 * @return whether the UI took the tile (so it shouldn't be placed in the
+	 *         level)
+	 */
+	public boolean dropTile(String tileName, PVector screen) {
+		return false;
+	}
 
 	public void updateGUI() {
 	}

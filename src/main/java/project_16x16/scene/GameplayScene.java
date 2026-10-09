@@ -4,6 +4,8 @@ import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
+import java.util.function.Predicate;
 
 import processing.core.PApplet;
 import processing.core.PConstants;
@@ -18,9 +20,8 @@ import project_16x16.Options;
 import project_16x16.SideScroller;
 import project_16x16.SideScroller.GameScenes;
 import project_16x16.Tileset;
+import project_16x16.Time;
 import project_16x16.Utility;
-import project_16x16.components.Tile;
-import project_16x16.components.Tile.TileType;
 import project_16x16.entities.Player;
 import project_16x16.multiplayer.Multiplayer;
 import project_16x16.objects.BackgroundObject;
@@ -38,8 +39,6 @@ import project_16x16.scene.gameplaymodes.MoveGameMode;
 import project_16x16.scene.gameplaymodes.PlayGameMode;
 import project_16x16.scene.gameplaymodes.SaveGameMode;
 import project_16x16.scene.gameplaymodes.TestGameMode;
-import project_16x16.ui.Anchor;
-import project_16x16.ui.ScrollBarVertical;
 import project_16x16.ui.Tab;
 import project_16x16.windows.ImportLevelWindow;
 import project_16x16.windows.LoadLevelWindow;
@@ -56,9 +55,15 @@ public class GameplayScene extends PScene {
 	// Multiplayer
 	private Multiplayer multiplayer;
 
-	// Graphics Slots
-	private PImage slot;
-	private PImage slotEditor;
+	// Mode icon layout (screen space)
+	private static final int ICON_X = 42; // centre of the first icon
+	private static final int ICON_Y = 36;
+	private static final int ICON_PITCH = 48;
+	private static final int ICON_SIZE = 36;
+	/** Extent of the mode icons, from the top-left corner. */
+	private static final int ICONS_RIGHT = 220, ICONS_BOTTOM = 60;
+
+	private static final int EDITOR_ACCENT = 0xFFFFB84D;
 
 	private final String levelString;
 
@@ -92,9 +97,6 @@ public class GameplayScene extends PScene {
 	// Editor Item
 	private EditorItem editorItem;
 
-	// Scroll Bar
-	private ScrollBarVertical scrollBar;
-
 	private HashMap<GameModes, GameplayMode> modesMap;
 
 	public enum GameModes {
@@ -103,13 +105,15 @@ public class GameplayScene extends PScene {
 
 	public GameplayMode currentMode;
 
-	private ArrayList<String> inventory;
-
 	public EditableObject focusedObject = null;
 
 	public boolean edit;
 
-	private int scrollInventory;
+	/**
+	 * Set when the game should pause at the end of this frame's UI (so the pause
+	 * backdrop captures the frame without debug/notification overlays).
+	 */
+	private boolean pauseRequested;
 
 	/**
 	 * Local Player
@@ -135,21 +139,8 @@ public class GameplayScene extends PScene {
 
 		objects = new ArrayList<>();
 
-		// Create Inventory
-		inventory = new ArrayList<>();
-		inventory.add("Metal");
-		inventory.add("Metal_Walk_Left:0");
-		inventory.add("Metal_Walk_Middle:0");
-		inventory.add("Metal_Walk_Middle:1");
-		inventory.add("Metal_Walk_Right:0");
-		inventory.add("XBox");
-
 		// Init Editor Components
 		editorItem = new EditorItem(applet, this);
-
-		// Get Slots Graphics
-		slot = Tileset.getTile(289, 256, 20, 21, 4);
-		slotEditor = Tileset.getTile(310, 256, 20, 21, 4);
 
 		// Get Icon Graphics
 		iconModify = Tileset.getTile(279, 301, 9, 9, 4);
@@ -169,13 +160,6 @@ public class GameplayScene extends PScene {
 //		window_test = new TestWindow(applet);
 		windowLoadLevel = new LoadLevelWindow(applet, this);
 
-		// Init ScollBar
-		Anchor scrollBarAnchor = new Anchor(applet, -20, 102, 20, 50);
-		scrollBarAnchor.anchorOrigin = Anchor.AnchorOrigin.TopRight;
-		scrollBarAnchor.stretch = Anchor.Stretch.Vertical;
-		scrollBar = new ScrollBarVertical(scrollBarAnchor);
-		scrollBar.setBarRatio(getBarRatio(getTotalInventoryItems() / 6, 50, 3f));
-
 		// Init Player
 		localPlayer = new Player(applet, this, false);
 		localPlayer.position.set(0, -100); // TODO spawn location
@@ -184,7 +168,7 @@ public class GameplayScene extends PScene {
 		modesMap = new HashMap<>();
 		modesMap.put(GameModes.MODIFY, new ModifyGameMode(this, editorItem));
 		modesMap.put(GameModes.PLAY, new PlayGameMode(this, localPlayer));
-		modesMap.put(GameModes.INVENTORY, new InventoryGameMode(this));
+		modesMap.put(GameModes.INVENTORY, new InventoryGameMode(this, editorItem));
 		modesMap.put(GameModes.SAVE, new SaveGameMode(this));
 		modesMap.put(GameModes.IMPORT, new ImportGameMode(this));
 		modesMap.put(GameModes.LOADEXAMPLE, new LoadExampleGameMode(this));
@@ -201,7 +185,6 @@ public class GameplayScene extends PScene {
 	@Override
 	public void switchTo() {
 		super.switchTo();
-		((PauseMenu) GameScenes.PAUSE_MENU.getScene()).switched = false;
 		Audio.play(BGM.TEST1);
 	}
 
@@ -222,8 +205,8 @@ public class GameplayScene extends PScene {
 		Iterator<ProjectileObject> i = projectileObjects.iterator();
 		while (i.hasNext()) {
 			ProjectileObject o = i.next();
-			if (applet.frameCount - o.spawnTime > 600) {
-				i.remove(); // kill projectile after 10s
+			if (Time.millis() - o.spawnTime > ProjectileObject.LIFETIME_MILLIS) {
+				i.remove();
 			} else {
 				o.update();
 				o.display();
@@ -281,21 +264,64 @@ public class GameplayScene extends PScene {
 	 */
 	@Override
 	public void drawUI() {
-		currentMode.displayGUISlots();
+		if (currentMode.getModeType() != GameModes.PLAY) {
+			displayEditorFrame();
+		}
 
-		int xAnchor = 42;
-		int offset = 48;
 		// GUI Icons
-		currentMode.updateGUIButton(xAnchor, iconModifyActive, iconModify, GameModes.MODIFY, Utility.hoverScreen(xAnchor, 120, 36, 36));
-		currentMode.updateGUIButton(xAnchor + offset, iconInventoryActive, iconInventory, GameModes.INVENTORY,
-				Utility.hoverScreen(xAnchor + offset, 120, 36, 36));
-		currentMode.updateGUIButton(xAnchor + offset * 2, iconPlayActive, iconPlay, GameModes.PLAY, Utility.hoverScreen(xAnchor + offset * 2, 120, 36, 36));
-		currentMode.updateGUIButton(xAnchor + offset * 3, iconSaveActive, iconSave, GameModes.SAVE, Utility.hoverScreen(xAnchor + offset * 3, 120, 36, 36));
+		displayModeIcon(0, iconModifyActive, iconModify, GameModes.MODIFY);
+		displayModeIcon(1, iconInventoryActive, iconInventory, GameModes.INVENTORY);
+		displayModeIcon(2, iconPlayActive, iconPlay, GameModes.PLAY);
+		displayModeIcon(3, iconSaveActive, iconSave, GameModes.SAVE);
 
 		currentMode.updateGUI();
 		if (selectionBox != null) {
 			selectionBox.draw();
 		}
+
+		if (pauseRequested) {
+			pauseRequested = false;
+			((PauseMenu) GameScenes.PAUSE_MENU.getScene()).setBackdrop(applet.captureFrame());
+			applet.swapToScene(GameScenes.PAUSE_MENU);
+		}
+	}
+
+	private void displayModeIcon(int index, PImage activeIcon, PImage inactiveIcon, GameModes mode) {
+		final int x = ICON_X + index * ICON_PITCH;
+		currentMode.updateGUIButton(x, ICON_Y, activeIcon, inactiveIcon, mode, Utility.hoverScreen(x, ICON_Y, ICON_SIZE, ICON_SIZE));
+	}
+
+	/**
+	 * Frames the screen and labels it, so it's obvious the level editor (rather
+	 * than the game) is running.
+	 */
+	private void displayEditorFrame() {
+		applet.pushStyle();
+		applet.rectMode(CORNER);
+		applet.noFill();
+		applet.stroke(EDITOR_ACCENT);
+		applet.strokeWeight(4);
+		applet.rect(2, 2, applet.width - 4, applet.height - 4);
+
+		final String label = "EDIT MODE";
+		final String hint = "press 3 to play";
+		applet.textSize(22);
+		final float labelWidth = applet.textWidth(label);
+		applet.textSize(18);
+		final float w = labelWidth + applet.textWidth(hint) + 48;
+		final float h = 34;
+		final float x = Math.max(applet.width / 2f - w / 2, ICONS_RIGHT + 16); // clear of the icons
+		applet.noStroke();
+		applet.fill(EDITOR_ACCENT);
+		applet.rect(x, 0, w, h, 0, 0, 8, 8);
+		applet.textAlign(LEFT, CENTER);
+		applet.fill(29, 33, 45);
+		applet.textSize(22);
+		applet.text(label, x + 16, h / 2 - 3);
+		applet.fill(29, 33, 45, 170);
+		applet.textSize(18);
+		applet.text(hint, x + 32 + labelWidth, h / 2 - 3);
+		applet.popStyle();
 	}
 
 	/**
@@ -303,6 +329,9 @@ public class GameplayScene extends PScene {
 	 */
 	@Override
 	public void debug() {
+		if (pauseRequested) {
+			return; // keep debug outlines out of the pause backdrop
+		}
 		for (EditableObject o : objects) {
 			o.debug();
 		}
@@ -324,96 +353,6 @@ public class GameplayScene extends PScene {
 		}
 	}
 
-	public void displayCreativeInventory() {
-		// complete creative inventory
-
-		// Display Background
-		applet.stroke(50);
-		applet.fill(0, 100);
-		applet.rect(applet.width / 2, applet.height / 2, applet.width, applet.height);
-
-		// Display Editor Mode Items
-		int x = 0;
-		int y = 1;
-		int index = 0;
-		TileType[] tiles = { TileType.COLLISION, TileType.BACKGROUND, TileType.OBJECT };
-		ArrayList<Tile> inventoryTiles = Tileset.getAllTiles(tiles);
-		for (Tile tile : inventoryTiles) {
-			PImage img = tile.getPImage();
-			if (index % 6 == 0) { // show 6 items per row
-				x = 0;
-				y++;
-			} else {
-				x++;
-			}
-			applet.image(slotEditor, 20 * 4 / 2 + 10 + x * (20 * 4 + 10), y * (20 * 4 + 10) + scrollInventory);
-			if (img.width > 20 * 4 || img.height > 20 * 4) {
-				applet.image(img, 20 * 4 / 2 + 10 + x * (20 * 4 + 10), y * (20 * 4 + 10) + scrollInventory, img.width / 4, img.height / 4);
-			} else {
-				applet.image(img, 20 * 4 / 2 + 10 + x * (20 * 4 + 10), y * (20 * 4 + 10) + scrollInventory, img.width / 2, img.height / 2);
-			}
-
-			// Detect hover over item
-			float xx = 20 * 4 / 2 + 10 + x * (20 * 4 + 10);
-			float yy = y * (20 * 4 + 10) + scrollInventory;
-			if (applet.getMouseCoordScreen().y > 100) {
-				if (applet.getMouseCoordScreen().x > xx - (20 * 4) / 2 && applet.getMouseCoordScreen().x < xx + (20 * 4) / 2
-						&& applet.getMouseCoordScreen().y > yy - (20 * 4) / 2 && applet.getMouseCoordScreen().y < yy + (20 * 4) / 2) {
-					// Grab Item
-					if (applet.mousePressEvent) {
-						editorItem.focus = true;
-						editorItem.setTile(tile.getName());
-					}
-					// Display item name
-					applet.textSize(20);
-					applet.fill(255);
-					applet.text(tile.getName(), applet.mouseX, applet.mouseY);
-				}
-			}
-			index++;
-		}
-
-		// Display ScrollBar
-		scrollBar.display();
-		scrollBar.update();
-		scrollInventory = (int) PApplet.map(scrollBar.barLocation, 1, 0, -getInventorySize() + applet.height - 8, 0);
-
-		// Display Top Bar TODO
-//		applet.noStroke();
-//		applet.fill(29, 33, 45);
-//		applet.rect(applet.width / 2, 50, applet.width, 100);
-
-		// Display Line Separator
-		applet.strokeWeight(4);
-		applet.stroke(74, 81, 99);
-		applet.line(0, 100, applet.width, 100);
-
-		// Display Inventory Slots
-		for (int i = 0; i < 6; i++) {
-			// Display Slot
-			image(slot, 20 * 4 / 2 + 10 + i * (20 * 4 + 10), 20 * 4 / 2 + 10);
-
-			// Display Item
-			PImage img = Tileset.getTile(inventory.get(i));
-			applet.image(img, 20 * 4 / 2 + 10 + i * (20 * 4 + 10), 20 * 4 / 2 + 10, img.width * (float) 0.5, img.height * (float) 0.5);
-
-			// Focus Event
-			if (applet.mouseReleaseEvent) {
-				float xx = 20 * 4 / 2 + 10 + i * (20 * 4 + 10);
-				float yy = 20 * 4 / 2 + 10;
-				if (editorItem.focus && applet.getMouseCoordScreen().x > xx - (20 * 4) / 2 && applet.getMouseCoordScreen().x < xx + (20 * 4) / 2
-						&& applet.getMouseCoordScreen().y > yy - (20 * 4) / 2 && applet.getMouseCoordScreen().y < yy + (20 * 4) / 2) {
-					editorItem.focus = false;
-					inventory.set(i, editorItem.id);
-				}
-			}
-		}
-
-		// Display Editor Object
-		editorItem.update();
-		editorItem.display();
-	}
-
 	private void displayGrid() {// world edit grid
 		applet.strokeWeight(1);
 		applet.stroke(0, 155, 155);
@@ -426,45 +365,8 @@ public class GameplayScene extends PScene {
 		}
 	}
 
-	private float getInventorySize() {
-		int y = 1;
-
-		TileType[] tiles = { TileType.COLLISION, TileType.BACKGROUND, TileType.OBJECT };
-		ArrayList<Tile> inventoryTiles = Tileset.getAllTiles(tiles);
-		for (int i = 0; i < inventoryTiles.size(); i++) {
-			if (i % 6 == 0) {
-				y++;
-			} else {
-			}
-		}
-		return 20 * 4 + 10 + y * (20 * 4 + 10);
-	}
-
 	public boolean isZoomable() {
-		return zoomable;
-	}
-
-	/**
-	 * Lists the amount of items currently on the inventory. Can be refactored in
-	 * the future to support the actual gameplay inventory.
-	 *
-	 * @return amount of items currently on the inventory
-	 */
-	private int getTotalInventoryItems() {
-		TileType[] tiles = { TileType.COLLISION, TileType.BACKGROUND, TileType.OBJECT };
-		return Tileset.getAllTiles(tiles).size();
-	}
-
-	/**
-	 * Calculates the ratio for a scrollbar.
-	 *
-	 * @param bodyToScroll   Approximate relative size of the scrollable body
-	 * @param containerSize  Size of the bar container
-	 * @param sizeMultiplier Multiplier for the relative size of the bar
-	 * @return Bar ratio for that specific bar
-	 */
-	private float getBarRatio(float bodyToScroll, int containerSize, float sizeMultiplier) {
-		return bodyToScroll / (containerSize * sizeMultiplier);
+		return zoomable && !isOverUI(applet.getMouseCoordScreen());
 	}
 
 	@Override
@@ -488,9 +390,7 @@ public class GameplayScene extends PScene {
 				}
 				break;
 			case RIGHT:
-				if (currentMode.getModeType().equals(GameModes.MODIFY)) { // As the SelectionBox class is private, this
-																			// has to remain as a type-check and cannot
-																			// delegate to the currentMode
+				if (currentMode.allowsWorldEditing() && !isOverUI(mouseDown)) {
 					selectionBox = new SelectionBox(mouseDown);
 				}
 				break;
@@ -503,6 +403,9 @@ public class GameplayScene extends PScene {
 	void mouseReleased(MouseEvent e) {
 		switch (e.getButton()) {
 			case LEFT:
+				if (currentMode.allowsWorldEditing()) {
+					endDrag();
+				}
 				break;
 			case RIGHT:
 				selectionBox = null;
@@ -529,7 +432,11 @@ public class GameplayScene extends PScene {
 	protected void keyReleased(processing.event.KeyEvent e) {
 		final int keyCode = e.getKeyCode();
 		if (keyCode == PConstants.ESC) {
-			applet.swapToScene(GameScenes.PAUSE_MENU);
+			if (currentMode.getModeType() == GameModes.INVENTORY) {
+				changeMode(GameModes.MODIFY); // close the palette
+			} else {
+				pauseRequested = true;
+			}
 		} else if (keyCode == Options.lifeCapIncreaseKey) {
 			localPlayer.lifeCapacity++;
 		} else if (keyCode == Options.lifeCapDecreaseKey) {
@@ -544,19 +451,21 @@ public class GameplayScene extends PScene {
 	}
 
 	public void switchModeOnKeyEvent(processing.event.KeyEvent event) {
-		editorItem.setMode("CREATE");
 		editorItem.focus = false;
 		switch (event.getKeyCode()) {
 			case 49: // 1
 				changeMode(GameModes.MODIFY);
 				break;
 			case 50: // 2
-				changeMode(GameModes.INVENTORY);
-				scrollInventory = 0;
+			case 69: // 'e'
+				if (currentMode.getModeType() == GameModes.INVENTORY) {
+					changeMode(GameModes.MODIFY);
+				} else {
+					changeMode(GameModes.INVENTORY);
+				}
 				break;
 			case 51: // 3
 				changeMode(GameModes.PLAY);
-				applet.camera.setFollowObject(localPlayer);
 				break;
 			case 52: // 4
 				changeMode(GameModes.SAVE);
@@ -564,22 +473,9 @@ public class GameplayScene extends PScene {
 			case 54: // 6
 				changeMode(GameModes.IMPORT);
 				break;
-			case 69: // 'e' TODO remove?
-				if (currentMode.getModeType().equals(GameModes.INVENTORY)) {
-				} else {
-					changeMode(GameModes.INVENTORY);
-					editorItem.setMode("ITEM");
-					scrollInventory = 0;
-				}
-				break;
 			case 8: // BACKSPACE
 			case 46: // DEL
-				for (Iterator<EditableObject> iterator = objects.iterator(); iterator.hasNext();) {
-					EditableObject o = iterator.next();
-					if (o.isFocused()) {
-						iterator.remove();
-					}
-				}
+				objects.stream().filter(EditableObject::isFocused).toList().forEach(this::removeObject);
 				break;
 			default:
 				break;
@@ -683,26 +579,71 @@ public class GameplayScene extends PScene {
 		}
 	}
 
-	public void displayGUISlots() {
-		for (int i = 0; i < 6; i++) {
-			// Display Slot
-			image(slot, 20 * 4 / 2 + 10 + i * (20 * 4 + 10), 20 * 4 / 2 + 10);
+	/**
+	 * @return whether the screen position is over editor/game UI (rather than the
+	 *         level)
+	 */
+	public boolean isOverUI(PVector screen) {
+		return (screen.x < ICONS_RIGHT && screen.y < ICONS_BOTTOM) || currentMode.isOverUI(screen);
+	}
 
-			// Display Item
-			PImage img = Tileset.getTile(inventory.get(i));
-			applet.image(img, 20 * 4 / 2 + 10 + i * (20 * 4 + 10), 20 * 4 / 2 + 10, img.width * (float) 0.5, img.height * (float) 0.5);
+	/**
+	 * Solid objects (blocks and game objects) can't overlap each other in the
+	 * editor. Child collision boxes are skipped: they share their parent's
+	 * bounds.
+	 */
+	private static boolean isSolid(EditableObject o) {
+		return (o instanceof CollidableObject || o instanceof GameObject) && !o.child;
+	}
 
-			// Focus Event
-			if (applet.mousePressEvent) {
-				float x = 20 * 4 / 2 + 10 + i * (20 * 4 + 10);
-				float y = 20 * 4 / 2 + 10;
-				if (applet.getMouseCoordScreen().x > x - (20 * 4) / 2 && applet.getMouseCoordScreen().x < x + (20 * 4) / 2
-						&& applet.getMouseCoordScreen().y > y - (20 * 4) / 2 && applet.getMouseCoordScreen().y < y + (20 * 4) / 2) {
-					editorItem.focus = true;
-					editorItem.setTile(inventory.get(i));
-					editorItem.type = Tileset.getTileType(inventory.get(i));
-				}
+	/**
+	 * Whether a solid object with the given (world space, centred) bounds would
+	 * overlap no solid objects (besides those ignored). Touching edges don't count
+	 * as overlapping.
+	 */
+	public boolean isAreaFree(float x, float y, float w, float h, Predicate<EditableObject> ignore) {
+		for (EditableObject o : objects) {
+			if (isSolid(o) && !ignore.test(o) && Math.abs(x - o.position.x) * 2 < w + o.width && Math.abs(y - o.position.y) * 2 < h + o.height) {
+				return false;
 			}
+		}
+		return true;
+	}
+
+	/**
+	 * @return whether the (solid) object overlaps a solid object that isn't
+	 *         selected along with it
+	 */
+	public boolean isBlocked(EditableObject o) {
+		return isSolid(o) && !isAreaFree(o.position.x, o.position.y, o.width, o.height, EditableObject::isFocused);
+	}
+
+	/**
+	 * Ends a drag of the selected objects. If any of them was dropped over another
+	 * solid object, the whole selection returns to where the drag started
+	 * (objects duplicated during the drag are discarded).
+	 */
+	private void endDrag() {
+		final List<EditableObject> dragged = objects.stream().filter(o -> o.isFocused() && !o.child).toList();
+		if (dragged.stream().noneMatch(this::isBlocked)) {
+			return;
+		}
+		for (EditableObject o : dragged) {
+			if (o.dragOrigin == null) {
+				removeObject(o);
+			} else {
+				o.position.set(o.dragOrigin);
+			}
+		}
+	}
+
+	/**
+	 * Removes an object from the level, along with its collision box (if any).
+	 */
+	private void removeObject(EditableObject o) {
+		objects.remove(o);
+		if (o instanceof GameObject g && g.collision != null) {
+			objects.remove(g.collision);
 		}
 	}
 
@@ -729,11 +670,6 @@ public class GameplayScene extends PScene {
 
 	public LoadLevelWindow getWindowLoadLevel() {
 		return windowLoadLevel;
-	}
-
-	public void scrollInventoryBar(MouseEvent event) {
-		scrollBar.mouseWheel(event);
-		scrollInventory = (int) PApplet.map(scrollBar.barLocation, 1, 0, -getInventorySize() + applet.height - 8, 0);
 	}
 
 	/**

@@ -29,6 +29,11 @@ public class ModifyGameMode extends GameplayMode {
 	}
 
 	@Override
+	public boolean allowsWorldEditing() {
+		return true;
+	}
+
+	@Override
 	public void displayWorldEdit() {
 		scene.displayWorldEdit();
 	}

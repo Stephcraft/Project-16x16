@@ -32,8 +32,8 @@ public class ArchEmission implements ParticleEmission {
 	 *
 	 * @param position     PVector position, set to a active entities PVector for
 	 *                     the particle system to follow
-	 * @param velocity     Start velocity of particle in the arch direction;
-	 * @param acceleration Start acceleration of particle in the arch direction;
+	 * @param velocity     Start velocity of particle in the arch direction (px/s).
+	 * @param acceleration Start acceleration of particle in the arch direction (px/s²).
 	 * @param spread       Deviation from spawn position
 	 * @param minAngle     minAngle (radians)
 	 * @param maxAngle     maxAngle (radians)

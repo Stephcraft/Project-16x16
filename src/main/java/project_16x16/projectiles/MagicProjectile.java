@@ -7,6 +7,7 @@ import processing.core.PImage;
 import processing.core.PVector;
 import project_16x16.SideScroller;
 import project_16x16.Tileset;
+import project_16x16.Time;
 import project_16x16.Utility;
 import project_16x16.objects.CollidableObject;
 import project_16x16.objects.EditableObject;
@@ -19,7 +20,7 @@ import project_16x16.scene.GameplayScene;
 public class MagicProjectile extends ProjectileObject {
 
 	final int SCALE = 4;
-	final int PROJECTILE_SPEED = 10;
+	final int PROJECTILE_SPEED = 600; // px/s
 	final int PROJECTILE_IDLE_SIZE = 8;
 
 	private static ArrayList<PImage> particleAnimation;
@@ -41,12 +42,12 @@ public class MagicProjectile extends ProjectileObject {
 			setParticleAnimation(sideScroller);
 		}
 
-		trail = new ParticleSystem(sideScroller, image, 40, 1, 0.2f);
-		trail.setEmission(new AreaEmission(position, 0.8f, -0.01f, 8));
+		trail = new ParticleSystem(sideScroller, image, 60, 1, 0.2f);
+		trail.setEmission(new AreaEmission(position, 48, -36, 8));
 		trail.addEventListener(new ParticleAnimationController(particleAnimation, -1));
 
 		explode = new ParticleSystem(sideScroller, image, 15, 5, 0.4f);
-		explode.setEmission(new AreaEmission(position, 3, -0.13f, 10));
+		explode.setEmission(new AreaEmission(position, 180, -468, 10));
 		explode.addEventListener(new ParticleAnimationController(particleAnimation, -1));
 		explode.addEventListener(new ParticleNoLoopController(10));
 	}
@@ -86,18 +87,19 @@ public class MagicProjectile extends ProjectileObject {
 	}
 
 	public void moveProjectile() {
+		final float distance = speed * Time.delta();
 		switch (direction) {
 			case LEFT:
-				position.x -= speed;
+				position.x -= distance;
 				break;
 			case RIGHT:
-				position.x += speed;
+				position.x += distance;
 				break;
 			case UP:
-				position.y -= speed;
+				position.y -= distance;
 				break;
 			case DOWN:
-				position.y += speed;
+				position.y += distance;
 				break;
 		}
 	}

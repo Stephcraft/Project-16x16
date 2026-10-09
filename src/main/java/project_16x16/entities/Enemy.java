@@ -5,9 +5,11 @@ import java.awt.event.KeyEvent;
 import processing.core.PImage;
 import processing.core.PVector;
 import processing.data.JSONObject;
+import project_16x16.Constants;
 import project_16x16.SideScroller;
 import project_16x16.SideScroller.DebugType;
 import project_16x16.Tileset;
+import project_16x16.Time;
 import project_16x16.Utility;
 import project_16x16.objects.CollidableObject;
 import project_16x16.objects.EditableObject;
@@ -23,14 +25,17 @@ public class Enemy extends CollidableObject {
 
 	private PImage image;
 
-	float gravity;
+	float gravity; // px/s²
 
+	/** Velocity (px/s). */
 	final PVector velocity = new PVector(0, 0);
+	/** Displacement over the current physics step (px); reused to avoid allocation. */
+	private final PVector displacement = new PVector(0, 0);
 
 	private static final int collisionRange = 145;
 
-	final int speedWalk;
-	private final int speedJump;
+	final float speedWalk; // px/s
+	private final float speedJump; // px/s
 
 	public int health;
 
@@ -43,11 +48,11 @@ public class Enemy extends CollidableObject {
 	 */
 	public Enemy(SideScroller sideScroller, GameplayScene gameplayScene) {
 		super(sideScroller, gameplayScene);
-		gravity = 1;
+		gravity = Constants.GAME_GRAVITY;
 		image = Tileset.getTile(0, 258, 14, 14, 4);
 		health = 2;
-		speedWalk = 7;
-		speedJump = 18;
+		speedWalk = 420;
+		speedJump = 1050;
 		width = 14 * 4;
 		height = 10 * 4;
 		enemyState = new EnemyState();
@@ -79,13 +84,11 @@ public class Enemy extends CollidableObject {
 	 * The update method handles updating the character.
 	 */
 	public void update() {
-		// velocity.set(0, velocity.y + gravity);
-
-		checkEnemyCollision();
-		if (velocity.y != 0) {
-			enemyState.flying = true;
+		final int steps = Time.substeps(Constants.PHYSICS_MAX_STEP);
+		final float dt = Time.delta() / steps;
+		for (int i = 0; i < steps; i++) {
+			step(dt);
 		}
-		position.add(velocity);
 		if (position.y > 2000) { // out of bounds check
 			// Destroy(gameObject);
 		}
@@ -107,6 +110,22 @@ public class Enemy extends CollidableObject {
 		return enemyState;
 	}
 
+	/**
+	 * Advances the enemy's motion by one physics step, resolving collisions.
+	 *
+	 * @param dt step duration (seconds)
+	 */
+	private void step(float dt) {
+		displacement.set(velocity.x * dt, velocity.y * dt + 0.5f * gravity * dt * dt);
+		velocity.y += gravity * dt;
+
+		checkEnemyCollision();
+		if (velocity.y != 0) {
+			enemyState.flying = true;
+		}
+		position.add(displacement);
+	}
+
 	private void checkEnemyCollision() {
 		for (EditableObject o : gameplayScene.objects) {
 			if (o.equals(this)) {
@@ -122,7 +141,7 @@ public class Enemy extends CollidableObject {
 						applet.ellipse(collision.position.x, collision.position.y, 5, 5);
 						applet.noFill();
 					}
-					if (collidesFuturX(collision)) {
+					if (collidesAfterMove(collision, displacement.x, 0)) {
 						// enemy left of collision
 						if (position.x < collision.position.x) {
 							position.x = collision.position.x - collision.width / 2 - width / 2;
@@ -131,9 +150,10 @@ public class Enemy extends CollidableObject {
 							position.x = collision.position.x + collision.width / 2 + width / 2;
 						}
 						velocity.x = 0;
+						displacement.x = 0;
 						enemyState.dashing = false;
 					}
-					if (collidesFuturY(collision)) {
+					if (collidesAfterMove(collision, 0, displacement.y)) {
 						// enemy above collision
 						if (position.y < collision.position.y) {
 							if (enemyState.flying) {
@@ -147,6 +167,7 @@ public class Enemy extends CollidableObject {
 							enemyState.jumping = false;
 						}
 						velocity.y = 0;
+						displacement.y = 0;
 					}
 				}
 			}
@@ -173,25 +194,15 @@ public class Enemy extends CollidableObject {
 						&& position.y - height / 2 <= collision.position.y + collision.height / 2);
 	}
 
-	private boolean collidesFutur(CollidableObject collision) {
-		return (position.x + velocity.x + width / 2 > collision.position.x - collision.width / 2
-				&& position.x + velocity.x - width / 2 < collision.position.x + collision.width / 2)
-				&& (position.y + velocity.y + height / 2 > collision.position.y - collision.height / 2
-						&& position.y + velocity.y - height / 2 < collision.position.y + collision.height / 2);
-	}
-
-	private boolean collidesFuturX(CollidableObject collision) {
-		return (position.x + velocity.x + width / 2 > collision.position.x - collision.width / 2
-				&& position.x + velocity.x - width / 2 < collision.position.x + collision.width / 2)
-				&& (position.y + 0 + height / 2 > collision.position.y - collision.height / 2
-						&& position.y + 0 - height / 2 < collision.position.y + collision.height / 2);
-	}
-
-	private boolean collidesFuturY(CollidableObject collision) {
-		return (position.x + 0 + width / 2 > collision.position.x - collision.width / 2
-				&& position.x + 0 - width / 2 < collision.position.x + collision.width / 2)
-				&& (position.y + velocity.y + height / 2 > collision.position.y - collision.height / 2
-						&& position.y + velocity.y - height / 2 < collision.position.y + collision.height / 2);
+	/**
+	 * Determines whether the enemy would collide with an object after moving by
+	 * (dx, dy).
+	 */
+	private boolean collidesAfterMove(CollidableObject collision, float dx, float dy) {
+		return (position.x + dx + width / 2 > collision.position.x - collision.width / 2
+				&& position.x + dx - width / 2 < collision.position.x + collision.width / 2)
+				&& (position.y + dy + height / 2 > collision.position.y - collision.height / 2
+						&& position.y + dy - height / 2 < collision.position.y + collision.height / 2);
 	}
 
 	public class EnemyState {

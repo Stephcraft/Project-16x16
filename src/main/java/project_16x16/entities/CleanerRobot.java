@@ -2,6 +2,7 @@ package project_16x16.entities;
 
 import processing.core.PVector;
 import project_16x16.SideScroller;
+import project_16x16.Time;
 import project_16x16.scene.GameplayScene;
 
 /**
@@ -30,8 +31,8 @@ public class CleanerRobot extends Enemy {
 	public void update() {
 		super.update();
 
-		velocity.set(velocity.x, velocity.y + gravity);
-		if (getDistance(target, position) < 10) {
+		// arrival radius covers a whole frame's movement, so low frame rates can't overshoot it
+		if (getDistance(target, position) < Math.max(10, speedWalk * Time.delta())) {
 			if (target == posA) {
 				target = posB;
 			} else {

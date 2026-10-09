@@ -2,6 +2,7 @@ package project_16x16.ui;
 
 import project_16x16.PClass;
 import project_16x16.SideScroller;
+import project_16x16.Time;
 import project_16x16.Utility;
 
 /**
@@ -20,6 +21,15 @@ public class Button extends PClass {
 	protected boolean focus;
 	protected boolean press;
 	public boolean blocked;
+
+	/** Highlighted via keyboard navigation (rendered like a hover). */
+	private boolean selected;
+	/** Eased 0..1 hover/selection amount, for animated transitions. */
+	private float hoverAmount;
+
+	private static final float HOVER_SMOOTHING = 17.3f; // per second; see Time.smoothing()
+	private static final float HOVER_GROWTH = 0.04f;
+	private static final int ACCENT = 0xFF7CC8FF;
 
 	int colorValues[];
 
@@ -95,14 +105,38 @@ public class Button extends PClass {
 	}
 
 	private void displayColors() {
-		if (hover()) {
-			applet.stroke(colorValues[2]);
-			applet.fill(colorValues[3]);
-		} else {
-			applet.stroke(colorValues[0]);
-			applet.fill(colorValues[1]);
+		float target = (hover() || selected) ? 1 : 0;
+		hoverAmount = Time.damp(hoverAmount, target, HOVER_SMOOTHING);
+		if (Math.abs(target - hoverAmount) < 0.01f) {
+			hoverAmount = target;
 		}
-		applet.rect(x, y, width, height);
+		float t = hoverAmount;
+		float grow = 1 + HOVER_GROWTH * t - (focus && hover() ? 0.03f : 0);
+		float w = width * grow;
+		float h = height * grow;
+		float radius = Math.min(14, Math.min(w, h) / 3);
+
+		// drop shadow
+		applet.noStroke();
+		applet.fill(0, 70);
+		applet.rect(x, y + 4, w, h, radius);
+
+		applet.stroke(applet.lerpColor(colorValues[0], hoverStroke(), t));
+		applet.fill(applet.lerpColor(colorValues[1], colorValues[3], t));
+		applet.rect(x, y, w, h, radius);
+	}
+
+	/** Hover outline is accented when the button uses its default palette. */
+	private int hoverStroke() {
+		return colorValues[2] == applet.color(47, 54, 73) ? ACCENT : colorValues[2];
+	}
+
+	public void setSelected(boolean selected) {
+		this.selected = selected;
+	}
+
+	public boolean isSelected() {
+		return selected;
 	}
 
 	public void displayTextColors() {

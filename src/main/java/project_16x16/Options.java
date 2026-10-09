@@ -57,9 +57,15 @@ public class Options {
         // Graphics
         TARGET_FPS,
         UI_SCALE,
+        FULLSCREEN,
+        WINDOW_WIDTH,
+        WINDOW_HEIGHT,
+        MENU_PARTICLES,
         
         // Audio
-        GAIN_BGM,
+        GAIN_BGM, // legacy (single music volume); seeds the menu/game music volumes
+        GAIN_MENU_BGM,
+        GAIN_GAME_BGM,
         GAIN_SFX,
         MUTE_BGM,
         MUTE_SFX,
@@ -139,13 +145,20 @@ public class Options {
 	// Graphics settings
 	public static float uiScale = options.getInt(Option.UI_SCALE.toString(), 1);
 	public static int targetFrameRate = options.getInt(Option.TARGET_FPS.toString(), 60);
+	public static boolean fullscreen = options.getBoolean(Option.FULLSCREEN.toString(), false);
+	/** Windowed-mode window size (px); 0 = sized automatically from the display scale. */
+	public static int windowWidth = options.getInt(Option.WINDOW_WIDTH.toString(), 0);
+	public static int windowHeight = options.getInt(Option.WINDOW_HEIGHT.toString(), 0);
+	/** Density of the menu background particles: 0 = low, 1 = medium, 2 = high. */
+	public static int menuParticles = options.getInt(Option.MENU_PARTICLES.toString(), 1);
 	
 	// Game settings
 	public static int snapSize = options.getInt(Option.SNAP_SIZE.toString(), 32);
 	public static int debugMode = options.getInt(Option.DEBUG_MODE.toString(), 2);
 
 	// Audio settings
-	public static float gainBGM = options.getFloat(Option.GAIN_BGM.toString(), 0);
+	public static float gainMenuBGM = options.getFloat(Option.GAIN_MENU_BGM.toString(), options.getFloat(Option.GAIN_BGM.toString(), 0));
+	public static float gainGameBGM = options.getFloat(Option.GAIN_GAME_BGM.toString(), options.getFloat(Option.GAIN_BGM.toString(), 0));
 	public static float gainSFX = options.getFloat(Option.GAIN_SFX.toString(), 0);
 	public static boolean muteBGM = options.getBoolean(Option.MUTE_BGM.toString(), false);
 	public static boolean muteSFX = options.getBoolean(Option.MUTE_SFX.toString(), false);
