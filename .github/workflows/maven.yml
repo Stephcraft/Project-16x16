@@ -17,8 +17,11 @@ jobs:
         java-version: '25'
         distribution: 'temurin'
         cache: maven
-    - name: Build with Maven
-      run: mvn -B -Pexe package --file pom.xml
+    - name: Test with Maven
+      run: mvn -B test --file pom.xml
+    # JavaFX picks its native classifier from the build OS; force Windows natives for the exe
+    - name: Build exe with Maven
+      run: mvn -B -Pexe -Djavafx.platform=win -DskipTests package --file pom.xml
     - name: Upload .exe artifact
       uses: actions/upload-artifact@v4
       with:
