@@ -1,6 +1,7 @@
 package project_16x16.ui;
 
 import processing.core.PConstants;
+import processing.core.PImage;
 import project_16x16.SideScroller;
 
 /**
@@ -9,6 +10,9 @@ import project_16x16.SideScroller;
 public final class MenuStyle {
 
 	private static final int ACCENT = 0xFF7CC8FF;
+
+	/** The (blurred) game frame shown behind menus opened from a paused game. */
+	private static PImage gameBackdrop;
 
 	private MenuStyle() {
 	}
@@ -45,11 +49,33 @@ public final class MenuStyle {
 		a.rectMode(PConstants.CENTER);
 	}
 
-	/** Draws the framed panel used behind settings-style menus, with a title. */
+	/** Sets the game frame shown behind menus while a game is paused. */
+	public static void setGameBackdrop(PImage frame) {
+		gameBackdrop = frame;
+	}
+
+	/**
+	 * Draws what goes behind a menu: the paused game (dimmed) while a game is in
+	 * progress, otherwise the defocused menu particles.
+	 */
+	public static void backdrop(SideScroller a) {
+		if (gameBackdrop != null && a.isGameInProgress()) {
+			a.image(gameBackdrop, a.width / 2f, a.height / 2f, a.width, a.height);
+			dim(a, 110);
+		} else {
+			MenuBackground.draw(false);
+		}
+	}
+
+	/**
+	 * Draws the framed panel used behind settings-style menus, with a title. The
+	 * panel is translucent, so the {@link #backdrop(SideScroller) backdrop} shows
+	 * through.
+	 */
 	public static void panel(SideScroller a, String title) {
-		a.background(19, 23, 35);
+		backdrop(a);
 		a.rectMode(PConstants.CENTER);
-		a.fill(29, 33, 45);
+		a.fill(29, 33, 45, 205);
 		a.stroke(47, 54, 73);
 		a.strokeWeight(8);
 		a.rect(a.width / 2f, a.height / 2f, a.width * 0.66f - 8, a.height - 8, 12);

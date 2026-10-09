@@ -25,7 +25,6 @@ public class PauseMenu extends PScene {
 	public Button pressSettings; // TODO add settings menu
 
 	private SideScroller game;
-	private PImage backdrop;
 	private final MenuNav nav;
 
 	public PauseMenu(SideScroller sideScroller) {
@@ -58,21 +57,16 @@ public class PauseMenu extends PScene {
 	}
 
 	/**
-	 * Sets the game frame shown (blurred) behind the menu. Called by the game when
-	 * it pauses.
+	 * Sets the game frame shown (blurred) behind the menu, and the settings menus
+	 * opened from it. Called by the game when it pauses.
 	 */
 	public void setBackdrop(PImage frame) {
-		backdrop = Utility.blur(frame, 3, 2);
+		MenuStyle.setGameBackdrop(Utility.blur(frame, 3, 2));
 	}
 
 	@Override
 	public void drawUI() {
-		if (backdrop != null) {
-			applet.image(backdrop, applet.width / 2f, applet.height / 2f, applet.width, applet.height);
-		} else {
-			applet.background(0);
-		}
-		MenuStyle.dim(game, 110);
+		MenuStyle.backdrop(game);
 		MenuStyle.title(game, "PAUSED", game.height / 2f - 210);
 		nav.display();
 	}

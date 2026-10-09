@@ -13,7 +13,7 @@ public final class Slider extends Button {
 
 	private static final int ACCENT = 0xFF7CC8FF;
 	private static final int TRACK_WIDTH = 300;
-	private static final int LABEL_WIDTH = 90;
+	private static final int LABEL_WIDTH = 190;
 	private static final int VALUE_WIDTH = 80;
 	private static final float STEP = 0.05f;
 

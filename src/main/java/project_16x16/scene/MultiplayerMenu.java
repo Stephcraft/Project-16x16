@@ -3,7 +3,6 @@ package project_16x16.scene;
 import processing.core.PConstants;
 import processing.event.KeyEvent;
 import processing.event.MouseEvent;
-import project_16x16.Constants;
 import project_16x16.SideScroller;
 import project_16x16.SideScroller.GameScenes;
 import project_16x16.ui.Button;
@@ -50,7 +49,7 @@ public class MultiplayerMenu extends PScene {
 
 	@Override
 	public void drawUI() {
-		background(Constants.Colors.MENU_GREY);
+		MenuStyle.backdrop(game);
 		MenuStyle.title(game, "MULTIPLAYER", game.height / 2f - 210);
 		nav.display();
 	}

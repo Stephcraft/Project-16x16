@@ -25,10 +25,12 @@ public final class AudioSettings extends PScene {
 
 	private final SideScroller game;
 	private final MenuNav nav;
-	private final Slider volumeBGM;
+	private final Slider volumeMenuBGM;
+	private final Slider volumeGameBGM;
 	private final Slider volumeSFX;
 
-	private float originalVolumeBGM;
+	private float originalVolumeMenuBGM;
+	private float originalVolumeGameBGM;
 	private float originalVolumeSFX;
 
 	public AudioSettings(SideScroller a) {
@@ -37,20 +39,21 @@ public final class AudioSettings extends PScene {
 
 		final int cx = a.width / 2;
 		nav = new MenuNav(a);
-		volumeBGM = new Slider(a, 1);
-		volumeBGM.setText("Music");
-		volumeBGM.setPosition(cx, 270);
-		nav.add(volumeBGM, () -> {
-		});
+		volumeMenuBGM = slider("Menu Music", cx, 230);
+		volumeGameBGM = slider("Game Music", cx, 305);
+		volumeSFX = slider("Effects", cx, 380);
 
-		volumeSFX = new Slider(a, 1);
-		volumeSFX.setText("Effects");
-		volumeSFX.setPosition(cx, 350);
-		nav.add(volumeSFX, () -> {
-		});
+		nav.button("Apply", cx, 500, 360, 70, 32, this::apply);
+		nav.button("Back", cx, 590, 360, 70, 32, this::cancel);
+	}
 
-		nav.button("Apply", cx, 470, 360, 70, 32, this::apply);
-		nav.button("Back", cx, 560, 360, 70, 32, this::cancel);
+	private Slider slider(String text, int x, int y) {
+		Slider s = new Slider(game, 1);
+		s.setText(text);
+		s.setPosition(x, y);
+		nav.add(s, () -> {
+		});
+		return s;
 	}
 
 	private static float sliderToGain(float v) {
@@ -62,16 +65,20 @@ public final class AudioSettings extends PScene {
 	}
 
 	private void previewGain() {
-		Audio.setGainBGM(sliderToGain(volumeBGM.getValue()));
+		Audio.setGainMenuBGM(sliderToGain(volumeMenuBGM.getValue()));
+		Audio.setGainGameBGM(sliderToGain(volumeGameBGM.getValue()));
 		Audio.setGainSFX(sliderToGain(volumeSFX.getValue()));
 	}
 
 	private void apply() {
-		float volBGM = sliderToGain(volumeBGM.getValue());
+		float volMenuBGM = sliderToGain(volumeMenuBGM.getValue());
+		float volGameBGM = sliderToGain(volumeGameBGM.getValue());
 		float volSFX = sliderToGain(volumeSFX.getValue());
-		Options.save(Option.GAIN_BGM, volBGM);
+		Options.save(Option.GAIN_MENU_BGM, volMenuBGM);
+		Options.save(Option.GAIN_GAME_BGM, volGameBGM);
 		Options.save(Option.GAIN_SFX, volSFX);
-		Options.gainBGM = volBGM;
+		Options.gainMenuBGM = volMenuBGM;
+		Options.gainGameBGM = volGameBGM;
 		Options.gainSFX = volSFX;
 		Notifications.addNotification("Sound Settings Applied", "Your configuration has been successfully applied.");
 		game.returnScene();
@@ -79,16 +86,19 @@ public final class AudioSettings extends PScene {
 
 	/** Reverts any previewed volume changes and leaves. */
 	private void cancel() {
-		Audio.setGainBGM(originalVolumeBGM);
+		Audio.setGainMenuBGM(originalVolumeMenuBGM);
+		Audio.setGainGameBGM(originalVolumeGameBGM);
 		Audio.setGainSFX(originalVolumeSFX);
 		game.returnScene();
 	}
 
 	@Override
 	public void switchTo() {
-		originalVolumeBGM = Options.gainBGM;
+		originalVolumeMenuBGM = Options.gainMenuBGM;
+		originalVolumeGameBGM = Options.gainGameBGM;
 		originalVolumeSFX = Options.gainSFX;
-		volumeBGM.setValue(gainToSlider(originalVolumeBGM));
+		volumeMenuBGM.setValue(gainToSlider(originalVolumeMenuBGM));
+		volumeGameBGM.setValue(gainToSlider(originalVolumeGameBGM));
 		volumeSFX.setValue(gainToSlider(originalVolumeSFX));
 		super.switchTo();
 	}
@@ -101,21 +111,24 @@ public final class AudioSettings extends PScene {
 
 	@Override
 	void mousePressed(MouseEvent e) {
-		volumeBGM.press();
+		volumeMenuBGM.press();
+		volumeGameBGM.press();
 		volumeSFX.press();
 		previewGain();
 	}
 
 	@Override
 	void mouseDragged(MouseEvent e) {
-		volumeBGM.drag();
+		volumeMenuBGM.drag();
+		volumeGameBGM.drag();
 		volumeSFX.drag();
 		previewGain();
 	}
 
 	@Override
 	void mouseReleased(MouseEvent e) {
-		volumeBGM.release();
+		volumeMenuBGM.release();
+		volumeGameBGM.release();
 		volumeSFX.release();
 		nav.mouseReleased();
 	}

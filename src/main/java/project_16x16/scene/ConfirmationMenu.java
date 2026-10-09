@@ -92,7 +92,7 @@ public class ConfirmationMenu extends PScene {
 	@Override
 	public void switchTo() {
 		super.switchTo();
-		cache = applet.get(); // when game is paused, cache the game screen.
+		cache = applet.captureFrame(); // when game is paused, cache the game screen.
 		cache = Utility.blur(cache, 6, 2); // blur game screen
 	}
 

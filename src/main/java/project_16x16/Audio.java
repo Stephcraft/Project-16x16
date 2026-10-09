@@ -17,30 +17,43 @@ public final class Audio {
 
 	private static final String BGM_PATH = "Audio/BGM/";
 	private static final String SFX_PATH = "Audio/SFX/";
-	private static float gainBGM = 0;
+	private static float gainMenuBGM = 0;
+	private static float gainGameBGM = 0;
 	private static float gainSFX = 0;
 
 	private static Minim minim;
 
 	/**
-	 * Background music, which are referenced as enums.
+	 * Background music, which are referenced as enums. Each track is either menu
+	 * or game music; the two have separate volumes.
 	 */
 	public enum BGM {
-		TEST0("first_theme.mp3"), // TODO
-		TEST1("cyberSynthwave.mp3"), // TODO
-		TEST2("First_level_take_1.mp3"), 
-		TEST3("Intro_Title_Pause_Screen_Take1_Loopable.mp3"), //
-		TEST4("Intro_Sax.mp3") //
+		TEST0("first_theme.mp3", false), // TODO
+		TEST1("cyberSynthwave.mp3", false), // TODO
+		TEST2("First_level_take_1.mp3", false), 
+		TEST3("Intro_Title_Pause_Screen_Take1_Loopable.mp3", true), //
+		TEST4("Intro_Sax.mp3", true) //
 		;
 
 		private String filename;
+		private final boolean menu;
 
-		private BGM(String filename) {
+		private BGM(String filename, boolean menu) {
 			this.filename = filename;
+			this.menu = menu;
 		}
 
 		public String getPath() {
 			return BGM_PATH + filename;
+		}
+
+		/** @return true for menu music, false for in-game music */
+		public boolean isMenu() {
+			return menu;
+		}
+
+		private float gain() {
+			return menu ? gainMenuBGM : gainGameBGM;
 		}
 	}
 
@@ -87,7 +100,8 @@ public final class Audio {
 				System.err.println(bgm.getPath() + " not found.");
 			}
 		}
-		setGainBGM(Options.gainBGM);
+		setGainMenuBGM(Options.gainMenuBGM);
+		setGainGameBGM(Options.gainGameBGM);
 		setGainSFX(Options.gainSFX);
 	}
 
@@ -144,7 +158,7 @@ public final class Audio {
 			}
 		}
 		if (BGM_MAP.containsKey(sound)) {
-			BGM_MAP.get(sound).setGain(gainBGM);
+			BGM_MAP.get(sound).setGain(sound.gain());
 			BGM_MAP.get(sound).loop();
 		} else {
 			System.err.println(sound.getPath() + " not found.");
@@ -170,13 +184,31 @@ public final class Audio {
 	}
 
 	/**
-	 * Sets gain (volume) for background music.
+	 * Sets gain (volume) for menu background music.
 	 *
 	 * @param gain gain, in decibels (where negative is quieter). Default = 0.
 	 */
-	public static void setGainBGM(float gain) {
-		gainBGM = gain;
-		BGM_MAP.values().forEach(sound -> sound.setGain(gainBGM));
+	public static void setGainMenuBGM(float gain) {
+		gainMenuBGM = gain;
+		BGM_MAP.forEach((bgm, sound) -> {
+			if (bgm.isMenu()) {
+				sound.setGain(gain);
+			}
+		});
+	}
+
+	/**
+	 * Sets gain (volume) for in-game background music.
+	 *
+	 * @param gain gain, in decibels (where negative is quieter). Default = 0.
+	 */
+	public static void setGainGameBGM(float gain) {
+		gainGameBGM = gain;
+		BGM_MAP.forEach((bgm, sound) -> {
+			if (!bgm.isMenu()) {
+				sound.setGain(gain);
+			}
+		});
 	}
 
 	/**

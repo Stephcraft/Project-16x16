@@ -42,6 +42,7 @@ public final class Constants {
 	public static class Colors {
 
 		public static final int MENU_GREY = colorToRGB(29, 33, 45);
+		public static final int BLACK = colorToRGB(0, 0, 0);
 
 	}
 
