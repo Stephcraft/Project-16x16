@@ -19,9 +19,9 @@ jobs:
         cache: maven
     - name: Test with Maven
       run: mvn -B test --file pom.xml
-    # JavaFX picks its native classifier from the build OS; force Windows natives for the exe
+    # the exe profile pins Windows JavaFX natives (JavaFX otherwise picks them from the build OS)
     - name: Build exe with Maven
-      run: mvn -B -Pexe -Djavafx.platform=win -DskipTests package --file pom.xml
+      run: mvn -B -Pexe -DskipTests package --file pom.xml
     - name: Upload .exe artifact
       uses: actions/upload-artifact@v4
       with:

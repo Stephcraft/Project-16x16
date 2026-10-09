@@ -147,6 +147,30 @@
 	<profiles>
 		<profile>
 			<id>exe</id>
+			<properties>
+				<!-- Natives for the exe must be Windows ones, whatever OS runs the build -->
+				<javafx.native.classifier>win</javafx.native.classifier>
+			</properties>
+			<dependencies>
+				<dependency>
+					<groupId>org.openjfx</groupId>
+					<artifactId>javafx-base</artifactId>
+					<version>${javafx.version}</version>
+					<classifier>${javafx.native.classifier}</classifier>
+				</dependency>
+				<dependency>
+					<groupId>org.openjfx</groupId>
+					<artifactId>javafx-graphics</artifactId>
+					<version>${javafx.version}</version>
+					<classifier>${javafx.native.classifier}</classifier>
+				</dependency>
+				<dependency>
+					<groupId>org.openjfx</groupId>
+					<artifactId>javafx-controls</artifactId>
+					<version>${javafx.version}</version>
+					<classifier>${javafx.native.classifier}</classifier>
+				</dependency>
+			</dependencies>
 			<build>
 				<plugins>
 					<plugin>
