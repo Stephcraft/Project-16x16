@@ -33,6 +33,22 @@
 			<groupId>com.github.micycle1</groupId>
 			<artifactId>processing-core-4</artifactId>
 			<version>4.5.7</version>
+			<exclusions>
+				<!-- SVG support (unused) -->
+				<exclusion>
+					<groupId>org.apache.xmlgraphics</groupId>
+					<artifactId>*</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>xml-apis</groupId>
+					<artifactId>xml-apis-ext</artifactId>
+				</exclusion>
+				<!-- PDF export (unused) -->
+				<exclusion>
+					<groupId>com.lowagie</groupId>
+					<artifactId>itext</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>com.github.micycle1</groupId>
@@ -43,6 +59,12 @@
 			<groupId>com.github.ddf</groupId>
 			<artifactId>Minim</artifactId>
 			<version>e294e2881a</version>
+			<exclusions>
+				<exclusion>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-javadoc-plugin</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>org.junit.jupiter</groupId>
