@@ -253,7 +253,7 @@ public final class Utility {
 	 * @return rounded float
 	 */
 	public static float roundToNPlaces(float n, int d) {
-		return Float.parseFloat(String.format("%." + d + "f", n));
+		return Float.parseFloat(String.format(java.util.Locale.ROOT, "%." + d + "f", n));
 	}
 
 	/**
@@ -294,9 +294,9 @@ public final class Utility {
 	 */
 	public static void saveFile(String path, String content) {
 		try {
-			OutputStreamWriter o = new OutputStreamWriter(new FileOutputStream(path), StandardCharsets.UTF_8);
-			o.write(content);
-			o.close();
+			try (OutputStreamWriter o = new OutputStreamWriter(new FileOutputStream(path), StandardCharsets.UTF_8)) {
+				o.write(content);
+			}
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -309,16 +309,12 @@ public final class Utility {
 	 * @return True if file is found.
 	 */
 	public static boolean fileExists(String src) {
-		boolean condition = false;
 		try {
 			String[] file = applet.loadStrings(src);
-			if (file[0].length() == 0) {
-			}
-			condition = true;
+			return file != null && file.length > 0;
 		} catch (Exception e) {
-			condition = false;
+			return false;
 		}
-		return condition;
 	}
 
 	/**
@@ -328,13 +324,13 @@ public final class Utility {
 	 * @return
 	 */
 	public static String encrypt(String str) {
-		String output = "";
+		StringBuilder output = new StringBuilder(str.length());
 		for (int i = 0; i < str.length(); i++) {
 			int k = PApplet.parseInt(str.charAt(i));
 			k = (k * 8) - 115; // Encrypt Key
-			output += PApplet.parseChar(k);
+			output.append(PApplet.parseChar(k));
 		}
-		return output;
+		return output.toString();
 
 	}
 
@@ -345,12 +341,13 @@ public final class Utility {
 	 * @return
 	 */
 	public static String decrypt(String str) {
-		String output = "";
+		StringBuilder sb = new StringBuilder(str.length());
 		for (int i = 0; i < str.length(); i++) {
 			int k = PApplet.parseInt(str.charAt(i));
 			k = (k + 115) / 8; // Encrypt Key
-			output += PApplet.parseChar(k);
+			sb.append(PApplet.parseChar(k));
 		}
+		String output = sb.toString();
 		return output.replaceAll("" + PApplet.parseChar(8202), "\n").replaceAll("" + PApplet.parseChar(8201), "\t");
 	}
 
