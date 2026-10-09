@@ -187,6 +187,8 @@
 							</classPath>
 							<downloadUrl>https://adoptium.net/temurin/releases/?version=25</downloadUrl>
 							<jre>
+								<!-- Launch4j requires a path; resolve it on the user's machine, not the build machine -->
+								<path>%JAVA_HOME%</path>
 								<minVersion>25</minVersion>
 								<requiresJdk>false</requiresJdk>
 							</jre>
