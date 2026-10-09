@@ -5,6 +5,7 @@ import java.util.function.Consumer;
 import processing.core.PImage;
 import processing.core.PVector;
 import project_16x16.SideScroller;
+import project_16x16.Time;
 
 /**
  * Particle
@@ -19,20 +20,21 @@ public class Particle {
 
 	public PImage image;
 	public PVector position;
+	/** px/s */
 	public PVector velocity;
+	/** px/s² */
 	public PVector acceleration;
 
 	public float size = 40; // TODO: create better way to control
 	public boolean useCustomeSize = false;
 
-	public float maxLifespan; // lifespan of particle when it was spawned
-	public float lifespan;
-	public int frameCount;
+	public float maxLifespan; // lifespan of particle when it was spawned (seconds)
+	public float lifespan; // remaining lifespan (seconds)
+	public float age; // time since spawn (seconds)
 
 	public Particle(SideScroller applet, PImage image) {
 		this.applet = applet;
 		this.image = image;
-		frameCount = 0;
 	}
 
 	public void spawn(Consumer<Particle> consumer, float lifespan) {
@@ -52,10 +54,11 @@ public class Particle {
 	}
 
 	private void update() {
-		velocity.add(acceleration);
-		position.add(velocity);
-		lifespan -= 1.0;
-		frameCount++;
+		final float dt = Math.min(Time.delta(), lifespan); // don't simulate beyond death
+		position.add(velocity.x * dt + 0.5f * acceleration.x * dt * dt, velocity.y * dt + 0.5f * acceleration.y * dt * dt);
+		velocity.add(acceleration.x * dt, acceleration.y * dt);
+		lifespan -= dt;
+		age += dt;
 	}
 
 	private void draw() {
@@ -74,5 +77,6 @@ public class Particle {
 	private void setLifespan(float lifespan) {
 		maxLifespan = lifespan;
 		this.lifespan = lifespan;
+		age = 0;
 	}
 }

@@ -22,8 +22,6 @@ import project_16x16.particleSystem.events.ParticleEventListener;
  */
 public class ParticleSystem {
 
-	public static final int FRAMERATE = 60;
-
 	private SideScroller applet;
 	public PImage image;
 	public ParticleEmission emission;
@@ -76,9 +74,9 @@ public class ParticleSystem {
 	}
 
 	public void preLoad() {
-		for (int i = 0; i < lifespan * FRAMERATE; i += FRAMERATE / spawnRate) {
+		for (float t = 0; t < lifespan; t += 1f / spawnRate) {
 			for (int k = 0; k < spawnAmount; k++) {
-				ParticlePreloadSystem.preload(i).accept(particles.newParticle());
+				ParticlePreloadSystem.preload(t).accept(particles.newParticle());
 			}
 		}
 	}

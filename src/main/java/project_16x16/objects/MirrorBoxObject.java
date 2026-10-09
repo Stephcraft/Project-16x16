@@ -1,8 +1,12 @@
 package project_16x16.objects;
 
+import java.util.ArrayList;
+
 import processing.core.PApplet;
+import processing.core.PImage;
 import project_16x16.SideScroller;
 import project_16x16.Tileset;
+import project_16x16.Time;
 import project_16x16.projectiles.MagicProjectile;
 import project_16x16.projectiles.ProjectileObject;
 import project_16x16.projectiles.Swing;
@@ -20,6 +24,9 @@ public class MirrorBoxObject extends GameObject {
 	final int BOX_UP = 3;
 	final int BOX_W = 64;
 	final int BOX_H = 64;
+	/** How long a rotation takes (ms); the new direction applies once it completes. */
+	static final float ROTATE_MILLIS = 117;
+	private float rotateRemaining = 0;
 
 	public MirrorBoxObject(SideScroller sideScroller, GameplayScene gameplayScene) {
 		super(sideScroller, gameplayScene);
@@ -60,7 +67,9 @@ public class MirrorBoxObject extends GameObject {
 	@Override
 	public void update() {
 		if (rotating) {
-			image = animation.animate();
+			rotateRemaining -= Time.deltaMillis();
+			animation.update();
+			image = animation.getFrame();
 		}
 		collision.position = position;
 
@@ -70,8 +79,10 @@ public class MirrorBoxObject extends GameObject {
 			if (collidesWithSwing(swing)) {
 				if (!swing.activated) {
 					rotating = true;
-					// Setup Animation
-					animation.changeAnimation(Tileset.getAnimation("MIRROR_BOX::ROTATE"), false, 1);
+					rotateRemaining = ROTATE_MILLIS;
+					// Setup Animation (spans the rotation)
+					ArrayList<PImage> frames = Tileset.getAnimation("MIRROR_BOX::ROTATE");
+					animation.changeAnimation(frames, false, ROTATE_MILLIS / frames.size());
 					swing.activated = true;
 				}
 			}
@@ -102,11 +113,10 @@ public class MirrorBoxObject extends GameObject {
 	}
 
 	public void setMirrorDirection() {
-		if (animation.ended && rotating) {
+		if (rotating && rotateRemaining <= 0) {
 			image = Tileset.getTile("MIRROR_BOX");
 			rotating = false;
 			direction = (direction + 1) % 4;// Allow rotation with the use of modulus
-			animation.ended = false;
 		}
 	}
 

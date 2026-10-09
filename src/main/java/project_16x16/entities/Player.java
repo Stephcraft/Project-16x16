@@ -13,6 +13,7 @@ import project_16x16.Options;
 import project_16x16.SideScroller;
 import project_16x16.SideScroller.DebugType;
 import project_16x16.Tileset;
+import project_16x16.Time;
 import project_16x16.Utility;
 import project_16x16.components.AnimationComponent;
 import project_16x16.objects.CollidableObject;
@@ -36,13 +37,20 @@ public final class Player extends EditableObject {
 	private final PImage lifeOn;
 	private final PImage lifeOff;
 
+	/** Velocity (px/s). */
 	private final PVector velocity = new PVector(0, 0);
+	/** Displacement over the current physics step (px); reused to avoid allocation. */
+	private final PVector displacement = new PVector(0, 0);
 
 	private static final int COLLISION_RANGE = 145;
 	private static final float DASH_MULTIPLIER = 1.5f; // Movement multiplier from holding dash key
+	private static final float JUMP_HEIGHT = 153; // px
+	/** How long an attack lasts (ms); the player can't attack again until it ends. */
+	private static final float ATTACK_MILLIS = 150;
+	private static final float DASH_ATTACK_MILLIS = 83; // attacks recover faster while dashing
 
-	private final int speedWalk;
-	private final int speedJump;
+	private final float speedWalk; // px/s
+	private final float speedJump; // px/s
 
 	private final boolean isMultiplayerPlayer;
 
@@ -51,6 +59,11 @@ public final class Player extends EditableObject {
 
 	public ArrayList<Swing> swings; // Player Projectile TODO make private
 	public AnimationComponent animation; // Animation Component. TODO make private
+
+	/** Time left in the current attack (ms). */
+	private float attackRemaining = 0;
+	/** Animation of the current attack, fixed when the attack starts. */
+	private ACTION attackAction = ACTION.ATTACK;
 
 	/**
 	 * Cache PImage animation sequences (rather than loading from JSON)
@@ -99,8 +112,8 @@ public final class Player extends EditableObject {
 		lifeCapacity = 6;
 		life = 3;
 
-		speedWalk = 7;
-		speedJump = 18;
+		speedWalk = 420;
+		speedJump = (float) Math.sqrt(2 * Constants.GAME_GRAVITY * JUMP_HEIGHT); // launch speed that peaks at JUMP_HEIGHT
 
 		width = 14 * 4;
 		height = 16 * 4;
@@ -129,10 +142,8 @@ public final class Player extends EditableObject {
 		}
 		if (isMultiplayerPlayer) {
 			applet.tint(255, 125, 0);
-			image = animation.getFrame();
-		} else {
-			image = animation.animate();
 		}
+		image = animation.getFrame();
 		applet.image(image, 0, 0);
 		applet.noTint();
 		applet.popMatrix();
@@ -148,17 +159,18 @@ public final class Player extends EditableObject {
 	 * The update method handles updating the character.
 	 */
 	public void update() {
-		velocity.set(0, velocity.y + Constants.GAME_GRAVITY);
+		velocity.x = 0;
 
 		handleKeyboardInput();
 		handleMouseInput();
 
-		checkPlayerCollision();
-		if (velocity.y != 0) {
-			state.flying = true;
+		final int steps = Time.substeps(Constants.PHYSICS_MAX_STEP);
+		final float dt = Time.delta() / steps;
+		for (int i = 0; i < steps; i++) {
+			step(dt);
 		}
-		position.add(velocity);
 
+		animation.update();
 		chooseAnimation();
 		if (position.y > 2000) { // out of bounds check
 			position.set(0, -100); // TODO set to spawn loc PVector
@@ -222,17 +234,43 @@ public final class Player extends EditableObject {
 	}
 
 	private void handleMouseInput() {
+		attackRemaining = Math.max(0, attackRemaining - Time.deltaMillis());
+		state.attacking = attackRemaining > 0;
 		if (applet.mousePressed && applet.mouseButton == LEFT && !state.attacking) { // Attack
 			state.attacking = true;
+			attackRemaining = state.dashing ? DASH_ATTACK_MILLIS : ATTACK_MILLIS;
+			attackAction = state.dashing ? ACTION.DASH_ATTACK : ACTION.ATTACK;
 			// Create Swing Projectile
 			swings.add(new Swing(applet, gameplayScene, (int) position.x, (int) position.y, state.facingDir));
 		}
 		for (Swing swing : swings) { // Update Swing Projectiles
 			swing.update();
 		}
-		swings.removeIf(swing -> swing.animationEnded());
+		swings.removeIf(Swing::expired);
 	}
 
+	/**
+	 * Advances the player's motion by one physics step, resolving collisions.
+	 *
+	 * @param dt step duration (seconds)
+	 */
+	private void step(float dt) {
+		// exact for constant acceleration, so jump arcs don't depend on step size
+		displacement.set(velocity.x * dt, velocity.y * dt + 0.5f * Constants.GAME_GRAVITY * dt * dt);
+		velocity.y += Constants.GAME_GRAVITY * dt;
+
+		checkPlayerCollision();
+		if (velocity.y != 0) {
+			state.flying = true;
+		}
+		position.add(displacement);
+	}
+
+	/**
+	 * Checks whether the player's next {@link #displacement} collides with nearby
+	 * collision objects; if so, snaps the player to the object's edge and cancels
+	 * motion along that axis.
+	 */
 	private void checkPlayerCollision() {
 		for (EditableObject o : gameplayScene.objects) {
 			if (o instanceof CollidableObject) {
@@ -245,7 +283,7 @@ public final class Player extends EditableObject {
 						applet.ellipse(collision.position.x, collision.position.y, 5, 5);
 						applet.noFill();
 					}
-					if (collidesFuturX(collision)) {
+					if (collidesAfterMove(collision, displacement.x, 0)) {
 						// player left of collision
 						if (position.x < collision.position.x) {
 							position.x = collision.position.x - collision.width / 2 - width / 2;
@@ -254,9 +292,10 @@ public final class Player extends EditableObject {
 							position.x = collision.position.x + collision.width / 2 + width / 2;
 						}
 						velocity.x = 0;
+						displacement.x = 0;
 						state.dashing = false;
 					}
-					if (collidesFuturY(collision)) {
+					if (collidesAfterMove(collision, 0, displacement.y)) {
 						// player above collision
 						if (position.y < collision.position.y) {
 							if (state.flying) {
@@ -270,33 +309,24 @@ public final class Player extends EditableObject {
 							state.jumping = false;
 						}
 						velocity.y = 0;
+						displacement.y = 0;
 					}
 				}
 			}
 		}
 	}
 
+	/**
+	 * Picks the animation that reflects the player's current state.
+	 */
 	private void chooseAnimation() {
-		// End animations
+		// The jump/land squashes are purely visual: they play once, then give way to
+		// the state-based animation. Gameplay state never waits on an animation.
 		if (animation.ended) {
-			switch (animation.name) {
-				case "DASH":
-					state.dashing = false;
-					break;
-				case "DASH_ATTACK":
-					state.dashing = false;
-					state.attacking = false;
-					break;
-				case "ATTACK":
-					state.attacking = false;
-					break;
-				case "JUMP":
-					state.jumping = false;
-					break;
-				case "LAND":
-					state.landing = false;
-				default:
-					break;
+			if (animation.name.equals(ACTION.JUMP.name())) {
+				state.jumping = false;
+			} else if (animation.name.equals(ACTION.LAND.name())) {
+				state.landing = false;
 			}
 		}
 		if (state.jumping) {
@@ -304,11 +334,7 @@ public final class Player extends EditableObject {
 		} else if (state.landing) {
 			setAnimation(ACTION.LAND);
 		} else if (state.attacking) {
-			if (state.dashing) {
-				setAnimation(ACTION.DASH_ATTACK);
-			} else {
-				setAnimation(ACTION.ATTACK);
-			}
+			setAnimation(attackAction);
 		} else if (state.flying) {
 			setAnimation(ACTION.FALL);
 		} else if (velocity.x != 0) {
@@ -342,25 +368,15 @@ public final class Player extends EditableObject {
 						&& position.y - height / 2 <= collision.position.y + collision.height / 2);
 	}
 
-	private boolean collidesFutur(CollidableObject collision) {
-		return (position.x + velocity.x + width / 2 > collision.position.x - collision.width / 2
-				&& position.x + velocity.x - width / 2 < collision.position.x + collision.width / 2)
-				&& (position.y + velocity.y + height / 2 > collision.position.y - collision.height / 2
-						&& position.y + velocity.y - height / 2 < collision.position.y + collision.height / 2);
-	}
-
-	private boolean collidesFuturX(CollidableObject collision) {
-		return (position.x + velocity.x + width / 2 > collision.position.x - collision.width / 2
-				&& position.x + velocity.x - width / 2 < collision.position.x + collision.width / 2)
-				&& (position.y + 0 + height / 2 > collision.position.y - collision.height / 2
-						&& position.y + 0 - height / 2 < collision.position.y + collision.height / 2);
-	}
-
-	private boolean collidesFuturY(CollidableObject collision) {
-		return (position.x + 0 + width / 2 > collision.position.x - collision.width / 2
-				&& position.x + 0 - width / 2 < collision.position.x + collision.width / 2)
-				&& (position.y + velocity.y + height / 2 > collision.position.y - collision.height / 2
-						&& position.y + velocity.y - height / 2 < collision.position.y + collision.height / 2);
+	/**
+	 * Determines whether the character would collide with an object after moving
+	 * by (dx, dy).
+	 */
+	private boolean collidesAfterMove(CollidableObject collision, float dx, float dy) {
+		return (position.x + dx + width / 2 > collision.position.x - collision.width / 2
+				&& position.x + dx - width / 2 < collision.position.x + collision.width / 2)
+				&& (position.y + dy + height / 2 > collision.position.y - collision.height / 2
+						&& position.y + dy - height / 2 < collision.position.y + collision.height / 2);
 	}
 
 	public void setAnimation(String anim) {
@@ -380,28 +396,28 @@ public final class Player extends EditableObject {
 		ArrayList<PImage> animSequence = playerAnimationSequences.get(anim);
 		switch (anim) {
 			case WALK:
-				animation.changeAnimation(animSequence, true, 6);
+				animation.changeAnimation(animSequence, true, 100);
 				break;
 			case IDLE:
-				animation.changeAnimation(animSequence, true, 20);
+				animation.changeAnimation(animSequence, true, 333);
 				break;
 			case JUMP:
-				animation.changeAnimation(animSequence, false, 4);
+				animation.changeAnimation(animSequence, false, 67);
 				break;
 			case LAND:
-				animation.changeAnimation(animSequence, false, 2);
+				animation.changeAnimation(animSequence, false, 33);
 				break;
 			case FALL:
-				animation.changeAnimation(animSequence, true, 20);
+				animation.changeAnimation(animSequence, true, 333);
 				break;
-			case ATTACK:
-				animation.changeAnimation(animSequence, false, 4);
+			case ATTACK: // spans the attack
+				animation.changeAnimation(animSequence, false, ATTACK_MILLIS / animSequence.size());
 				break;
 			case DASH:
-				animation.changeAnimation(animSequence, false, 6);
+				animation.changeAnimation(animSequence, true, 100);
 				break;
 			case DASH_ATTACK:
-				animation.changeAnimation(animSequence, false, 2);
+				animation.changeAnimation(animSequence, false, DASH_ATTACK_MILLIS / animSequence.size());
 				break;
 		}
 		animation.ended = false;

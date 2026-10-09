@@ -7,12 +7,16 @@ import processing.core.PVector;
 import processing.data.JSONObject;
 import project_16x16.SideScroller;
 import project_16x16.Tileset;
+import project_16x16.Time;
 import project_16x16.components.AnimationComponent;
 import project_16x16.objects.CollidableObject;
 import project_16x16.objects.EditableObject;
 import project_16x16.scene.GameplayScene;
 
 public class ProjectileObject extends EditableObject {
+
+	/** How long projectiles live before being removed (ms). */
+	public static final long LIFETIME_MILLIS = 10_000;
 
 	public AnimationComponent animation;
 
@@ -25,9 +29,11 @@ public class ProjectileObject extends EditableObject {
 	public int width;
 	public int height;
 
-	public int spawnTime;
+	/** Game time at which the projectile was created (ms). */
+	public long spawnTime;
 
-	public int speed;
+	/** px/s */
+	public float speed;
 
 	// Identification
 	public String id;
@@ -38,7 +44,7 @@ public class ProjectileObject extends EditableObject {
 		super(sideScroller, gameplayScene);
 
 		id = "";
-		spawnTime = applet.frameCount;
+		spawnTime = Time.millis();
 		animation = new AnimationComponent();
 		position = new PVector(0, 0);
 	}

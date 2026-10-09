@@ -16,6 +16,7 @@ import project_16x16.Audio.BGM;
 import project_16x16.Constants;
 import project_16x16.SideScroller;
 import project_16x16.SideScroller.GameScenes;
+import project_16x16.Time;
 import project_16x16.Utility;
 import project_16x16.ui.Button;
 import project_16x16.ui.MenuNav;
@@ -39,6 +40,18 @@ public final class MainMenu extends PScene {
 	private final MenuNav nav;
 
 	private PGraphics background;
+
+	/**
+	 * How quickly particle trails fade into the background (per second); see
+	 * {@link Time#smoothing(float)}.
+	 */
+	private static final float TRAIL_FADE_RATE = 10.2f;
+	/**
+	 * Fading by tiny per-frame amounts at high frame rates leaves ghost trails
+	 * (8-bit colour can't represent them), so fade at most this often (seconds).
+	 */
+	private static final float TRAIL_FADE_INTERVAL = 1 / 60f;
+	private float trailFadePending = 0; // seconds of fade not yet applied
 
 	public MainMenu(SideScroller a) {
 		super(a);
@@ -92,11 +105,15 @@ public final class MainMenu extends PScene {
 
 	@Override
 	public void drawUI() {
-		game.fill(Constants.Colors.MENU_GREY, 40);
-		game.noStroke();
-		game.rectMode(CORNER);
-		game.rect(0, 0, game.gameResolution.x, game.gameResolution.y);
-		game.rectMode(CENTER);
+		trailFadePending += Time.delta();
+		if (trailFadePending >= TRAIL_FADE_INTERVAL) {
+			game.fill(Constants.Colors.MENU_GREY, 255 * (1 - (float) Math.exp(-TRAIL_FADE_RATE * trailFadePending)));
+			game.noStroke();
+			game.rectMode(CORNER);
+			game.rect(0, 0, game.gameResolution.x, game.gameResolution.y);
+			game.rectMode(CENTER);
+			trailFadePending = 0;
+		}
 		Particles.run();
 
 		MenuStyle.title(game, "PROJECT 16x16", game.height / 2f - 300);
@@ -114,11 +131,11 @@ public final class MainMenu extends PScene {
 			return;
 		}
 		switch (e.getKeyCode()) {
-			case 8: // BACKSPACE
-			case PConstants.ESC: // Pause
+			case 8 : // BACKSPACE
+			case PConstants.ESC : // Pause
 				game.returnScene();
 				break;
-			default:
+			default :
 				break;
 		}
 	}
@@ -143,8 +160,9 @@ public final class MainMenu extends PScene {
 		private static final double[] SLOPES = new double[2];
 		private static final DoubleWrapper COS_RESULT = new DoubleWrapper();
 
-		private static long timeAccumulator = 0;
+		private static float timeAccumulator = 0; // ms
 		private static final int TRANSITION_INTERVAL = 5000; // 5000 milliseconds = 5 seconds
+		private static final float FLOW_SPEED = 3; // flow-field units per second
 
 		static void assignApplet(SideScroller s) {
 			particles = new ArrayList<>();
@@ -175,7 +193,7 @@ public final class MainMenu extends PScene {
 			int repopulate = 0;
 			for (Iterator<Particle> iterator = particles.iterator(); iterator.hasNext();) {
 				Particle p = iterator.next();
-				p.update(3 / SideScroller.targetFramerate);
+				p.update(FLOW_SPEED * Time.delta());
 				float x = getXPrint(p.x);
 				float y = getYPrint(p.y);
 
@@ -192,7 +210,7 @@ public final class MainMenu extends PScene {
 			}
 			populate(repopulate);
 
-			timeAccumulator += 1000 / game.frameRate;
+			timeAccumulator += Time.deltaMillis();
 		}
 
 		/**

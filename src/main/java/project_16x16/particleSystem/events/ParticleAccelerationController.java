@@ -19,7 +19,7 @@ public class ParticleAccelerationController implements ParticleEventListener {
 	 * Adds acceleration to a particle on spawn. Useful is using a emission that
 	 * only adds random or directional acceleration.
 	 *
-	 * @param acceleration PVector acceleration
+	 * @param acceleration PVector acceleration (px/s²)
 	 */
 	public ParticleAccelerationController(PVector acceleration) {
 		this.acceleration = acceleration;

@@ -17,29 +17,30 @@ import project_16x16.particleSystem.Particle;
 public class ParticleAnimationController implements ParticleEventListener {
 
 	private ArrayList<PImage> images;
-	private int rate;
+	/** How long each image is displayed (ms), or -1 to span the particle's life. */
+	private int frameMillis;
 
 	/**
 	 * Add animation to particle
 	 *
 	 * @param animationName animation name
-	 * @param rate          animation speed, high value = slow speed, -1 = match
-	 *                      life span of particle
+	 * @param frameMillis   how long each image is displayed (ms), -1 = match life
+	 *                      span of particle
 	 */
-	public ParticleAnimationController(String animationName, int rate) {
-		this(Tileset.getAnimation(animationName), rate);
+	public ParticleAnimationController(String animationName, int frameMillis) {
+		this(Tileset.getAnimation(animationName), frameMillis);
 	}
 
 	/**
 	 * Add animation to particle
 	 *
-	 * @param images animation ArrayList
-	 * @param rate   animation speed, high value = slow speed, -1 = match life span
-	 *               of particle
+	 * @param images      animation ArrayList
+	 * @param frameMillis how long each image is displayed (ms), -1 = match life
+	 *                    span of particle
 	 */
-	public ParticleAnimationController(ArrayList<PImage> images, int rate) {
+	public ParticleAnimationController(ArrayList<PImage> images, int frameMillis) {
 		this.images = images;
-		this.rate = rate;
+		this.frameMillis = frameMillis;
 	}
 
 	@Override
@@ -54,19 +55,19 @@ public class ParticleAnimationController implements ParticleEventListener {
 
 	@Override
 	public ParticleEventListener copy() {
-		return new ParticleAnimationController(images, rate);
+		return new ParticleAnimationController(images, frameMillis);
 	}
 
 	private void setParticle(Particle particle) {
-		if (rate == -1) {
+		if (frameMillis == -1) {
 			particle.image = getImage(particle.maxLifespan, particle.lifespan);
 		} else {
-			particle.image = getImage(particle.frameCount);
+			particle.image = getImage(particle.age);
 		}
 	}
 
-	private PImage getImage(int frameCount) {
-		int id = (frameCount / rate) % images.size();
+	private PImage getImage(float age) {
+		int id = (int) (age * 1000 / frameMillis) % images.size();
 		return images.get(id);
 	}
 

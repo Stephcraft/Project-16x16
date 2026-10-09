@@ -13,8 +13,8 @@ import project_16x16.objects.EditableObject;
 /**
  * Camera class. Extends {@link org.gicentre.utils.move.ZoomPan ZoomPan},
  * offering some bespoke methods relating to Project-16x16. At the moment, the
- * camera uses {@link PApplet#lerp(float, float, float) lerp()} to follow
- * objects or go to target position.
+ * camera uses frame-rate independent exponential smoothing
+ * ({@link Time#smoothing(float)}) to follow objects or go to target position.
  *
  * @todo deadzone mode can be choppy when tracking; zoom-to-fit (multiple
  *       entities); setting position to mouse when camera is rotated [bugged]
@@ -26,10 +26,10 @@ public final class Camera extends ZoomPan {
 
 	private SideScroller applet;
 	/**
-	 * Lerp constant for motion. Used for all motion easing (zoom, position and
-	 * rotation).
+	 * Smoothing rate (per second) for motion. Used for all motion easing (zoom,
+	 * position and rotation).
 	 */
-	private float lerpSpeed = Constants.CAMERA_LERP;
+	private float smoothing = Constants.CAMERA_SMOOTHING;
 	private float zoom = 1.0f;
 	/**
 	 * Target variables are used as the target for lerping.
@@ -54,10 +54,11 @@ public final class Camera extends ZoomPan {
 	private PVector offset;
 	private PVector followObjectOffset = new PVector(0, 0);
 	/**
-	 * Specifies a camera translation offset when shaking (where it is randomised
-	 * each frame). Used internally.
+	 * Specifies a camera translation offset when shaking. It's applied on top of
+	 * the (smoothed) pan offset, and removed again before the next frame's
+	 * smoothing, so shaking never drifts the camera. Used internally.
 	 */
-	private PVector shakeOffset = new PVector(0, 0);
+	private final PVector shakeOffset = new PVector(0, 0);
 	/**
 	 * Deadzone coordinate points. Can correspond to either screen or world
 	 * coordinates, depending on which method was used to set them
@@ -76,9 +77,14 @@ public final class Camera extends ZoomPan {
 	private EditableObject followObject;
 	private float zoomMax = 100, zoomMin = 0;
 	/**
-	 * Trauma is used internally to inform the magnitude of camera shake.
+	 * Trauma is used internally to inform the magnitude of camera shake. Decays at
+	 * traumaDecay per second.
 	 */
-	private float trauma = 0, traumaDecay = 0.015f;
+	private float trauma = 0, traumaDecay = 0.9f;
+	/** Shake at full trauma: max translation (px) and rotation (radians). */
+	private static final float SHAKE_MAX_OFFSET = 150, SHAKE_MAX_ROTATION = 0.35f;
+	/** How quickly the shake moves (noise units per second). */
+	private static final float SHAKE_FREQUENCY = 20;
 
 	/**
 	 * The most basic constructor. Initialises the camera at position (0, 0).
@@ -201,45 +207,61 @@ public final class Camera extends ZoomPan {
 	 */
 	private void update() {
 		offset = new PVector(applet.width / 2, applet.height / 2);
+		final float lerpAmount = Time.smoothing(smoothing);
 
 		if (zoom != zoomTarget) {
-			zoom = PApplet.lerp(zoom, zoomTarget, lerpSpeed);
+			zoom = PApplet.lerp(zoom, zoomTarget, lerpAmount);
 			if (PApplet.abs(zoom - zoomTarget) < 0.0025) { //
 				zoom = zoomTarget;
 			}
 		}
 
-		rotation = PApplet.lerp(rotation, rotationTarget, lerpSpeed);
+		rotation = PApplet.lerp(rotation, rotationTarget, lerpAmount);
 		applet.translate(offset.x, offset.y);
 		applet.rotate(rotation + shakeRotationOffset);
 		applet.translate(-offset.x, -offset.y);
 		transform();
 
-		float scale = PApplet.lerp((float) getZoomScaleX(), zoom, lerpSpeed);
+		float scale = PApplet.lerp((float) getZoomScaleX(), zoom, lerpAmount);
 		setZoomScaleX(scale);
 		setZoomScaleY(scale);
 
+		// smooth the un-shaken pan offset (last frame's shake is removed first)
+		float panX = getPanOffset().x + shakeOffset.x;
+		float panY = getPanOffset().y + shakeOffset.y;
 		if (following && ((deadZoneScreen && !withinScreenDeadZone()) || ((deadZoneWorld && !withinWorldDeadZone())) || (!deadZoneScreen && !deadZoneWorld))) {
-			setPanOffset(PApplet.lerp(getPanOffset().x, ((-followObject.position.x - followObjectOffset.x + offset.x) * zoom), lerpSpeed) - shakeOffset.x,
-					PApplet.lerp(getPanOffset().y, ((-followObject.position.y - followObjectOffset.y + offset.y) * zoom), lerpSpeed) - shakeOffset.y);
+			panX = PApplet.lerp(panX, ((-followObject.position.x - followObjectOffset.x + offset.x) * zoom), lerpAmount);
+			panY = PApplet.lerp(panY, ((-followObject.position.y - followObjectOffset.y + offset.y) * zoom), lerpAmount);
 		} else if (!following) {
-			setPanOffset(PApplet.lerp(getPanOffset().x, ((targetPosition.x + offset.x) * zoom), lerpSpeed) - shakeOffset.x,
-					PApplet.lerp(getPanOffset().y, ((targetPosition.y + offset.y) * zoom), lerpSpeed) - shakeOffset.y);
+			panX = PApplet.lerp(panX, ((targetPosition.x + offset.x) * zoom), lerpAmount);
+			panY = PApplet.lerp(panY, ((targetPosition.y + offset.y) * zoom), lerpAmount);
 		}
+		updateShake();
+		setPanOffset(panX - shakeOffset.x, panY - shakeOffset.y);
 		logicalPosition = PVector.mult(PVector.sub(getPanOffset(), new PVector(applet.width / 2 * zoom, applet.height / 2 * zoom)), -1 / zoom);
+	}
 
-		if (trauma > 0) { // 50 and 0.35 seem suitable values
-			trauma -= traumaDecay;
+	/**
+	 * Decays trauma and computes this frame's shake offsets. Shake follows smooth
+	 * noise sampled over (game) time, so it looks the same at any frame rate.
+	 */
+	private void updateShake() {
+		trauma = Math.max(0, trauma - traumaDecay * Time.delta());
+		final float magnitude = trauma * trauma;
+		final float t = Time.millis() / 1000f * SHAKE_FREQUENCY;
+		shakeOffset.set(magnitude * shakeNoise(0, t) * SHAKE_MAX_OFFSET, magnitude * shakeNoise(1, t) * SHAKE_MAX_OFFSET);
+		shakeRotationOffset = magnitude * shakeNoise(2, t) * SHAKE_MAX_ROTATION;
+	}
 
-			float x = (trauma * trauma) * applet.random(-1, 1) * 50;
-			float y = (trauma * trauma) * applet.random(-1, 1) * 50;
-			shakeOffset = new PVector(x, y);
-			shakeRotationOffset = (trauma * trauma) * applet.random(-1, 1) * 0.35f;
-			if (trauma == 0) {
-				shakeOffset = new PVector(0, 0);
-				shakeRotationOffset = 0;
-			}
-		}
+	/**
+	 * Smooth noise centred on 0. Scaled so its spread roughly matches a uniform
+	 * random value in [-1, 1].
+	 *
+	 * @param channel independent noise stream (one per shake axis)
+	 * @param t       noise time
+	 */
+	private float shakeNoise(int channel, float t) {
+		return (applet.noise(channel * 100, t) - 0.5f) * 4;
 	}
 
 	/**
@@ -394,6 +416,7 @@ public final class Camera extends ZoomPan {
 		following = false;
 		PVector temp = PVector.sub(position, offset);
 		this.setPanOffset(-temp.x, -temp.y);
+		shakeOffset.set(0, 0); // pan offset is now un-shaken
 		this.targetPosition = new PVector(-position.x, -position.y);
 	}
 
@@ -440,16 +463,17 @@ public final class Camera extends ZoomPan {
 	}
 
 	/**
-	 * Specify lerp (linear interpolation) speed for camera motion. Default = 0.05.
-	 * Since the lerp is calculated per-frame (after prior motion), the camera
-	 * motion is effectively non-linear. Smaller values provide a smoother, less
+	 * Specify the smoothing rate for camera motion (per second). Default =
+	 * {@link Constants#CAMERA_SMOOTHING}. The camera closes the fraction
+	 * {@code 1 - e^(-rate * t)} of the distance to its target after {@code t}
+	 * seconds, regardless of frame rate. Smaller values provide a smoother, less
 	 * snappy, slower camera.
 	 *
-	 * @param lerpSpeed Range = [0-1.0]
-	 * @see {@link PApplet#lerp(float, float, float) lerp()}
+	 * @param smoothing smoothing rate (per second)
+	 * @see Time#smoothing(float)
 	 */
-	public void setLerpSpeed(float lerpSpeed) {
-		this.lerpSpeed = lerpSpeed;
+	public void setSmoothing(float smoothing) {
+		this.smoothing = smoothing;
 	}
 
 	/**

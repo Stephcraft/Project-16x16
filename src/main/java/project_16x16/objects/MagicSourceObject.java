@@ -6,6 +6,7 @@ import processing.core.PApplet;
 import processing.core.PImage;
 import project_16x16.SideScroller;
 import project_16x16.Tileset;
+import project_16x16.Time;
 import project_16x16.Utility;
 import project_16x16.particleSystem.ParticleSystem;
 import project_16x16.particleSystem.emissions.AreaEmission;
@@ -33,7 +34,7 @@ public class MagicSourceObject extends GameObject {
 		}
 
 		trail = new ParticleSystem(sideScroller, image, 5, 1, 0.4f);
-		trail.setEmission(new AreaEmission(position, 1f, -0.01f, 5));
+		trail.setEmission(new AreaEmission(position, 60, -36, 5));
 		trail.addEventListener(new ParticleAnimationController(particleAnimation, -1));
 
 		width = 48;
@@ -48,10 +49,10 @@ public class MagicSourceObject extends GameObject {
 		trail.run();
 	}
 
-	// oldMillis is used to calculate the difference in time between shots.
+	// lastShotTime is the game time (ms) of the previous shot.
 	// shotDelay denotes the "fire rate" of the MagicSource in milliseconds.
-	int oldMillis = 0;
-	int shotDelay = 500;
+	long lastShotTime = -shotDelay;
+	static final int shotDelay = 500;
 
 	@Override
 	public void update() {
@@ -60,8 +61,8 @@ public class MagicSourceObject extends GameObject {
 			Swing swing = gameplayScene.getPlayer().swings.get(i);
 			if (collidesWithSwing(swing)) {
 				if (!swing.activated) {
-					if (applet.millis() > oldMillis + shotDelay) {
-						oldMillis = applet.millis();
+					if (Time.millis() > lastShotTime + shotDelay) {
+						lastShotTime = Time.millis();
 
 						gameplayScene.projectileObjects.add(new MagicProjectile(applet, gameplayScene, (int) position.x, (int) position.y, swing.direction));
 

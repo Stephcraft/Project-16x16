@@ -19,7 +19,7 @@ public class ParticalVelocityController implements ParticleEventListener {
 	 * Adds velocity to a particle on spawn. Useful is using a emission that only
 	 * adds random or directional velocity
 	 *
-	 * @param velocity PVector velocity
+	 * @param velocity PVector velocity (px/s)
 	 */
 	public ParticalVelocityController(PVector velocity) {
 		this.velocity = velocity;

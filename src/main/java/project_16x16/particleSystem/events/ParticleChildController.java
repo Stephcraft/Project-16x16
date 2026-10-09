@@ -3,6 +3,7 @@ package project_16x16.particleSystem.events;
 import java.util.ArrayList;
 
 import project_16x16.particleSystem.Particle;
+import project_16x16.Time;
 import project_16x16.particleSystem.ParticleSystem;
 
 /**
@@ -17,14 +18,14 @@ public class ParticleChildController implements ParticleEventListener {
 
 	private boolean hasDelay;
 	private boolean spawnOnDeath;
-	private int delay;
+	private int delay; // ms
 
 	private ParticleSystem copySystem;
 	private ArrayList<ParticleSystem> particleSystems;
 
 	/**
 	 * @param particleSystem particle system need to have a no loop controller
-	 * @param delay          how many frames till active
+	 * @param delay          particle age at which the child is spawned (ms)
 	 */
 	public ParticleChildController(ParticleSystem particleSystem, int delay) {
 		this.delay = delay;
@@ -36,7 +37,7 @@ public class ParticleChildController implements ParticleEventListener {
 
 	/**
 	 * @param particleSystem particle system need to have a no loop controller
-	 * @param delay          how many frames till active
+	 * @param delay          particle age at which the child is spawned (ms)
 	 * @param spawnOnDeath   active when particle dies
 	 */
 	public ParticleChildController(ParticleSystem particleSystem, int delay, boolean spawnOnDeath) {
@@ -73,7 +74,8 @@ public class ParticleChildController implements ParticleEventListener {
 
 	@Override
 	public void onParticleRunEvent(Particle particle) {
-		if (hasDelay && particle.frameCount == delay) {
+		final float ageMillis = particle.age * 1000;
+		if (hasDelay && ageMillis >= delay && ageMillis - Time.deltaMillis() < delay) { // crossed delay this frame
 			newChild(particle);
 		}
 	}

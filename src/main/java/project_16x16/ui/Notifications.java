@@ -10,6 +10,7 @@ import processing.core.PConstants;
 import processing.core.PImage;
 import processing.core.PVector;
 import project_16x16.SideScroller;
+import project_16x16.Time;
 import project_16x16.Utility;
 
 /**
@@ -25,12 +26,17 @@ public class Notifications {
 	private static PImage background;
 	private static PVector positionTarget;
 
-	private static final int notificationWidth = 275, notificationHeight = 125, notificationTextPadding = 10, notificationLifetime = 240,
-			notificationLifetimeFast = 150, notificationLifetimeVeryFast = 60;
+	private static final int notificationWidth = 275, notificationHeight = 125, notificationTextPadding = 10;
+	/** How long a notification is shown before fading out (ms); shorter when many are queued. */
+	private static final int notificationLifetime = 4000, notificationLifetimeFast = 2500, notificationLifetimeVeryFast = 1000;
+	private static final float slideSpeed = 600; // px/s
+	private static final float fadeSpeed = 600; // alpha/s
 
 	private final PVector position = new PVector(game.width - notificationWidth, game.height);
 	private final String title, message;
-	private int lifetime, startTime, alpha = 255;
+	private int lifetime;
+	private long startTime = -1; // game time first displayed (ms)
+	private float alpha = 255;
 
 	private static SideScroller game;
 
@@ -83,9 +89,9 @@ public class Notifications {
 	 * Called on one notification
 	 */
 	private void draw() {
-		if (startTime == 0) {
+		if (startTime < 0) {
 			game.tint(255, 255);
-			startTime = game.frameCount;
+			startTime = Time.millis();
 			if (notifications.size() > 2) {
 				if (notifications.size() < 6) {
 					lifetime = notificationLifetimeFast;
@@ -97,11 +103,11 @@ public class Notifications {
 			}
 		}
 		if (position.y > positionTarget.y) {
-			position.y -= 10;
+			position.y = Math.max(positionTarget.y, position.y - slideSpeed * Time.delta());
 		}
-		if ((game.frameCount - startTime) >= lifetime) {
+		if ((Time.millis() - startTime) >= lifetime) {
 			game.tint(255, alpha);
-			alpha -= 10;
+			alpha -= fadeSpeed * Time.delta();
 			if (alpha < 0) {
 				notifications.removeFirst();
 			}

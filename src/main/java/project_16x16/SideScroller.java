@@ -19,7 +19,6 @@ import processing.core.PVector;
 import processing.event.MouseEvent;
 import processing.javafx.PSurfaceFX;
 import project_16x16.Options.Option;
-import project_16x16.components.AnimationComponent;
 import project_16x16.entities.Player;
 import project_16x16.multiplayer.Multiplayer;
 import project_16x16.scene.AudioSettings;
@@ -67,7 +66,6 @@ public class SideScroller extends PApplet {
 
 	public static final boolean SNAP = true; // snap objects to grid when moving; TODO move to options
 	public static int snapSize;
-	public static long startTime;
 
 	// Game Rendering
 	private PVector windowSize = new PVector(1280, 720); // Game window size -- to be set via options
@@ -79,8 +77,11 @@ public class SideScroller extends PApplet {
 
 	// Scenes
 	private ArrayDeque<GameScenes> sceneHistory;
-	private int sceneSwapTime = 0;
-	private static final int SCENE_FADE_FRAMES = 14;
+	/** When the scene last changed (game time, ms). */
+	private long sceneSwapTime = 0;
+	/** Minimum time between scene changes (ms) -- debounces repeated input. */
+	private static final long SCENE_SWAP_DEBOUNCE_MILLIS = 100;
+	private static final float SCENE_FADE_MILLIS = 230;
 
 	private static MainMenu menu;
 	private static GameplayScene game;
@@ -218,7 +219,6 @@ public class SideScroller extends PApplet {
 
 		// Main Load
 		load();
-		AnimationComponent.assignApplet(this);
 		Notifications.assignApplet(this);
 		Audio.assignApplet(this);
 
@@ -245,7 +245,7 @@ public class SideScroller extends PApplet {
 		scaleResolution();
 		launchIntoMultiplayer(); // multi is conditional on program args
 
-		startTime = System.currentTimeMillis(); // game starttime occurs at setup end
+		Time.reset(); // game time starts once loading is complete
 	}
 
 	/**
@@ -266,14 +266,15 @@ public class SideScroller extends PApplet {
 	 * @see #returnScene()
 	 */
 	public void swapToScene(GameScenes newScene) {
-		if (frameCount - sceneSwapTime > 6 || frameCount == 0) {
+		final boolean inSetup = frameCount == 0; // no debounce while setting up
+		if (inSetup || Time.millis() - sceneSwapTime > SCENE_SWAP_DEBOUNCE_MILLIS) {
 			if (!newScene.equals(sceneHistory.peek())) { // if different
 				if (!sceneHistory.isEmpty()) {
 					sceneHistory.peek().getScene().switchFrom(); // switch from
 				}
 				sceneHistory.push(newScene);
 				newScene.getScene().switchTo();
-				sceneSwapTime = frameCount;
+				sceneSwapTime = Time.millis();
 			}
 		}
 	}
@@ -287,7 +288,7 @@ public class SideScroller extends PApplet {
 		if (sceneHistory.size() > 1) {
 			sceneHistory.pop().getScene().switchFrom();
 			sceneHistory.peek().getScene().switchTo();
-			sceneSwapTime = frameCount;
+			sceneSwapTime = Time.millis();
 		}
 	}
 
@@ -297,6 +298,7 @@ public class SideScroller extends PApplet {
 	 */
 	@Override
 	public void draw() {
+		Time.tick();
 		frameRate(targetFramerate);
 		camera.hook();
 		drawBelowCamera();
@@ -359,7 +361,7 @@ public class SideScroller extends PApplet {
 	 * Fades in from black after a scene change.
 	 */
 	private void drawSceneFade() {
-		float progress = (frameCount - sceneSwapTime) / (float) SCENE_FADE_FRAMES;
+		float progress = (Time.millis() - sceneSwapTime) / SCENE_FADE_MILLIS;
 		if (progress >= 1 || progress < 0) {
 			return;
 		}
@@ -628,7 +630,7 @@ public class SideScroller extends PApplet {
 		text("['F11']", width - ip, lineOffset * 23 + yOffset);
 		text("['TAB']", width - ip, lineOffset * 24 + yOffset);
 
-		if (frameRate >= 59.5) {
+		if (frameRate >= targetFramerate - 0.5f) {
 			fill(0, 255, 0);
 		} else {
 			fill(255, 0, 0);

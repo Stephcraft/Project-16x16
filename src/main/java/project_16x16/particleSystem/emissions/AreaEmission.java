@@ -29,8 +29,8 @@ public class AreaEmission implements ParticleEmission {
 	 *
 	 * @param position     PVector position, set to a active entities PVector for
 	 *                     the particle system to follow
-	 * @param velocity     Start velocity of particle in random direction;
-	 * @param acceleration Start acceleration of particle in random direction;
+	 * @param velocity     Start velocity of particle in random direction (px/s).
+	 * @param acceleration Start acceleration of particle in random direction (px/s²).
 	 * @param spread       Deviation from spawn position
 	 */
 	public AreaEmission(PVector position, float velocity, float acceleration, float spread) {

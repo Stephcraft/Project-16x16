@@ -3,6 +3,7 @@ package project_16x16.ui;
 import processing.core.PApplet;
 import project_16x16.PClass;
 import project_16x16.SideScroller;
+import project_16x16.Time;
 import project_16x16.Utility;
 
 /**
@@ -71,7 +72,7 @@ public class TextInputField extends PClass {
 
 		// Display Cursor
 		if (focus) {
-			applet.fill(255, PApplet.map(PApplet.sin(applet.frameCount * (float) 0.1), 0, 1, 100, 255));
+			applet.fill(255, PApplet.map(PApplet.sin(Time.millis() * 0.006f), 0, 1, 100, 255)); // ~1 blink/s
 			applet.text("_", x - width / 2 + 8 + applet.textWidth(text), y);
 		}
 	}

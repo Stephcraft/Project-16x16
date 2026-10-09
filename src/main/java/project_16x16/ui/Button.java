@@ -2,6 +2,7 @@ package project_16x16.ui;
 
 import project_16x16.PClass;
 import project_16x16.SideScroller;
+import project_16x16.Time;
 import project_16x16.Utility;
 
 /**
@@ -26,7 +27,7 @@ public class Button extends PClass {
 	/** Eased 0..1 hover/selection amount, for animated transitions. */
 	private float hoverAmount;
 
-	private static final float HOVER_EASING = 0.25f;
+	private static final float HOVER_SMOOTHING = 17.3f; // per second; see Time.smoothing()
 	private static final float HOVER_GROWTH = 0.04f;
 	private static final int ACCENT = 0xFF7CC8FF;
 
@@ -105,7 +106,7 @@ public class Button extends PClass {
 
 	private void displayColors() {
 		float target = (hover() || selected) ? 1 : 0;
-		hoverAmount += (target - hoverAmount) * HOVER_EASING;
+		hoverAmount = Time.damp(hoverAmount, target, HOVER_SMOOTHING);
 		if (Math.abs(target - hoverAmount) < 0.01f) {
 			hoverAmount = target;
 		}

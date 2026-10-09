@@ -8,21 +8,24 @@ import java.util.Map;
 import processing.core.PImage;
 import project_16x16.Audio;
 import project_16x16.Audio.SFX;
-import project_16x16.SideScroller;
+import project_16x16.Time;
 
 /**
- * The Animation Class
+ * The Animation Class. Owners advance it with {@link #update()} from their
+ * update logic, and draw {@link #getFrame()}. Animations are purely visual:
+ * gameplay timing (attack duration, etc.) should be kept by the owner, not
+ * derived from when an animation ends.
  */
 public class AnimationComponent {
 
-	private static SideScroller applet;
 	private ArrayList<PImage> frames;
 	private boolean loop;
 	private int length;
-	private int rate;
-	private int start;
-	private int firstFrame;
-	private float currentFrame;
+	/** How long each image is displayed (ms). */
+	private float frameMillis;
+	/** Time the current image has been displayed for (ms). */
+	private float frameElapsed;
+	private int currentFrame;
 	public String name;
 	public boolean ended;
 	private final Map<Integer, List<SFX>> sounds = new HashMap<>();
@@ -30,70 +33,64 @@ public class AnimationComponent {
 	public AnimationComponent() {
 	}
 
-	public static void assignApplet(SideScroller applet) {
-		AnimationComponent.applet = applet;
-	}
-
 	/**
 	 * The most simple method to change current animation sequence.
 	 *
-	 * @param frames PImage frame sequence.
-	 * @param loop   Whether the animation should loop.
-	 * @param rate   Every x frames the next frame is loaded.
+	 * @param frames      PImage frame sequence.
+	 * @param loop        Whether the animation should loop.
+	 * @param frameMillis How long each frame is displayed (ms).
 	 */
-	public void changeAnimation(ArrayList<PImage> frames, boolean loop, int rate) {
-		changeAnimation(frames, loop, rate, frames.size() - 1);
+	public void changeAnimation(ArrayList<PImage> frames, boolean loop, float frameMillis) {
+		changeAnimation(frames, loop, frameMillis, frames.size() - 1);
 	}
 
 	/**
 	 * A method to change current animation sequence. Can specify animation frame
 	 * length.
 	 *
-	 * @param frames PImage frame sequence.
-	 * @param loop   Whether the animation should loop.
-	 * @param rate   Every x frames the next frame is loaded.
-	 * @param length Set a custom anim length
+	 * @param frames      PImage frame sequence.
+	 * @param loop        Whether the animation should loop.
+	 * @param frameMillis How long each frame is displayed (ms).
+	 * @param length      Set a custom anim length
 	 */
-	public void changeAnimation(ArrayList<PImage> frames, boolean loop, int rate, int length) {
+	public void changeAnimation(ArrayList<PImage> frames, boolean loop, float frameMillis, int length) {
 		this.frames = frames;
 		this.loop = loop;
-		this.rate = rate;
+		this.frameMillis = frameMillis;
 		this.length = length;
-		start = 0;
-		currentFrame = start;
-		firstFrame = applet.frameCount;
+		currentFrame = 0;
+		frameElapsed = 0;
+		ended = false;
 	}
 
 	/**
-	 * This method controls the animation of elements (cycles through frames).
-	 *
-	 * @return PImage image
+	 * Advances the animation by the current frame's duration. Call once per game
+	 * update (not from drawing code).
 	 */
-	public PImage animate() {
-		PImage frame = frames.get((int) currentFrame);
-		if ((applet.frameCount - firstFrame) % rate == 0) {
-			currentFrame++;
-			if (currentFrame > length) {
-				if (!loop) {
-					ended = true;
-				}
+	public void update() {
+		frameElapsed += Time.deltaMillis();
+		while (frameElapsed >= frameMillis && !ended) {
+			frameElapsed -= frameMillis;
+			if (currentFrame < length) {
+				currentFrame++;
+			} else if (loop) {
 				currentFrame = 0;
+			} else {
+				ended = true; // hold the last frame
+				break;
+			}
+			List<SFX> coll = sounds.get(currentFrame);
+			if (coll != null) {
+				coll.forEach(Audio::play);
 			}
 		}
-		List<SFX> coll = sounds.get((int) currentFrame);
-		if (coll != null) {
-			coll.forEach(sound -> Audio.play(sound));
-		}
-		return frame;
 	}
 
 	/**
-	 * Return current frame without animating further.
-	 *
-	 * @return
+	 * @return the image to draw for the current animation frame
 	 */
 	public PImage getFrame() {
-		return frames.get((int) currentFrame);
+		return frames.get(currentFrame);
 	}
 
 	/**
@@ -102,16 +99,16 @@ public class AnimationComponent {
 	 * @return The number of remaining frames as an int
 	 */
 	public int remainingFrames() {
-		return (int) (length - currentFrame);
+		return length - currentFrame;
 	}
 
 	/**
 	 * Retrieves the current frame ID
 	 *
-	 * @return the current frame as a float
+	 * @return the current frame
 	 **/
 	public int getFrameID() {
-		return (int) currentFrame;
+		return currentFrame;
 	}
 
 	/**
@@ -122,6 +119,7 @@ public class AnimationComponent {
 	public void setFrame(int frame) {
 		if (frame >= 0 && frame <= frames.size() - 1) {
 			currentFrame = frame;
+			frameElapsed = 0;
 		}
 	}
 
@@ -135,7 +133,7 @@ public class AnimationComponent {
 	}
 
 	/**
-	 * Set a SFX to play trigger at a given animation frame. TODO frames param
+	 * Set a SFX to play when the animation advances to a given frame.
 	 *
 	 * @param sound
 	 * @param frameNumber

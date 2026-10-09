@@ -18,6 +18,7 @@ import project_16x16.Options;
 import project_16x16.SideScroller;
 import project_16x16.SideScroller.GameScenes;
 import project_16x16.Tileset;
+import project_16x16.Time;
 import project_16x16.Utility;
 import project_16x16.components.Tile;
 import project_16x16.components.Tile.TileType;
@@ -222,8 +223,8 @@ public class GameplayScene extends PScene {
 		Iterator<ProjectileObject> i = projectileObjects.iterator();
 		while (i.hasNext()) {
 			ProjectileObject o = i.next();
-			if (applet.frameCount - o.spawnTime > 600) {
-				i.remove(); // kill projectile after 10s
+			if (Time.millis() - o.spawnTime > ProjectileObject.LIFETIME_MILLIS) {
+				i.remove();
 			} else {
 				o.update();
 				o.display();
