@@ -80,6 +80,7 @@ public class SideScroller extends PApplet {
 	// Scenes
 	private ArrayDeque<GameScenes> sceneHistory;
 	private int sceneSwapTime = 0;
+	private static final int SCENE_FADE_FRAMES = 14;
 
 	private static MainMenu menu;
 	private static GameplayScene game;
@@ -343,6 +344,7 @@ public class SideScroller extends PApplet {
 			return;
 		}
 		sceneHistory.peek().getScene().drawUI();
+		drawSceneFade();
 		Notifications.run();
 		if (debug == DebugType.ALL) {
 			camera.post();
@@ -351,6 +353,22 @@ public class SideScroller extends PApplet {
 		if (debug == DebugType.INFO_ONLY) {
 			displayDebugInfo();
 		}
+	}
+
+	/**
+	 * Fades in from black after a scene change.
+	 */
+	private void drawSceneFade() {
+		float progress = (frameCount - sceneSwapTime) / (float) SCENE_FADE_FRAMES;
+		if (progress >= 1 || progress < 0) {
+			return;
+		}
+		pushStyle();
+		noStroke();
+		fill(0, 255 * (1 - progress));
+		rectMode(CORNER);
+		rect(0, 0, width, height);
+		popStyle();
 	}
 
 	/**

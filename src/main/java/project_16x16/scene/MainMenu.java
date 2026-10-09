@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import net.jafama.DoubleWrapper;
+
 import processing.core.PApplet;
 import processing.core.PConstants;
 import processing.core.PGraphics;
@@ -16,6 +18,10 @@ import project_16x16.SideScroller;
 import project_16x16.SideScroller.GameScenes;
 import project_16x16.Utility;
 import project_16x16.ui.Button;
+import project_16x16.ui.MenuNav;
+import project_16x16.ui.MenuStyle;
+
+import static net.jafama.FastMath.*;
 
 /**
  *
@@ -30,6 +36,7 @@ public final class MainMenu extends PScene {
 	public Button pressMultiplayer;
 
 	private SideScroller game;
+	private final MenuNav nav;
 
 	private PGraphics background;
 
@@ -48,30 +55,39 @@ public final class MainMenu extends PScene {
 		pressSettings = new Button(a);
 
 		pressStart.setText("Start Game");
-		pressStart.setPosition(applet.width / 2, applet.height / 2 - 240);
-		pressStart.setSize(300, 100);
+		pressStart.setPosition(applet.width / 2, applet.height / 2 - 150);
+		pressStart.setSize(360, 90);
 		pressStart.setTextSize(40);
 
 		pressMultiplayer.setText("Multiplayer");
-		pressMultiplayer.setPosition(applet.width / 2, applet.height / 2 - 80);
-		pressMultiplayer.setSize(300, 100);
+		pressMultiplayer.setPosition(applet.width / 2, applet.height / 2 - 30);
+		pressMultiplayer.setSize(360, 90);
 		pressMultiplayer.setTextSize(40);
 
 		pressSettings.setText("Settings");
-		pressSettings.setPosition(applet.width / 2, applet.height / 2 + 80);
-		pressSettings.setSize(300, 100);
+		pressSettings.setPosition(applet.width / 2, applet.height / 2 + 90);
+		pressSettings.setSize(360, 90);
 		pressSettings.setTextSize(40);
 
 		pressQuit.setText("Quit Game");
-		pressQuit.setPosition(applet.width / 2, applet.height / 2 + 240);
-		pressQuit.setSize(300, 100);
+		pressQuit.setPosition(applet.width / 2, applet.height / 2 + 210);
+		pressQuit.setSize(360, 90);
 		pressQuit.setTextSize(40);
+
+		nav = new MenuNav(a);
+		nav.add(pressStart, () -> {
+			((GameplayScene) GameScenes.GAME.getScene()).setSingleplayer(true);
+			game.swapToScene(GameScenes.GAME);
+		});
+		nav.add(pressMultiplayer, () -> game.swapToScene(GameScenes.MULTIPLAYER_MENU));
+		nav.add(pressSettings, () -> game.swapToScene(GameScenes.SETTINGS_MENU));
+		nav.add(pressQuit, () -> System.exit(0));
 	}
 
 	@Override
 	public void switchTo() {
 		super.switchTo();
-		Audio.play(BGM.TEST3);
+		Audio.play(BGM.TEST4);
 	}
 
 	@Override
@@ -83,42 +99,20 @@ public final class MainMenu extends PScene {
 		game.rectMode(CENTER);
 		Particles.run();
 
-		pressStart.manDisplay();
-		pressMultiplayer.manDisplay();
-		pressSettings.manDisplay();
-		pressQuit.manDisplay();
-	}
-
-	private void update() {
-		pressStart.update();
-		if (pressStart.hover()) {
-			((GameplayScene) GameScenes.GAME.getScene()).setSingleplayer(true);
-			game.swapToScene(GameScenes.GAME);
-		}
-
-		pressMultiplayer.update();
-		if (pressMultiplayer.hover()) {
-			game.swapToScene(GameScenes.MULTIPLAYER_MENU);
-		}
-
-		pressSettings.update();
-		if (pressSettings.hover()) {
-			game.swapToScene(GameScenes.SETTINGS_MENU);
-		}
-
-		pressQuit.update();
-		if (pressQuit.hover()) {
-			System.exit(0);
-		}
+		MenuStyle.title(game, "PROJECT 16x16", game.height / 2f - 300);
+		nav.display();
 	}
 
 	@Override
 	void mouseReleased(MouseEvent e) {
-		update();
+		nav.mouseReleased();
 	}
 
 	@Override
 	void keyReleased(KeyEvent e) {
+		if (nav.keyReleased(e)) {
+			return;
+		}
 		switch (e.getKeyCode()) {
 			case 8: // BACKSPACE
 			case PConstants.ESC: // Pause
@@ -144,6 +138,10 @@ public final class MainMenu extends PScene {
 		private static int function = 0;
 		private static int centerX, centerY;
 		private static int scaleX, scaleY;
+
+		// reused between calls to avoid allocation (single render thread)
+		private static final double[] SLOPES = new double[2];
+		private static final DoubleWrapper COS_RESULT = new DoubleWrapper();
 
 		private static long timeAccumulator = 0;
 		private static final int TRANSITION_INTERVAL = 5000; // 5000 milliseconds = 5 seconds
@@ -197,44 +195,62 @@ public final class MainMenu extends PScene {
 			timeAccumulator += 1000 / game.frameRate;
 		}
 
-		private static double getSlopeX(float x, float y) {
-			switch (function) {
-				// @formatter:off
-				case 0: return Math.cos(y);
-				case 1: return Math.cos(y*5)*x*0.3;
-				case 2:
-				case 3:
-				case 4:
-				case 5:
-				case 6: return 1;
-				case 7: return Math.sin(y*0.1)*3; //orbit
-				case 8: return y/3; //two orbits
-				case 9: return -y;
-				case 10: return -1.5*y;
-				case 11: return Math.sin(y)*Math.cos(x);
-				default : return 1;
-				// @formatter:on
-			}
-		}
+		/**
+		 * Computes the flow-field slope at (x, y) for the current function.
+		 *
+		 * @param out       out[0] = slope X, out[1] = slope Y
+		 * @param cosResult reusable holder for sinAndCos()
+		 */
+		private static void getSlopes(float x, float y, double[] out, DoubleWrapper cosResult) {
+			double sx = 1;
+			double sy = 1;
 
-		private static double getSlopeY(float x, float y) {
 			switch (function) {
-				// @formatter:off
-				case 0: return Math.sin(x);
-				case 1: return Math.sin(x*5)*y*0.3;
-				case 2: return Math.cos(x*y);
-				case 3: return Math.sin(x)*Math.cos(y);
-				case 4: return Math.cos(x)*y*y;
-				case 5: return Math.log(Math.abs(x))*Math.log(Math.abs(y));
-				case 6: return Math.tan(x)*Math.cos(y*y);
-				case 7: return -Math.sin(x*0.1)*3; //orbit
-				case 8: return (x-x*x*x)*0.01; //two orbits
-				case 9: return -Math.sin(x);
-				case 10: return -y-Math.sin(1.5*x) + .75;
-				case 11: return Math.sin(x)*Math.cos(y);
-				default : return 1;
-				// @formatter:on
+				case 0 -> {
+					sx = cos(y);
+					sy = sin(x);
+				}
+				case 1 -> {
+					sx = cos(y * 5) * x * 0.3;
+					sy = sin(x * 5) * y * 0.3;
+				}
+				case 2 -> sy = cos(x * y);
+				case 3 -> sy = sin(x) * cos(y);
+				case 4 -> sy = cos(x) * y * y;
+				case 5 -> sy = log(abs(x)) * log(abs(y));
+				case 6 -> sy = tan(x) * cos(y * y);
+				case 7 -> { // orbit
+					sx = sin(y * 0.1) * 3;
+					sy = -sin(x * 0.1) * 3;
+				}
+				case 8 -> { // two orbits
+					sx = y / 3;
+					sy = (x - x * x * x) * 0.01;
+				}
+				case 9 -> {
+					sx = -y;
+					sy = -sin(x);
+				}
+				case 10 -> {
+					sx = -1.5 * y;
+					sy = -y - sin(1.5 * x) + 0.75;
+				}
+				case 11 -> {
+					double sinX = sinAndCos(x, cosResult);
+					double cosX = cosResult.value;
+
+					double sinY = sinAndCos(y, cosResult);
+					double cosY = cosResult.value;
+
+					sx = sinY * cosX;
+					sy = sinX * cosY;
+				}
+				default -> {
+				}
 			}
+
+			out[0] = sx;
+			out[1] = sy;
 		}
 
 		private static float getXPos(float x) {
@@ -273,10 +289,9 @@ public final class MainMenu extends PScene {
 			}
 
 			void update(float step) {
-				float xDelta = (float) getSlopeX(x, y);
-				float yDelta = (float) getSlopeY(x, y);
-				x += direction * xDelta * step;
-				y += direction * yDelta * step;
+				getSlopes(x, y, SLOPES, COS_RESULT);
+				x += direction * (float) SLOPES[0] * step;
+				y += direction * (float) SLOPES[1] * step;
 			}
 		}
 	}

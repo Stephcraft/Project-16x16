@@ -7,7 +7,8 @@ import project_16x16.Audio;
 import project_16x16.Options;
 import project_16x16.Options.Option;
 import project_16x16.SideScroller;
-import project_16x16.ui.Button;
+import project_16x16.ui.MenuNav;
+import project_16x16.ui.MenuStyle;
 import project_16x16.ui.Notifications;
 import project_16x16.ui.Slider;
 
@@ -19,110 +20,120 @@ import project_16x16.ui.Slider;
 
 public final class AudioSettings extends PScene {
 
-	private SideScroller game;
+	/** Gain (dB) used for a slider value of zero (effectively silent). */
+	private static final float MIN_GAIN = -80;
 
-	private Button quit;
-	private Button apply;
-	private Slider volumeBGM;
-	private Slider volumeSFX;
+	private final SideScroller game;
+	private final MenuNav nav;
+	private final Slider volumeBGM;
+	private final Slider volumeSFX;
 
 	private float originalVolumeBGM;
 	private float originalVolumeSFX;
 
 	public AudioSettings(SideScroller a) {
 		super(a);
-
 		game = a;
 
-		apply = new Button(applet);
-		apply.setText("Apply");
-		apply.setPosition(a.width / 2, 500);
+		final int cx = a.width / 2;
+		nav = new MenuNav(a);
+		volumeBGM = new Slider(a, 1);
+		volumeBGM.setText("Music");
+		volumeBGM.setPosition(cx, 270);
+		nav.add(volumeBGM, () -> {
+		});
 
-		quit = new Button(a);
-		quit.setText("Quit");
-		quit.setPosition(a.width / 2, 600);
+		volumeSFX = new Slider(a, 1);
+		volumeSFX.setText("Effects");
+		volumeSFX.setPosition(cx, 350);
+		nav.add(volumeSFX, () -> {
+		});
 
-		volumeBGM = new Slider(game, 0.75f);
-		volumeBGM.setText("BGM");
-		volumeBGM.setPosition(a.width / 2, 300);
+		nav.button("Apply", cx, 470, 360, 70, 32, this::apply);
+		nav.button("Back", cx, 560, 360, 70, 32, this::cancel);
+	}
 
-		volumeSFX = new Slider(game, 0.75f);
-		volumeSFX.setText("SFX");
-		volumeSFX.setPosition(a.width / 2, 350);
+	private static float sliderToGain(float v) {
+		return v <= 0.001f ? MIN_GAIN : Math.max(MIN_GAIN, 20 * (float) Math.log10(v));
+	}
 
+	private static float gainToSlider(float gain) {
+		return gain <= MIN_GAIN ? 0 : (float) Math.pow(10, gain / 20);
+	}
+
+	private void previewGain() {
+		Audio.setGainBGM(sliderToGain(volumeBGM.getValue()));
+		Audio.setGainSFX(sliderToGain(volumeSFX.getValue()));
+	}
+
+	private void apply() {
+		float volBGM = sliderToGain(volumeBGM.getValue());
+		float volSFX = sliderToGain(volumeSFX.getValue());
+		Options.save(Option.GAIN_BGM, volBGM);
+		Options.save(Option.GAIN_SFX, volSFX);
+		Options.gainBGM = volBGM;
+		Options.gainSFX = volSFX;
+		Notifications.addNotification("Sound Settings Applied", "Your configuration has been successfully applied.");
+		game.returnScene();
+	}
+
+	/** Reverts any previewed volume changes and leaves. */
+	private void cancel() {
+		Audio.setGainBGM(originalVolumeBGM);
+		Audio.setGainSFX(originalVolumeSFX);
+		game.returnScene();
 	}
 
 	@Override
 	public void switchTo() {
 		originalVolumeBGM = Options.gainBGM;
 		originalVolumeSFX = Options.gainSFX;
-		// TODO properly align audio value and slider position
-		// volumeBGM.setValue(PApplet.map(originalVolumeBGM, -60, 0, 0, 1));
-		// volumeSFX.setValue(PApplet.map(originalVolumeSFX, -60, 0, 0, 1));
+		volumeBGM.setValue(gainToSlider(originalVolumeBGM));
+		volumeSFX.setValue(gainToSlider(originalVolumeSFX));
 		super.switchTo();
 	}
 
 	@Override
 	public void drawUI() {
-		displayWindow();
-		apply.display();
-		quit.display();
-		volumeBGM.display();
-		volumeSFX.display();
-
+		MenuStyle.panel(game, "AUDIO");
+		nav.display();
 	}
 
-	private void displayWindow() {
-		background(19, 23, 35);
-		applet.fill(29, 33, 45);
-		applet.stroke(47, 54, 73);
-		applet.strokeWeight(8);
-		applet.rect(applet.gameResolution.x / 2, applet.gameResolution.y / 2, applet.gameResolution.x * 0.66f - 8, applet.gameResolution.y - 8);
+	@Override
+	void mousePressed(MouseEvent e) {
+		volumeBGM.press();
+		volumeSFX.press();
+		previewGain();
 	}
 
 	@Override
 	void mouseDragged(MouseEvent e) {
-		volumeBGM.update();
-		volumeSFX.update();
-		float volBGM = 20 * (float) Math.log(volumeBGM.getValue());
-		float volSFX = 20 * (float) Math.log(volumeSFX.getValue());
-		Audio.setGainBGM(volBGM);
-		Audio.setGainSFX(volSFX);
+		volumeBGM.drag();
+		volumeSFX.drag();
+		previewGain();
 	}
 
 	@Override
 	void mouseReleased(MouseEvent e) {
-		apply.update();
-		quit.update();
-
-		if (quit.hover()) {
-			// revert sound changes if menu is quit
-			Audio.setGainBGM(originalVolumeBGM);
-			Audio.setGainSFX(originalVolumeSFX);
-			game.returnScene();
-			return;
-		}
-		if (apply.hover()) {
-			float volBGM = 20 * (float) Math.log(volumeBGM.getValue());
-			float volSFX = 20 * (float) Math.log(volumeSFX.getValue());
-			Options.save(Option.GAIN_BGM, volBGM);
-			Options.save(Option.GAIN_SFX, volSFX);
-			Options.gainBGM = volBGM;
-			Options.gainSFX = volSFX;
-			Notifications.addNotification("Sound Settings Applied", "Your configuration has been successfully applied.");
-			game.returnScene();
-		}
-
+		volumeBGM.release();
+		volumeSFX.release();
+		nav.mouseReleased();
 	}
 
 	@Override
 	void keyReleased(KeyEvent e) {
-		switch (e.getKeyCode()) {
-			case PConstants.ESC: // Pause
-				game.returnScene();
-				break;
-			default:
-				break;
+		if (e.getKeyCode() == PConstants.LEFT || e.getKeyCode() == PConstants.RIGHT) {
+			if (nav.selectedButton() instanceof Slider) {
+				((Slider) nav.selectedButton()).nudge(e.getKeyCode() == PConstants.LEFT ? -1 : 1);
+				previewGain();
+			}
+			return;
+		}
+		if (nav.keyReleased(e)) {
+			return;
+		}
+		if (e.getKeyCode() == PConstants.ESC) {
+			cancel();
 		}
 	}
 

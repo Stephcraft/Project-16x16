@@ -28,7 +28,10 @@ public final class Audio {
 	public enum BGM {
 		TEST0("first_theme.mp3"), // TODO
 		TEST1("cyberSynthwave.mp3"), // TODO
-		TEST2("First_level_take_1.mp3"), TEST3("Intro_Title_Pause_Screen_Take1_Loopable.mp3");
+		TEST2("First_level_take_1.mp3"), 
+		TEST3("Intro_Title_Pause_Screen_Take1_Loopable.mp3"), //
+		TEST4("Intro_Sax.mp3") //
+		;
 
 		private String filename;
 
@@ -45,7 +48,7 @@ public final class Audio {
 	 * Sound effects, which are referenced as enums.
 	 */
 	public enum SFX {
-		JUMP("jump.wav"), STEP("walk_single.wav"), ATTACK("melee_attack.wav");
+		JUMP("jump.wav"), STEP("walk_single.wav"), ATTACK("melee_attack.wav"), UI_HOVER("ui_hover.wav"), UI_CLICK("ui_click.wav");
 
 		private String filename;
 

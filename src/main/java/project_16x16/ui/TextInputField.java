@@ -16,6 +16,7 @@ public class TextInputField extends PClass {
 	protected int y;
 
 	protected String text;
+	private String placeholder = "";
 
 	protected boolean focus, mouseOver;
 
@@ -44,7 +45,7 @@ public class TextInputField extends PClass {
 		if (focus) {
 			applet.noStroke();
 			applet.fill(74, 81, 99, 100);
-			applet.rect(x, y, width + 10, height + 10);
+			applet.rect(x, y, width + 10, height + 10, 8);
 		}
 
 		// Display Box
@@ -56,13 +57,17 @@ public class TextInputField extends PClass {
 		}
 
 		applet.fill(0);
-		applet.rect(x, y, width, height);
+		applet.rect(x, y, width, height, 6);
 
 		// Display text
 		applet.fill(255);
 		applet.textSize(20);
 		applet.textAlign(LEFT, CENTER);
 		applet.text(text, x - width / 2 + 8, y);
+		if (text.isEmpty() && !focus) {
+			applet.fill(255, 90);
+			applet.text(placeholder, x - width / 2 + 8, y);
+		}
 
 		// Display Cursor
 		if (focus) {
@@ -149,6 +154,13 @@ public class TextInputField extends PClass {
 	 */
 	public void setWidth(int w) {
 		width = w;
+	}
+
+	/**
+	 * Greyed-out hint shown while the field is empty and unfocused.
+	 */
+	public void setPlaceholder(String placeholder) {
+		this.placeholder = placeholder;
 	}
 
 	/**

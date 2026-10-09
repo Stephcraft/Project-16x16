@@ -1,10 +1,14 @@
 package project_16x16.scene;
 
+import processing.core.PConstants;
 import processing.core.PImage;
+import processing.event.KeyEvent;
 import processing.event.MouseEvent;
 import project_16x16.SideScroller;
 import project_16x16.Utility;
 import project_16x16.ui.Button;
+import project_16x16.ui.MenuNav;
+import project_16x16.ui.MenuStyle;
 
 /**
  * Confirmation menus offer the user a chance to confirm or cancel their
@@ -24,6 +28,7 @@ public class ConfirmationMenu extends PScene {
 
 	private Button yes;
 	private Button no;
+	private final MenuNav nav;
 
 	/**
 	 *
@@ -37,16 +42,23 @@ public class ConfirmationMenu extends PScene {
 		this.menutext = menutext;
 
 		yes = new Button(applet);
-		yes.setText("Yes!");
-		yes.setPosition(sideScroller.width / 2 - 100, sideScroller.height / 2);
-		yes.setSize(300, 100);
+		yes.setText("Yes");
+		yes.setPosition(sideScroller.width / 2 - 190, sideScroller.height / 2 + 40);
+		yes.setSize(340, 90);
 		yes.setTextSize(40);
 
 		no = new Button(applet);
-		no.setText("No!");
-		no.setPosition(sideScroller.width / 2 + 100, sideScroller.height / 2);
-		no.setSize(300, 100);
+		no.setText("No");
+		no.setPosition(sideScroller.width / 2 + 190, sideScroller.height / 2 + 40);
+		no.setSize(340, 90);
 		no.setTextSize(40);
+
+		nav = new MenuNav(sideScroller);
+		nav.add(yes, () -> {
+			onConfirm.run();
+			applet.returnScene();
+		});
+		nav.add(no, () -> applet.returnScene());
 	}
 
 	public ConfirmationMenu(SideScroller sideScroller, Runnable onConfirm) {
@@ -57,35 +69,24 @@ public class ConfirmationMenu extends PScene {
 	public void drawUI() {
 		applet.image(cache, applet.width / 2, applet.height / 2); // draw cached & blurred game
 
-		applet.textSize(60);
+		MenuStyle.dim(applet, 110);
+		MenuStyle.title(applet, menutext != null ? menutext : "Are you sure?", applet.height / 2f - 130);
 		if (menutext != null) {
-			applet.text(menutext, applet.width / 2, 200);
-			applet.textSize(30);
-			applet.text("Are you sure?", applet.width / 2, 250);
-		} else {
-			applet.text("Are you sure?", applet.width / 2, 200);
+			MenuStyle.caption(applet, "Are you sure?", applet.width / 2f, applet.height / 2f - 40);
 		}
-
-		yes.display();
-		no.display();
+		nav.display();
 	}
 
 	@Override
 	void mouseReleased(MouseEvent e) {
-		yes.update();
-		no.update();
+		nav.mouseReleased();
+	}
 
-		if (yes.hover()) {
-			onConfirm.run();
+	@Override
+	void keyReleased(KeyEvent e) {
+		if (!nav.keyReleased(e) && e.getKeyCode() == PConstants.ESC) {
 			applet.returnScene();
-			return;
 		}
-
-		if (no.hover()) {
-			applet.returnScene();
-			return;
-		}
-
 	}
 
 	@Override

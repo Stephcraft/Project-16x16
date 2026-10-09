@@ -11,6 +11,8 @@ import project_16x16.SideScroller;
 import project_16x16.SideScroller.GameScenes;
 import project_16x16.Utility;
 import project_16x16.ui.Button;
+import project_16x16.ui.MenuNav;
+import project_16x16.ui.MenuStyle;
 
 /**
  * @author Quillbert182
@@ -24,6 +26,7 @@ public class PauseMenu extends PScene {
 
 	private SideScroller game;
 	private PImage cache;
+	private final MenuNav nav;
 
 	protected boolean switched = false;
 
@@ -36,19 +39,24 @@ public class PauseMenu extends PScene {
 		pressMenu = new Button(sideScroller);
 
 		pressResume.setText("Resume Game");
-		pressResume.setPosition(applet.width / 2, applet.height / 2 - 150);
+		pressResume.setPosition(applet.width / 2, applet.height / 2 - 90);
 		pressResume.setTextSize(40);
-		pressResume.setSize(300, 100);
+		pressResume.setSize(360, 90);
 
 		pressSettings.setText("Settings");
-		pressSettings.setPosition(applet.width / 2, applet.height / 2);
+		pressSettings.setPosition(applet.width / 2, applet.height / 2 + 30);
 		pressSettings.setTextSize(40);
-		pressSettings.setSize(300, 100);
+		pressSettings.setSize(360, 90);
 
 		pressMenu.setText("Main Menu");
 		pressMenu.setPosition(applet.width / 2, applet.height / 2 + 150);
 		pressMenu.setTextSize(40);
-		pressMenu.setSize(300, 100);
+		pressMenu.setSize(360, 90);
+
+		nav = new MenuNav(sideScroller);
+		nav.add(pressResume, () -> game.returnScene());
+		nav.add(pressSettings, () -> game.swapToScene(GameScenes.SETTINGS_MENU));
+		nav.add(pressMenu, () -> game.swapToScene(GameScenes.MAIN_MENU));
 	}
 
 	@Override
@@ -63,36 +71,22 @@ public class PauseMenu extends PScene {
 
 	@Override
 	public void drawUI() {
-		applet.image(cache, applet.width / 2, applet.height / 2); // draw cached & blurred game
-		pressResume.manDisplay();
-		pressSettings.manDisplay();
-		pressMenu.manDisplay();
-	}
-
-	private void update() {
-		pressResume.update();
-		if (pressResume.hover()) {
-			game.returnScene();
-		}
-
-		pressSettings.update();
-		if (pressSettings.hover()) {
-			game.swapToScene(GameScenes.SETTINGS_MENU);
-		}
-
-		pressMenu.update();
-		if (pressMenu.hover()) {
-			game.swapToScene(GameScenes.MAIN_MENU);
-		}
+		applet.image(cache, applet.width / 2, applet.height / 2 + 30); // draw cached & blurred game
+		MenuStyle.dim(game, 110);
+		MenuStyle.title(game, "PAUSED", game.height / 2f - 210);
+		nav.display();
 	}
 
 	@Override
 	void mouseReleased(MouseEvent e) {
-		update();
+		nav.mouseReleased();
 	}
 
 	@Override
 	void keyReleased(KeyEvent e) {
+		if (nav.keyReleased(e)) {
+			return;
+		}
 		switch (e.getKeyCode()) {
 			case PConstants.ESC: // Pause
 				game.returnScene();
