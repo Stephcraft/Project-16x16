@@ -6,14 +6,19 @@ import java.util.HashSet;
 import javafx.application.Platform;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Scene;
+import javafx.scene.SnapshotParameters;
 import javafx.scene.canvas.Canvas;
+import javafx.scene.image.PixelFormat;
+import javafx.scene.image.WritableImage;
 import javafx.scene.input.KeyCombination;
+import javafx.scene.transform.NonInvertibleTransformException;
 import javafx.scene.transform.Scale;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import processing.core.PApplet;
 import processing.core.PFont;
+import processing.core.PImage;
 import processing.core.PSurface;
 import processing.core.PVector;
 import processing.event.MouseEvent;
@@ -241,6 +246,8 @@ public class SideScroller extends PApplet {
 		camera.setMouseMask(CONTROL);
 		camera.setMinZoomScale(Constants.CAMERA_ZOOM_MIN);
 		camera.setMaxZoomScale(Constants.CAMERA_ZOOM_MAX);
+		camera.setCameraPositionNoLerp(game.getPlayer().position); // start on the player...
+		camera.setFollowObject(game.getPlayer()); // ...and track them
 
 		scaleResolution();
 		launchIntoMultiplayer(); // multi is conditional on program args
@@ -371,6 +378,28 @@ public class SideScroller extends PApplet {
 		rectMode(CORNER);
 		rect(0, 0, width, height);
 		popStyle();
+	}
+
+	/**
+	 * Captures what has been drawn so far this frame, at game resolution. Unlike
+	 * {@link #get()}, this is unaffected by the canvas being scaled to fit the
+	 * window (UI scale/fullscreen), which would otherwise zoom and crop the image.
+	 */
+	public PImage captureFrame() {
+		final SnapshotParameters params = new SnapshotParameters();
+		try {
+			params.setTransform(canvas.getLocalToParentTransform().createInverse()); // undo the fit-to-window scale
+		} catch (NonInvertibleTransformException e) {
+			return get();
+		}
+		final WritableImage snapshot = canvas.snapshot(params, null);
+		final int w = Math.min(width, (int) snapshot.getWidth());
+		final int h = Math.min(height, (int) snapshot.getHeight());
+		final PImage frame = createImage(w, h, ARGB);
+		frame.loadPixels();
+		snapshot.getPixelReader().getPixels(0, 0, w, h, PixelFormat.getIntArgbInstance(), frame.pixels, 0, w);
+		frame.updatePixels();
+		return frame;
 	}
 
 	/**

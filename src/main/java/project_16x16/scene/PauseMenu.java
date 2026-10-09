@@ -25,10 +25,8 @@ public class PauseMenu extends PScene {
 	public Button pressSettings; // TODO add settings menu
 
 	private SideScroller game;
-	private PImage cache;
+	private PImage backdrop;
 	private final MenuNav nav;
-
-	protected boolean switched = false;
 
 	public PauseMenu(SideScroller sideScroller) {
 		super(sideScroller);
@@ -59,19 +57,21 @@ public class PauseMenu extends PScene {
 		nav.add(pressMenu, () -> game.swapToScene(GameScenes.MAIN_MENU));
 	}
 
-	@Override
-	public void switchTo() {
-		super.switchTo();
-		if (!switched) {
-			cache = applet.get(); // when game is paused, cache the game screen.
-			cache = Utility.blur(cache, 3, 2); // blur game screen
-		}
-		switched = true;
+	/**
+	 * Sets the game frame shown (blurred) behind the menu. Called by the game when
+	 * it pauses.
+	 */
+	public void setBackdrop(PImage frame) {
+		backdrop = Utility.blur(frame, 3, 2);
 	}
 
 	@Override
 	public void drawUI() {
-		applet.image(cache, applet.width / 2, applet.height / 2 + 30); // draw cached & blurred game
+		if (backdrop != null) {
+			applet.image(backdrop, applet.width / 2f, applet.height / 2f, applet.width, applet.height);
+		} else {
+			applet.background(0);
+		}
 		MenuStyle.dim(game, 110);
 		MenuStyle.title(game, "PAUSED", game.height / 2f - 210);
 		nav.display();

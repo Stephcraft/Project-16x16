@@ -414,7 +414,7 @@ public final class Camera extends ZoomPan {
 	 */
 	public void setCameraPositionNoLerp(PVector position) {
 		following = false;
-		PVector temp = PVector.sub(position, offset);
+		PVector temp = PVector.sub(position, new PVector(applet.width / 2, applet.height / 2)); // offset may not be set yet
 		this.setPanOffset(-temp.x, -temp.y);
 		shakeOffset.set(0, 0); // pan offset is now un-shaken
 		this.targetPosition = new PVector(-position.x, -position.y);

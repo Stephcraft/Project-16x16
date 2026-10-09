@@ -18,6 +18,7 @@ public class PlayGameMode extends GameplayMode {
 	@Override
 	public void enter() {
 		scene.setZoomable(true);
+		scene.applet.camera.setFollowObject(localPlayer);
 	}
 
 	@Override

@@ -43,6 +43,12 @@ public abstract class EditableObject extends PClass {
 
 	protected PVector editOffset;
 
+	/**
+	 * Position when the current drag began; null if the object was created
+	 * mid-drag (duplicated).
+	 */
+	public PVector dragOrigin;
+
 	public EditableObject(SideScroller sideScroller, GameplayScene gameplayScene) {
 		super(sideScroller);
 
@@ -59,14 +65,19 @@ public abstract class EditableObject extends PClass {
 
 	/**
 	 * Draws position edit arrows and bounding box if the object is selected
-	 * (focused) in MODIFY mode.
+	 * (focused) in MODIFY mode. The box is red if the object overlaps another
+	 * solid object (it'll return to where it was if released there).
 	 */
 	public void displayEdit() {
 		if (focus) { // focus = held by player
 			// draw border around object
 			applet.strokeWeight(10);
 			applet.noFill();
-			applet.stroke(0, 255, 200);
+			if (gameplayScene.isBlocked(this)) {
+				applet.stroke(255, 60, 60);
+			} else {
+				applet.stroke(0, 255, 200);
+			}
 			applet.rect(position.x, position.y, width, height);
 			applet.strokeWeight(4); // reset style
 		}
@@ -121,7 +132,7 @@ public abstract class EditableObject extends PClass {
 						try {
 							Class<? extends GameObject> gameObjectClass = Tileset.getObjectClass(id);
 							Constructor<?> ctor = gameObjectClass.getDeclaredConstructors()[0];
-							copy = (GameObject) ctor.newInstance(new Object[] { applet, this });
+							copy = (GameObject) ctor.newInstance(new Object[] { applet, gameplayScene });
 							copy.focus = true;
 							copy.position = position.copy();
 							copy.editOffset = editOffset.copy();
@@ -151,6 +162,7 @@ public abstract class EditableObject extends PClass {
 
 	public void focus() {
 		editOffset = PVector.sub(position, applet.getMouseCoordGame());
+		dragOrigin = position.copy();
 		focus = true;
 	}
 
@@ -163,7 +175,7 @@ public abstract class EditableObject extends PClass {
 	}
 
 	public boolean mouseHover() {
-		if (applet.mouseX < 400 && applet.mouseY < 100) { // Over Inventory Bar -- rough approximation
+		if (gameplayScene.isOverUI(applet.getMouseCoordScreen())) {
 			return false;
 		}
 		return Utility.hoverGame(position.x, position.y, width, height);
