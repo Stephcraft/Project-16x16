@@ -60,6 +60,7 @@ jobs:
         # catches a broken launcher config (e.g. no suitable Java found)
         $p = Start-Process "$PWD\Project_16x16.exe" -PassThru
         Start-Sleep 15
-        $java = Get-Process java -ErrorAction SilentlyContinue
-        Get-Process | Where-Object { $_.Id -eq $p.Id -or $_.Name -eq 'java' } | Stop-Process -Force -ErrorAction SilentlyContinue
-        if (-not $java -and $p.HasExited) { throw 'Exe exited without starting Java' }
+        # the GUI launcher exits straight away and leaves the app running as javaw.exe
+        $java = Get-Process java, javaw -ErrorAction SilentlyContinue
+        $java | Stop-Process -Force -ErrorAction SilentlyContinue
+        if (-not $java) { throw 'Exe did not leave a Java process running' }
