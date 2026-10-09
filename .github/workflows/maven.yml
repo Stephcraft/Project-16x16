@@ -5,6 +5,7 @@ on:
     branches: [ master ]
   pull_request:
     branches: [ master ]
+  workflow_dispatch:
 
 jobs:
   build:
@@ -27,3 +28,36 @@ jobs:
       with:
         name: Project16x16.exe
         path: target/*.exe
+
+  smoke-test:
+    needs: build
+    runs-on: windows-latest
+    steps:
+    - uses: actions/setup-java@v5
+      with:
+        java-version: '25'
+        distribution: 'temurin'
+    - uses: actions/download-artifact@v4
+      with:
+        name: Project16x16.exe
+    - name: Launch the exe's jar and check it stays up
+      shell: pwsh
+      run: |
+        # the exe is a Launch4j wrapper around the jar, so java can run it directly and give us stderr
+        $p = Start-Process java -ArgumentList '-Dprism.order=sw', '-jar', "$PWD\Project_16x16.exe" `
+          -PassThru -NoNewWindow -RedirectStandardError err.txt -RedirectStandardOutput out.txt
+        Start-Sleep 15
+        $alive = -not $p.HasExited
+        if ($alive) { Stop-Process -Id $p.Id -Force }
+        Get-Content err.txt, out.txt
+        if (-not $alive) { throw "App exited early (code $($p.ExitCode))" }
+        if (Select-String -Path err.txt -Pattern 'Exception|Error' -Quiet) { throw 'App logged an exception' }
+    - name: Launch the exe itself
+      shell: pwsh
+      run: |
+        # catches a broken launcher config (e.g. no suitable Java found)
+        $p = Start-Process "$PWD\Project_16x16.exe" -PassThru
+        Start-Sleep 15
+        $java = Get-Process java -ErrorAction SilentlyContinue
+        Get-Process | Where-Object { $_.Id -eq $p.Id -or $_.Name -eq 'java' } | Stop-Process -Force -ErrorAction SilentlyContinue
+        if (-not $java -and $p.HasExited) { throw 'Exe exited without starting Java' }
