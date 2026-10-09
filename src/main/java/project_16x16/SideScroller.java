@@ -3,6 +3,8 @@ package project_16x16;
 import java.util.ArrayDeque;
 import java.util.HashSet;
 
+import javafx.application.Platform;
+import javafx.geometry.Rectangle2D;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.input.KeyCombination;
@@ -173,7 +175,7 @@ public class SideScroller extends PApplet {
 		Screen screen = Screen.getPrimary();
 		double scaleX = screen.getOutputScaleX();
 		double scaleY = screen.getOutputScaleY();
-		double scale = Math.min(scaleX, scaleY);
+		double scale = Double.parseDouble(System.getProperty("ui.scale", String.valueOf(Math.min(scaleX, scaleY))));
 		changeScale((float) scale);
 
 		return surface;
@@ -493,6 +495,9 @@ public class SideScroller extends PApplet {
 	 * changed</b> - currently called only when toggling fullscreen mode.
 	 */
 	private void scaleResolution() {
+		if (canvas == null || scene == null) {
+			return;
+		}
 		canvas.getTransforms().clear();
 		canvas.setTranslateX(-scene.getWidth() / 2 + gameResolution.x / 2); // recenters after scale
 		canvas.setTranslateY(-scene.getHeight() / 2 + gameResolution.y / 2); // recenters after scale
@@ -509,34 +514,30 @@ public class SideScroller extends PApplet {
 	
 	/**
 	 * Changes game UI scaling. Akin to 'glass.win.uiScale' system property, but
-	 * adjustable during runtime.
+	 * adjustable during runtime. The window is always sized from the (unscaled)
+	 * window size so the content keeps its aspect ratio, and is shrunk if needed to
+	 * fit the screen.
 	 */
 	private void changeScale(float newScale) {
-		float currentScale = Options.uiScale;
-		
-		double x = stage.getX();
-		double y = stage.getY();
-
-		// Calculate new dimensions
-		double widthRatio = newScale / currentScale;
-		double heightRatio = newScale / currentScale;
-
-		// Update transform for all nodes in the scene
-		scene.getRoot().setScaleX(newScale);
-		scene.getRoot().setScaleY(newScale);
-
-		// Adjust stage size to maintain content visibility
-		stage.setWidth(stage.getWidth() * widthRatio);
-		stage.setHeight(stage.getHeight() * heightRatio);
-
-		// Adjust position to keep window centred
-		stage.setX(x - (stage.getWidth() - stage.getWidth() / widthRatio) / 2);
-		stage.setY(y - (stage.getHeight() - stage.getHeight() / heightRatio) / 2);
-
-		// update scale
-		Options.uiScale = newScale;
-		Options.save(Option.UI_SCALE, newScale);
-		currentScale = newScale;
+		Rectangle2D screen = Screen.getPrimary().getVisualBounds();
+		// window decorations (titlebar/borders) are unscaled and unknown until shown
+		Runnable apply = () -> {
+			double decoW = Double.isNaN(stage.getWidth()) ? 0 : stage.getWidth() - scene.getWidth();
+			double decoH = Double.isNaN(stage.getHeight()) ? 0 : stage.getHeight() - scene.getHeight();
+			float fit = (float) Math.min(newScale, Math.min((screen.getWidth() - decoW) / windowSize.x, (screen.getHeight() - decoH) / windowSize.y));
+			stage.setWidth(windowSize.x * fit + decoW);
+			stage.setHeight(windowSize.y * fit + decoH);
+			stage.centerOnScreen();
+			// canvas is scaled to fill the scene by scaleResolution(), not by scaling the root
+			Platform.runLater(this::scaleResolution);
+			Options.uiScale = fit;
+			Options.save(Option.UI_SCALE, fit);
+		};
+		if (stage.isShowing()) {
+			apply.run();
+		} else {
+			stage.setOnShown(e -> apply.run());
+		}
 	}
 
 	private void displayDebugInfo() {

@@ -1,9 +1,9 @@
 package project_16x16.components;
 
 import java.util.ArrayList;
-import java.util.Collection;
-
-import org.apache.commons.collections.map.MultiValueMap;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import processing.core.PImage;
 import project_16x16.Audio;
@@ -25,10 +25,9 @@ public class AnimationComponent {
 	private float currentFrame;
 	public String name;
 	public boolean ended;
-	private final MultiValueMap sounds;
+	private final Map<Integer, List<SFX>> sounds = new HashMap<>();
 
 	public AnimationComponent() {
-		sounds = new MultiValueMap();
 	}
 
 	public static void assignApplet(SideScroller applet) {
@@ -70,7 +69,6 @@ public class AnimationComponent {
 	 *
 	 * @return PImage image
 	 */
-	@SuppressWarnings("unchecked")
 	public PImage animate() {
 		PImage frame = frames.get((int) currentFrame);
 		if ((applet.frameCount - firstFrame) % rate == 0) {
@@ -82,7 +80,7 @@ public class AnimationComponent {
 				currentFrame = 0;
 			}
 		}
-		Collection<SFX> coll = (Collection<SFX>) sounds.get((int) currentFrame); // TODO high overhead?
+		List<SFX> coll = sounds.get((int) currentFrame);
 		if (coll != null) {
 			coll.forEach(sound -> Audio.play(sound));
 		}
@@ -143,6 +141,6 @@ public class AnimationComponent {
 	 * @param frameNumber
 	 */
 	public void setSFX(SFX sound, int frameNumber) {
-		sounds.put(frameNumber, sound);
+		sounds.computeIfAbsent(frameNumber, k -> new ArrayList<>()).add(sound);
 	}
 }
