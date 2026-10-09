@@ -7,6 +7,7 @@ import processing.event.MouseEvent;
 import project_16x16.SideScroller;
 import project_16x16.Utility;
 import project_16x16.ui.Button;
+import project_16x16.ui.MenuBackground;
 import project_16x16.ui.MenuNav;
 import project_16x16.ui.MenuStyle;
 
@@ -67,7 +68,11 @@ public class ConfirmationMenu extends PScene {
 
 	@Override
 	public void drawUI() {
-		applet.image(cache, applet.width / 2, applet.height / 2); // draw cached & blurred game
+		if (cache != null) {
+			applet.image(cache, applet.width / 2, applet.height / 2); // draw cached & blurred game
+		} else {
+			MenuBackground.draw(false);
+		}
 
 		MenuStyle.dim(applet, 110);
 		MenuStyle.title(applet, menutext != null ? menutext : "Are you sure?", applet.height / 2f - 130);
@@ -92,8 +97,10 @@ public class ConfirmationMenu extends PScene {
 	@Override
 	public void switchTo() {
 		super.switchTo();
-		cache = applet.captureFrame(); // when game is paused, cache the game screen.
-		cache = Utility.blur(cache, 6, 2); // blur game screen
+		cache = null;
+		if (applet.isGameInProgress()) { // cache the (paused) game screen, blurred
+			cache = Utility.blur(applet.captureFrame(), 6, 2);
+		}
 	}
 
 }

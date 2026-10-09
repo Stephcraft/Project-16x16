@@ -6,12 +6,14 @@ import java.util.HashSet;
 import javafx.application.Platform;
 import javafx.event.EventHandler;
 import javafx.geometry.Rectangle2D;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.PixelFormat;
 import javafx.scene.image.WritableImage;
 import javafx.scene.input.KeyCombination;
+import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
@@ -365,6 +367,7 @@ public class SideScroller extends PApplet {
 		context.setImageSmoothing(true); // UI text is drawn from bitmap glyphs, which need smoothing
 		drawAboveCamera();
 		drawLetterbox();
+		MenuBackground.endFrame();
 
 		rectMode(CENTER);
 
@@ -607,6 +610,38 @@ public class SideScroller extends PApplet {
 	 */
 	public PVector getMouseCoordScreen() {
 		return new PVector(mouseX, mouseY);
+	}
+
+	/** @return window pixels per game-resolution unit */
+	public float getRenderScale() {
+		return renderScale;
+	}
+
+	/** @return horizontal offset (window pixels) of the game area, if letterboxed */
+	public float getRenderOffsetX() {
+		return renderOffsetX;
+	}
+
+	/** @return vertical offset (window pixels) of the game area, if letterboxed */
+	public float getRenderOffsetY() {
+		return renderOffsetY;
+	}
+
+	/**
+	 * Adds a JavaFX node behind the game's canvas. It shows wherever the canvas is
+	 * transparent (see {@link #clearCanvas()}).
+	 */
+	public void addUnderlay(Node node) {
+		((Pane) scene.getRoot()).getChildren().add(0, node);
+	}
+
+	/** Clears the whole canvas to transparent, revealing any underlay. */
+	public void clearCanvas() {
+		final GraphicsContext context = canvas.getGraphicsContext2D();
+		context.save();
+		context.setTransform(1, 0, 0, 1, 0, 0);
+		context.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
+		context.restore();
 	}
 
 	public boolean isFullscreen() {
